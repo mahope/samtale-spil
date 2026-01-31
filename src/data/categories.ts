@@ -1,0 +1,60 @@
+import { Category } from "@/types";
+
+export const categories: Category[] = [
+  {
+    id: "parforhold",
+    name: "Parforhold",
+    description: "Spørgsmål der styrker jeres forbindelse",
+    emoji: "💑",
+    color: "from-rose-400 to-pink-500",
+    questions: [],
+  },
+  {
+    id: "familie",
+    name: "Familie",
+    description: "Lær hinanden bedre at kende på tværs af generationer",
+    emoji: "👨‍👩‍👧‍👦",
+    color: "from-amber-400 to-orange-500",
+    questions: [],
+  },
+  {
+    id: "intimitet",
+    name: "Intimitet",
+    description: "Dybe og personlige spørgsmål for par",
+    emoji: "🔥",
+    color: "from-red-400 to-rose-600",
+    questions: [],
+  },
+  {
+    id: "fremtid",
+    name: "Fremtid",
+    description: "Drømme, mål og hvad der venter forude",
+    emoji: "🚀",
+    color: "from-violet-400 to-purple-500",
+    questions: [],
+  },
+  {
+    id: "fortid",
+    name: "Fortid",
+    description: "Minder, oplevelser og livets lærdom",
+    emoji: "📜",
+    color: "from-emerald-400 to-teal-500",
+    questions: [],
+  },
+  {
+    id: "sjove",
+    name: "Sjove",
+    description: "Lette og underholdende spørgsmål",
+    emoji: "😂",
+    color: "from-yellow-400 to-amber-500",
+    questions: [],
+  },
+  {
+    id: "dybe",
+    name: "Dybe",
+    description: "Filosofiske spørgsmål om livet og eksistens",
+    emoji: "🌊",
+    color: "from-blue-400 to-indigo-500",
+    questions: [],
+  },
+];
