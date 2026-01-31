@@ -5,6 +5,7 @@ import Link from "next/link";
 import { categories } from "@/data/categories";
 import { Category } from "@/types";
 import { useProgress, useFavorites } from "@/hooks/useLocalStorage";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -141,6 +142,8 @@ export default function SpilPage() {
               </svg>
               Hjem
             </Link>
+            
+            <ThemeToggle className="text-slate-500 dark:text-slate-400" />
             
             {favorites.length > 0 && (
               <Link

@@ -2,10 +2,21 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      {/* Theme toggle in corner */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="absolute top-4 right-4 z-10"
+      >
+        <ThemeToggle className="text-slate-600 dark:text-slate-400" />
+      </motion.div>
+
       <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
         {/* Hero Section */}
         <motion.div
@@ -95,6 +106,16 @@ export default function Home() {
               </svg>
             </Link>
           </motion.div>
+
+          {/* Install hint for PWA */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 0.6 }}
+            className="text-sm text-slate-400 dark:text-slate-500 mt-6"
+          >
+            💡 Installer appen på din telefon for offline adgang
+          </motion.p>
         </motion.div>
 
         {/* Decorative Cards Preview */}
