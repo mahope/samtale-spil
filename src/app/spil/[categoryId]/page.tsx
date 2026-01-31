@@ -2,10 +2,11 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { use, useState, useCallback } from "react";
+import { use, useState, useCallback, useEffect } from "react";
 import { getCategory, getRandomQuestion } from "@/data/categories";
 import { notFound } from "next/navigation";
 import type { Question } from "@/types";
+import { useFavorites, useProgress } from "@/hooks/useLocalStorage";
 
 interface Props {
   params: Promise<{ categoryId: string }>;
@@ -27,13 +28,51 @@ function DepthIndicator({ depth }: { depth: Question["depth"] }) {
           <div
             key={i}
             className={`w-2 h-2 rounded-full transition-all ${
-              i <= dots ? color : "bg-white/30"
+              i <= dots ? color : "bg-slate-300"
             }`}
           />
         ))}
       </div>
-      <span className="text-sm text-white/70 font-medium">{label}</span>
+      <span className="text-sm text-slate-500 font-medium">{label}</span>
     </div>
+  );
+}
+
+function FavoriteButton({
+  isFavorite,
+  onToggle,
+}: {
+  isFavorite: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <motion.button
+      onClick={(e) => {
+        e.stopPropagation();
+        onToggle();
+      }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+      className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+      aria-label={isFavorite ? "Fjern fra favoritter" : "Tilføj til favoritter"}
+    >
+      <motion.svg
+        className="w-6 h-6"
+        viewBox="0 0 24 24"
+        fill={isFavorite ? "#ef4444" : "none"}
+        stroke={isFavorite ? "#ef4444" : "#94a3b8"}
+        strokeWidth={2}
+        initial={false}
+        animate={isFavorite ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        />
+      </motion.svg>
+    </motion.button>
   );
 }
 
@@ -41,10 +80,14 @@ function QuestionCard({
   question,
   isFlipped,
   onFlip,
+  isFavorite,
+  onToggleFavorite,
 }: {
   question: Question;
   isFlipped: boolean;
   onFlip: () => void;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
 }) {
   return (
     <div className="perspective-1000 w-full max-w-sm mx-auto">
@@ -89,9 +132,14 @@ function QuestionCard({
           className="absolute inset-0 w-full h-full backface-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <div className="w-full h-full bg-white rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8">
-            <div className="absolute top-4 right-4">
+          <div className="w-full h-full bg-white rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 relative">
+            {/* Top bar with depth and favorite */}
+            <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
               <DepthIndicator depth={question.depth} />
+              <FavoriteButton
+                isFavorite={isFavorite}
+                onToggle={onToggleFavorite}
+              />
             </div>
             
             <motion.p
@@ -112,19 +160,43 @@ function QuestionCard({
 export default function CategoryPlayPage({ params }: Props) {
   const { categoryId } = use(params);
   const category = getCategory(categoryId);
+  
+  const { isFavorite, toggleFavorite, isLoaded: favoritesLoaded } = useFavorites();
+  const { getCategoryProgress, markAnswered, resetCategory, isLoaded: progressLoaded } = useProgress();
 
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(() =>
-    category ? getRandomQuestion(categoryId) : null
-  );
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
   const [answeredCount, setAnsweredCount] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Initialize from saved progress
+  useEffect(() => {
+    if (!progressLoaded || !category) return;
+    
+    const savedProgress = getCategoryProgress(categoryId);
+    if (savedProgress.answeredIds.length > 0) {
+      setAskedQuestionIds(savedProgress.answeredIds);
+      setAnsweredCount(savedProgress.answeredIds.length);
+    }
+    
+    // Get initial question excluding already answered ones
+    const excludeIds = savedProgress.answeredIds.length >= category.questions.length 
+      ? [] 
+      : savedProgress.answeredIds;
+    const firstQuestion = getRandomQuestion(categoryId, excludeIds);
+    setCurrentQuestion(firstQuestion);
+  }, [progressLoaded, category, categoryId, getCategoryProgress]);
+
   const handleNextQuestion = useCallback(() => {
     if (!category || isTransitioning) return;
 
     setIsTransitioning(true);
+
+    // Mark current question as answered
+    if (currentQuestion) {
+      markAnswered(categoryId, currentQuestion.id);
+    }
 
     // Flip back first if flipped
     if (isFlipped) {
@@ -160,10 +232,43 @@ export default function CategoryPlayPage({ params }: Props) {
     askedQuestionIds,
     isFlipped,
     isTransitioning,
+    markAnswered,
   ]);
+
+  const handleResetProgress = useCallback(() => {
+    resetCategory(categoryId);
+    setAskedQuestionIds([]);
+    setAnsweredCount(0);
+    const firstQuestion = getRandomQuestion(categoryId);
+    setCurrentQuestion(firstQuestion);
+    setIsFlipped(false);
+  }, [categoryId, resetCategory]);
+
+  const handleToggleFavorite = useCallback(() => {
+    if (!currentQuestion) return;
+    toggleFavorite({
+      id: currentQuestion.id,
+      categoryId: currentQuestion.categoryId,
+      text: currentQuestion.text,
+      depth: currentQuestion.depth,
+    });
+  }, [currentQuestion, toggleFavorite]);
 
   if (!category) {
     notFound();
+  }
+
+  // Show loading state while localStorage loads
+  if (!progressLoaded || !favoritesLoaded) {
+    return (
+      <div className={`min-h-screen bg-gradient-to-br ${category.color} flex items-center justify-center`}>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="w-8 h-8 border-3 border-white border-t-transparent rounded-full"
+        />
+      </div>
+    );
   }
 
   const totalQuestions = category.questions.length;
@@ -216,9 +321,19 @@ export default function CategoryPlayPage({ params }: Props) {
             <span className="text-white font-semibold">{category.name}</span>
           </div>
 
-          <div className="text-white/80 text-sm font-medium">
-            {answeredCount} besvaret
-          </div>
+          <Link
+            href="/favoritter"
+            className="text-white/80 hover:text-white transition-colors"
+            title="Se favoritter"
+          >
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+          </Link>
         </motion.div>
 
         {/* Progress bar */}
@@ -236,7 +351,12 @@ export default function CategoryPlayPage({ params }: Props) {
             />
           </div>
           <div className="flex justify-between mt-2 text-white/60 text-xs">
-            <span>Start</span>
+            <button
+              onClick={handleResetProgress}
+              className="hover:text-white/90 transition-colors underline"
+            >
+              Nulstil
+            </button>
             <span>
               {answeredCount} / {totalQuestions} spørgsmål
             </span>
@@ -259,6 +379,8 @@ export default function CategoryPlayPage({ params }: Props) {
                   question={currentQuestion}
                   isFlipped={isFlipped}
                   onFlip={() => setIsFlipped((prev) => !prev)}
+                  isFavorite={isFavorite(currentQuestion.id)}
+                  onToggleFavorite={handleToggleFavorite}
                 />
               </motion.div>
             )}
@@ -296,7 +418,7 @@ export default function CategoryPlayPage({ params }: Props) {
           </motion.button>
 
           <p className="text-center text-white/60 text-sm mt-4">
-            Tryk på kortet for at vende det
+            Tryk på kortet for at vende det • ❤️ for at gemme
           </p>
         </motion.div>
       </main>

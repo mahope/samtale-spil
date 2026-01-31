@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
 import { categories } from "@/data/categories";
 import { Category } from "@/types";
+import { useProgress, useFavorites } from "@/hooks/useLocalStorage";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -32,11 +32,16 @@ const cardVariants = {
 
 function CategoryCard({
   category,
+  progress,
   onClick,
 }: {
   category: Category;
+  progress: { answered: number; total: number };
   onClick: () => void;
 }) {
+  const progressPercent = (progress.answered / progress.total) * 100;
+  const hasProgress = progress.answered > 0;
+
   return (
     <motion.button
       variants={cardVariants}
@@ -56,6 +61,18 @@ function CategoryCard({
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full" />
       <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full" />
       
+      {/* Progress bar at bottom */}
+      {hasProgress && (
+        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/20">
+          <motion.div
+            className="h-full bg-white/80"
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercent}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </div>
+      )}
+      
       {/* Content */}
       <div className="relative h-full flex flex-col items-center justify-center text-center">
         <motion.span
@@ -70,7 +87,14 @@ function CategoryCard({
           {category.description}
         </p>
         <div className="mt-3 text-xs text-white/60">
-          {category.questions.length} spørgsmål
+          {hasProgress ? (
+            <span className="flex items-center gap-1">
+              <span>{progress.answered}/{progress.total}</span>
+              <span>besvaret</span>
+            </span>
+          ) : (
+            <span>{category.questions.length} spørgsmål</span>
+          )}
         </div>
       </div>
     </motion.button>
@@ -78,13 +102,14 @@ function CategoryCard({
 }
 
 export default function SpilPage() {
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const { getCategoryProgress, isLoaded: progressLoaded } = useProgress();
+  const { favorites, isLoaded: favoritesLoaded } = useFavorites();
 
   const handleCategorySelect = (category: Category) => {
-    setSelectedCategory(category);
-    // Navigate to the play page with selected category
     window.location.href = `/spil/${category.id}`;
   };
+
+  const isLoaded = progressLoaded && favoritesLoaded;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
@@ -96,25 +121,40 @@ export default function SpilPage() {
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-12"
         >
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors mb-6"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11 17l-5-5m0 0l5-5m-5 5h12"
-              />
-            </svg>
-            Tilbage
-          </Link>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11 17l-5-5m0 0l5-5m-5 5h12"
+                />
+              </svg>
+              Hjem
+            </Link>
+            
+            {favorites.length > 0 && (
+              <Link
+                href="/favoritter"
+                className="inline-flex items-center gap-2 text-rose-500 hover:text-rose-600 transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                {favorites.length} favoritter
+              </Link>
+            )}
+          </div>
+          
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-rose-500 via-violet-500 to-blue-500 bg-clip-text text-transparent mb-4">
             Vælg en kategori
           </h1>
@@ -130,13 +170,20 @@ export default function SpilPage() {
           animate="visible"
           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full"
         >
-          {categories.map((category) => (
-            <CategoryCard
-              key={category.id}
-              category={category}
-              onClick={() => handleCategorySelect(category)}
-            />
-          ))}
+          {categories.map((category) => {
+            const categoryProgress = isLoaded ? getCategoryProgress(category.id) : { answeredIds: [] };
+            return (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                progress={{
+                  answered: categoryProgress.answeredIds.length,
+                  total: category.questions.length,
+                }}
+                onClick={() => handleCategorySelect(category)}
+              />
+            );
+          })}
         </motion.div>
 
         {/* Random Category Button */}
