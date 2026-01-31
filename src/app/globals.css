@@ -34,3 +34,17 @@ html {
   outline: 2px solid rgb(var(--violet-500, 139 92 246));
   outline-offset: 2px;
 }
+
+/* 3D Card flip utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
