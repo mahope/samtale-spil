@@ -57,12 +57,12 @@ export function MultiplayerJoin({
       >
         <Link
           href="/spil"
-          className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+          className="min-h-[44px] min-w-[44px] px-3 py-2 flex items-center gap-2 text-white/80 hover:text-white hover:bg-white/10 active:bg-white/20 rounded-xl transition-colors touch-manipulation"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Tilbage
+          <span className="hidden sm:inline">Tilbage</span>
         </Link>
       </motion.div>
 
@@ -94,12 +94,12 @@ export function MultiplayerJoin({
             onClick={() => setMode("create")}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hover:bg-white/30 transition-all text-left"
+            className="w-full min-h-[80px] p-5 sm:p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hover:bg-white/30 active:bg-white/40 transition-all text-left touch-manipulation"
           >
-            <div className="flex items-center gap-4">
-              <span className="text-4xl">🏠</span>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <span className="text-3xl sm:text-4xl">🏠</span>
               <div>
-                <h2 className="text-xl font-bold text-white">Opret rum</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-white">Opret rum</h2>
                 <p className="text-white/70 text-sm">Start et nyt spil som vært</p>
               </div>
             </div>
@@ -109,12 +109,12 @@ export function MultiplayerJoin({
             onClick={() => setMode("join")}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hover:bg-white/30 transition-all text-left"
+            className="w-full min-h-[80px] p-5 sm:p-6 bg-white/20 backdrop-blur-md rounded-2xl border border-white/30 hover:bg-white/30 active:bg-white/40 transition-all text-left touch-manipulation"
           >
-            <div className="flex items-center gap-4">
-              <span className="text-4xl">🚪</span>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <span className="text-3xl sm:text-4xl">🚪</span>
               <div>
-                <h2 className="text-xl font-bold text-white">Deltag i rum</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-white">Deltag i rum</h2>
                 <p className="text-white/70 text-sm">Brug en rumkode fra en ven</p>
               </div>
             </div>
@@ -147,8 +147,10 @@ export function MultiplayerJoin({
                     setLocalError(null);
                   }}
                   placeholder="Indtast dit navn..."
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="w-full px-4 py-4 text-base bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 touch-manipulation"
                   maxLength={20}
+                  autoComplete="name"
+                  enterKeyHint="done"
                 />
               </div>
 
@@ -156,7 +158,7 @@ export function MultiplayerJoin({
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-red-300 text-sm"
+                  className="text-red-300 text-sm px-1"
                 >
                   {displayError}
                 </motion.p>
@@ -167,7 +169,7 @@ export function MultiplayerJoin({
                 disabled={isLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-4 bg-white text-purple-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                className="w-full min-h-[56px] py-4 bg-white text-purple-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:shadow-md transition-all disabled:opacity-50 touch-manipulation"
               >
                 {isLoading ? "Opretter..." : "Opret rum"}
               </motion.button>
@@ -177,7 +179,7 @@ export function MultiplayerJoin({
                   setMode("select");
                   setLocalError(null);
                 }}
-                className="w-full py-2 text-white/70 hover:text-white transition-colors"
+                className="w-full min-h-[48px] py-3 text-white/70 hover:text-white hover:bg-white/10 active:bg-white/20 rounded-xl transition-colors touch-manipulation"
               >
                 ← Tilbage
               </button>
@@ -211,8 +213,10 @@ export function MultiplayerJoin({
                     setLocalError(null);
                   }}
                   placeholder="Indtast dit navn..."
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="w-full px-4 py-4 text-base bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 touch-manipulation"
                   maxLength={20}
+                  autoComplete="name"
+                  enterKeyHint="next"
                 />
               </div>
 
@@ -228,8 +232,11 @@ export function MultiplayerJoin({
                     setLocalError(null);
                   }}
                   placeholder="XXXX"
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 text-center text-2xl font-mono tracking-widest"
+                  className="w-full px-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 text-center text-2xl font-mono tracking-widest touch-manipulation"
                   maxLength={4}
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  enterKeyHint="go"
                 />
               </div>
 
@@ -237,7 +244,7 @@ export function MultiplayerJoin({
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-red-300 text-sm"
+                  className="text-red-300 text-sm px-1"
                 >
                   {displayError}
                 </motion.p>
@@ -248,7 +255,7 @@ export function MultiplayerJoin({
                 disabled={isLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-4 bg-white text-purple-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                className="w-full min-h-[56px] py-4 bg-white text-purple-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl active:shadow-md transition-all disabled:opacity-50 touch-manipulation"
               >
                 {isLoading ? "Deltager..." : "Deltag"}
               </motion.button>
@@ -258,7 +265,7 @@ export function MultiplayerJoin({
                   setMode("select");
                   setLocalError(null);
                 }}
-                className="w-full py-2 text-white/70 hover:text-white transition-colors"
+                className="w-full min-h-[48px] py-3 text-white/70 hover:text-white hover:bg-white/10 active:bg-white/20 rounded-xl transition-colors touch-manipulation"
               >
                 ← Tilbage
               </button>
