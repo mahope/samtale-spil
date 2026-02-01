@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#6366F1"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="200" fill="#A78BFA" opacity="0.2"/>
+  <circle cx="1100" cy="530" r="250" fill="#818CF8" opacity="0.2"/>
+  
+  <!-- Main card -->
+  <rect x="80" y="120" width="360" height="400" rx="24" fill="white" opacity="0.95"/>
+  
+  <!-- Card decorations -->
+  <circle cx="180" cy="220" r="30" fill="#C4B5FD"/>
+  <circle cx="340" cy="220" r="30" fill="#C4B5FD"/>
+  
+  <!-- Heart on card -->
+  <path transform="translate(160, 260) scale(0.8)" d="M100 50c-30-45-60-60-75-45s-15 45 15 75c15 15 45 45 60 60 15-15 45-45 60-60 30-30 30-60 15-75s-45 0-75 45z" fill="#EF4444"/>
+  
+  <!-- Text -->
+  <text x="520" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="bold" fill="white">Samtalekort</text>
+  <text x="520" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="white" opacity="0.9">Dybe samtaler med dem</text>
+  <text x="520" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="white" opacity="0.9">du holder af</text>
+  
+  <!-- Features -->
+  <text x="520" y="470" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="white" opacity="0.8">💑 Par  •  👨‍👩‍👧‍👦 Familie  •  😂 Venner</text>
+  <text x="520" y="520" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="white" opacity="0.8">350+ spørgsmål  •  7 kategorier  •  Gratis</text>
+</svg>

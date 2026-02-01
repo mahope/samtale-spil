@@ -1,0 +1,9 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mahope.github.io/samtale-spil/sitemap.xml
+
+# Disallow admin/api paths (none currently)
+# Disallow: /api/
