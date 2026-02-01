@@ -597,12 +597,20 @@ export function getCategory(id: string): Category | undefined {
   return categories.find((c) => c.id === id);
 }
 
-export function getRandomQuestion(categoryId: string, excludeIds: string[] = []) {
+// Type for difficulty filter
+export type DifficultyFilter = "let" | "medium" | "dyb" | "alle";
+
+export function getRandomQuestion(
+  categoryId: string, 
+  excludeIds: string[] = [],
+  difficultyFilter: DifficultyFilter = "alle"
+) {
   const category = getCategory(categoryId);
   if (!category) return null;
   
   const availableQuestions = category.questions.filter(
-    (q) => !excludeIds.includes(q.id)
+    (q) => !excludeIds.includes(q.id) && 
+           (difficultyFilter === "alle" || q.depth === difficultyFilter)
   );
   
   if (availableQuestions.length === 0) return null;
@@ -612,13 +620,18 @@ export function getRandomQuestion(categoryId: string, excludeIds: string[] = [])
 }
 
 // Get all questions from all categories (for Shuffle All mode)
-export function getAllQuestions() {
-  return categories.flatMap((c) => c.questions);
+export function getAllQuestions(difficultyFilter: DifficultyFilter = "alle") {
+  const allQuestions = categories.flatMap((c) => c.questions);
+  if (difficultyFilter === "alle") return allQuestions;
+  return allQuestions.filter((q) => q.depth === difficultyFilter);
 }
 
 // Get a random question from all categories
-export function getRandomQuestionFromAll(excludeIds: string[] = []) {
-  const allQuestions = getAllQuestions();
+export function getRandomQuestionFromAll(
+  excludeIds: string[] = [],
+  difficultyFilter: DifficultyFilter = "alle"
+) {
+  const allQuestions = getAllQuestions(difficultyFilter);
   const availableQuestions = allQuestions.filter(
     (q) => !excludeIds.includes(q.id)
   );
@@ -630,6 +643,23 @@ export function getRandomQuestionFromAll(excludeIds: string[] = []) {
 }
 
 // Get total question count across all categories
-export function getTotalQuestionCount() {
-  return categories.reduce((sum, c) => sum + c.questions.length, 0);
+export function getTotalQuestionCount(difficultyFilter: DifficultyFilter = "alle") {
+  if (difficultyFilter === "alle") {
+    return categories.reduce((sum, c) => sum + c.questions.length, 0);
+  }
+  return categories.reduce(
+    (sum, c) => sum + c.questions.filter((q) => q.depth === difficultyFilter).length,
+    0
+  );
+}
+
+// Get question count for a specific category with filter
+export function getCategoryQuestionCount(
+  categoryId: string,
+  difficultyFilter: DifficultyFilter = "alle"
+) {
+  const category = getCategory(categoryId);
+  if (!category) return 0;
+  if (difficultyFilter === "alle") return category.questions.length;
+  return category.questions.filter((q) => q.depth === difficultyFilter).length;
 }

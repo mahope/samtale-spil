@@ -3,10 +3,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
-import { getCategory, getRandomQuestion } from "@/data/categories";
+import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
 import { notFound } from "next/navigation";
 import type { Question } from "@/types";
-import { useFavorites, useProgress, useTimerSettings } from "@/hooks/useLocalStorage";
+import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -17,6 +17,7 @@ import { Confetti, CelebrationBurst, useConfetti, CelebrationOverlay } from "@/c
 import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
 import { FloatingParticles } from "@/components/FloatingParticles";
 import { TimerDisplay, TimerSettingsPanel } from "@/components/TimerDisplay";
+import { DifficultyFilter, DifficultyFilterIndicator } from "@/components/DifficultyFilter";
 
 interface Props {
   categoryId: string;
@@ -206,8 +207,13 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     toggleVibration: toggleTimerVibration,
     isLoaded: timerLoaded 
   } = useTimerSettings();
+  const { filter: difficultyFilter, setFilter: setDifficultyFilter, isLoaded: filterLoaded } = useDifficultyFilter();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
   const { pendingAchievement, dismissPendingAchievement } = useAchievements();
+  
+  // Calculate filtered question count
+  const filteredQuestionCount = category ? getCategoryQuestionCount(categoryId, difficultyFilter) : 0;
+  const totalQuestionCount = category ? category.questions.length : 0;
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
@@ -220,7 +226,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
 
   // Initialize from saved progress
   useEffect(() => {
-    if (!progressLoaded || !category) return;
+    if (!progressLoaded || !filterLoaded || !category) return;
     
     const savedProgress = getCategoryProgress(categoryId);
     if (savedProgress.answeredIds.length > 0) {
@@ -228,13 +234,13 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       setAnsweredCount(savedProgress.answeredIds.length);
     }
     
-    // Get initial question excluding already answered ones
-    const excludeIds = savedProgress.answeredIds.length >= category.questions.length 
+    // Get initial question excluding already answered ones, respecting filter
+    const excludeIds = savedProgress.answeredIds.length >= filteredQuestionCount 
       ? [] 
       : savedProgress.answeredIds;
-    const firstQuestion = getRandomQuestion(categoryId, excludeIds);
+    const firstQuestion = getRandomQuestion(categoryId, excludeIds, difficultyFilter);
     setCurrentQuestion(firstQuestion);
-  }, [progressLoaded, category, categoryId, getCategoryProgress]);
+  }, [progressLoaded, filterLoaded, category, categoryId, getCategoryProgress, difficultyFilter, filteredQuestionCount]);
 
   // Check for category completion
   useEffect(() => {
@@ -286,8 +292,8 @@ export default function CategoryPlayClient({ categoryId }: Props) {
         ? [...askedQuestionIds, currentQuestion.id]
         : askedQuestionIds;
 
-      // Check if all questions have been answered - trigger celebration!
-      const isComplete = newAskedIds.length >= category.questions.length;
+      // Check if all filtered questions have been answered - trigger celebration!
+      const isComplete = newAskedIds.length >= filteredQuestionCount;
       if (isComplete && newAskedIds.length > 0) {
         triggerConfetti();
         setShowCelebration(true);
@@ -297,7 +303,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       // Reset if all questions have been asked
       const idsToExclude = isComplete ? [] : newAskedIds;
 
-      const nextQuestion = getRandomQuestion(categoryId, idsToExclude);
+      const nextQuestion = getRandomQuestion(categoryId, idsToExclude, difficultyFilter);
 
       if (nextQuestion) {
         setAskedQuestionIds(
@@ -321,6 +327,8 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     markAnswered,
     playTap,
     triggerConfetti,
+    difficultyFilter,
+    filteredQuestionCount,
   ]);
 
   // Handle timer timeout - auto skip to next question
@@ -340,10 +348,10 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     setAskedQuestionIds([]);
     setAnsweredCount(0);
     setHasShownCelebration(false);
-    const firstQuestion = getRandomQuestion(categoryId);
+    const firstQuestion = getRandomQuestion(categoryId, [], difficultyFilter);
     setCurrentQuestion(firstQuestion);
     setIsFlipped(false);
-  }, [categoryId, resetCategory]);
+  }, [categoryId, resetCategory, difficultyFilter]);
 
   const handleDismissCelebration = useCallback(() => {
     setShowCelebration(false);
@@ -365,7 +373,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   }
 
   // Show loading state while localStorage loads
-  if (!progressLoaded || !favoritesLoaded || !timerLoaded) {
+  if (!progressLoaded || !favoritesLoaded || !timerLoaded || !filterLoaded) {
     return (
       <div 
         className={`min-h-screen bg-gradient-to-br ${category.color} flex flex-col items-center justify-center px-6`}
@@ -394,8 +402,8 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     );
   }
 
-  const totalQuestions = category.questions.length;
-  const progress = Math.min((answeredCount / totalQuestions) * 100, 100);
+  const activeQuestionCount = filteredQuestionCount > 0 ? filteredQuestionCount : totalQuestionCount;
+  const progress = Math.min((answeredCount / activeQuestionCount) * 100, 100);
 
   return (
     <>
@@ -412,7 +420,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       <CelebrationOverlay
         isVisible={showCelebration}
         message="🎉 Kategori fuldført!"
-        subMessage={`Du har besvaret alle ${totalQuestions} spørgsmål i ${category.name}!`}
+        subMessage={`Du har besvaret alle ${activeQuestionCount} ${difficultyFilter !== "alle" ? `${difficultyFilter} ` : ""}spørgsmål i ${category.name}!`}
         onDismiss={handleDismissCelebration}
       />
       
@@ -466,6 +474,12 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           </div>
 
           <nav className="flex items-center gap-2" aria-label="Hurtighandlinger">
+            <DifficultyFilter
+              filter={difficultyFilter}
+              onFilterChange={setDifficultyFilter}
+              questionCount={filteredQuestionCount}
+              totalCount={totalQuestionCount}
+            />
             <TimerSettingsPanel
               isEnabled={timerSettings.enabled}
               duration={timerSettings.duration}
@@ -507,13 +521,23 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           role="region"
           aria-label="Fremskridt"
         >
+          {/* Active filter indicator */}
+          {difficultyFilter !== "alle" && (
+            <div className="flex justify-center mb-2">
+              <DifficultyFilterIndicator 
+                filter={difficultyFilter} 
+                questionCount={filteredQuestionCount} 
+              />
+            </div>
+          )}
+          
           <div 
             className="h-2 bg-white/20 rounded-full overflow-hidden"
             role="progressbar"
             aria-valuenow={answeredCount}
             aria-valuemin={0}
-            aria-valuemax={totalQuestions}
-            aria-label={`${answeredCount} af ${totalQuestions} spørgsmål besvaret`}
+            aria-valuemax={activeQuestionCount}
+            aria-label={`${answeredCount} af ${activeQuestionCount} spørgsmål besvaret`}
           >
             <motion.div
               className="h-full bg-white/80 rounded-full"
@@ -532,7 +556,8 @@ export default function CategoryPlayClient({ categoryId }: Props) {
               Nulstil
             </button>
             <span aria-live="polite">
-              {answeredCount} / {totalQuestions} spørgsmål
+              {answeredCount} / {activeQuestionCount} spørgsmål
+              {difficultyFilter !== "alle" && ` (${difficultyFilter})`}
             </span>
           </div>
         </motion.div>

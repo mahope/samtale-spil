@@ -144,6 +144,30 @@ export function useTimerSettings() {
   };
 }
 
+// Difficulty filter
+export type DifficultyLevel = "let" | "medium" | "dyb";
+export type DifficultyFilter = DifficultyLevel | "alle";
+
+export function useDifficultyFilter() {
+  const [filter, setFilter, isLoaded] = useLocalStorage<DifficultyFilter>(
+    "samtale-spil-difficulty-filter",
+    "alle"
+  );
+
+  const toggleFilter = useCallback(
+    (level: DifficultyFilter) => {
+      setFilter(level);
+    },
+    [setFilter]
+  );
+
+  return {
+    filter,
+    setFilter: toggleFilter,
+    isLoaded,
+  };
+}
+
 // Session progress management
 export interface CategoryProgress {
   answeredIds: string[];

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
 import { getCategory, getRandomQuestionFromAll, getTotalQuestionCount } from "@/data/categories";
 import type { Question } from "@/types";
-import { useFavorites, useProgress, useTimerSettings } from "@/hooks/useLocalStorage";
+import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -13,6 +13,7 @@ import { Confetti, useConfetti, CelebrationOverlay } from "@/components/Confetti
 import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
 import { FloatingParticles } from "@/components/FloatingParticles";
 import { TimerDisplay, TimerSettingsPanel } from "@/components/TimerDisplay";
+import { DifficultyFilter, DifficultyFilterIndicator } from "@/components/DifficultyFilter";
 
 const SHUFFLE_ALL_ID = "shuffle-all";
 
@@ -221,6 +222,7 @@ export default function ShuffleAllClient() {
     toggleVibration: toggleTimerVibration,
     isLoaded: timerLoaded 
   } = useTimerSettings();
+  const { filter: difficultyFilter, setFilter: setDifficultyFilter, isLoaded: filterLoaded } = useDifficultyFilter();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
@@ -233,10 +235,12 @@ export default function ShuffleAllClient() {
   const [timerKey, setTimerKey] = useState(0);
 
   const totalQuestions = getTotalQuestionCount();
+  const filteredQuestionCount = getTotalQuestionCount(difficultyFilter);
+  const activeQuestionCount = filteredQuestionCount > 0 ? filteredQuestionCount : totalQuestions;
 
   // Initialize from saved progress
   useEffect(() => {
-    if (!progressLoaded) return;
+    if (!progressLoaded || !filterLoaded) return;
     
     const savedProgress = getCategoryProgress(SHUFFLE_ALL_ID);
     if (savedProgress.answeredIds.length > 0) {
@@ -244,24 +248,24 @@ export default function ShuffleAllClient() {
       setAnsweredCount(savedProgress.answeredIds.length);
     }
     
-    // Get initial question excluding already answered ones
-    const excludeIds = savedProgress.answeredIds.length >= totalQuestions 
+    // Get initial question excluding already answered ones, respecting filter
+    const excludeIds = savedProgress.answeredIds.length >= activeQuestionCount 
       ? [] 
       : savedProgress.answeredIds;
-    const firstQuestion = getRandomQuestionFromAll(excludeIds);
+    const firstQuestion = getRandomQuestionFromAll(excludeIds, difficultyFilter);
     setCurrentQuestion(firstQuestion);
-  }, [progressLoaded, totalQuestions, getCategoryProgress]);
+  }, [progressLoaded, filterLoaded, activeQuestionCount, getCategoryProgress, difficultyFilter]);
 
   // Check for completion
   useEffect(() => {
     if (hasShownCelebration) return;
     
-    if (answeredCount >= totalQuestions && answeredCount > 0) {
+    if (answeredCount >= activeQuestionCount && answeredCount > 0) {
       playSuccess();
       setShowCelebration(true);
       setHasShownCelebration(true);
     }
-  }, [answeredCount, totalQuestions, hasShownCelebration, playSuccess]);
+  }, [answeredCount, activeQuestionCount, hasShownCelebration, playSuccess]);
 
   const handleFlip = useCallback(() => {
     playFlip();
@@ -296,7 +300,7 @@ export default function ShuffleAllClient() {
         ? [...askedQuestionIds, currentQuestion.id]
         : askedQuestionIds;
 
-      const isComplete = newAskedIds.length >= totalQuestions;
+      const isComplete = newAskedIds.length >= activeQuestionCount;
       if (isComplete && newAskedIds.length > 0) {
         triggerConfetti();
         setShowCelebration(true);
@@ -304,7 +308,7 @@ export default function ShuffleAllClient() {
       }
 
       const idsToExclude = isComplete ? [] : newAskedIds;
-      const nextQuestion = getRandomQuestionFromAll(idsToExclude);
+      const nextQuestion = getRandomQuestionFromAll(idsToExclude, difficultyFilter);
 
       if (nextQuestion) {
         setAskedQuestionIds(
@@ -322,10 +326,11 @@ export default function ShuffleAllClient() {
     askedQuestionIds,
     isFlipped,
     isTransitioning,
-    totalQuestions,
+    activeQuestionCount,
     markAnswered,
     playTap,
     triggerConfetti,
+    difficultyFilter,
   ]);
 
   const handleTimerTimeout = useCallback(() => {
@@ -343,10 +348,10 @@ export default function ShuffleAllClient() {
     setAskedQuestionIds([]);
     setAnsweredCount(0);
     setHasShownCelebration(false);
-    const firstQuestion = getRandomQuestionFromAll();
+    const firstQuestion = getRandomQuestionFromAll([], difficultyFilter);
     setCurrentQuestion(firstQuestion);
     setIsFlipped(false);
-  }, [resetCategory]);
+  }, [resetCategory, difficultyFilter]);
 
   const handleDismissCelebration = useCallback(() => {
     setShowCelebration(false);
@@ -364,7 +369,7 @@ export default function ShuffleAllClient() {
   }, [currentQuestion, toggleFavorite, playSuccess]);
 
   // Show loading state
-  if (!progressLoaded || !favoritesLoaded || !timerLoaded) {
+  if (!progressLoaded || !favoritesLoaded || !timerLoaded || !filterLoaded) {
     return (
       <div 
         className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex flex-col items-center justify-center px-6"
@@ -393,7 +398,7 @@ export default function ShuffleAllClient() {
     );
   }
 
-  const progress = Math.min((answeredCount / totalQuestions) * 100, 100);
+  const progress = Math.min((answeredCount / activeQuestionCount) * 100, 100);
 
   return (
     <>
@@ -402,7 +407,7 @@ export default function ShuffleAllClient() {
       <CelebrationOverlay
         isVisible={showCelebration}
         message="🎉 Alle spørgsmål besvaret!"
-        subMessage={`Du har gennemgået alle ${totalQuestions} spørgsmål fra alle kategorier!`}
+        subMessage={`Du har gennemgået alle ${activeQuestionCount} ${difficultyFilter !== "alle" ? `${difficultyFilter} ` : ""}spørgsmål fra alle kategorier!`}
         onDismiss={handleDismissCelebration}
       />
       
@@ -461,6 +466,12 @@ export default function ShuffleAllClient() {
             </div>
 
             <nav className="flex items-center gap-2" aria-label="Hurtighandlinger">
+              <DifficultyFilter
+                filter={difficultyFilter}
+                onFilterChange={setDifficultyFilter}
+                questionCount={filteredQuestionCount}
+                totalCount={totalQuestions}
+              />
               <TimerSettingsPanel
                 isEnabled={timerSettings.enabled}
                 duration={timerSettings.duration}
@@ -496,13 +507,23 @@ export default function ShuffleAllClient() {
             role="region"
             aria-label="Fremskridt"
           >
+            {/* Active filter indicator */}
+            {difficultyFilter !== "alle" && (
+              <div className="flex justify-center mb-2">
+                <DifficultyFilterIndicator 
+                  filter={difficultyFilter} 
+                  questionCount={filteredQuestionCount} 
+                />
+              </div>
+            )}
+            
             <div 
               className="h-2 bg-white/20 rounded-full overflow-hidden"
               role="progressbar"
               aria-valuenow={answeredCount}
               aria-valuemin={0}
-              aria-valuemax={totalQuestions}
-              aria-label={`${answeredCount} af ${totalQuestions} spørgsmål besvaret`}
+              aria-valuemax={activeQuestionCount}
+              aria-label={`${answeredCount} af ${activeQuestionCount} spørgsmål besvaret`}
             >
               <motion.div
                 className="h-full bg-white/80 rounded-full"
@@ -521,7 +542,8 @@ export default function ShuffleAllClient() {
                 Nulstil
               </button>
               <span aria-live="polite">
-                {answeredCount} / {totalQuestions} spørgsmål (alle kategorier)
+                {answeredCount} / {activeQuestionCount} spørgsmål
+                {difficultyFilter !== "alle" ? ` (${difficultyFilter})` : " (alle kategorier)"}
               </span>
             </div>
           </motion.div>
