@@ -6,7 +6,7 @@ import { useState, useCallback, useEffect } from "react";
 import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
 import { notFound } from "next/navigation";
 import type { Question } from "@/types";
-import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter } from "@/hooks/useLocalStorage";
+import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter, useQuestionHistory } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -208,6 +208,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     isLoaded: timerLoaded 
   } = useTimerSettings();
   const { filter: difficultyFilter, setFilter: setDifficultyFilter, isLoaded: filterLoaded } = useDifficultyFilter();
+  const { addToHistory } = useQuestionHistory();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
   const { pendingAchievement, dismissPendingAchievement } = useAchievements();
   
@@ -276,9 +277,15 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     setIsTransitioning(true);
     playTap();
 
-    // Mark current question as answered
+    // Mark current question as answered and add to history
     if (currentQuestion) {
       markAnswered(categoryId, currentQuestion.id);
+      addToHistory({
+        id: currentQuestion.id,
+        categoryId: currentQuestion.categoryId,
+        text: currentQuestion.text,
+        depth: currentQuestion.depth,
+      });
     }
 
     // Flip back first if flipped
@@ -325,6 +332,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     isFlipped,
     isTransitioning,
     markAnswered,
+    addToHistory,
     playTap,
     triggerConfetti,
     difficultyFilter,

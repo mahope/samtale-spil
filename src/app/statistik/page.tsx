@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useFavorites, useProgress, FavoriteQuestion } from "@/hooks/useLocalStorage";
+import { useFavorites, useProgress, useQuestionHistory, FavoriteQuestion, HistoryEntry } from "@/hooks/useLocalStorage";
 import { categories, getCategory } from "@/data/categories";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -166,6 +166,63 @@ function FavoritePreviewCard({
   );
 }
 
+// History item card
+function HistoryItemCard({
+  entry,
+  index,
+}: {
+  entry: HistoryEntry;
+  index: number;
+}) {
+  const category = getCategory(entry.categoryId);
+  const date = new Date(entry.answeredAt);
+  const formattedDate = date.toLocaleDateString("da-DK", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const depthEmoji = {
+    let: "🟢",
+    medium: "🟡",
+    dyb: "🔴",
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.05 * index }}
+      className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
+    >
+      <div className="flex items-start gap-3">
+        {category && (
+          <span className="text-xl shrink-0" aria-hidden="true">
+            {category.emoji}
+          </span>
+        )}
+        <div className="flex-1 min-w-0">
+          <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed line-clamp-2">
+            {entry.text}
+          </p>
+          <div className="flex items-center gap-2 mt-2 text-xs text-slate-400 dark:text-slate-500">
+            <span aria-label={`Dybde: ${entry.depth}`}>{depthEmoji[entry.depth]}</span>
+            <span>•</span>
+            <span>{formattedDate}</span>
+            {category && (
+              <>
+                <span>•</span>
+                <span>{category.name}</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 // Empty state component
 function EmptyState() {
   return (
@@ -214,7 +271,9 @@ function EmptyState() {
 export default function StatistikPage() {
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
   const { progress, isLoaded: progressLoaded } = useProgress();
+  const { history, clearHistory, isLoaded: historyLoaded } = useQuestionHistory();
   const [showAllFavorites, setShowAllFavorites] = useState(false);
+  const [showAllHistory, setShowAllHistory] = useState(false);
 
   // Calculate statistics
   const stats = useMemo(() => {
@@ -344,7 +403,7 @@ export default function StatistikPage() {
     };
   }, [favorites, progress, progressLoaded, favoritesLoaded]);
 
-  const isLoaded = progressLoaded && favoritesLoaded;
+  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded;
 
   if (!isLoaded) {
     return (
@@ -550,6 +609,63 @@ export default function StatistikPage() {
                 )}
               </div>
             </section>
+
+            {/* Question History */}
+            {history.length > 0 && (
+              <section className="mb-8" aria-labelledby="history-heading">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                  className="flex items-center justify-between mb-4"
+                >
+                  <h2
+                    id="history-heading"
+                    className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2"
+                  >
+                    <span aria-hidden="true">📜</span>
+                    Seneste spørgsmål
+                  </h2>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={clearHistory}
+                    className="text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors flex items-center gap-1"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Ryd historik
+                  </motion.button>
+                </motion.div>
+                <div className="space-y-2">
+                  <AnimatePresence>
+                    {(showAllHistory ? history.slice(0, 20) : history.slice(0, 5)).map(
+                      (entry, index) => (
+                        <HistoryItemCard
+                          key={entry.id}
+                          entry={entry}
+                          index={index}
+                        />
+                      )
+                    )}
+                  </AnimatePresence>
+                </div>
+                {history.length > 5 && (
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.9 }}
+                    onClick={() => setShowAllHistory(!showAllHistory)}
+                    className="mt-3 w-full py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                  >
+                    {showAllHistory
+                      ? "Vis færre"
+                      : `Vis ${Math.min(history.length - 5, 15)} mere`}
+                  </motion.button>
+                )}
+              </section>
+            )}
 
             {/* Favorites Preview */}
             {favorites.length > 0 && (

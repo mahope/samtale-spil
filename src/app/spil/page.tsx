@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -35,7 +36,8 @@ const cardVariants = {
   },
 };
 
-function CategoryCard({
+// Memoized CategoryCard to prevent unnecessary re-renders
+const CategoryCard = memo(function CategoryCard({
   category,
   progress,
   onClick,
@@ -44,7 +46,10 @@ function CategoryCard({
   progress: { answered: number; total: number };
   onClick: () => void;
 }) {
-  const progressPercent = (progress.answered / progress.total) * 100;
+  const progressPercent = useMemo(() => 
+    (progress.answered / progress.total) * 100,
+    [progress.answered, progress.total]
+  );
   const hasProgress = progress.answered > 0;
   const isCompleted = progress.answered >= progress.total;
 
@@ -156,7 +161,7 @@ function CategoryCard({
       </div>
     </motion.button>
   );
-}
+});
 
 export default function SpilPage() {
   const router = useRouter();

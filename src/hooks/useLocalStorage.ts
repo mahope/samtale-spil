@@ -168,6 +168,69 @@ export function useDifficultyFilter() {
   };
 }
 
+// Question History - track recently answered questions
+export interface HistoryEntry {
+  id: string;
+  questionId: string;
+  categoryId: string;
+  text: string;
+  depth: "let" | "medium" | "dyb";
+  answeredAt: number;
+}
+
+export function useQuestionHistory() {
+  const [history, setHistory, isLoaded] = useLocalStorage<HistoryEntry[]>(
+    "samtale-spil-question-history",
+    []
+  );
+
+  const addToHistory = useCallback(
+    (question: { id: string; categoryId: string; text: string; depth: "let" | "medium" | "dyb" }) => {
+      setHistory((prev) => {
+        // Don't add duplicate entries for the same question
+        const existingIndex = prev.findIndex((h) => h.questionId === question.id);
+        const newEntry: HistoryEntry = {
+          id: `${question.id}-${Date.now()}`,
+          questionId: question.id,
+          categoryId: question.categoryId,
+          text: question.text,
+          depth: question.depth,
+          answeredAt: Date.now(),
+        };
+
+        // If question exists, update it and move to front
+        if (existingIndex !== -1) {
+          const updated = prev.filter((h) => h.questionId !== question.id);
+          return [newEntry, ...updated].slice(0, 50); // Keep last 50 entries
+        }
+
+        // Add new entry at the front, keep max 50
+        return [newEntry, ...prev].slice(0, 50);
+      });
+    },
+    [setHistory]
+  );
+
+  const getRecentHistory = useCallback(
+    (count: number = 10): HistoryEntry[] => {
+      return history.slice(0, count);
+    },
+    [history]
+  );
+
+  const clearHistory = useCallback(() => {
+    setHistory([]);
+  }, [setHistory]);
+
+  return {
+    history,
+    addToHistory,
+    getRecentHistory,
+    clearHistory,
+    isLoaded,
+  };
+}
+
 // Session progress management
 export interface CategoryProgress {
   answeredIds: string[];
