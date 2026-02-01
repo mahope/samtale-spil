@@ -66,7 +66,7 @@ const CategoryCard = memo(function CategoryCard({
       onClick={onClick}
       type="button"
       aria-label={`${category.name}: ${category.description}. ${hasProgress ? `${progress.answered} af ${progress.total} besvaret` : `${category.questions.length} spørgsmål`}`}
-      className={`relative group w-full aspect-square rounded-3xl bg-gradient-to-br ${category.color} p-6 text-white shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden focus:ring-4 focus:ring-white/50`}
+      className={`relative group w-full aspect-[4/5] sm:aspect-square rounded-2xl sm:rounded-3xl bg-gradient-to-br ${category.color} p-4 sm:p-6 text-white shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden focus:ring-4 focus:ring-white/50 touch-manipulation active:scale-95`}
     >
       {/* Background glow effect */}
       <motion.div 
@@ -135,25 +135,25 @@ const CategoryCard = memo(function CategoryCard({
       {/* Content */}
       <div className="relative h-full flex flex-col items-center justify-center text-center">
         <motion.span
-          className="text-5xl mb-3"
+          className="text-4xl sm:text-5xl mb-2 sm:mb-3"
           whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
           transition={{ duration: 0.5 }}
           aria-hidden="true"
         >
           {category.emoji}
         </motion.span>
-        <h3 className="text-xl font-bold mb-2">{category.name}</h3>
-        <p className="text-sm text-white/90 leading-tight">
+        <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">{category.name}</h3>
+        <p className="text-xs sm:text-sm text-white/90 leading-tight line-clamp-2">
           {category.description}
         </p>
         <motion.div 
-          className="mt-3 text-xs text-white/80"
+          className="mt-2 sm:mt-3 text-xs text-white/80"
           whileHover={{ scale: 1.05 }}
         >
           {hasProgress ? (
             <span className="flex items-center gap-1">
               <span>{progress.answered}/{progress.total}</span>
-              <span>{isCompleted ? "✨ Fuldført" : "besvaret"}</span>
+              <span className="hidden xs:inline">{isCompleted ? "✨ Fuldført" : "besvaret"}</span>
             </span>
           ) : (
             <span>{category.questions.length} spørgsmål</span>
@@ -199,10 +199,10 @@ export default function SpilPage() {
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-12"
         >
-          <nav className="flex items-center justify-center gap-4 mb-6" aria-label="Hovednavigation">
+          <nav className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-6" aria-label="Hovednavigation">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 rounded-lg px-2 py-1"
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 min-w-[44px] min-h-[44px] text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 rounded-lg px-2 sm:px-3 py-2 touch-manipulation"
               aria-label="Gå til forsiden"
             >
               <svg
@@ -230,7 +230,7 @@ export default function SpilPage() {
             
             <Link
               href="/statistik"
-              className="inline-flex items-center gap-2 text-violet-500 hover:text-violet-600 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 rounded-lg px-2 py-1"
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 min-w-[44px] min-h-[44px] text-violet-500 hover:text-violet-600 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 rounded-lg px-2 sm:px-3 py-2 touch-manipulation"
               aria-label="Se din statistik og fremskridt"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -242,7 +242,7 @@ export default function SpilPage() {
             {favorites.length > 0 && (
               <Link
                 href="/favoritter"
-                className="inline-flex items-center gap-2 text-rose-500 hover:text-rose-600 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 rounded-lg px-2 py-1"
+                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 min-w-[44px] min-h-[44px] text-rose-500 hover:text-rose-600 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 rounded-lg px-2 sm:px-3 py-2 touch-manipulation"
                 aria-label={`Se dine ${favorites.length} gemte favoritter`}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -269,7 +269,7 @@ export default function SpilPage() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 max-w-5xl mx-auto w-full px-1 sm:px-0"
           >
             {categories.map((category) => {
               const categoryProgress = getCategoryProgress(category.id);
@@ -448,7 +448,7 @@ export default function SpilPage() {
                 categories[Math.floor(Math.random() * categories.length)];
               handleCategorySelect(randomCategory);
             }}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-semibold hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl focus:ring-4 focus:ring-slate-300 dark:focus:ring-slate-600"
+            className="inline-flex items-center justify-center gap-2 sm:gap-3 min-h-[56px] sm:min-h-[52px] px-6 sm:px-8 py-3 sm:py-4 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-semibold text-base sm:text-lg hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl focus:ring-4 focus:ring-slate-300 dark:focus:ring-slate-600 touch-manipulation active:scale-95"
             aria-label="Vælg en tilfældig kategori"
           >
             <svg

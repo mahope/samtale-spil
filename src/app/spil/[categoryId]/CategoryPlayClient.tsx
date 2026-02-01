@@ -12,17 +12,16 @@ import { useSound } from "@/hooks/useSound";
 import { useStreak } from "@/hooks/useStreak";
 import { useKeyboardShortcuts, KeyboardShortcutHints } from "@/hooks/useKeyboardShortcuts";
 import { ShareButton } from "@/components/ShareButton";
-import { StreakBadge, StreakCelebration } from "@/components/StreakDisplay";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { ShareProgressButton } from "@/components/ShareProgressButton";
+import { StreakCelebration } from "@/components/StreakDisplay";
 import { AchievementToast } from "@/components/AchievementToast";
 import { useAchievements } from "@/hooks/useAchievements";
 import { Confetti, CelebrationBurst, useConfetti, CelebrationOverlay } from "@/components/Confetti";
 import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
 import { FloatingParticles } from "@/components/FloatingParticles";
-import { TimerDisplay, TimerSettingsPanel } from "@/components/TimerDisplay";
-import { DifficultyFilter, DifficultyFilterIndicator } from "@/components/DifficultyFilter";
+import { TimerDisplay } from "@/components/TimerDisplay";
+import { DifficultyFilterIndicator } from "@/components/DifficultyFilter";
 import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
+import { GameHeader } from "@/components/GameHeader";
 
 interface Props {
   categoryId: string;
@@ -70,12 +69,12 @@ function FavoriteButton({
       }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus:ring-2 focus:ring-rose-400"
+      className="min-w-[44px] min-h-[44px] p-2.5 sm:p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus:ring-2 focus:ring-rose-400 touch-manipulation flex items-center justify-center"
       aria-label={isFavorite ? "Fjern fra favoritter" : "Tilføj til favoritter"}
       aria-pressed={isFavorite}
     >
       <motion.svg
-        className="w-6 h-6"
+        className="w-6 h-6 sm:w-6 sm:h-6"
         viewBox="0 0 24 24"
         fill={isFavorite ? "#ef4444" : "none"}
         stroke={isFavorite ? "#ef4444" : "currentColor"}
@@ -111,9 +110,9 @@ function QuestionCard({
   onToggleFavorite: () => void;
 }) {
   return (
-    <div className="perspective-1000 w-full max-w-sm mx-auto">
+    <div className="perspective-1000 w-full max-w-[320px] sm:max-w-sm mx-auto px-2 sm:px-0">
       <motion.div
-        className="relative w-full h-[400px] cursor-pointer focus:outline-none focus:ring-4 focus:ring-white/50 rounded-3xl"
+        className="relative w-full h-[320px] xs:h-[360px] sm:h-[400px] lg:h-[440px] cursor-pointer focus:outline-none focus:ring-4 focus:ring-white/50 rounded-3xl touch-manipulation"
         onClick={onFlip}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -136,16 +135,16 @@ function QuestionCard({
           style={{ backfaceVisibility: "hidden" }}
           aria-hidden={isFlipped}
         >
-          <div className="w-full h-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 dark:border-white/20 flex flex-col items-center justify-center p-8">
+          <div className="w-full h-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 dark:border-white/20 flex flex-col items-center justify-center p-6 sm:p-8">
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="text-7xl mb-6"
+              className="text-5xl sm:text-7xl mb-4 sm:mb-6"
               aria-hidden="true"
             >
               🎴
             </motion.div>
-            <p className="text-white text-xl font-medium text-center">
+            <p className="text-white text-lg sm:text-xl font-medium text-center">
               Tryk for at se spørgsmålet
             </p>
             <motion.div
@@ -167,11 +166,11 @@ function QuestionCard({
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
           aria-hidden={!isFlipped}
         >
-          <div className="w-full h-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 relative">
+          <div className="w-full h-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-5 sm:p-8 relative">
             {/* Top bar with depth, share and favorite */}
-            <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
+            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-between items-center">
               <DepthIndicator depth={question.depth} />
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-0.5 sm:gap-1">
                 <ShareButton 
                   text={question.text} 
                   categoryName={categoryName}
@@ -187,7 +186,7 @@ function QuestionCard({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-slate-800 dark:text-slate-100 text-2xl font-medium text-center leading-relaxed"
+              className="text-slate-800 dark:text-slate-100 text-xl sm:text-2xl font-medium text-center leading-relaxed px-2"
             >
               {question.text}
             </motion.p>
@@ -488,80 +487,24 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           />
         </div>
 
-      <main id="main-content" className="relative flex min-h-screen flex-col items-center px-6 py-8" role="main">
-        {/* Header */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md flex items-center justify-between mb-8"
-        >
-          <Link
-            href="/spil"
-            className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50 rounded-lg px-2 py-1"
-            aria-label="Tilbage til kategorioversigt"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11 17l-5-5m0 0l5-5m-5 5h12"
-              />
-            </svg>
-            <span className="hidden sm:inline">Kategorier</span>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <span className="text-3xl" aria-hidden="true">{category.emoji}</span>
-            <h1 className="text-white font-semibold">{category.name}</h1>
-            {currentStreak > 0 && <StreakBadge />}
-          </div>
-
-          <nav className="flex items-center gap-2" aria-label="Hurtighandlinger">
-            <DifficultyFilter
-              filter={difficultyFilter}
-              onFilterChange={setDifficultyFilter}
-              questionCount={filteredQuestionCount}
-              totalCount={totalQuestionCount}
-            />
-            <TimerSettingsPanel
-              isEnabled={timerSettings.enabled}
-              duration={timerSettings.duration}
-              soundEnabled={timerSettings.soundEnabled}
-              vibrationEnabled={timerSettings.vibrationEnabled}
-              onToggle={toggleTimer}
-              onDurationChange={setTimerDuration}
-              onSoundToggle={toggleTimerSound}
-              onVibrationToggle={toggleTimerVibration}
-            />
-            <ThemeToggle className="text-white" />
-            <ShareButton 
-              category={category}
-              type="category"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-colors"
-            />
-            <ShareProgressButton className="text-white/90 hover:text-white" />
-            <Link
-              href="/favoritter"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50"
-              aria-label="Se dine gemte favoritter"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-            </Link>
-          </nav>
-        </motion.header>
+      <main id="main-content" className="relative flex min-h-screen flex-col items-center px-4 sm:px-6 py-6 sm:py-8" role="main">
+        {/* Mobile-optimized header with overflow menu */}
+        <GameHeader
+          category={category}
+          currentStreak={currentStreak}
+          difficultyFilter={difficultyFilter}
+          onFilterChange={setDifficultyFilter}
+          filteredQuestionCount={filteredQuestionCount}
+          totalQuestionCount={totalQuestionCount}
+          timerEnabled={timerSettings.enabled}
+          timerDuration={timerSettings.duration}
+          timerSoundEnabled={timerSettings.soundEnabled}
+          timerVibrationEnabled={timerSettings.vibrationEnabled}
+          onTimerToggle={toggleTimer}
+          onTimerDurationChange={setTimerDuration}
+          onTimerSoundToggle={toggleTimerSound}
+          onTimerVibrationToggle={toggleTimerVibration}
+        />
 
         {/* Progress bar */}
         <motion.div
@@ -669,7 +612,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-8 w-full max-w-sm"
+          className="mt-6 sm:mt-8 w-full max-w-sm px-2 sm:px-0"
         >
           <motion.button
             type="button"
@@ -677,7 +620,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
             disabled={isTransitioning}
             whileHover={{ scale: 1.03, y: -2 }}
             whileTap={{ scale: 0.97 }}
-            className="group w-full px-8 py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-semibold shadow-lg hover:shadow-2xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus:ring-4 focus:ring-white/50 overflow-hidden relative"
+            className="group w-full min-h-[56px] sm:min-h-[52px] px-6 sm:px-8 py-4 sm:py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-semibold text-base sm:text-lg shadow-lg hover:shadow-2xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus:ring-4 focus:ring-white/50 overflow-hidden relative touch-manipulation select-none active:scale-95"
             aria-label="Gå til næste spørgsmål"
             aria-busy={isTransitioning}
           >

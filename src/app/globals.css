@@ -157,6 +157,49 @@ a:focus-visible,
   color: var(--accent-foreground);
 }
 
+/* Touch-friendly utilities */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Minimum touch target size (44x44px per WCAG 2.1) */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Responsive extra-small breakpoint utilities */
+@media (min-width: 375px) {
+  .xs\:h-\[360px\] {
+    height: 360px;
+  }
+  .xs\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  .xs\:p-6 {
+    padding: 1.5rem;
+  }
+}
+
+/* Improved tap feedback for mobile */
+@media (hover: none) and (pointer: coarse) {
+  button:active,
+  [role="button"]:active,
+  a:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Larger touch targets on mobile */
+  .mobile-touch-lg {
+    min-height: 56px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
 /* Smooth theme transitions */
 * {
   transition-property: background-color, border-color, color;
