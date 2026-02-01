@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useCallback } from "react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
@@ -42,6 +43,7 @@ const toastConfig: Record<ToastType, { bg: string; border: string; defaultEmoji:
 };
 
 function Toast({ toast, onDismiss }: ToastProps) {
+  const prefersReducedMotion = useReducedMotion();
   const config = toastConfig[toast.type];
   const duration = toast.duration ?? 3000;
 
@@ -85,13 +87,15 @@ function Toast({ toast, onDismiss }: ToastProps) {
           </svg>
         </motion.button>
       </div>
-      {/* Progress bar */}
-      <motion.div
-        className="absolute bottom-0 left-0 h-1 bg-white/30 rounded-b-xl"
-        initial={{ width: "100%" }}
-        animate={{ width: "0%" }}
-        transition={{ duration: duration / 1000, ease: "linear" }}
-      />
+      {/* Progress bar - disabled for reduced motion */}
+      {!prefersReducedMotion && (
+        <motion.div
+          className="absolute bottom-0 left-0 h-1 bg-white/30 rounded-b-xl"
+          initial={{ width: "100%" }}
+          animate={{ width: "0%" }}
+          transition={{ duration: duration / 1000, ease: "linear" }}
+        />
+      )}
     </motion.div>
   );
 }

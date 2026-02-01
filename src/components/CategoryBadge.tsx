@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { CategoryBadgeInfo } from "@/hooks/useCategoryBadges";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 // Individual badge component
 export function CategoryBadge({
@@ -264,6 +265,11 @@ export function BadgeUnlockCelebration({
   badge: CategoryBadgeInfo | null;
   onDismiss: () => void;
 }) {
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isActive: !!badge,
+    onEscape: onDismiss,
+  });
+
   if (!badge) return null;
 
   return (
@@ -279,6 +285,7 @@ export function BadgeUnlockCelebration({
         aria-labelledby="badge-celebration-title"
       >
         <motion.div
+          ref={focusTrapRef}
           initial={{ scale: 0.5, opacity: 0, y: 50 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.5, opacity: 0, y: 50 }}

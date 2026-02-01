@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface LoadingSpinnerProps {
   /** Size of the spinner: 'sm' (16px), 'md' (24px), 'lg' (40px), 'xl' (56px) */
@@ -29,6 +30,7 @@ export function LoadingSpinner({
   label = "Indlæser...",
   showLabel = false,
 }: LoadingSpinnerProps) {
+  const prefersReducedMotion = useReducedMotion();
   const { spinner, stroke } = sizeMap[size];
   const radius = (spinner - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -85,11 +87,11 @@ export function LoadingSpinner({
           strokeLinecap="round"
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference * 0.75 }}
-          animate={{
+          animate={prefersReducedMotion ? {} : {
             strokeDashoffset: [circumference * 0.75, circumference * 0.2, circumference * 0.75],
             rotate: [0, 360],
           }}
-          transition={{
+          transition={prefersReducedMotion ? {} : {
             strokeDashoffset: {
               duration: 1.5,
               repeat: Infinity,
@@ -121,6 +123,7 @@ export function LoadingDots({
   size = "md",
   variant = "primary",
 }: Omit<LoadingSpinnerProps, "label" | "showLabel">) {
+  const prefersReducedMotion = useReducedMotion();
   const dotSizeMap = { sm: 4, md: 6, lg: 8, xl: 10 };
   const gapMap = { sm: 2, md: 3, lg: 4, xl: 5 };
   const dotSize = dotSizeMap[size];
@@ -144,12 +147,12 @@ export function LoadingDots({
           key={i}
           className={`rounded-full ${colorClass[variant]}`}
           style={{ width: dotSize, height: dotSize }}
-          animate={{
+          animate={prefersReducedMotion ? { opacity: 1 } : {
             y: [0, -dotSize, 0],
             opacity: [0.5, 1, 0.5],
             scale: [1, 1.2, 1],
           }}
-          transition={{
+          transition={prefersReducedMotion ? {} : {
             duration: 0.6,
             repeat: Infinity,
             delay: i * 0.15,
@@ -171,6 +174,8 @@ export function LoadingPulse({
   emoji?: string;
   label?: string;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+  
   return (
     <motion.div
       className="flex flex-col items-center justify-center gap-4 p-8"
@@ -181,11 +186,11 @@ export function LoadingPulse({
     >
       <motion.span
         className="text-5xl sm:text-6xl"
-        animate={{
+        animate={prefersReducedMotion ? { opacity: 1 } : {
           scale: [1, 1.15, 1],
           opacity: [0.7, 1, 0.7],
         }}
-        transition={{
+        transition={prefersReducedMotion ? {} : {
           duration: 1.5,
           repeat: Infinity,
           ease: "easeInOut",
@@ -196,8 +201,8 @@ export function LoadingPulse({
       </motion.span>
       <motion.p
         className="text-slate-500 dark:text-slate-400 font-medium"
-        animate={{ opacity: [0.5, 1, 0.5] }}
-        transition={{
+        animate={prefersReducedMotion ? { opacity: 1 } : { opacity: [0.5, 1, 0.5] }}
+        transition={prefersReducedMotion ? {} : {
           duration: 1.5,
           repeat: Infinity,
           ease: "easeInOut",

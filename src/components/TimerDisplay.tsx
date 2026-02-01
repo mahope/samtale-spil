@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface TimerDisplayProps {
   duration: number;
@@ -164,6 +165,10 @@ export function TimerSettingsPanel({
   onVibrationToggle,
 }: TimerSettingsPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: () => setIsOpen(false),
+  });
 
   return (
     <div className="relative">
@@ -198,6 +203,7 @@ export function TimerSettingsPanel({
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={focusTrapRef}
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}

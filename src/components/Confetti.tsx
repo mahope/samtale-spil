@@ -3,6 +3,7 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useEffect, useState, useCallback } from "react";
 import { TIMING } from "@/constants";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface ConfettiPiece {
   id: number;
@@ -262,6 +263,11 @@ export function CelebrationOverlay({
   subMessage?: string;
   onDismiss?: () => void;
 }) {
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isActive: isVisible,
+    onEscape: onDismiss,
+  });
+
   if (!isVisible) return null;
 
   return (
@@ -277,6 +283,7 @@ export function CelebrationOverlay({
         aria-label={message}
       >
         <motion.div
+          ref={focusTrapRef}
           initial={{ scale: 0.5, opacity: 0, y: 50 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.5, opacity: 0, y: 50 }}

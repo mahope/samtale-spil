@@ -11,6 +11,7 @@ import {
 import { Confetti } from "./Confetti";
 import { withErrorBoundary } from "@/components/ErrorBoundary";
 import { StreakDisplayFallback, StreakBadgeFallback } from "@/components/fallbacks";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 // Main streak display component for statistics page
 function StreakDisplayInner({ className = "" }: { className?: string }) {
@@ -198,6 +199,10 @@ export const StreakBadge = withErrorBoundary(
 // Streak milestone celebration modal
 export function StreakCelebration() {
   const { pendingMilestone, dismissMilestone, currentStreak } = useStreak();
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isActive: !!pendingMilestone,
+    onEscape: dismissMilestone,
+  });
 
   if (!pendingMilestone) return null;
 
@@ -219,6 +224,7 @@ export function StreakCelebration() {
           aria-label={config.title}
         >
           <motion.div
+            ref={focusTrapRef}
             initial={{ scale: 0.5, opacity: 0, y: 50 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.5, opacity: 0, y: 50 }}
