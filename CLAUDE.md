@@ -15,40 +15,51 @@ Et web-baseret samtale/spørgsmålsspil inspireret af Vertellis og Big Questions
 - **Hosting:** GitHub Pages (auto-deploy via Actions)
 
 ## Features
-- 🎴 **7 kategorier** med 134 spørgsmål total
+- 🎴 **9 kategorier** med 400+ spørgsmål total
 - 🎨 **3D kort-flip animation** - tryk for at vende kortet
 - 📊 **Depth-indikator** - grøn/gul/rød dots (let/medium/dyb)
 - ❤️ **Favorit-funktion** - gem dine yndlingsspørgsmål
 - 📈 **Progress tracking** - husker hvor du er i LocalStorage
 - 🔊 **Lyd-effekter** - Web Audio API (flip, tap, success)
-- 🌙 **Dark mode** - toggle med smooth transitions
+- 🌙 **Dark mode** - class-based toggle, ingen flash ved load
 - 📤 **Del-funktion** - Web Share API / clipboard fallback
 - 📱 **PWA** - installérbar, offline support
+- 🔔 **Toast notifications** - success/error/info/warning feedback
+- ✨ **Form validation** - shake animation, real-time hints
 
 ## Projektstruktur
 ```
 src/
 ├── app/
-│   ├── layout.tsx              # Root layout med dansk metadata
+│   ├── layout.tsx              # Root layout med theme init script
+│   ├── globals.css             # Tailwind v4 + dark mode config
 │   ├── page.tsx                # Landing page
 │   ├── favoritter/page.tsx     # Favoritter side
+│   ├── mine-spoergsmaal/       # Custom questions
+│   ├── statistik/              # Statistik & achievements
 │   └── spil/
 │       ├── page.tsx            # Kategori-vælger
+│       ├── shuffle-all/        # Shuffle alle kategorier
+│       ├── custom/             # Spil med egne spørgsmål
 │       └── [categoryId]/
 │           ├── page.tsx        # Server component wrapper
 │           └── CategoryPlayClient.tsx  # Selve spillet
 ├── components/
+│   ├── InteractiveCard.tsx     # Hover micro-interactions
+│   ├── PageTransition.tsx      # Framer Motion transitions
+│   ├── FloatingParticles.tsx   # Animeret baggrund
+│   ├── Toast.tsx               # Toast notifications + useToast
 │   ├── ShareButton.tsx         # Del-knap
-│   └── ThemeToggle.tsx         # Dark mode toggle
+│   ├── ThemeToggle.tsx         # Dark mode toggle (3-state)
+│   └── TouchFriendlyButton.tsx # 44px touch targets
 ├── data/
 │   └── categories.ts           # Kategori-data og spørgsmål
 ├── hooks/
 │   ├── useLocalStorage.ts      # Favorites & Progress hooks
+│   ├── useCustomQuestions.ts   # Custom questions CRUD
 │   └── useSound.ts             # Web Audio API hook
-├── types/
-│   └── index.ts                # TypeScript interfaces
-└── providers/
-    └── ThemeProvider.tsx       # Dark mode context
+└── types/
+    └── index.ts                # TypeScript interfaces
 ```
 
 ## Kategorier

@@ -27,9 +27,11 @@ Et moderne, dansk samtalekort-spil bygget med Next.js. Inspireret af Vertellis o
 - **Favoritter** — gem dine yndlingsspørgsmål
 
 ### 🎨 Design & UX
-- **Dark mode** med smooth transitions
+- **Dark mode** med smooth transitions (class-based, ingen flash)
 - **Floating particles** baggrund
 - **Confetti** ved achievements
+- **Toast notifications** — success/error/info/warning med animationer
+- **Form validation feedback** — shake animation, real-time hints
 - **Reduceret motion** support (a11y)
 - **Skeleton loaders** for bedre perceived performance
 
@@ -105,6 +107,7 @@ src/
 │   ├── DailyQuestion.tsx     # Dagligt spørgsmål widget
 │   ├── DifficultyFilter.tsx  # Sværhedsgrad filter
 │   ├── FloatingParticles.tsx # Animeret baggrund
+│   ├── InteractiveCard.tsx   # Hover micro-interactions
 │   ├── LazyComponents.tsx    # Lazy-loaded komponenter
 │   ├── OptimizedComponents.tsx # Memoized komponenter
 │   ├── PageTransition.tsx    # Side transitions
@@ -113,7 +116,9 @@ src/
 │   ├── ShareButton.tsx       # Del-funktionalitet
 │   ├── SkeletonLoader.tsx    # Loading skeletons
 │   ├── ThemeToggle.tsx       # Dark mode toggle
-│   └── TimerDisplay.tsx      # Nedtællingstimer
+│   ├── TimerDisplay.tsx      # Nedtællingstimer
+│   ├── Toast.tsx             # Toast notifications + useToast hook
+│   └── TouchFriendlyButton.tsx # 44px touch targets
 ├── data/
 │   └── categories.ts         # Alle kategorier og spørgsmål
 ├── hooks/
