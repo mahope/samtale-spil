@@ -8,6 +8,7 @@ import { useCustomQuestions } from "@/hooks/useCustomQuestions";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Question } from "@/types";
 import { DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
+import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
 
 interface SearchResult {
   question: Question;
@@ -313,11 +314,8 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                     ))}
                   </div>
                 ) : (
-                  <div className="p-8 text-center">
-                    <span className="text-4xl mb-3 block">🔍</span>
-                    <p className="text-slate-500 dark:text-slate-400">
-                      Ingen spørgsmål matcher &quot;{query}&quot;
-                    </p>
+                  <div className="p-4">
+                    <EmptyState {...EmptyStatePresets.noSearchResults(query)} className="py-8" />
                   </div>
                 )
               ) : (

@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { InteractiveCard } from "@/components/InteractiveCard";
 import { ToastContainer, useToast } from "@/components/Toast";
 import { DepthSelector, DepthBadgeWithEmoji, DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
+import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
 
 // Shake animation for form errors
 const shakeAnimation = {
@@ -361,29 +362,9 @@ function QuestionCard({
   );
 }
 
-// Empty state
-function EmptyState() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center py-12"
-    >
-      <motion.div
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className="text-6xl mb-4"
-      >
-        ✍️
-      </motion.div>
-      <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2">
-        Ingen spørgsmål endnu
-      </h2>
-      <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-        Opret dit første spørgsmål ovenfor for at komme i gang!
-      </p>
-    </motion.div>
-  );
+/** CustomQuestionsEmptyState uses the shared EmptyState component */
+function CustomQuestionsEmptyState() {
+  return <EmptyState {...EmptyStatePresets.customQuestions} />;
 }
 
 export default function MineSpoergsmaalPage() {
@@ -588,7 +569,7 @@ export default function MineSpoergsmaalPage() {
           </h2>
 
           {questions.length === 0 ? (
-            <EmptyState />
+            <CustomQuestionsEmptyState />
           ) : (
             <motion.div layout className="space-y-4">
               <AnimatePresence>

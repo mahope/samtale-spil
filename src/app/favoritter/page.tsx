@@ -12,6 +12,7 @@ import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
 import { PageTransition } from "@/components/PageTransition";
 import { InteractiveCard } from "@/components/InteractiveCard";
 import { DepthBadge } from "@/components/DepthBadge";
+import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
 
 function FavoriteCard({
   favorite,
@@ -106,40 +107,9 @@ function FavoriteCard({
   );
 }
 
-function EmptyState() {
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center py-16"
-      aria-labelledby="empty-heading"
-    >
-      <motion.div
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className="text-6xl mb-6"
-        aria-hidden="true"
-      >
-        💝
-      </motion.div>
-      <h2 id="empty-heading" className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2">
-        Ingen favoritter endnu
-      </h2>
-      <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
-        Tryk på hjertet <span aria-hidden="true">❤️</span> på et spørgsmål for at gemme det her
-      </p>
-      <Link
-        href="/spil"
-        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-400 to-pink-500 text-white rounded-xl font-medium hover:opacity-90 transition-opacity focus:ring-4 focus:ring-rose-300"
-        aria-label="Gå til kategorivalg og start et spil"
-      >
-        <span>Start et spil</span>
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
-      </Link>
-    </motion.section>
-  );
+/** FavoritesEmptyState uses the shared EmptyState component with favorites preset */
+function FavoritesEmptyState() {
+  return <EmptyState {...EmptyStatePresets.favorites} />;
 }
 
 export default function FavoritesPage() {
@@ -268,7 +238,7 @@ export default function FavoritesPage() {
 
         {/* Favorites list or empty state */}
         {favorites.length === 0 ? (
-          <EmptyState />
+          <FavoritesEmptyState />
         ) : (
           <motion.div layout className="space-y-4">
             <AnimatePresence>

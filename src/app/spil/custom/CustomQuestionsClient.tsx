@@ -9,6 +9,7 @@ import { useFavorites, useProgress, useDifficultyFilter } from "@/hooks/useLocal
 import { useSound } from "@/hooks/useSound";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Confetti, useConfetti, CelebrationOverlay } from "@/components/Confetti";
+import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
 
 const CUSTOM_CATEGORY_ID = "custom";
 
@@ -88,37 +89,14 @@ function FavoriteButton({
   );
 }
 
-function EmptyState() {
+/** GameEmptyState wraps EmptyState with game-specific fullscreen styling */
+function GameEmptyState() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-400 to-purple-500 dark:from-violet-600 dark:to-purple-700 flex flex-col items-center justify-center px-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <motion.div
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="text-6xl mb-6"
-        >
-          ✍️
-        </motion.div>
-        <h1 className="text-2xl font-bold text-white mb-3">
-          Ingen egne spørgsmål endnu
-        </h1>
-        <p className="text-white/80 mb-8 max-w-sm">
-          Opret dine egne spørgsmål for at spille med dem her!
-        </p>
-        <Link
-          href="/mine-spoergsmaal"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-white text-violet-600 rounded-xl font-medium hover:bg-white/90 transition-colors shadow-lg"
-        >
-          <span>Opret spørgsmål</span>
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </Link>
-      </motion.div>
+      <EmptyState
+        {...EmptyStatePresets.noQuestionsToPlay}
+        className="[&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-white [&_h2]:mb-3 [&_p]:text-white/80 [&_p]:mb-8"
+      />
       
       <motion.div
         initial={{ opacity: 0 }}
@@ -256,7 +234,7 @@ export default function CustomQuestionsClient() {
   }
 
   if (questions.length === 0) {
-    return <EmptyState />;
+    return <GameEmptyState />;
   }
 
   return (
