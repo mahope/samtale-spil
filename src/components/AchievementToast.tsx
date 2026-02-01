@@ -27,7 +27,7 @@ export function AchievementToast({ achievement, onDismiss }: AchievementToastPro
       const timer = setTimeout(() => {
         setIsVisible(false);
         setTimeout(onDismiss, TIMING.ACHIEVEMENT_DISMISS);
-      }, 4000);
+      }, TIMING.TOAST_DURATION);
       return () => clearTimeout(timer);
     }
   }, [achievement, onDismiss]);

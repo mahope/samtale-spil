@@ -57,7 +57,7 @@ function ConfettiShape({ shape, color }: { shape: typeof SHAPES[number]; color: 
 
 export function Confetti({
   isActive,
-  duration = 3000,
+  duration = TIMING.CELEBRATION_LONG,
   pieceCount = 50,
 }: {
   isActive: boolean;
