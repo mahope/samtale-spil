@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRecommendations } from "@/hooks/useRecommendations";
 import type { Recommendation } from "@/hooks/useRecommendations";
 
-// Single recommendation card
+// Single recommendation card - mobile optimized
 const RecommendationCard = memo(function RecommendationCard({
   recommendation,
   onDismiss,
@@ -16,7 +16,6 @@ const RecommendationCard = memo(function RecommendationCard({
   onDismiss: (id: string) => void;
   index: number;
 }) {
-  const [isHovered, setIsHovered] = useState(false);
   const depthColors = {
     let: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
     medium: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
@@ -31,41 +30,43 @@ const RecommendationCard = memo(function RecommendationCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -100 }}
       transition={{ delay: index * 0.1, duration: 0.3 }}
-      className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="relative group"
     >
-      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-slate-200/50 dark:border-slate-700/50 hover:shadow-md transition-all duration-300">
+      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/50 dark:border-slate-700/50 hover:shadow-md active:shadow-md transition-all duration-300">
         {/* Header with category and dismiss */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <span className="text-lg" aria-hidden="true">
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span className="text-lg sm:text-xl" aria-hidden="true">
               {recommendation.categoryEmoji}
             </span>
             <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
               {recommendation.categoryName}
             </span>
             <span
-              className={`text-xs px-2 py-0.5 rounded-full ${depthColors[recommendation.question.depth]}`}
+              className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${depthColors[recommendation.question.depth]}`}
             >
               {depthLabels[recommendation.question.depth]}
             </span>
           </div>
 
-          {/* Dismiss button */}
+          {/* Dismiss button - always visible on mobile, fades on desktop hover */}
           <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0.3 }}
+            type="button"
+            initial={{ opacity: 0.5 }}
+            animate={{ opacity: 0.5 }}
+            whileHover={{ opacity: 1, scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               onDismiss(recommendation.question.id);
             }}
-            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="flex-shrink-0 min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px] p-2 sm:p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all touch-manipulation sm:opacity-30 sm:group-hover:opacity-100 flex items-center justify-center"
             aria-label="Skjul denne anbefaling"
             title="Skjul denne anbefaling"
           >
             <svg
-              className="w-4 h-4"
+              className="w-5 h-5 sm:w-4 sm:h-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -81,14 +82,14 @@ const RecommendationCard = memo(function RecommendationCard({
         </div>
 
         {/* Question text */}
-        <p className="text-slate-800 dark:text-slate-200 font-medium mb-3 line-clamp-2">
+        <p className="text-slate-800 dark:text-slate-200 font-medium mb-3 text-base sm:text-sm leading-relaxed line-clamp-3 sm:line-clamp-2">
           {recommendation.question.text}
         </p>
 
         {/* Reason why it's recommended */}
-        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-1">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 sm:mb-3 flex items-start sm:items-center gap-1.5">
           <svg
-            className="w-3.5 h-3.5 text-violet-500"
+            className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-violet-500 flex-shrink-0 mt-0.5 sm:mt-0"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -98,13 +99,13 @@ const RecommendationCard = memo(function RecommendationCard({
               clipRule="evenodd"
             />
           </svg>
-          {recommendation.reason}
+          <span className="leading-snug">{recommendation.reason}</span>
         </p>
 
-        {/* Try this button */}
+        {/* Try this button - touch-friendly */}
         <Link
           href={`/spil/${recommendation.question.categoryId}?question=${recommendation.question.id}`}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-violet-500 to-purple-600 rounded-lg hover:from-violet-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md"
+          className="inline-flex items-center justify-center gap-2 min-h-[44px] sm:min-h-[40px] px-5 sm:px-4 py-2.5 sm:py-2 text-sm font-medium text-white bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl sm:rounded-lg hover:from-violet-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98] touch-manipulation select-none"
         >
           <span>Prøv denne</span>
           <svg
@@ -220,8 +221,9 @@ function RecommendationsComponent() {
         </h2>
         {recommendations.length > 3 && (
           <button
+            type="button"
             onClick={() => setShowAll(!showAll)}
-            className="text-sm text-violet-600 dark:text-violet-400 hover:underline"
+            className="min-h-[44px] sm:min-h-0 px-3 py-2 sm:p-0 text-sm text-violet-600 dark:text-violet-400 hover:underline active:text-violet-700 dark:active:text-violet-300 touch-manipulation rounded-lg"
           >
             {showAll ? "Vis færre" : `Se alle ${recommendations.length}`}
           </button>
