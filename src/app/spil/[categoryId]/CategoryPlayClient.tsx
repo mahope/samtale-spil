@@ -22,35 +22,10 @@ import { TimerDisplay } from "@/components/TimerDisplay";
 import { DifficultyFilterIndicator } from "@/components/DifficultyFilter";
 import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
 import { GameHeader } from "@/components/GameHeader";
+import { DepthIndicator } from "@/components/DepthBadge";
 
 interface Props {
   categoryId: string;
-}
-
-function DepthIndicator({ depth }: { depth: Question["depth"] }) {
-  const config = {
-    let: { label: "Let", dots: 1, color: "bg-green-400" },
-    medium: { label: "Medium", dots: 2, color: "bg-yellow-400" },
-    dyb: { label: "Dyb", dots: 3, color: "bg-red-400" },
-  };
-
-  const { label, dots, color } = config[depth];
-
-  return (
-    <div className="flex items-center gap-2" role="img" aria-label={`Sværhedsgrad: ${label}`}>
-      <div className="flex gap-1" aria-hidden="true">
-        {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className={`w-2 h-2 rounded-full transition-all ${
-              i <= dots ? color : "bg-slate-300 dark:bg-slate-600"
-            }`}
-          />
-        ))}
-      </div>
-      <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">{label}</span>
-    </div>
-  );
 }
 
 function FavoriteButton({

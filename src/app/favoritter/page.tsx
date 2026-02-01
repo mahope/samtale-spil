@@ -11,22 +11,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
 import { PageTransition } from "@/components/PageTransition";
 import { InteractiveCard } from "@/components/InteractiveCard";
-
-function DepthBadge({ depth }: { depth: FavoriteQuestion["depth"] }) {
-  const config = {
-    let: { label: "Let", color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300" },
-    medium: { label: "Medium", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300" },
-    dyb: { label: "Dyb", color: "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" },
-  };
-
-  const { label, color } = config[depth];
-
-  return (
-    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${color}`}>
-      {label}
-    </span>
-  );
-}
+import { DepthBadge } from "@/components/DepthBadge";
 
 function FavoriteCard({
   favorite,

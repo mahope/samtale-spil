@@ -11,13 +11,7 @@ import {
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { InteractiveCard } from "@/components/InteractiveCard";
 import { ToastContainer, useToast } from "@/components/Toast";
-
-// Depth options
-const DEPTH_OPTIONS = [
-  { id: "let" as const, label: "Let", shortLabel: "Let", emoji: "🟢", color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300" },
-  { id: "medium" as const, label: "Medium", shortLabel: "Mid", emoji: "🟡", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300" },
-  { id: "dyb" as const, label: "Dyb", shortLabel: "Dyb", emoji: "🔴", color: "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" },
-];
+import { DepthSelector, DepthBadgeWithEmoji, DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
 
 // Shake animation for form errors
 const shakeAnimation = {
@@ -197,25 +191,7 @@ function QuestionForm({
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
           Dybde
         </label>
-        <div className="flex gap-2 sm:gap-3">
-          {DEPTH_OPTIONS.map((option) => (
-            <motion.button
-              key={option.id}
-              type="button"
-              onClick={() => setDepth(option.id)}
-              whileTap={{ scale: 0.95 }}
-              className={`flex-1 py-3 sm:py-2 px-2 sm:px-3 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-1 sm:gap-1.5 min-h-[44px] ${
-                depth === option.id
-                  ? option.color + " ring-2 ring-offset-2 ring-slate-400 dark:ring-slate-600"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500"
-              }`}
-            >
-              <span className="text-base">{option.emoji}</span>
-              <span className="hidden xs:inline">{option.label}</span>
-              <span className="xs:hidden">{option.shortLabel}</span>
-            </motion.button>
-          ))}
-        </div>
+        <DepthSelector value={depth} onChange={setDepth} />
       </div>
 
       {/* Category tag */}
@@ -289,7 +265,6 @@ function QuestionCard({
   onEdit: () => void;
   onDelete: () => void;
 }) {
-  const depthConfig = DEPTH_OPTIONS.find((d) => d.id === question.depth);
   const tagConfig = CATEGORY_TAGS.find((t) => t.id === question.categoryTag);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -311,11 +286,7 @@ function QuestionCard({
               <span>{tagConfig.label}</span>
             </span>
           )}
-          {depthConfig && (
-            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${depthConfig.color}`}>
-              {depthConfig.emoji} {depthConfig.label}
-            </span>
-          )}
+          <DepthBadgeWithEmoji depth={question.depth} />
         </div>
         <div className="flex items-center gap-1 -mr-1">
           <motion.button

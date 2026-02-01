@@ -7,6 +7,7 @@ import { categories } from "@/data/categories";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Question } from "@/types";
+import { DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
 
 interface SearchResult {
   question: Question;
@@ -20,13 +21,6 @@ interface SearchOverlayProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-// Depth display config
-const DEPTH_CONFIG = {
-  let: { emoji: "🟢", label: "Let", color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300" },
-  medium: { emoji: "🟡", label: "Medium", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300" },
-  dyb: { emoji: "🔴", label: "Dyb", color: "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" },
-};
 
 const overlayVariants = {
   hidden: { opacity: 0 },

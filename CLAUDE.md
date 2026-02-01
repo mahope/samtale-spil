@@ -52,6 +52,7 @@ src/
 │           ├── page.tsx        # Server component wrapper
 │           └── CategoryPlayClient.tsx  # Selve spillet
 ├── components/
+│   ├── DepthBadge.tsx          # Unified depth indicators (Badge, Indicator, Selector)
 │   ├── InteractiveCard.tsx     # Hover micro-interactions
 │   ├── PageTransition.tsx      # Framer Motion transitions
 │   ├── FloatingParticles.tsx   # Animeret baggrund
