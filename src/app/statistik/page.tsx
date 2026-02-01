@@ -6,9 +6,12 @@ import { useMemo, useState } from "react";
 import { useFavorites, useProgress, useQuestionHistory, FavoriteQuestion, HistoryEntry } from "@/hooks/useLocalStorage";
 import { useStreak } from "@/hooks/useStreak";
 import { useDailyChallenge, DAILY_CHALLENGE_POINTS } from "@/hooks/useDailyChallenge";
+import { useCategoryBadges } from "@/hooks/useCategoryBadges";
 import { categories, getCategory } from "@/data/categories";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
+import { BadgeGrid, NextBadgeProgress, BadgeStats } from "@/components/CategoryBadge";
+import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
 
 // Stat card component
 function StatCard({
@@ -283,6 +286,12 @@ export default function StatistikPage() {
     totalBonusPoints,
     isLoaded: dailyChallengeLoaded 
   } = useDailyChallenge();
+  const {
+    allBadges,
+    unlockedBadges,
+    nextBadge,
+    isLoaded: badgesLoaded,
+  } = useCategoryBadges();
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [showAllHistory, setShowAllHistory] = useState(false);
 
@@ -414,7 +423,7 @@ export default function StatistikPage() {
     };
   }, [favorites, progress, progressLoaded, favoritesLoaded]);
 
-  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded && dailyChallengeLoaded;
+  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded && dailyChallengeLoaded && badgesLoaded;
 
   if (!isLoaded) {
     return (
@@ -474,6 +483,9 @@ export default function StatistikPage() {
 
         {/* Streak Celebration Modal */}
         <StreakCelebration />
+        
+        {/* Badge Celebration with Confetti */}
+        <BadgeCelebrationWithConfetti />
 
         {!hasActivity ? (
           <EmptyState />
@@ -575,6 +587,56 @@ export default function StatistikPage() {
                   delay={0.3}
                 />
               </div>
+            </section>
+
+            {/* Category Badges Section */}
+            <section className="mb-8" aria-labelledby="badges-heading">
+              <motion.h2
+                id="badges-heading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.25 }}
+                className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+              >
+                <span aria-hidden="true">🎖️</span>
+                Kategori Badges
+              </motion.h2>
+              
+              {/* Badge Stats */}
+              <div className="mb-6">
+                <BadgeStats
+                  unlockedCount={unlockedBadges.length}
+                  totalCount={allBadges.length}
+                />
+              </div>
+
+              {/* Next Badge Progress */}
+              {nextBadge && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mb-6"
+                >
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                    Din næste badge:
+                  </p>
+                  <NextBadgeProgress badge={nextBadge} />
+                </motion.div>
+              )}
+
+              {/* All Badges Grid */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700"
+              >
+                <h3 className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-4">
+                  Alle badges ({unlockedBadges.length}/{allBadges.length} låst op)
+                </h3>
+                <BadgeGrid badges={allBadges} showProgress />
+              </motion.div>
             </section>
 
             {/* Category Progress */}

@@ -16,6 +16,7 @@ import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
 import { FloatingParticles } from "@/components/FloatingParticles";
 import { TimerDisplay, TimerSettingsPanel } from "@/components/TimerDisplay";
 import { DifficultyFilter, DifficultyFilterIndicator } from "@/components/DifficultyFilter";
+import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
 
 const SHUFFLE_ALL_ID = "shuffle-all";
 
@@ -408,6 +409,7 @@ export default function ShuffleAllClient() {
     <>
       <Confetti isActive={confettiActive} />
       <StreakCelebration />
+      <BadgeCelebrationWithConfetti />
       
       <CelebrationOverlay
         isVisible={showCelebration}

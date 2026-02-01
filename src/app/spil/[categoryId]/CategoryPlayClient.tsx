@@ -20,6 +20,7 @@ import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
 import { FloatingParticles } from "@/components/FloatingParticles";
 import { TimerDisplay, TimerSettingsPanel } from "@/components/TimerDisplay";
 import { DifficultyFilter, DifficultyFilterIndicator } from "@/components/DifficultyFilter";
+import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
 
 interface Props {
   categoryId: string;
@@ -431,6 +432,9 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       
       {/* Streak celebration */}
       <StreakCelebration />
+      
+      {/* Badge unlock celebration with confetti */}
+      <BadgeCelebrationWithConfetti />
       
       {/* Celebration overlay */}
       <CelebrationOverlay
