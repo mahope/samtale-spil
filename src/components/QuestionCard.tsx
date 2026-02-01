@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useCallback } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Question } from "@/types";
 import { ShareButton } from "@/components/ShareButton";
@@ -18,8 +19,9 @@ interface QuestionCardProps {
 /**
  * Interactive 3D flip card for displaying questions.
  * Features smooth flip animation, depth indicator, and action buttons.
+ * Wrapped in React.memo to prevent unnecessary re-renders.
  */
-export function QuestionCard({
+export const QuestionCard = memo(function QuestionCard({
   question,
   categoryName,
   isFlipped,
@@ -29,17 +31,22 @@ export function QuestionCard({
 }: QuestionCardProps) {
   const prefersReducedMotion = useReducedMotion();
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onFlip();
+      }
+    },
+    [onFlip]
+  );
+
   return (
     <div className="perspective-1000 w-full max-w-[320px] sm:max-w-sm mx-auto px-2 sm:px-0">
       <motion.div
         className="relative w-full h-[320px] xs:h-[360px] sm:h-[400px] lg:h-[440px] cursor-pointer focus:outline-none focus:ring-4 focus:ring-white/50 rounded-3xl touch-manipulation"
         onClick={onFlip}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onFlip();
-          }
-        }}
+        onKeyDown={handleKeyDown}
         role="button"
         tabIndex={0}
         aria-label={isFlipped ? `Spørgsmål: ${question.text}. Tryk for at vende kortet` : "Tryk for at se spørgsmålet"}
@@ -115,4 +122,7 @@ export function QuestionCard({
       </motion.div>
     </div>
   );
-}
+});
+
+// Display name for React DevTools
+QuestionCard.displayName = "QuestionCard";
