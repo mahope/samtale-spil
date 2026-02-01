@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { TIMING } from "@/constants";
 
 export interface Achievement {
   id: string;
@@ -25,7 +26,7 @@ export function AchievementToast({ achievement, onDismiss }: AchievementToastPro
       setIsVisible(true);
       const timer = setTimeout(() => {
         setIsVisible(false);
-        setTimeout(onDismiss, 300);
+        setTimeout(onDismiss, TIMING.ACHIEVEMENT_DISMISS);
       }, 4000);
       return () => clearTimeout(timer);
     }

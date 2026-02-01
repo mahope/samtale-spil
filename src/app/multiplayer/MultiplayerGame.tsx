@@ -11,6 +11,7 @@ import { PlayerList, TurnIndicator, FavoriteIndicators } from "@/components/Play
 import { TimerDisplay } from "@/components/TimerDisplay";
 import { Confetti, CelebrationOverlay, useConfetti } from "@/components/Confetti";
 import { FloatingParticles } from "@/components/FloatingParticles";
+import { TIMING } from "@/constants";
 
 interface MultiplayerGameProps {
   room: GameRoom;
@@ -153,7 +154,7 @@ export function MultiplayerGame({
     if (isComplete) {
       triggerConfetti();
       setShowCelebration(true);
-      setTimeout(() => setShowCelebration(false), 3000);
+      setTimeout(() => setShowCelebration(false), TIMING.CELEBRATION_LONG);
     }
 
     const idsToExclude = isComplete ? [] : answeredIds;

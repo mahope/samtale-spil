@@ -22,6 +22,7 @@ import { DifficultyFilterIndicator } from "@/components/DifficultyFilter";
 import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
 import { GameHeader } from "@/components/GameHeader";
 import { QuestionCard } from "@/components/QuestionCard";
+import { TIMING } from "@/constants";
 
 interface Props {
   categoryId: string;
@@ -154,7 +155,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       if (isComplete && newAskedIds.length > 0) {
         triggerConfetti();
         setShowCelebration(true);
-        setTimeout(() => setShowCelebration(false), 2000);
+        setTimeout(() => setShowCelebration(false), TIMING.CELEBRATION_SHORT);
       }
 
       // Reset if all questions have been asked

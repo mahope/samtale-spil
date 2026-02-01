@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuestionRatings } from "@/hooks/useQuestionRatings";
+import { TIMING } from "@/constants";
 
 interface RatingStarsProps {
   questionId: string;
@@ -46,7 +47,7 @@ export function RatingStars({
       onRated?.(rating);
 
       // Reset animation state after delay
-      setTimeout(() => setJustRated(false), 1000);
+      setTimeout(() => setJustRated(false), TIMING.RATING_FEEDBACK);
     },
     [questionId, rateQuestion, onRated, readOnly]
   );

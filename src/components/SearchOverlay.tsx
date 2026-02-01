@@ -9,6 +9,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Question } from "@/types";
 import { DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
 import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
+import { TIMING } from "@/constants";
 
 interface SearchResult {
   question: Question;
@@ -58,7 +59,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   // Focus input when opened
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
+      setTimeout(() => inputRef.current?.focus(), TIMING.INPUT_FOCUS_DELAY);
     }
   }, [isOpen]);
 

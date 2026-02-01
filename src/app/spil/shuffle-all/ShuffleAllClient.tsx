@@ -18,6 +18,7 @@ import { FloatingParticles } from "@/components/FloatingParticles";
 import { TimerDisplay, TimerSettingsPanel } from "@/components/TimerDisplay";
 import { DifficultyFilter, DifficultyFilterIndicator } from "@/components/DifficultyFilter";
 import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
+import { TIMING } from "@/constants";
 
 const SHUFFLE_ALL_ID = "shuffle-all";
 
@@ -311,7 +312,7 @@ export default function ShuffleAllClient() {
       if (isComplete && newAskedIds.length > 0) {
         triggerConfetti();
         setShowCelebration(true);
-        setTimeout(() => setShowCelebration(false), 2000);
+        setTimeout(() => setShowCelebration(false), TIMING.CELEBRATION_SHORT);
       }
 
       const idsToExclude = isComplete ? [] : newAskedIds;

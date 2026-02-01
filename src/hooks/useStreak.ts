@@ -2,6 +2,7 @@
 
 import { useCallback, useState, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
+import { TIMING } from "@/constants";
 
 export interface StreakData {
   currentStreak: number;
@@ -105,12 +106,12 @@ export function useStreak() {
 
       if (hitMilestone) {
         // Schedule milestone celebration
-        setTimeout(() => setPendingMilestone(hitMilestone), 500);
+        setTimeout(() => setPendingMilestone(hitMilestone), TIMING.MILESTONE_DELAY);
       }
 
       if (streakBroken) {
         setRecentlyBroken(true);
-        setTimeout(() => setRecentlyBroken(false), 3000);
+        setTimeout(() => setRecentlyBroken(false), TIMING.STREAK_BROKEN_RESET);
       }
 
       return {

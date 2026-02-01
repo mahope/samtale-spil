@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Player, MultiplayerSettings } from "@/types/multiplayer";
 import { PLAYER_EMOJIS } from "@/types/multiplayer";
 import { categories } from "@/data/categories";
+import { TIMING } from "@/constants";
 
 interface MultiplayerLobbyProps {
   roomCode: string;
@@ -41,7 +42,7 @@ export function MultiplayerLobby({
   const copyRoomCode = useCallback(async () => {
     await navigator.clipboard.writeText(roomCode);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK);
   }, [roomCode]);
 
   const handleNameEdit = useCallback(() => {

@@ -6,6 +6,7 @@ import { useShare } from "@/hooks/useShare";
 import { useSocialShare } from "@/hooks/useSocialShare";
 import { Category } from "@/types";
 import { logger } from "@/utils/logger";
+import { TIMING } from "@/constants";
 
 interface ShareButtonProps {
   text?: string;
@@ -36,7 +37,7 @@ export function ShareButton({
         const result = await shareCategoryCompletion(category);
         if (result.success) {
           setCategoryShared(true);
-          setTimeout(() => setCategoryShared(false), 2000);
+          setTimeout(() => setCategoryShared(false), TIMING.SHARE_FEEDBACK);
         }
       } catch (error) {
         logger.error("Error sharing category:", error);

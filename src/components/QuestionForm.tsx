@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CATEGORY_TAGS } from "@/hooks/useCustomQuestions";
 import { DepthSelector } from "@/components/DepthBadge";
+import { TIMING } from "@/constants";
 
 // Shake animation for form errors
 const shakeAnimation = {
@@ -62,7 +63,7 @@ export function QuestionForm({
 
   const triggerShake = () => {
     setShouldShake(true);
-    setTimeout(() => setShouldShake(false), 500);
+    setTimeout(() => setShouldShake(false), TIMING.SHAKE_RESET);
   };
 
   const handleSubmit = (e: React.FormEvent) => {

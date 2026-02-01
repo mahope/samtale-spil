@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useCallback } from "react";
+import { TIMING } from "@/constants";
 
 interface ConfettiPiece {
   id: number;
@@ -129,7 +130,7 @@ export function useConfetti() {
 
   const trigger = useCallback(() => {
     setIsActive(true);
-    setTimeout(() => setIsActive(false), 100);
+    setTimeout(() => setIsActive(false), TIMING.CONFETTI_DEACTIVATE);
   }, []);
 
   return { isActive, trigger };
@@ -156,7 +157,7 @@ export function CelebrationBurst({ isActive }: { isActive: boolean }) {
       }));
       setParticles(newParticles);
 
-      const timer = setTimeout(() => setParticles([]), 1000);
+      const timer = setTimeout(() => setParticles([]), TIMING.CONFETTI_CLEAR);
       return () => clearTimeout(timer);
     }
     return undefined;

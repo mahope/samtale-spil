@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useSocialShare } from "@/hooks/useSocialShare";
+import { TIMING } from "@/constants";
 
 interface ShareStatsModalProps {
   isOpen: boolean;
@@ -71,7 +72,7 @@ export function ShareStatsModal({ isOpen, onClose }: ShareStatsModalProps) {
           </html>
         `);
         // Clean up the URL after a delay
-        setTimeout(() => URL.revokeObjectURL(imageUrl), 1000);
+        setTimeout(() => URL.revokeObjectURL(imageUrl), TIMING.OBJECT_URL_REVOKE);
       }
     }
   };

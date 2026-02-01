@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { TIMING } from "@/constants";
 
 export function useShare() {
   const [copied, setCopied] = useState(false);
@@ -27,7 +28,7 @@ export function useShare() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK);
       return { success: true, method: "clipboard" as const };
     } catch {
       // Last resort: select and copy
@@ -40,7 +41,7 @@ export function useShare() {
       try {
         document.execCommand("copy");
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK);
         return { success: true, method: "clipboard" as const };
       } catch {
         return { success: false, method: "failed" as const };

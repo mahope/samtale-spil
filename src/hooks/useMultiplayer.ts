@@ -21,6 +21,7 @@ import {
   DEFAULT_MULTIPLAYER_SETTINGS,
   DEFAULT_GAME_STATE,
 } from "@/types/multiplayer";
+import { TIMING } from "@/constants";
 
 // Storage key for persisting player identity
 const PLAYER_STORAGE_KEY = "samtale-spil-player";
@@ -149,7 +150,7 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
 
           // If we're host, send full room state to new player
           if (room.hostId === currentPlayer.id) {
-            setTimeout(() => sendMessage("room-state-sync", { room }), 100);
+            setTimeout(() => sendMessage("room-state-sync", { room }), TIMING.ROOM_SYNC_DELAY);
           }
           break;
         }
@@ -437,7 +438,7 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
           };
           channelRef.current.postMessage(message);
         }
-      }, 100);
+      }, TIMING.ROOM_SYNC_DELAY);
 
       return true;
     },
