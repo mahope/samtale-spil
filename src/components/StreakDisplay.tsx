@@ -9,9 +9,11 @@ import {
   StreakMilestone 
 } from "@/hooks/useStreak";
 import { Confetti } from "./Confetti";
+import { withErrorBoundary } from "@/components/ErrorBoundary";
+import { StreakDisplayFallback, StreakBadgeFallback } from "@/components/fallbacks";
 
 // Main streak display component for statistics page
-export function StreakDisplay({ className = "" }: { className?: string }) {
+function StreakDisplayInner({ className = "" }: { className?: string }) {
   const {
     currentStreak,
     longestStreak,
@@ -139,8 +141,14 @@ export function StreakDisplay({ className = "" }: { className?: string }) {
   );
 }
 
+// Export wrapped with error boundary
+export const StreakDisplay = withErrorBoundary(
+  StreakDisplayInner,
+  <StreakDisplayFallback />
+);
+
 // Compact streak badge for game pages
-export function StreakBadge({ className = "" }: { className?: string }) {
+function StreakBadgeInner({ className = "" }: { className?: string }) {
   const { currentStreak, isActive, isAtRisk, isLoaded } = useStreak();
 
   if (!isLoaded || currentStreak === 0) {
@@ -180,6 +188,12 @@ export function StreakBadge({ className = "" }: { className?: string }) {
     </motion.div>
   );
 }
+
+// Export wrapped with error boundary
+export const StreakBadge = withErrorBoundary(
+  StreakBadgeInner,
+  <StreakBadgeFallback />
+);
 
 // Streak milestone celebration modal
 export function StreakCelebration() {

@@ -11,8 +11,10 @@ import {
   DAILY_CHALLENGE_POINTS 
 } from "@/hooks/useDailyChallenge";
 import { Confetti } from "@/components/Confetti";
+import { withErrorBoundary } from "@/components/ErrorBoundary";
+import { DailyChallengeFallback } from "@/components/fallbacks";
 
-export function DailyChallenge() {
+function DailyChallengeInner() {
   const {
     todaysChallenge,
     isCompletedToday,
@@ -375,3 +377,9 @@ export function DailyChallenge() {
     </>
   );
 }
+
+// Export wrapped with error boundary
+export const DailyChallenge = withErrorBoundary(
+  DailyChallengeInner,
+  <DailyChallengeFallback />
+);

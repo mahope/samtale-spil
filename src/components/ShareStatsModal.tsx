@@ -4,13 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useSocialShare } from "@/hooks/useSocialShare";
 import { TIMING } from "@/constants";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ShareStatsFallback } from "@/components/fallbacks";
 
 interface ShareStatsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function ShareStatsModal({ isOpen, onClose }: ShareStatsModalProps) {
+function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
   const {
     shareProgress,
     shareStatsImage,
@@ -228,5 +230,14 @@ export function ShareStatsModal({ isOpen, onClose }: ShareStatsModalProps) {
         </>
       )}
     </AnimatePresence>
+  );
+}
+
+// Export wrapped with error boundary
+export function ShareStatsModal(props: ShareStatsModalProps) {
+  return (
+    <ErrorBoundary fallback={<ShareStatsFallback onClose={props.onClose} />}>
+      <ShareStatsModalInner {...props} />
+    </ErrorBoundary>
   );
 }
