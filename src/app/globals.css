@@ -394,20 +394,6 @@ a:not(.no-underline):hover {
   animation: shimmer 1.5s infinite linear;
 }
 
-/* Floating animation for decorative elements */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
 /* Glow effect on focus/hover for buttons */
 .glow-on-hover:hover {
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
