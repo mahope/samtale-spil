@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { categories } from "@/data/categories";
 import { Category } from "@/types";
 import { useProgress, useFavorites } from "@/hooks/useLocalStorage";
@@ -103,11 +104,12 @@ function CategoryCard({
 }
 
 export default function SpilPage() {
+  const router = useRouter();
   const { getCategoryProgress, isLoaded: progressLoaded } = useProgress();
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
 
   const handleCategorySelect = (category: Category) => {
-    window.location.href = `/spil/${category.id}`;
+    router.push(`/spil/${category.id}`);
   };
 
   const isLoaded = progressLoaded && favoritesLoaded;
