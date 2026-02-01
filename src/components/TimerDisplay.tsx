@@ -48,7 +48,8 @@ export function TimerDisplay({
         const newTime = prev - 1;
         
         // Notify parent of tick (for sound effects)
-        if (onTick && newTime <= 5 && newTime > 0) {
+        // Speed mode: tick all seconds. Normal mode: only last 5 seconds.
+        if (onTick && newTime > 0 && (speedMode || newTime <= 5)) {
           onTick(newTime);
         }
         
@@ -69,7 +70,7 @@ export function TimerDisplay({
         intervalRef.current = null;
       }
     };
-  }, [isActive, isPaused, onTimeout, onTick]);
+  }, [isActive, isPaused, onTimeout, onTick, speedMode]);
 
   if (!isActive) return null;
 
