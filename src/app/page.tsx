@@ -3,10 +3,12 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PageTransition } from "@/components/PageTransition";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <PageTransition>
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Theme toggle in corner */}
       <motion.div
         initial={{ opacity: 0 }}
@@ -88,27 +90,36 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.4 }}
           >
-            <Link
-              href="/spil"
-              className="inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-violet-500 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800"
-              aria-label="Start samtalen - gå til kategorivalg"
+            <motion.div
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.98 }}
             >
-              Start samtalen
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                aria-hidden="true"
+              <Link
+                href="/spil"
+                className="group inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-violet-500 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800 relative overflow-hidden"
+                aria-label="Start samtalen - gå til kategorivalg"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
-            </Link>
+                {/* Shine effect */}
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" aria-hidden="true" />
+                <span className="relative">Start samtalen</span>
+                <motion.svg
+                  className="w-5 h-5 relative"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
+                </motion.svg>
+              </Link>
+            </motion.div>
           </motion.div>
 
           {/* Install hint for PWA */}
@@ -157,6 +168,7 @@ export default function Home() {
           Skabt med <span aria-label="kærlighed">❤️</span> for bedre samtaler
         </motion.footer>
       </main>
-    </div>
+      </div>
+    </PageTransition>
   );
 }

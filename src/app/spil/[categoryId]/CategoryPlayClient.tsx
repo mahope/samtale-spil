@@ -10,6 +10,9 @@ import { useFavorites, useProgress } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Confetti, CelebrationBurst, useConfetti, CelebrationOverlay } from "@/components/Confetti";
+import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
+import { FloatingParticles } from "@/components/FloatingParticles";
 
 interface Props {
   categoryId: string;
@@ -191,12 +194,15 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const { isFavorite, toggleFavorite, isLoaded: favoritesLoaded } = useFavorites();
   const { getCategoryProgress, markAnswered, resetCategory, isLoaded: progressLoaded } = useProgress();
   const { playFlip, playSuccess, playTap } = useSound();
+  const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
   const [answeredCount, setAnsweredCount] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [hasShownCelebration, setHasShownCelebration] = useState(false);
 
   // Initialize from saved progress
   useEffect(() => {
@@ -215,6 +221,19 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     const firstQuestion = getRandomQuestion(categoryId, excludeIds);
     setCurrentQuestion(firstQuestion);
   }, [progressLoaded, category, categoryId, getCategoryProgress]);
+
+  // Check for category completion
+  useEffect(() => {
+    if (!category || hasShownCelebration) return;
+    
+    const totalQuestions = category.questions.length;
+    // Show celebration when they've answered all questions
+    if (answeredCount >= totalQuestions && answeredCount > 0) {
+      playSuccess();
+      setShowCelebration(true);
+      setHasShownCelebration(true);
+    }
+  }, [answeredCount, category, hasShownCelebration, playSuccess]);
 
   const handleFlip = useCallback(() => {
     playFlip();
@@ -243,9 +262,16 @@ export default function CategoryPlayClient({ categoryId }: Props) {
         ? [...askedQuestionIds, currentQuestion.id]
         : askedQuestionIds;
 
+      // Check if all questions have been answered - trigger celebration!
+      const isComplete = newAskedIds.length >= category.questions.length;
+      if (isComplete && newAskedIds.length > 0) {
+        triggerConfetti();
+        setShowCelebration(true);
+        setTimeout(() => setShowCelebration(false), 2000);
+      }
+
       // Reset if all questions have been asked
-      const idsToExclude =
-        newAskedIds.length >= category.questions.length ? [] : newAskedIds;
+      const idsToExclude = isComplete ? [] : newAskedIds;
 
       const nextQuestion = getRandomQuestion(categoryId, idsToExclude);
 
@@ -268,16 +294,22 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     isTransitioning,
     markAnswered,
     playTap,
+    triggerConfetti,
   ]);
 
   const handleResetProgress = useCallback(() => {
     resetCategory(categoryId);
     setAskedQuestionIds([]);
     setAnsweredCount(0);
+    setHasShownCelebration(false);
     const firstQuestion = getRandomQuestion(categoryId);
     setCurrentQuestion(firstQuestion);
     setIsFlipped(false);
   }, [categoryId, resetCategory]);
+
+  const handleDismissCelebration = useCallback(() => {
+    setShowCelebration(false);
+  }, []);
 
   const handleToggleFavorite = useCallback(() => {
     if (!currentQuestion) return;
@@ -298,17 +330,27 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   if (!progressLoaded || !favoritesLoaded) {
     return (
       <div 
-        className={`min-h-screen bg-gradient-to-br ${category.color} flex items-center justify-center`}
+        className={`min-h-screen bg-gradient-to-br ${category.color} flex flex-col items-center justify-center px-6`}
         role="status"
         aria-live="polite"
         aria-label="Indlæser spørgsmål"
       >
+        <FloatingParticles count={10} />
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="w-8 h-8 border-3 border-white border-t-transparent rounded-full"
-          aria-hidden="true"
-        />
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full"
+        >
+          <QuestionCardSkeleton color={category.color} />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-6 text-white/80 text-sm"
+        >
+          Forbereder dine spørgsmål...
+        </motion.div>
         <span className="sr-only">Indlæser...</span>
       </div>
     );
@@ -318,19 +360,32 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const progress = Math.min((answeredCount / totalQuestions) * 100, 100);
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br ${category.color} relative overflow-hidden`}
-    >
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true" role="presentation">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-40 h-40 bg-white/5 rounded-full blur-2xl"
-          animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-          transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
-        />
-      </div>
+    <>
+      {/* Confetti celebration */}
+      <Confetti isActive={confettiActive} />
+      
+      {/* Celebration overlay */}
+      <CelebrationOverlay
+        isVisible={showCelebration}
+        message="🎉 Kategori fuldført!"
+        subMessage={`Du har besvaret alle ${totalQuestions} spørgsmål i ${category.name}!`}
+        onDismiss={handleDismissCelebration}
+      />
+      
+      <div
+        className={`min-h-screen bg-gradient-to-br ${category.color} relative overflow-hidden`}
+      >
+        {/* Background decorations */}
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true" role="presentation">
+          <FloatingParticles count={12} opacity={0.08} />
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-40 h-40 bg-white/5 rounded-full blur-2xl"
+            animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
+            transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
+          />
+        </div>
 
       <main id="main-content" className="relative flex min-h-screen flex-col items-center px-6 py-8" role="main">
         {/* Header */}
@@ -458,27 +513,34 @@ export default function CategoryPlayClient({ categoryId }: Props) {
             type="button"
             onClick={handleNextQuestion}
             disabled={isTransitioning}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full px-8 py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus:ring-4 focus:ring-white/50"
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            className="group w-full px-8 py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-semibold shadow-lg hover:shadow-2xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus:ring-4 focus:ring-white/50 overflow-hidden relative"
             aria-label="Gå til næste spørgsmål"
             aria-busy={isTransitioning}
           >
-            <span>Næste spørgsmål</span>
-            <svg
-              className="w-5 h-5"
+            {/* Shine effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+              aria-hidden="true"
+            />
+            <span className="relative">Næste spørgsmål</span>
+            <motion.svg
+              className="w-5 h-5 relative"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
               aria-hidden="true"
+              animate={isTransitioning ? { x: [0, 5, 0] } : {}}
+              transition={{ duration: 0.3, repeat: isTransitioning ? Infinity : 0 }}
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 d="M13 7l5 5m0 0l-5 5m5-5H6"
               />
-            </svg>
+            </motion.svg>
           </motion.button>
 
           <p className="text-center text-white/80 text-sm mt-4">
@@ -486,6 +548,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           </p>
         </motion.div>
       </main>
-    </div>
+      </div>
+    </>
   );
 }

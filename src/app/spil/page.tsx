@@ -7,6 +7,8 @@ import { categories } from "@/data/categories";
 import { Category } from "@/types";
 import { useProgress, useFavorites } from "@/hooks/useLocalStorage";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CategoryGridSkeleton } from "@/components/SkeletonLoader";
+import { PageTransition } from "@/components/PageTransition";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -43,6 +45,7 @@ function CategoryCard({
 }) {
   const progressPercent = (progress.answered / progress.total) * 100;
   const hasProgress = progress.answered > 0;
+  const isCompleted = progress.answered >= progress.total;
 
   return (
     <motion.button
@@ -52,18 +55,56 @@ function CategoryCard({
         y: -8,
         transition: { type: "spring", stiffness: 400, damping: 25 },
       }}
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.95 }}
       onClick={onClick}
       type="button"
       aria-label={`${category.name}: ${category.description}. ${hasProgress ? `${progress.answered} af ${progress.total} besvaret` : `${category.questions.length} spørgsmål`}`}
-      className={`relative group w-full aspect-square rounded-3xl bg-gradient-to-br ${category.color} p-6 text-white shadow-lg hover:shadow-2xl transition-shadow overflow-hidden focus:ring-4 focus:ring-white/50`}
+      className={`relative group w-full aspect-square rounded-3xl bg-gradient-to-br ${category.color} p-6 text-white shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden focus:ring-4 focus:ring-white/50`}
     >
       {/* Background glow effect */}
-      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+      <motion.div 
+        className="absolute inset-0 bg-white/10"
+        initial={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        aria-hidden="true" 
+      />
       
-      {/* Decorative circles */}
-      <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full" aria-hidden="true" />
-      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full" aria-hidden="true" />
+      {/* Shine effect on hover */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+        whileHover={{ translateX: "100%" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        aria-hidden="true"
+      />
+      
+      {/* Decorative circles with hover animation */}
+      <motion.div 
+        className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full"
+        whileHover={{ scale: 1.2, opacity: 0.15 }}
+        transition={{ duration: 0.3 }}
+        aria-hidden="true" 
+      />
+      <motion.div 
+        className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full"
+        whileHover={{ scale: 1.2, opacity: 0.15 }}
+        transition={{ duration: 0.3 }}
+        aria-hidden="true" 
+      />
+      
+      {/* Completed badge */}
+      {isCompleted && (
+        <motion.div
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg"
+          aria-label="Kategori fuldført"
+        >
+          <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </motion.div>
+      )}
       
       {/* Progress bar at bottom */}
       {hasProgress && (
@@ -76,7 +117,7 @@ function CategoryCard({
           aria-label={`Fremskridt: ${progress.answered} af ${progress.total} spørgsmål besvaret`}
         >
           <motion.div
-            className="h-full bg-white/80"
+            className={`h-full ${isCompleted ? "bg-emerald-400" : "bg-white/80"}`}
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -98,16 +139,19 @@ function CategoryCard({
         <p className="text-sm text-white/90 leading-tight">
           {category.description}
         </p>
-        <div className="mt-3 text-xs text-white/80">
+        <motion.div 
+          className="mt-3 text-xs text-white/80"
+          whileHover={{ scale: 1.05 }}
+        >
           {hasProgress ? (
             <span className="flex items-center gap-1">
               <span>{progress.answered}/{progress.total}</span>
-              <span>besvaret</span>
+              <span>{isCompleted ? "✨ Fuldført" : "besvaret"}</span>
             </span>
           ) : (
             <span>{category.questions.length} spørgsmål</span>
           )}
-        </div>
+        </motion.div>
       </div>
     </motion.button>
   );
@@ -182,27 +226,31 @@ export default function SpilPage() {
         </motion.header>
 
         {/* Category Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full"
-        >
-          {categories.map((category) => {
-            const categoryProgress = isLoaded ? getCategoryProgress(category.id) : { answeredIds: [] };
-            return (
-              <CategoryCard
-                key={category.id}
-                category={category}
-                progress={{
-                  answered: categoryProgress.answeredIds.length,
-                  total: category.questions.length,
-                }}
-                onClick={() => handleCategorySelect(category)}
-              />
-            );
-          })}
-        </motion.div>
+        {!isLoaded ? (
+          <CategoryGridSkeleton count={categories.length} />
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full"
+          >
+            {categories.map((category) => {
+              const categoryProgress = getCategoryProgress(category.id);
+              return (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  progress={{
+                    answered: categoryProgress.answeredIds.length,
+                    total: category.questions.length,
+                  }}
+                  onClick={() => handleCategorySelect(category)}
+                />
+              );
+            })}
+          </motion.div>
+        )}
 
         {/* Random Category Button */}
         <motion.div
