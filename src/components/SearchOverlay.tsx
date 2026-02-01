@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { categories } from "@/data/categories";
@@ -10,6 +10,7 @@ import { Question } from "@/types";
 import { DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
 import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
 import { TIMING } from "@/constants";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface SearchResult {
   question: Question;
@@ -48,7 +49,6 @@ const modalVariants = {
 
 export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [recentSearches, setRecentSearches, recentLoaded] = useLocalStorage<string[]>(
     "samtale-spil-recent-searches",
@@ -56,23 +56,11 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   );
   const { questions: customQuestions, isLoaded: customLoaded } = useCustomQuestions();
 
-  // Focus input when opened
-  useEffect(() => {
-    if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), TIMING.INPUT_FOCUS_DELAY);
-    }
-  }, [isOpen]);
-
-  // Handle escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
+  // Focus trap with Escape handling
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: onClose,
+  });
 
   // Clear query when closing
   useEffect(() => {
@@ -209,6 +197,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
 
           {/* Modal */}
           <motion.div
+            ref={focusTrapRef}
             variants={modalVariants}
             initial="hidden"
             animate="visible"
@@ -232,7 +221,6 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                 />
               </svg>
               <input
-                ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}

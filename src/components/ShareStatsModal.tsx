@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useSocialShare } from "@/hooks/useSocialShare";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { TIMING } from "@/constants";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ShareStatsFallback } from "@/components/fallbacks";
@@ -23,6 +24,12 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
   
   const [shareResult, setShareResult] = useState<string | null>(null);
   const [isSharing, setIsSharing] = useState(false);
+
+  // Focus trap with Escape handling
+  const focusTrapRef = useFocusTrap<HTMLDivElement>({
+    isActive: isOpen,
+    onEscape: onClose,
+  });
 
   const stats = calculateStats();
 
@@ -100,10 +107,16 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div 
+              ref={focusTrapRef}
+              className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="share-stats-title"
+            >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+                <h2 id="share-stats-title" className="text-2xl font-bold text-slate-800 dark:text-white">
                   📊 Del dine statistikker
                 </h2>
                 <button
