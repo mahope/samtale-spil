@@ -355,11 +355,68 @@ export default function SpilPage() {
           </motion.button>
         </motion.div>
 
-        {/* Random Category Button */}
+        {/* Multiplayer Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
+          className="max-w-5xl mx-auto w-full mt-6"
+        >
+          <Link href="/multiplayer">
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative group overflow-hidden rounded-3xl bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 p-6 text-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+            >
+              {/* Shine effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                aria-hidden="true"
+              />
+              
+              {/* Content */}
+              <div className="relative flex items-center justify-center gap-4">
+                <motion.span
+                  className="text-4xl"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  aria-hidden="true"
+                >
+                  🎮
+                </motion.span>
+                <div className="text-left">
+                  <h3 className="text-xl font-bold">Multiplayer</h3>
+                  <p className="text-sm text-white/80">
+                    Spil sammen med venner i real-time
+                  </p>
+                </div>
+                <motion.div
+                  className="ml-auto flex items-center gap-2"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  <span className="text-2xl">👥</span>
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </motion.div>
+              </div>
+            </motion.div>
+          </Link>
+        </motion.div>
+
+        {/* Random Category Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.5 }}
           className="text-center mt-8"
         >
           <button
