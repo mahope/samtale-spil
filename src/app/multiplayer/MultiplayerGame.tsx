@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { GameRoom, Player } from "@/types/multiplayer";
 import { getCategory, getRandomQuestion } from "@/data/categories";
@@ -79,6 +79,10 @@ export function MultiplayerGame({
   const [timerKey, setTimerKey] = useState(0);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
+  // Refs to track initialization and prevent stale closures
+  const hasInitializedRef = useRef(false);
+  const lastQuestionIdRef = useRef<string | null>(null);
+
   // Initialize question when game starts or question changes
   useEffect(() => {
     if (!category) return;
@@ -88,16 +92,19 @@ export function MultiplayerGame({
       const question = category.questions.find(
         (q) => q.id === room.gameState.currentQuestionId
       );
-      if (question) {
+      if (question && question.id !== lastQuestionIdRef.current) {
+        lastQuestionIdRef.current = question.id;
         setCurrentQuestion(question);
+        setTimerKey((prev) => prev + 1);
       }
-    } else {
-      // Get first question
+    } else if (!hasInitializedRef.current && isHost) {
+      // Get first question only once
+      hasInitializedRef.current = true;
       const firstQuestion = getRandomQuestion(
         category.id,
         room.gameState.answeredQuestionIds
       );
-      if (firstQuestion && isHost) {
+      if (firstQuestion) {
         onNextQuestion(firstQuestion.id, 0);
       }
     }
@@ -108,19 +115,6 @@ export function MultiplayerGame({
     isHost,
     onNextQuestion,
   ]);
-
-  // Update question when it changes in room state
-  useEffect(() => {
-    if (!category || !room.gameState.currentQuestionId) return;
-
-    const question = category.questions.find(
-      (q) => q.id === room.gameState.currentQuestionId
-    );
-    if (question && question.id !== currentQuestion?.id) {
-      setCurrentQuestion(question);
-      setTimerKey((prev) => prev + 1);
-    }
-  }, [category, room.gameState.currentQuestionId, currentQuestion?.id]);
 
   const handleFlip = useCallback(() => {
     if (!currentQuestion) return;
