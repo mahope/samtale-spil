@@ -16,7 +16,7 @@ import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
 import { BadgeGrid, NextBadgeProgress, BadgeStats } from "@/components/CategoryBadge";
 import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
 
-// Stat card component
+// Stat card component - mobile optimized
 function StatCard({
   icon,
   label,
@@ -37,25 +37,26 @@ function StatCard({
       initial={{ opacity: 0, y: 20, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay, type: "spring", stiffness: 100 }}
-      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} p-5 text-white shadow-lg`}
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} p-3 sm:p-5 text-white shadow-lg`}
     >
-      <div className="absolute -top-6 -right-6 w-20 h-20 bg-white/10 rounded-full" />
-      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-white/10 rounded-full" />
+      {/* Decorative circles - smaller on mobile */}
+      <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-14 h-14 sm:w-20 sm:h-20 bg-white/10 rounded-full" />
+      <div className="absolute -bottom-3 -left-3 sm:-bottom-4 sm:-left-4 w-12 h-12 sm:w-16 sm:h-16 bg-white/10 rounded-full" />
       <div className="relative">
-        <span className="text-3xl mb-2 block" aria-hidden="true">
+        <span className="text-2xl sm:text-3xl mb-1 sm:mb-2 block" aria-hidden="true">
           {icon}
         </span>
-        <p className="text-white/80 text-sm font-medium">{label}</p>
-        <p className="text-3xl font-bold mt-1">{value}</p>
+        <p className="text-white/80 text-xs sm:text-sm font-medium leading-tight">{label}</p>
+        <p className="text-2xl sm:text-3xl font-bold mt-0.5 sm:mt-1">{value}</p>
         {subtext && (
-          <p className="text-white/70 text-xs mt-1">{subtext}</p>
+          <p className="text-white/70 text-[10px] sm:text-xs mt-0.5 sm:mt-1 leading-tight">{subtext}</p>
         )}
       </div>
     </motion.div>
   );
 }
 
-// Category progress item
+// Category progress item - mobile optimized
 function CategoryProgressItem({
   emoji,
   name,
@@ -79,25 +80,25 @@ function CategoryProgressItem({
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.1 * index }}
-      className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
+      className="bg-white dark:bg-slate-800 rounded-xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-700"
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-xl" aria-hidden="true">
+      <div className="flex items-center justify-between mb-2 gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+          <span className="text-lg sm:text-xl shrink-0" aria-hidden="true">
             {emoji}
           </span>
-          <span className="font-medium text-slate-800 dark:text-slate-100">
+          <span className="font-medium text-sm sm:text-base text-slate-800 dark:text-slate-100 truncate">
             {name}
           </span>
           {isCompleted && (
-            <span className="text-emerald-500 text-sm">✓</span>
+            <span className="text-emerald-500 text-sm shrink-0">✓</span>
           )}
         </div>
-        <span className="text-sm text-slate-500 dark:text-slate-400">
+        <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 shrink-0 tabular-nums">
           {answered}/{total}
         </span>
       </div>
-      <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+      <div className="h-1.5 sm:h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
         <motion.div
           className={`h-full bg-gradient-to-r ${color}`}
           initial={{ width: 0 }}
@@ -105,14 +106,14 @@ function CategoryProgressItem({
           transition={{ delay: 0.2 + 0.1 * index, duration: 0.5 }}
         />
       </div>
-      <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 text-right">
+      <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 mt-1 text-right tabular-nums">
         {percent}%
       </p>
     </motion.div>
   );
 }
 
-// Fun stat badge
+// Fun stat badge - mobile optimized
 function FunStatBadge({
   icon,
   title,
@@ -131,14 +132,14 @@ function FunStatBadge({
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay, type: "spring", stiffness: 150 }}
-      className={`flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r ${color} shadow-md`}
+      className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-gradient-to-r ${color} shadow-md min-h-[60px] sm:min-h-[72px]`}
     >
-      <span className="text-2xl" aria-hidden="true">
+      <span className="text-xl sm:text-2xl shrink-0" aria-hidden="true">
         {icon}
       </span>
-      <div>
-        <p className="text-xs text-white/70 font-medium">{title}</p>
-        <p className="text-sm font-bold text-white">{value}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] sm:text-xs text-white/70 font-medium leading-tight">{title}</p>
+        <p className="text-xs sm:text-sm font-bold text-white leading-tight mt-0.5 break-words">{value}</p>
       </div>
     </motion.div>
   );
@@ -455,16 +456,23 @@ export default function StatistikPage() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
-        <main id="main-content" className="max-w-3xl mx-auto px-6 py-8" role="main">
-        {/* Header */}
+        {/* Safe area padding for mobile devices with notches */}
+        <main 
+          id="main-content" 
+          className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-safe" 
+          role="main"
+          style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}
+        >
+        {/* Header - mobile optimized with touch-friendly targets */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-8"
+          className="flex items-center justify-between mb-6 sm:mb-8 gap-2"
         >
           <Link
             href="/spil"
-            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors min-w-[44px] min-h-[44px] -ml-2 pl-2 pr-1 sm:pr-2 active:scale-95"
+            aria-label="Tilbage til spil"
           >
             <svg
               className="w-5 h-5"
@@ -479,15 +487,17 @@ export default function StatistikPage() {
                 d="M11 17l-5-5m0 0l5-5m-5 5h12"
               />
             </svg>
-            <span>Tilbage</span>
+            <span className="hidden xs:inline sm:inline">Tilbage</span>
           </Link>
 
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <h1 className="text-lg sm:text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-1.5 sm:gap-2">
             <span aria-hidden="true">📊</span>
             <span>Statistik</span>
           </h1>
 
-          <ThemeToggle className="text-slate-600 dark:text-slate-400" />
+          <div className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2">
+            <ThemeToggle className="text-slate-600 dark:text-slate-400" />
+          </div>
         </motion.header>
 
         {/* Streak Celebration Modal */}
@@ -510,18 +520,18 @@ export default function StatistikPage() {
 
             {/* Daily Challenge Stats */}
             {totalChallengesCompleted > 0 && (
-              <section className="mb-8" aria-labelledby="daily-challenge-heading">
+              <section className="mb-6 sm:mb-8" aria-labelledby="daily-challenge-heading">
                 <motion.h2
                   id="daily-challenge-heading"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+                  className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
                 >
                   <span aria-hidden="true">🎯</span>
                   Daily Challenge
                 </motion.h2>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4">
                   <StatCard
                     icon="🎯"
                     label="Challenges klaret"
@@ -560,13 +570,13 @@ export default function StatistikPage() {
 
             {/* Top Rated Questions */}
             {ratingStats.totalRated > 0 && (
-              <section className="mb-8" aria-labelledby="top-rated-heading">
+              <section className="mb-6 sm:mb-8" aria-labelledby="top-rated-heading">
                 <motion.h2
                   id="top-rated-heading"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.25 }}
-                  className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+                  className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
                 >
                   <span aria-hidden="true">⭐</span>
                   Højest ratede spørgsmål
@@ -634,11 +644,11 @@ export default function StatistikPage() {
             )}
 
             {/* Overview Stats */}
-            <section className="mb-8" aria-labelledby="overview-heading">
+            <section className="mb-6 sm:mb-8" aria-labelledby="overview-heading">
               <h2 id="overview-heading" className="sr-only">
                 Overblik
               </h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4">
                 <StatCard
                   icon="💬"
                   label="Spørgsmål besvaret"
@@ -674,13 +684,13 @@ export default function StatistikPage() {
             </section>
 
             {/* Category Badges Section */}
-            <section className="mb-8" aria-labelledby="badges-heading">
+            <section className="mb-6 sm:mb-8" aria-labelledby="badges-heading">
               <motion.h2
                 id="badges-heading"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.25 }}
-                className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+                className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
               >
                 <span aria-hidden="true">🎖️</span>
                 Kategori Badges
@@ -724,13 +734,13 @@ export default function StatistikPage() {
             </section>
 
             {/* Category Progress */}
-            <section className="mb-8" aria-labelledby="progress-heading">
+            <section className="mb-6 sm:mb-8" aria-labelledby="progress-heading">
               <motion.h2
                 id="progress-heading"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+                className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
               >
                 <span aria-hidden="true">📈</span>
                 Fremskridt per kategori
@@ -751,18 +761,18 @@ export default function StatistikPage() {
             </section>
 
             {/* Fun Stats */}
-            <section className="mb-8" aria-labelledby="fun-stats-heading">
+            <section className="mb-6 sm:mb-8" aria-labelledby="fun-stats-heading">
               <motion.h2
                 id="fun-stats-heading"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+                className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
               >
                 <span aria-hidden="true">🎯</span>
                 Fun Facts
               </motion.h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                 {stats!.mostPlayedCategory && (
                   <FunStatBadge
                     icon={stats!.mostPlayedCategory.emoji}
@@ -830,25 +840,25 @@ export default function StatistikPage() {
 
             {/* Question History */}
             {history.length > 0 && (
-              <section className="mb-8" aria-labelledby="history-heading">
+              <section className="mb-6 sm:mb-8" aria-labelledby="history-heading">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="flex items-center justify-between mb-4"
+                  className="flex items-center justify-between mb-3 sm:mb-4 gap-2"
                 >
                   <h2
                     id="history-heading"
-                    className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2"
+                    className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-1.5 sm:gap-2"
                   >
                     <span aria-hidden="true">📜</span>
-                    Seneste spørgsmål
+                    <span className="truncate">Seneste spørgsmål</span>
                   </h2>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={clearHistory}
-                    className="text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors flex items-center gap-1"
+                    className="text-xs sm:text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors flex items-center gap-1 shrink-0 min-h-[44px] px-2 active:bg-red-50 dark:active:bg-red-900/20 rounded-lg"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -892,18 +902,18 @@ export default function StatistikPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="flex items-center justify-between mb-4"
+                  className="flex items-center justify-between mb-3 sm:mb-4 gap-2"
                 >
                   <h2
                     id="favorites-heading"
-                    className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2"
+                    className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-1.5 sm:gap-2"
                   >
                     <span aria-hidden="true">❤️</span>
                     Dine favoritter
                   </h2>
                   <Link
                     href="/favoritter"
-                    className="text-sm text-violet-600 dark:text-violet-400 hover:underline"
+                    className="text-xs sm:text-sm text-violet-600 dark:text-violet-400 hover:underline min-h-[44px] flex items-center px-2 active:opacity-70"
                   >
                     Se alle →
                   </Link>
