@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PageTransition } from "@/components/PageTransition";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
+import { DailyQuestion } from "@/components/DailyQuestion";
 
 export default function Home() {
   return (
@@ -134,6 +135,9 @@ export default function Home() {
             <span aria-hidden="true">💡</span> Installer appen på din telefon for offline adgang
           </motion.p>
         </motion.div>
+
+        {/* Daily Question Section */}
+        <DailyQuestion />
 
         {/* Decorative Cards Preview */}
         <motion.div
