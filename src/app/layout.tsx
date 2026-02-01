@@ -126,6 +126,19 @@ const jsonLd = {
   },
 };
 
+// Inline script to set theme before hydration (prevents flash)
+const themeInitScript = `
+(function() {
+  try {
+    var theme = localStorage.getItem('theme');
+    var isDark = theme === 'dark' || 
+      (theme === 'system' || !theme) && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.add(isDark ? 'dark' : 'light');
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -134,6 +147,7 @@ export default function RootLayout({
   return (
     <html lang="da" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="icon" href="/samtale-spil/icons/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/samtale-spil/icons/icon.svg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
