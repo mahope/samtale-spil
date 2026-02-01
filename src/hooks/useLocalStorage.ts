@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { logger } from "@/utils/logger";
 
 // Generic hook for localStorage with SSR safety
 export function useLocalStorage<T>(key: string, initialValue: T) {
@@ -14,7 +15,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         setStoredValue(JSON.parse(item));
       }
     } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error);
+      logger.warn(`Error reading localStorage key "${key}":`, error);
     }
     setIsLoaded(true);
   }, [key]);
@@ -27,7 +28,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         setStoredValue(valueToStore);
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
       } catch (error) {
-        console.warn(`Error setting localStorage key "${key}":`, error);
+        logger.warn(`Error setting localStorage key "${key}":`, error);
       }
     },
     [key, storedValue]

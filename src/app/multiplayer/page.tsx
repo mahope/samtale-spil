@@ -5,6 +5,7 @@ import { MultiplayerJoin } from "@/components/MultiplayerJoin";
 import { MultiplayerLobby } from "@/components/MultiplayerLobby";
 import { MultiplayerGame } from "./MultiplayerGame";
 import { motion } from "framer-motion";
+import { logger } from "@/utils/logger";
 
 export default function MultiplayerPage() {
   const {
@@ -28,19 +29,19 @@ export default function MultiplayerPage() {
     kickPlayer,
   } = useMultiplayer({
     onPlayerJoin: (player) => {
-      console.log("Player joined:", player.name);
+      logger.debug("Player joined:", player.name);
     },
     onPlayerLeave: (playerId) => {
-      console.log("Player left:", playerId);
+      logger.debug("Player left:", playerId);
     },
     onGameStart: () => {
-      console.log("Game started!");
+      logger.debug("Game started!");
     },
     onNextQuestion: (questionId) => {
-      console.log("Next question:", questionId);
+      logger.debug("Next question:", questionId);
     },
     onError: (error) => {
-      console.error("Multiplayer error:", error);
+      logger.error("Multiplayer error:", error);
     },
   });
 

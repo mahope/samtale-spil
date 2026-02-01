@@ -6,6 +6,7 @@ import { categories } from "@/data/categories";
 import { useFavorites, useProgress } from "./useLocalStorage";
 import { addRoundRectPolyfill } from "@/utils/canvasPolyfill";
 import { useAchievements } from "./useAchievements";
+import { logger } from "@/utils/logger";
 
 export interface ShareStats {
   totalQuestions: number;
@@ -138,7 +139,7 @@ https://mahope.github.io/samtale-spil/
         return { success: true, method: "clipboard" as const };
       }
     } catch (error) {
-      console.error("Error sharing progress:", error);
+      logger.error("Error sharing progress:", error);
       return { success: false, method: "failed" as const };
     }
   }, [calculateStats, generateAchievementText]);
@@ -176,7 +177,7 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
         return { success: true, method: "clipboard" as const };
       }
     } catch (error) {
-      console.error("Error sharing category completion:", error);
+      logger.error("Error sharing category completion:", error);
       return { success: false, method: "failed" as const };
     }
   }, [progress]);
@@ -340,7 +341,7 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
       });
 
     } catch (error) {
-      console.error("Error generating stats image:", error);
+      logger.error("Error generating stats image:", error);
       return null;
     } finally {
       setIsGeneratingImage(false);
@@ -373,7 +374,7 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
         return { success: true, method: "download" as const };
       }
     } catch (error) {
-      console.error("Error sharing stats image:", error);
+      logger.error("Error sharing stats image:", error);
       return { success: false, method: "failed" as const };
     } finally {
       URL.revokeObjectURL(imageUrl);

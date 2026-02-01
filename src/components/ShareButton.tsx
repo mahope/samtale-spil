@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useShare } from "@/hooks/useShare";
 import { useSocialShare } from "@/hooks/useSocialShare";
 import { Category } from "@/types";
+import { logger } from "@/utils/logger";
 
 interface ShareButtonProps {
   text?: string;
@@ -38,7 +39,7 @@ export function ShareButton({
           setTimeout(() => setCategoryShared(false), 2000);
         }
       } catch (error) {
-        console.error("Error sharing category:", error);
+        logger.error("Error sharing category:", error);
       }
     }
   };
