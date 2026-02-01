@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import { useMemo, useEffect, useState } from "react";
 
 interface Particle {
@@ -10,6 +10,7 @@ interface Particle {
   size: number;
   duration: number;
   delay: number;
+  xOffset: number;
 }
 
 // Hook to detect dark mode
@@ -43,8 +44,9 @@ function useIsDarkMode() {
 
 // Subtle floating particles for ambient background effects
 // Now theme-aware: uses light particles on dark backgrounds and vice versa
+// Optimized with CSS animations for GPU acceleration
 export function FloatingParticles({
-  count = 15,
+  count = 8,
   className = "",
   color,
   opacity = 0.1,
@@ -88,6 +90,7 @@ export function FloatingParticles({
       size: 2 + Math.random() * 4,
       duration: 15 + Math.random() * 20,
       delay: Math.random() * 5,
+      xOffset: Math.random() * 20 - 10,
     }));
   }, [count]);
 
@@ -96,8 +99,20 @@ export function FloatingParticles({
       className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
       aria-hidden="true"
     >
+      <style jsx>{`
+        @keyframes floatParticle {
+          0%, 100% {
+            transform: translateY(0) translateX(0) scale(1);
+            opacity: ${particleOpacity};
+          }
+          50% {
+            transform: translateY(-30px) translateX(var(--x-offset)) scale(1.2);
+            opacity: ${particleOpacity * 1.5};
+          }
+        }
+      `}</style>
       {particles.map((particle) => (
-        <motion.div
+        <div
           key={particle.id}
           className="absolute rounded-full"
           style={{
@@ -107,18 +122,10 @@ export function FloatingParticles({
             height: particle.size,
             backgroundColor: particleColor,
             opacity: particleOpacity,
-          }}
-          animate={{
-            y: [0, -30, 0],
-            x: [0, Math.random() * 20 - 10, 0],
-            scale: [1, 1.2, 1],
-            opacity: [particleOpacity, particleOpacity * 1.5, particleOpacity],
-          }}
-          transition={{
-            duration: particle.duration,
-            delay: particle.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
+            willChange: "transform, opacity",
+            animation: `floatParticle ${particle.duration}s ease-in-out ${particle.delay}s infinite`,
+            // @ts-expect-error CSS custom property
+            "--x-offset": `${particle.xOffset}px`,
           }}
         />
       ))}
@@ -127,8 +134,9 @@ export function FloatingParticles({
 }
 
 // Bubble effect for a more playful feel
+// Optimized with CSS animations for GPU acceleration
 export function FloatingBubbles({
-  count = 10,
+  count = 6,
   className = "",
 }: {
   count?: number;
@@ -156,25 +164,35 @@ export function FloatingBubbles({
       className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
       aria-hidden="true"
     >
+      <style jsx>{`
+        @keyframes floatBubble {
+          0% {
+            transform: translateY(0);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.5;
+          }
+          90% {
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(calc(-100vh - 100px));
+            opacity: 0;
+          }
+        }
+      `}</style>
       {bubbles.map((bubble) => (
-        <motion.div
+        <div
           key={bubble.id}
           className="absolute rounded-full bg-white/5 border border-white/10"
           style={{
             left: `${bubble.x}%`,
+            bottom: -50,
             width: bubble.size,
             height: bubble.size,
-          }}
-          initial={{ bottom: -50, opacity: 0 }}
-          animate={{
-            bottom: "110%",
-            opacity: [0, 0.5, 0],
-          }}
-          transition={{
-            duration: bubble.duration,
-            delay: bubble.delay,
-            repeat: Infinity,
-            ease: "linear",
+            willChange: "transform, opacity",
+            animation: `floatBubble ${bubble.duration}s linear ${bubble.delay}s infinite`,
           }}
         />
       ))}
@@ -183,8 +201,9 @@ export function FloatingBubbles({
 }
 
 // Hearts floating up effect (for favorites/love themed)
+// Optimized with CSS animations for GPU acceleration
 export function FloatingHearts({
-  count = 8,
+  count = 6,
   className = "",
 }: {
   count?: number;
@@ -200,6 +219,8 @@ export function FloatingHearts({
       duration: 10 + Math.random() * 10,
       delay: Math.random() * 15,
       color: ["#fca5a5", "#f472b6", "#fb7185", "#fda4af"][Math.floor(Math.random() * 4)],
+      xSwing: Math.sin(i) * 20,
+      rotation: i % 2 ? 20 : -20,
     }));
   }, [count]);
 
@@ -213,31 +234,45 @@ export function FloatingHearts({
       className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
       aria-hidden="true"
     >
+      <style jsx>{`
+        @keyframes floatHeart {
+          0% {
+            transform: translateY(0) translateX(0) rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.6;
+          }
+          50% {
+            transform: translateY(calc(-50vh - 50px)) translateX(var(--x-swing)) rotate(var(--rotation));
+          }
+          90% {
+            opacity: 0.6;
+          }
+          100% {
+            transform: translateY(calc(-100vh - 100px)) translateX(0) rotate(0deg);
+            opacity: 0;
+          }
+        }
+      `}</style>
       {hearts.map((heart) => (
-        <motion.div
+        <div
           key={heart.id}
           className="absolute text-lg"
           style={{
             left: `${heart.x}%`,
+            bottom: -20,
             fontSize: heart.size,
             color: heart.color,
-          }}
-          initial={{ bottom: -20, opacity: 0 }}
-          animate={{
-            bottom: "110%",
-            opacity: [0, 0.6, 0],
-            x: [0, Math.sin(heart.id) * 20, 0],
-            rotate: [0, heart.id % 2 ? 20 : -20, 0],
-          }}
-          transition={{
-            duration: heart.duration,
-            delay: heart.delay,
-            repeat: Infinity,
-            ease: "linear",
+            willChange: "transform, opacity",
+            animation: `floatHeart ${heart.duration}s linear ${heart.delay}s infinite`,
+            // @ts-expect-error CSS custom properties
+            "--x-swing": `${heart.xSwing}px`,
+            "--rotation": `${heart.rotation}deg`,
           }}
         >
           ♥
-        </motion.div>
+        </div>
       ))}
     </div>
   );
