@@ -85,7 +85,7 @@ export function useKeyboardShortcuts({
 
         case "Escape": // Escape - Go back
         case "Backspace":
-          if (onBack && event.key === "Escape") {
+          if (onBack) {
             event.preventDefault();
             onBack();
           }
