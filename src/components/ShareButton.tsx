@@ -19,12 +19,12 @@ export function ShareButton({ text, categoryName, className = "" }: ShareButtonP
 
   return (
     <motion.button
+      type="button"
       onClick={handleShare}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors relative ${className}`}
-      aria-label={canShare ? "Del spørgsmål" : "Kopiér spørgsmål"}
-      title={canShare ? "Del" : "Kopiér"}
+      className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors relative focus:ring-2 focus:ring-violet-400 ${className}`}
+      aria-label={canShare ? "Del spørgsmål" : "Kopiér spørgsmål til udklipsholder"}
     >
       <AnimatePresence mode="wait">
         {copied ? (
@@ -38,6 +38,7 @@ export function ShareButton({ text, categoryName, className = "" }: ShareButtonP
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </motion.svg>
@@ -52,6 +53,7 @@ export function ShareButton({ text, categoryName, className = "" }: ShareButtonP
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"

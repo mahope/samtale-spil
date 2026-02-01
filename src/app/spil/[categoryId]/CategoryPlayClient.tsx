@@ -25,8 +25,8 @@ function DepthIndicator({ depth }: { depth: Question["depth"] }) {
   const { label, dots, color } = config[depth];
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex gap-1">
+    <div className="flex items-center gap-2" role="img" aria-label={`Sværhedsgrad: ${label}`}>
+      <div className="flex gap-1" aria-hidden="true">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
@@ -50,14 +50,16 @@ function FavoriteButton({
 }) {
   return (
     <motion.button
+      type="button"
       onClick={(e) => {
         e.stopPropagation();
         onToggle();
       }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+      className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus:ring-2 focus:ring-rose-400"
       aria-label={isFavorite ? "Fjern fra favoritter" : "Tilføj til favoritter"}
+      aria-pressed={isFavorite}
     >
       <motion.svg
         className="w-6 h-6"
@@ -68,6 +70,7 @@ function FavoriteButton({
         initial={false}
         animate={isFavorite ? { scale: [1, 1.3, 1] } : { scale: 1 }}
         transition={{ duration: 0.3 }}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -97,8 +100,18 @@ function QuestionCard({
   return (
     <div className="perspective-1000 w-full max-w-sm mx-auto">
       <motion.div
-        className="relative w-full h-[400px] cursor-pointer"
+        className="relative w-full h-[400px] cursor-pointer focus:outline-none focus:ring-4 focus:ring-white/50 rounded-3xl"
         onClick={onFlip}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onFlip();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={isFlipped ? `Spørgsmål: ${question.text}. Tryk for at vende kortet` : "Tryk for at se spørgsmålet"}
+        aria-pressed={isFlipped}
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
@@ -108,12 +121,14 @@ function QuestionCard({
         <motion.div
           className="absolute inset-0 w-full h-full backface-hidden"
           style={{ backfaceVisibility: "hidden" }}
+          aria-hidden={isFlipped}
         >
           <div className="w-full h-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 dark:border-white/20 flex flex-col items-center justify-center p-8">
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
               className="text-7xl mb-6"
+              aria-hidden="true"
             >
               🎴
             </motion.div>
@@ -124,6 +139,7 @@ function QuestionCard({
               className="mt-4 flex gap-1"
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
+              aria-hidden="true"
             >
               <span className="text-white/60">•</span>
               <span className="text-white/60">•</span>
@@ -136,6 +152,7 @@ function QuestionCard({
         <motion.div
           className="absolute inset-0 w-full h-full backface-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+          aria-hidden={!isFlipped}
         >
           <div className="w-full h-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-8 relative">
             {/* Top bar with depth, share and favorite */}
@@ -280,12 +297,19 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   // Show loading state while localStorage loads
   if (!progressLoaded || !favoritesLoaded) {
     return (
-      <div className={`min-h-screen bg-gradient-to-br ${category.color} flex items-center justify-center`}>
+      <div 
+        className={`min-h-screen bg-gradient-to-br ${category.color} flex items-center justify-center`}
+        role="status"
+        aria-live="polite"
+        aria-label="Indlæser spørgsmål"
+      >
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
           className="w-8 h-8 border-3 border-white border-t-transparent rounded-full"
+          aria-hidden="true"
         />
+        <span className="sr-only">Indlæser...</span>
       </div>
     );
   }
@@ -298,7 +322,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       className={`min-h-screen bg-gradient-to-br ${category.color} relative overflow-hidden`}
     >
       {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true" role="presentation">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
         <motion.div
@@ -308,16 +332,17 @@ export default function CategoryPlayClient({ categoryId }: Props) {
         />
       </div>
 
-      <main className="relative flex min-h-screen flex-col items-center px-6 py-8">
+      <main id="main-content" className="relative flex min-h-screen flex-col items-center px-6 py-8" role="main">
         {/* Header */}
-        <motion.div
+        <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md flex items-center justify-between mb-8"
         >
           <Link
             href="/spil"
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50 rounded-lg px-2 py-1"
+            aria-label="Tilbage til kategorioversigt"
           >
             <svg
               className="w-5 h-5"
@@ -325,6 +350,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -336,18 +362,18 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           </Link>
 
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{category.emoji}</span>
-            <span className="text-white font-semibold">{category.name}</span>
+            <span className="text-3xl" aria-hidden="true">{category.emoji}</span>
+            <h1 className="text-white font-semibold">{category.name}</h1>
           </div>
 
-          <div className="flex items-center gap-2">
+          <nav className="flex items-center gap-2" aria-label="Hurtighandlinger">
             <ThemeToggle className="text-white" />
             <Link
               href="/favoritter"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/80 hover:text-white transition-colors"
-              title="Se favoritter"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50"
+              aria-label="Se dine gemte favoritter"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -355,16 +381,25 @@ export default function CategoryPlayClient({ categoryId }: Props) {
                 />
               </svg>
             </Link>
-          </div>
-        </motion.div>
+          </nav>
+        </motion.header>
 
         {/* Progress bar */}
         <motion.div
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
           className="w-full max-w-md mb-8"
+          role="region"
+          aria-label="Fremskridt"
         >
-          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+          <div 
+            className="h-2 bg-white/20 rounded-full overflow-hidden"
+            role="progressbar"
+            aria-valuenow={answeredCount}
+            aria-valuemin={0}
+            aria-valuemax={totalQuestions}
+            aria-label={`${answeredCount} af ${totalQuestions} spørgsmål besvaret`}
+          >
             <motion.div
               className="h-full bg-white/80 rounded-full"
               initial={{ width: 0 }}
@@ -372,14 +407,16 @@ export default function CategoryPlayClient({ categoryId }: Props) {
               transition={{ duration: 0.5, ease: "easeOut" }}
             />
           </div>
-          <div className="flex justify-between mt-2 text-white/60 text-xs">
+          <div className="flex justify-between mt-2 text-white/80 text-xs">
             <button
+              type="button"
               onClick={handleResetProgress}
-              className="hover:text-white/90 transition-colors underline"
+              className="hover:text-white transition-colors underline focus:ring-2 focus:ring-white/50 rounded px-1"
+              aria-label="Nulstil fremskridt for denne kategori"
             >
               Nulstil
             </button>
-            <span>
+            <span aria-live="polite">
               {answeredCount} / {totalQuestions} spørgsmål
             </span>
           </div>
@@ -418,11 +455,14 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           className="mt-8 w-full max-w-sm"
         >
           <motion.button
+            type="button"
             onClick={handleNextQuestion}
             disabled={isTransitioning}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full px-8 py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            className="w-full px-8 py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus:ring-4 focus:ring-white/50"
+            aria-label="Gå til næste spørgsmål"
+            aria-busy={isTransitioning}
           >
             <span>Næste spørgsmål</span>
             <svg
@@ -431,6 +471,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -440,8 +481,8 @@ export default function CategoryPlayClient({ categoryId }: Props) {
             </svg>
           </motion.button>
 
-          <p className="text-center text-white/60 text-sm mt-4">
-            Tryk på kortet for at vende det • ❤️ for at gemme • 📤 for at dele
+          <p className="text-center text-white/80 text-sm mt-4">
+            Tryk på kortet for at vende det <span aria-hidden="true">•</span> <span aria-hidden="true">❤️</span> for at gemme <span aria-hidden="true">•</span> <span aria-hidden="true">📤</span> for at dele
           </p>
         </motion.div>
       </main>

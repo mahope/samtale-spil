@@ -54,18 +54,27 @@ function CategoryCard({
       }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={`relative group w-full aspect-square rounded-3xl bg-gradient-to-br ${category.color} p-6 text-white shadow-lg hover:shadow-2xl transition-shadow overflow-hidden`}
+      type="button"
+      aria-label={`${category.name}: ${category.description}. ${hasProgress ? `${progress.answered} af ${progress.total} besvaret` : `${category.questions.length} spørgsmål`}`}
+      className={`relative group w-full aspect-square rounded-3xl bg-gradient-to-br ${category.color} p-6 text-white shadow-lg hover:shadow-2xl transition-shadow overflow-hidden focus:ring-4 focus:ring-white/50`}
     >
       {/* Background glow effect */}
-      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
       
       {/* Decorative circles */}
-      <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full" />
-      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full" />
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full" aria-hidden="true" />
+      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full" aria-hidden="true" />
       
       {/* Progress bar at bottom */}
       {hasProgress && (
-        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/20">
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/20"
+          role="progressbar"
+          aria-valuenow={progress.answered}
+          aria-valuemin={0}
+          aria-valuemax={progress.total}
+          aria-label={`Fremskridt: ${progress.answered} af ${progress.total} spørgsmål besvaret`}
+        >
           <motion.div
             className="h-full bg-white/80"
             initial={{ width: 0 }}
@@ -81,14 +90,15 @@ function CategoryCard({
           className="text-5xl mb-3"
           whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
           transition={{ duration: 0.5 }}
+          aria-hidden="true"
         >
           {category.emoji}
         </motion.span>
         <h3 className="text-xl font-bold mb-2">{category.name}</h3>
-        <p className="text-sm text-white/80 leading-tight">
+        <p className="text-sm text-white/90 leading-tight">
           {category.description}
         </p>
-        <div className="mt-3 text-xs text-white/60">
+        <div className="mt-3 text-xs text-white/80">
           {hasProgress ? (
             <span className="flex items-center gap-1">
               <span>{progress.answered}/{progress.total}</span>
@@ -116,18 +126,19 @@ export default function SpilPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <main className="flex min-h-screen flex-col px-6 py-12">
+      <main id="main-content" className="flex min-h-screen flex-col px-6 py-12" role="main">
         {/* Header */}
-        <motion.div
+        <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-12"
         >
-          <div className="flex items-center justify-center gap-4 mb-6">
+          <nav className="flex items-center justify-center gap-4 mb-6" aria-label="Hovednavigation">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+              className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 rounded-lg px-2 py-1"
+              aria-label="Gå til forsiden"
             >
               <svg
                 className="w-5 h-5"
@@ -135,6 +146,7 @@ export default function SpilPage() {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 strokeWidth={2}
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -150,15 +162,16 @@ export default function SpilPage() {
             {favorites.length > 0 && (
               <Link
                 href="/favoritter"
-                className="inline-flex items-center gap-2 text-rose-500 hover:text-rose-600 transition-colors"
+                className="inline-flex items-center gap-2 text-rose-500 hover:text-rose-600 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 rounded-lg px-2 py-1"
+                aria-label={`Se dine ${favorites.length} gemte favoritter`}
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 {favorites.length} favoritter
               </Link>
             )}
-          </div>
+          </nav>
           
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-rose-500 via-violet-500 to-blue-500 bg-clip-text text-transparent mb-4">
             Vælg en kategori
@@ -166,7 +179,7 @@ export default function SpilPage() {
           <p className="text-lg text-slate-600 dark:text-slate-400">
             Hvad vil I tale om i aften?
           </p>
-        </motion.div>
+        </motion.header>
 
         {/* Category Grid */}
         <motion.div
@@ -199,12 +212,14 @@ export default function SpilPage() {
           className="text-center mt-12"
         >
           <button
+            type="button"
             onClick={() => {
               const randomCategory =
                 categories[Math.floor(Math.random() * categories.length)];
               handleCategorySelect(randomCategory);
             }}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-semibold hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-slate-800 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-semibold hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl focus:ring-4 focus:ring-slate-300 dark:focus:ring-slate-600"
+            aria-label="Vælg en tilfældig kategori"
           >
             <svg
               className="w-5 h-5"
@@ -212,6 +227,7 @@ export default function SpilPage() {
               viewBox="0 0 24 24"
               stroke="currentColor"
               strokeWidth={2}
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"

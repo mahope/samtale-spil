@@ -143,6 +143,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} antialiased`}>
+        <a href="#main-content" className="skip-link">
+          Spring til hovedindhold
+        </a>
         {children}
         <ServiceWorkerRegistration />
       </body>

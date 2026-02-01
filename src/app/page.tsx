@@ -17,7 +17,7 @@ export default function Home() {
         <ThemeToggle className="text-slate-600 dark:text-slate-400" />
       </motion.div>
 
-      <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
+      <main id="main-content" className="flex min-h-screen flex-col items-center justify-center px-6 py-12" role="main">
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -31,6 +31,7 @@ export default function Home() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-8"
+            aria-hidden="true"
           >
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-400 to-violet-500 shadow-lg">
               <svg
@@ -39,6 +40,7 @@ export default function Home() {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 strokeWidth={1.5}
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -88,7 +90,8 @@ export default function Home() {
           >
             <Link
               href="/spil"
-              className="inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-violet-500 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-violet-500 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800"
+              aria-label="Start samtalen - gå til kategorivalg"
             >
               Start samtalen
               <svg
@@ -97,6 +100,7 @@ export default function Home() {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 strokeWidth={2}
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -112,9 +116,9 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 0.6 }}
-            className="text-sm text-slate-400 dark:text-slate-500 mt-6"
+            className="text-sm text-slate-500 dark:text-slate-400 mt-6"
           >
-            💡 Installer appen på din telefon for offline adgang
+            <span aria-hidden="true">💡</span> Installer appen på din telefon for offline adgang
           </motion.p>
         </motion.div>
 
@@ -124,6 +128,8 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
           className="mt-16 flex gap-4 perspective-1000"
+          aria-hidden="true"
+          role="presentation"
         >
           {[
             { color: "from-rose-400 to-rose-500", rotation: -12 },
@@ -146,9 +152,9 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.6 }}
-          className="absolute bottom-6 text-sm text-slate-400 dark:text-slate-500"
+          className="absolute bottom-6 text-sm text-slate-500 dark:text-slate-400"
         >
-          Skabt med ❤️ for bedre samtaler
+          Skabt med <span aria-label="kærlighed">❤️</span> for bedre samtaler
         </motion.footer>
       </main>
     </div>
