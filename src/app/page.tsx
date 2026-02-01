@@ -1,13 +1,11 @@
 "use client";
 
-import { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PageTransition } from "@/components/PageTransition";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
 import { LazyDailyChallenge, LazyRecommendations, LazyCustomQuestionsBanner } from "@/components/LazyComponents";
-import { DecorativeCard } from "@/components/OptimizedComponents";
 import { FloatingParticles } from "@/components/FloatingParticles";
 
 export default function Home() {
