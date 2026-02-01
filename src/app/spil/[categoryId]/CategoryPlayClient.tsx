@@ -3,13 +3,14 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
 import { notFound } from "next/navigation";
 import type { Question } from "@/types";
 import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter, useQuestionHistory } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { useStreak } from "@/hooks/useStreak";
+import { useKeyboardShortcuts, KeyboardShortcutHints } from "@/hooks/useKeyboardShortcuts";
 import { ShareButton } from "@/components/ShareButton";
 import { StreakBadge, StreakCelebration } from "@/components/StreakDisplay";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -200,6 +201,7 @@ function QuestionCard({
 export default function CategoryPlayClient({ categoryId }: Props) {
   const category = getCategory(categoryId);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialQuestionId = searchParams.get("question") ?? undefined;
   
   const { isFavorite, toggleFavorite, isLoaded: favoritesLoaded } = useFavorites();
@@ -394,6 +396,20 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       depth: currentQuestion.depth,
     });
   }, [currentQuestion, toggleFavorite, playSuccess]);
+
+  // Handle going back to category list
+  const handleBack = useCallback(() => {
+    router.push("/spil");
+  }, [router]);
+
+  // Keyboard shortcuts for better navigation
+  useKeyboardShortcuts({
+    onFlip: handleFlip,
+    onNext: handleNextQuestion,
+    onToggleFavorite: handleToggleFavorite,
+    onBack: handleBack,
+    enabled: !isTransitioning,
+  });
 
   if (!category) {
     notFound();
@@ -689,9 +705,15 @@ export default function CategoryPlayClient({ categoryId }: Props) {
             </motion.svg>
           </motion.button>
 
-          <p className="text-center text-white/80 text-sm mt-4">
-            Tryk på kortet for at vende det <span aria-hidden="true">•</span> <span aria-hidden="true">❤️</span> for at gemme <span aria-hidden="true">•</span> <span aria-hidden="true">📤</span> for at dele
+          {/* Mobile hint */}
+          <p className="text-center text-white/80 text-sm mt-4 sm:hidden">
+            Tryk på kortet for at vende det <span aria-hidden="true">•</span> <span aria-hidden="true">❤️</span> for at gemme
           </p>
+          
+          {/* Desktop keyboard shortcuts hint */}
+          <div className="hidden sm:block mt-4">
+            <KeyboardShortcutHints className="text-white/70" />
+          </div>
         </motion.div>
       </main>
       </div>
