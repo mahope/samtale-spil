@@ -414,7 +414,7 @@ export default function StatistikPage() {
     };
   }, [favorites, progress, progressLoaded, favoritesLoaded]);
 
-  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded;
+  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded && dailyChallengeLoaded;
 
   if (!isLoaded) {
     return (
@@ -433,7 +433,7 @@ export default function StatistikPage() {
     );
   }
 
-  const hasActivity = stats && (stats.totalAnswered > 0 || favorites.length > 0);
+  const hasActivity = stats && (stats.totalAnswered > 0 || favorites.length > 0 || totalChallengesCompleted > 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
@@ -486,6 +486,56 @@ export default function StatistikPage() {
               </h2>
               <StreakDisplay />
             </section>
+
+            {/* Daily Challenge Stats */}
+            {totalChallengesCompleted > 0 && (
+              <section className="mb-8" aria-labelledby="daily-challenge-heading">
+                <motion.h2
+                  id="daily-challenge-heading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+                >
+                  <span aria-hidden="true">🎯</span>
+                  Daily Challenge
+                </motion.h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <StatCard
+                    icon="🎯"
+                    label="Challenges klaret"
+                    value={totalChallengesCompleted}
+                    subtext="daglige udfordringer"
+                    gradient="from-violet-500 to-purple-600"
+                    delay={0}
+                  />
+                  <StatCard
+                    icon="⭐"
+                    label="Bonus points"
+                    value={totalBonusPoints}
+                    subtext="points optjent"
+                    gradient="from-amber-400 to-orange-500"
+                    delay={0.1}
+                  />
+                  <StatCard
+                    icon="🔥"
+                    label="Challenge streak"
+                    value={dailyChallengeStreak}
+                    subtext={`rekord: ${dailyChallengeLongestStreak}`}
+                    gradient="from-orange-500 to-red-500"
+                    delay={0.2}
+                  />
+                  <StatCard
+                    icon="🏆"
+                    label="Gennemsnit"
+                    value={`${Math.round(totalBonusPoints / totalChallengesCompleted)}p`}
+                    subtext="per challenge"
+                    gradient="from-emerald-400 to-teal-500"
+                    delay={0.3}
+                  />
+                </div>
+              </section>
+            )}
 
             {/* Overview Stats */}
             <section className="mb-8" aria-labelledby="overview-heading">

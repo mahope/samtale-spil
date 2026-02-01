@@ -69,9 +69,7 @@ export function DailyChallenge() {
   return (
     <>
       {/* Confetti celebration */}
-      <AnimatePresence>
-        {showCelebration && <Confetti />}
-      </AnimatePresence>
+      <Confetti isActive={showCelebration} />
 
       <motion.section
         initial={{ opacity: 0, y: 30 }}
