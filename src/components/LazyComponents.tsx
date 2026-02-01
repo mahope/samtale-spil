@@ -114,3 +114,8 @@ function RecommendationsSkeleton() {
     </div>
   );
 }
+
+export const LazyCustomQuestionsBanner = dynamic(
+  () => import("./CustomQuestionsBanner").then((mod) => ({ default: mod.CustomQuestionsBanner })),
+  { ssr: false }
+);

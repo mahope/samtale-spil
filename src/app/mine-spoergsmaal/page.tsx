@@ -1,0 +1,539 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import {
+  useCustomQuestions,
+  CustomQuestion,
+  CATEGORY_TAGS,
+} from "@/hooks/useCustomQuestions";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+// Depth options
+const DEPTH_OPTIONS = [
+  { id: "let" as const, label: "Let", emoji: "🟢", color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300" },
+  { id: "medium" as const, label: "Medium", emoji: "🟡", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300" },
+  { id: "dyb" as const, label: "Dyb", emoji: "🔴", color: "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" },
+];
+
+// Question form component
+function QuestionForm({
+  onSubmit,
+  initialValues,
+  onCancel,
+  submitLabel = "Opret spørgsmål",
+}: {
+  onSubmit: (data: {
+    text: string;
+    depth: "let" | "medium" | "dyb";
+    categoryTag?: string;
+  }) => void;
+  initialValues?: {
+    text: string;
+    depth: "let" | "medium" | "dyb";
+    categoryTag?: string;
+  };
+  onCancel?: () => void;
+  submitLabel?: string;
+}) {
+  const [text, setText] = useState(initialValues?.text || "");
+  const [depth, setDepth] = useState<"let" | "medium" | "dyb">(
+    initialValues?.depth || "medium"
+  );
+  const [categoryTag, setCategoryTag] = useState(
+    initialValues?.categoryTag || ""
+  );
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (text.trim().length < 10) {
+      setError("Spørgsmålet skal være mindst 10 tegn");
+      return;
+    }
+    
+    if (text.trim().length > 500) {
+      setError("Spørgsmålet må højst være 500 tegn");
+      return;
+    }
+
+    onSubmit({
+      text: text.trim(),
+      depth,
+      categoryTag: categoryTag || undefined,
+    });
+
+    // Reset form if not editing
+    if (!initialValues) {
+      setText("");
+      setDepth("medium");
+      setCategoryTag("");
+    }
+    setError(null);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Question text */}
+      <div>
+        <label
+          htmlFor="question-text"
+          className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
+        >
+          Dit spørgsmål
+        </label>
+        <textarea
+          id="question-text"
+          value={text}
+          onChange={(e) => {
+            setText(e.target.value);
+            setError(null);
+          }}
+          placeholder="Skriv dit samtalespørgsmål her..."
+          rows={3}
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-violet-400 focus:border-transparent transition-all resize-none"
+          required
+        />
+        <div className="flex justify-between mt-1">
+          {error && (
+            <p className="text-red-500 text-xs">{error}</p>
+          )}
+          <p className="text-slate-400 text-xs ml-auto">
+            {text.length}/500
+          </p>
+        </div>
+      </div>
+
+      {/* Depth selection */}
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          Dybde
+        </label>
+        <div className="flex gap-2">
+          {DEPTH_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => setDepth(option.id)}
+              className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-1.5 ${
+                depth === option.id
+                  ? option.color + " ring-2 ring-offset-2 ring-slate-400 dark:ring-slate-600"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+              }`}
+            >
+              <span>{option.emoji}</span>
+              <span>{option.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category tag */}
+      <div>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          Kategori (valgfrit)
+        </label>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setCategoryTag("")}
+            className={`py-1.5 px-3 rounded-full text-xs font-medium transition-all ${
+              categoryTag === ""
+                ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+            }`}
+          >
+            Ingen
+          </button>
+          {CATEGORY_TAGS.map((tag) => (
+            <button
+              key={tag.id}
+              type="button"
+              onClick={() => setCategoryTag(tag.id)}
+              className={`py-1.5 px-3 rounded-full text-xs font-medium transition-all flex items-center gap-1 ${
+                categoryTag === tag.id
+                  ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+              }`}
+            >
+              <span>{tag.emoji}</span>
+              <span>{tag.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Submit button */}
+      <div className="flex gap-2 pt-2">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 py-3 px-4 rounded-xl font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all"
+          >
+            Annuller
+          </button>
+        )}
+        <motion.button
+          type="submit"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex-1 py-3 px-4 rounded-xl font-medium bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all"
+        >
+          {submitLabel}
+        </motion.button>
+      </div>
+    </form>
+  );
+}
+
+// Question card component
+function QuestionCard({
+  question,
+  onEdit,
+  onDelete,
+}: {
+  question: CustomQuestion;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const depthConfig = DEPTH_OPTIONS.find((d) => d.id === question.depth);
+  const tagConfig = CATEGORY_TAGS.find((t) => t.id === question.categoryTag);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  return (
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-md border border-slate-100 dark:border-slate-700"
+    >
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          {tagConfig && (
+            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center gap-1">
+              <span>{tagConfig.emoji}</span>
+              <span>{tagConfig.label}</span>
+            </span>
+          )}
+          {depthConfig && (
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${depthConfig.color}`}>
+              {depthConfig.emoji} {depthConfig.label}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <motion.button
+            type="button"
+            onClick={onEdit}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            aria-label="Rediger spørgsmål"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </motion.button>
+          <motion.button
+            type="button"
+            onClick={() => setShowDeleteConfirm(true)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-1.5 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 hover:text-red-500 transition-colors"
+            aria-label="Slet spørgsmål"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </motion.button>
+        </div>
+      </div>
+
+      <p className="text-slate-800 dark:text-slate-100 text-lg leading-relaxed">
+        {question.text}
+      </p>
+
+      <p className="text-slate-400 dark:text-slate-500 text-xs mt-3">
+        Oprettet {new Date(question.createdAt).toLocaleDateString("da-DK", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })}
+      </p>
+
+      {/* Delete confirmation */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700"
+          >
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              Er du sikker på du vil slette dette spørgsmål?
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 py-2 px-3 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all"
+              >
+                Annuller
+              </button>
+              <button
+                onClick={onDelete}
+                className="flex-1 py-2 px-3 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-all"
+              >
+                Ja, slet
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.article>
+  );
+}
+
+// Empty state
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-center py-12"
+    >
+      <motion.div
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        className="text-6xl mb-4"
+      >
+        ✍️
+      </motion.div>
+      <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2">
+        Ingen spørgsmål endnu
+      </h2>
+      <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+        Opret dit første spørgsmål ovenfor for at komme i gang!
+      </p>
+    </motion.div>
+  );
+}
+
+export default function MineSpoergsmaalPage() {
+  const {
+    questions,
+    addQuestion,
+    updateQuestion,
+    deleteQuestion,
+    stats,
+    isLoaded,
+  } = useCustomQuestions();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(true);
+
+  const editingQuestion = editingId
+    ? questions.find((q) => q.id === editingId)
+    : null;
+
+  const handleSubmit = (data: {
+    text: string;
+    depth: "let" | "medium" | "dyb";
+    categoryTag?: string;
+  }) => {
+    if (editingId) {
+      updateQuestion(editingId, data);
+      setEditingId(null);
+    } else {
+      addQuestion(data);
+    }
+  };
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900 flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          className="w-8 h-8 border-3 border-violet-400 border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
+      <main className="max-w-2xl mx-auto px-6 py-8">
+        {/* Header */}
+        <motion.header
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between mb-8"
+        >
+          <Link
+            href="/spil"
+            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11 17l-5-5m0 0l5-5m-5 5h12"
+              />
+            </svg>
+            <span>Tilbage</span>
+          </Link>
+
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <span>✍️</span>
+            <span>Mine Spørgsmål</span>
+          </h1>
+
+          <ThemeToggle className="text-slate-600 dark:text-slate-400" />
+        </motion.header>
+
+        {/* Stats banner */}
+        {stats.total > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-gradient-to-r from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 rounded-xl"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-slate-700 dark:text-slate-200 font-medium">
+                {stats.total} {stats.total === 1 ? "spørgsmål" : "spørgsmål"} oprettet
+              </span>
+              <div className="flex gap-2 text-xs">
+                <span className="text-green-600 dark:text-green-400">
+                  🟢 {stats.byDepth.let}
+                </span>
+                <span className="text-yellow-600 dark:text-yellow-400">
+                  🟡 {stats.byDepth.medium}
+                </span>
+                <span className="text-red-600 dark:text-red-400">
+                  🔴 {stats.byDepth.dyb}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Create/Edit form */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
+              <span>✨</span>
+              <span>{editingId ? "Rediger spørgsmål" : "Opret nyt spørgsmål"}</span>
+            </h2>
+            {!editingId && questions.length > 0 && (
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="text-sm text-violet-600 dark:text-violet-400 hover:underline"
+              >
+                {showForm ? "Skjul formular" : "Vis formular"}
+              </button>
+            )}
+          </div>
+
+          <AnimatePresence>
+            {(showForm || editingId) && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-slate-100 dark:border-slate-700"
+              >
+                <QuestionForm
+                  onSubmit={handleSubmit}
+                  initialValues={
+                    editingQuestion
+                      ? {
+                          text: editingQuestion.text,
+                          depth: editingQuestion.depth,
+                          categoryTag: editingQuestion.categoryTag,
+                        }
+                      : undefined
+                  }
+                  onCancel={editingId ? () => setEditingId(null) : undefined}
+                  submitLabel={editingId ? "Gem ændringer" : "Opret spørgsmål"}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.section>
+
+        {/* Questions list */}
+        <section>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+            <span>📋</span>
+            <span>Dine spørgsmål</span>
+            {questions.length > 0 && (
+              <span className="text-sm font-normal text-slate-400">
+                ({questions.length})
+              </span>
+            )}
+          </h2>
+
+          {questions.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <motion.div layout className="space-y-4">
+              <AnimatePresence>
+                {questions
+                  .sort((a, b) => b.createdAt - a.createdAt)
+                  .map((question) => (
+                    <QuestionCard
+                      key={question.id}
+                      question={question}
+                      onEdit={() => {
+                        setEditingId(question.id);
+                        setShowForm(true);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      onDelete={() => deleteQuestion(question.id)}
+                    />
+                  ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </section>
+
+        {/* Play button if has questions */}
+        {questions.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8 text-center"
+          >
+            <Link
+              href="/spil/custom"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity shadow-lg"
+            >
+              <span>Spil med dine spørgsmål</span>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </motion.div>
+        )}
+
+        <div className="h-8" />
+      </main>
+    </div>
+  );
+}

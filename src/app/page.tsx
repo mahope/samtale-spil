@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PageTransition } from "@/components/PageTransition";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
-import { LazyDailyChallenge, LazyRecommendations } from "@/components/LazyComponents";
+import { LazyDailyChallenge, LazyRecommendations, LazyCustomQuestionsBanner } from "@/components/LazyComponents";
 import { DecorativeCard } from "@/components/OptimizedComponents";
 
 export default function Home() {
@@ -143,6 +143,9 @@ export default function Home() {
 
         {/* Personalized Recommendations - Lazy loaded */}
         <LazyRecommendations />
+
+        {/* Custom Questions Banner - Lazy loaded */}
+        <LazyCustomQuestionsBanner />
 
         {/* Decorative Cards Preview */}
         <motion.div

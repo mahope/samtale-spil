@@ -1,4 +1,4 @@
-import { Category } from "@/types";
+import { Category, Question } from "@/types";
 
 export const categories: Category[] = [
   {
@@ -673,4 +673,42 @@ export function getQuestionById(questionId: string) {
     }
   }
   return null;
+}
+
+// Get all questions including custom questions (for shuffle-all mode)
+export function getAllQuestionsWithCustom(
+  customQuestions: Question[] = [],
+  difficultyFilter: DifficultyFilter = "alle"
+) {
+  const allQuestions = [...getAllQuestions(difficultyFilter), ...customQuestions];
+  if (difficultyFilter === "alle") return allQuestions;
+  return allQuestions.filter((q) => q.depth === difficultyFilter);
+}
+
+// Get a random question from all categories including custom
+export function getRandomQuestionFromAllWithCustom(
+  customQuestions: Question[] = [],
+  excludeIds: string[] = [],
+  difficultyFilter: DifficultyFilter = "alle"
+) {
+  const allQuestions = getAllQuestionsWithCustom(customQuestions, difficultyFilter);
+  const availableQuestions = allQuestions.filter(
+    (q) => !excludeIds.includes(q.id)
+  );
+  
+  if (availableQuestions.length === 0) return null;
+  
+  const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+  return availableQuestions[randomIndex];
+}
+
+// Get total count including custom questions
+export function getTotalQuestionCountWithCustom(
+  customQuestions: Question[] = [],
+  difficultyFilter: DifficultyFilter = "alle"
+) {
+  return getTotalQuestionCount(difficultyFilter) + 
+    (difficultyFilter === "alle" 
+      ? customQuestions.length 
+      : customQuestions.filter(q => q.depth === difficultyFilter).length);
 }

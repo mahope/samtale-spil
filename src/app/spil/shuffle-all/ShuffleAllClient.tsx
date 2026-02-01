@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
-import { getCategory, getRandomQuestionFromAll, getTotalQuestionCount } from "@/data/categories";
+import { getCategory, getRandomQuestionFromAllWithCustom, getTotalQuestionCountWithCustom } from "@/data/categories";
+import { useCustomQuestions } from "@/hooks/useCustomQuestions";
 import type { Question } from "@/types";
 import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
@@ -228,6 +229,7 @@ export default function ShuffleAllClient() {
   const { filter: difficultyFilter, setFilter: setDifficultyFilter, isLoaded: filterLoaded } = useDifficultyFilter();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
   const { recordActivity, currentStreak } = useStreak();
+  const { questionsForGame: customQuestions, isLoaded: customLoaded } = useCustomQuestions();
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
@@ -238,13 +240,13 @@ export default function ShuffleAllClient() {
   const [hasShownCelebration, setHasShownCelebration] = useState(false);
   const [timerKey, setTimerKey] = useState(0);
 
-  const totalQuestions = getTotalQuestionCount();
-  const filteredQuestionCount = getTotalQuestionCount(difficultyFilter);
+  const totalQuestions = getTotalQuestionCountWithCustom(customQuestions);
+  const filteredQuestionCount = getTotalQuestionCountWithCustom(customQuestions, difficultyFilter);
   const activeQuestionCount = filteredQuestionCount > 0 ? filteredQuestionCount : totalQuestions;
 
   // Initialize from saved progress
   useEffect(() => {
-    if (!progressLoaded || !filterLoaded) return;
+    if (!progressLoaded || !filterLoaded || !customLoaded) return;
     
     const savedProgress = getCategoryProgress(SHUFFLE_ALL_ID);
     if (savedProgress.answeredIds.length > 0) {
@@ -256,9 +258,9 @@ export default function ShuffleAllClient() {
     const excludeIds = savedProgress.answeredIds.length >= activeQuestionCount 
       ? [] 
       : savedProgress.answeredIds;
-    const firstQuestion = getRandomQuestionFromAll(excludeIds, difficultyFilter);
+    const firstQuestion = getRandomQuestionFromAllWithCustom(customQuestions, excludeIds, difficultyFilter);
     setCurrentQuestion(firstQuestion);
-  }, [progressLoaded, filterLoaded, activeQuestionCount, getCategoryProgress, difficultyFilter]);
+  }, [progressLoaded, filterLoaded, customLoaded, activeQuestionCount, getCategoryProgress, difficultyFilter, customQuestions]);
 
   // Check for completion
   useEffect(() => {
@@ -313,7 +315,7 @@ export default function ShuffleAllClient() {
       }
 
       const idsToExclude = isComplete ? [] : newAskedIds;
-      const nextQuestion = getRandomQuestionFromAll(idsToExclude, difficultyFilter);
+      const nextQuestion = getRandomQuestionFromAllWithCustom(customQuestions, idsToExclude, difficultyFilter);
 
       if (nextQuestion) {
         setAskedQuestionIds(
@@ -336,6 +338,7 @@ export default function ShuffleAllClient() {
     playTap,
     triggerConfetti,
     difficultyFilter,
+    customQuestions,
   ]);
 
   const handleTimerTimeout = useCallback(() => {
@@ -353,10 +356,10 @@ export default function ShuffleAllClient() {
     setAskedQuestionIds([]);
     setAnsweredCount(0);
     setHasShownCelebration(false);
-    const firstQuestion = getRandomQuestionFromAll([], difficultyFilter);
+    const firstQuestion = getRandomQuestionFromAllWithCustom(customQuestions, [], difficultyFilter);
     setCurrentQuestion(firstQuestion);
     setIsFlipped(false);
-  }, [resetCategory, difficultyFilter]);
+  }, [resetCategory, difficultyFilter, customQuestions]);
 
   const handleDismissCelebration = useCallback(() => {
     setShowCelebration(false);
