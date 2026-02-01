@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { GameRoom, Player } from "@/types/multiplayer";
+import { SPEED_ROUND_CONFIG } from "@/types/multiplayer";
 import { getCategory, getRandomQuestion } from "@/data/categories";
 import type { Question } from "@/types";
 import { useFavorites } from "@/hooks/useLocalStorage";
@@ -20,7 +21,7 @@ interface MultiplayerGameProps {
   isMyTurn: boolean;
   currentTurnPlayer: Player | undefined;
   isCardFlipped: boolean;
-  onNextQuestion: (questionId: string, questionIndex: number) => void;
+  onNextQuestion: (questionId: string, questionIndex: number, speedBonus?: number) => void;
   onToggleCardFlip: (questionId: string) => void;
   onToggleFavorite: (questionId: string, isFavorite: boolean) => void;
   onLeaveRoom: () => void;
@@ -71,13 +72,15 @@ export function MultiplayerGame({
     : null;
 
   const { isFavorite, toggleFavorite: toggleLocalFavorite } = useFavorites();
-  const { playFlip, playSuccess, playTap, playTimeout, playTick } = useSound();
+  const { playFlip, playSuccess, playTap, playTimeout, playTick, playSpeedTick, playSpeedBonus } = useSound();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [timerKey, setTimerKey] = useState(0);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [showSpeedBonus, setShowSpeedBonus] = useState<number | null>(null);
+  const [questionStartTime, setQuestionStartTime] = useState<number | null>(null);
 
   // Refs to track initialization and prevent stale closures
   const hasInitializedRef = useRef(false);
@@ -126,7 +129,12 @@ export function MultiplayerGame({
 
     playFlip();
     onToggleCardFlip(currentQuestion.id);
-  }, [currentQuestion, room.settings.turnOrderMode, isMyTurn, playFlip, onToggleCardFlip]);
+    
+    // Start timing for speed bonus (only on first flip)
+    if (!isCardFlipped && room.settings.speedRound) {
+      setQuestionStartTime(Date.now());
+    }
+  }, [currentQuestion, room.settings.turnOrderMode, room.settings.speedRound, isMyTurn, isCardFlipped, playFlip, onToggleCardFlip]);
 
   const handleNextQuestion = useCallback(() => {
     if (!category) return;
@@ -137,6 +145,30 @@ export function MultiplayerGame({
     }
 
     playTap();
+
+    // Calculate speed bonus if in speed round mode
+    let speedBonus = 0;
+    if (room.settings.speedRound && questionStartTime && isCardFlipped) {
+      const elapsedSeconds = (Date.now() - questionStartTime) / 1000;
+      
+      // Find applicable bonus threshold
+      for (const threshold of SPEED_ROUND_CONFIG.bonusThresholds) {
+        if (elapsedSeconds <= threshold.maxTime) {
+          speedBonus = threshold.bonus;
+          break;
+        }
+      }
+      
+      // Show bonus animation if earned
+      if (speedBonus > 0) {
+        setShowSpeedBonus(speedBonus);
+        playSpeedBonus(); // Special celebration sound for speed bonus
+        setTimeout(() => setShowSpeedBonus(null), 1500);
+      }
+    }
+
+    // Reset question start time
+    setQuestionStartTime(null);
 
     // Get next question
     const answeredIds = currentQuestion
@@ -155,7 +187,7 @@ export function MultiplayerGame({
     const nextQuestion = getRandomQuestion(category.id, idsToExclude);
 
     if (nextQuestion) {
-      onNextQuestion(nextQuestion.id, room.gameState.currentQuestionIndex + 1);
+      onNextQuestion(nextQuestion.id, room.gameState.currentQuestionIndex + 1, speedBonus);
     }
   }, [
     category,
@@ -163,9 +195,13 @@ export function MultiplayerGame({
     room.gameState.answeredQuestionIds,
     room.gameState.currentQuestionIndex,
     room.settings.turnOrderMode,
+    room.settings.speedRound,
+    questionStartTime,
+    isCardFlipped,
     isMyTurn,
     isHost,
     playTap,
+    playSpeedBonus,
     triggerConfetti,
     onNextQuestion,
   ]);
@@ -199,11 +235,14 @@ export function MultiplayerGame({
 
   const handleTimerTick = useCallback(
     (secondsLeft: number) => {
-      if (secondsLeft <= 5) {
+      if (room.settings.speedRound) {
+        // In speed mode, play tick for all remaining seconds
+        playSpeedTick(secondsLeft);
+      } else if (secondsLeft <= 5) {
         playTick();
       }
     },
-    [playTick]
+    [room.settings.speedRound, playTick, playSpeedTick]
   );
 
   if (!category || !currentQuestion) {
@@ -299,6 +338,8 @@ export function MultiplayerGame({
               currentTurnPlayerId={room.gameState.currentTurnPlayerId}
               currentPlayerId={currentPlayerId}
               scores={room.gameState.scores}
+              speedBonuses={room.gameState.speedBonuses}
+              speedRound={room.settings.speedRound}
               compact
             />
           </motion.div>
@@ -319,6 +360,46 @@ export function MultiplayerGame({
             </motion.div>
           )}
 
+          {/* Speed Round Indicator */}
+          {room.settings.speedRound && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex justify-center mb-2"
+            >
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                  boxShadow: [
+                    "0 0 0 rgba(251, 146, 60, 0)",
+                    "0 0 20px rgba(251, 146, 60, 0.5)",
+                    "0 0 0 rgba(251, 146, 60, 0)"
+                  ]
+                }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center gap-2"
+              >
+                <motion.span
+                  animate={{ rotate: [0, -15, 15, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 0.5 }}
+                  className="text-xl"
+                >
+                  ⚡
+                </motion.span>
+                <span className="text-white font-bold text-sm uppercase tracking-wider">
+                  Speed Round!
+                </span>
+                <motion.span
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 0.5 }}
+                  className="text-xl"
+                >
+                  ⚡
+                </motion.span>
+              </motion.div>
+            </motion.div>
+          )}
+
           {/* Timer */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -327,13 +408,44 @@ export function MultiplayerGame({
           >
             <TimerDisplay
               key={timerKey}
-              duration={room.settings.turnDuration}
+              duration={room.settings.speedRound ? SPEED_ROUND_CONFIG.turnDuration : room.settings.turnDuration}
               isActive={isCardFlipped && (isMyTurn || room.settings.turnOrderMode === "free")}
               onTimeout={handleTimerTimeout}
               onTick={handleTimerTick}
               isPaused={!isCardFlipped}
+              speedMode={room.settings.speedRound}
             />
           </motion.div>
+
+          {/* Speed Bonus Popup */}
+          <AnimatePresence>
+            {showSpeedBonus !== null && (
+              <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.5 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.5 }}
+                className="fixed top-1/3 left-1/2 -translate-x-1/2 z-50"
+              >
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    rotate: [-5, 5, -5, 5, 0]
+                  }}
+                  transition={{ duration: 0.5 }}
+                  className="px-6 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl shadow-2xl"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl">🔥</span>
+                    <div className="text-white">
+                      <p className="text-2xl font-black">+{showSpeedBonus} BONUS!</p>
+                      <p className="text-sm opacity-90">Hurtig reaktion!</p>
+                    </div>
+                    <span className="text-4xl">⚡</span>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Question Card */}
           <div className="flex-1 flex items-center justify-center">

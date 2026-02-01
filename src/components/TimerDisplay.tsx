@@ -10,6 +10,7 @@ interface TimerDisplayProps {
   onTimeout: () => void;
   onTick?: (secondsLeft: number) => void;
   isPaused?: boolean;
+  speedMode?: boolean;
 }
 
 export function TimerDisplay({
@@ -18,6 +19,7 @@ export function TimerDisplay({
   onTimeout,
   onTick,
   isPaused = false,
+  speedMode = false,
 }: TimerDisplayProps) {
   const [timeLeft, setTimeLeft] = useState(duration);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -75,33 +77,62 @@ export function TimerDisplay({
   const circumference = 2 * Math.PI * 45; // radius = 45
   const strokeDashoffset = circumference * (1 - progress);
   
+  // Speed mode has more aggressive thresholds
+  const urgentThreshold = speedMode ? 3 : 5;
+  const warningThreshold = speedMode ? 5 : 15;
+  
   // Color based on time left
   const getColor = () => {
-    if (timeLeft <= 5) return "text-red-500";
-    if (timeLeft <= 15) return "text-yellow-500";
+    if (timeLeft <= urgentThreshold) return "text-red-500";
+    if (timeLeft <= warningThreshold) return speedMode ? "text-orange-400" : "text-yellow-500";
     return "text-white";
   };
 
   const getStrokeColor = () => {
-    if (timeLeft <= 5) return "#ef4444";
-    if (timeLeft <= 15) return "#eab308";
-    return "rgba(255, 255, 255, 0.9)";
+    if (timeLeft <= urgentThreshold) return "#ef4444";
+    if (timeLeft <= warningThreshold) return speedMode ? "#fb923c" : "#eab308";
+    return speedMode ? "#f97316" : "rgba(255, 255, 255, 0.9)";
   };
+
+  // In speed mode, always pulse when active
+  const shouldPulse = speedMode || timeLeft <= urgentThreshold;
+  const pulseIntensity = speedMode && timeLeft <= urgentThreshold ? 1.15 : 1.1;
 
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
+        animate={{ 
+          opacity: 1, 
+          scale: shouldPulse ? [1, pulseIntensity, 1] : 1,
+        }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="relative inline-flex items-center justify-center"
+        transition={{ 
+          scale: shouldPulse ? { duration: 0.5, repeat: Infinity } : undefined 
+        }}
+        className={`relative inline-flex items-center justify-center ${
+          speedMode ? "drop-shadow-[0_0_15px_rgba(249,115,22,0.5)]" : ""
+        }`}
         role="timer"
         aria-label={`${timeLeft} sekunder tilbage`}
         aria-live="polite"
       >
+        {/* Outer glow for speed mode */}
+        {speedMode && (
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            animate={{
+              boxShadow: timeLeft <= urgentThreshold 
+                ? ["0 0 20px rgba(239, 68, 68, 0.6)", "0 0 40px rgba(239, 68, 68, 0.3)", "0 0 20px rgba(239, 68, 68, 0.6)"]
+                : ["0 0 15px rgba(249, 115, 22, 0.4)", "0 0 25px rgba(249, 115, 22, 0.2)", "0 0 15px rgba(249, 115, 22, 0.4)"]
+            }}
+            transition={{ duration: 0.5, repeat: Infinity }}
+          />
+        )}
+
         {/* Background circle */}
         <svg
-          className="w-20 h-20 -rotate-90"
+          className={`${speedMode ? "w-24 h-24" : "w-20 h-20"} -rotate-90`}
           viewBox="0 0 100 100"
           aria-hidden="true"
         >
@@ -111,8 +142,8 @@ export function TimerDisplay({
             cy="50"
             r="45"
             fill="none"
-            stroke="rgba(255, 255, 255, 0.2)"
-            strokeWidth="6"
+            stroke={speedMode ? "rgba(249, 115, 22, 0.3)" : "rgba(255, 255, 255, 0.2)"}
+            strokeWidth={speedMode ? "8" : "6"}
           />
           {/* Progress */}
           <motion.circle
@@ -121,7 +152,7 @@ export function TimerDisplay({
             r="45"
             fill="none"
             stroke={getStrokeColor()}
-            strokeWidth="6"
+            strokeWidth={speedMode ? "8" : "6"}
             strokeLinecap="round"
             strokeDasharray={circumference}
             initial={{ strokeDashoffset: 0 }}
@@ -132,12 +163,34 @@ export function TimerDisplay({
         
         {/* Time display */}
         <motion.div
-          className={`absolute inset-0 flex items-center justify-center font-bold text-xl ${getColor()}`}
-          animate={timeLeft <= 5 ? { scale: [1, 1.1, 1] } : {}}
-          transition={{ duration: 0.3, repeat: timeLeft <= 5 ? Infinity : 0 }}
+          className={`absolute inset-0 flex items-center justify-center font-bold ${
+            speedMode ? "text-2xl" : "text-xl"
+          } ${getColor()}`}
+          animate={shouldPulse ? { scale: [1, pulseIntensity, 1] } : {}}
+          transition={{ duration: 0.3, repeat: shouldPulse ? Infinity : 0 }}
         >
           {timeLeft}
         </motion.div>
+
+        {/* Speed mode lightning bolts */}
+        {speedMode && timeLeft <= warningThreshold && (
+          <>
+            <motion.span
+              className="absolute -left-3 top-1/2 -translate-y-1/2 text-lg"
+              animate={{ opacity: [0.5, 1, 0.5], x: [-2, 2, -2] }}
+              transition={{ duration: 0.3, repeat: Infinity }}
+            >
+              ⚡
+            </motion.span>
+            <motion.span
+              className="absolute -right-3 top-1/2 -translate-y-1/2 text-lg"
+              animate={{ opacity: [1, 0.5, 1], x: [2, -2, 2] }}
+              transition={{ duration: 0.3, repeat: Infinity }}
+            >
+              ⚡
+            </motion.span>
+          </>
+        )}
       </motion.div>
     </AnimatePresence>
   );

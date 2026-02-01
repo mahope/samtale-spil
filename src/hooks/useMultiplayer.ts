@@ -197,7 +197,7 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
         }
 
         case "next-question": {
-          const { questionId, questionIndex, nextTurnPlayerId } =
+          const { questionId, questionIndex, nextTurnPlayerId, speedBonus } =
             message.payload as NextQuestionPayload;
           setRoom((prev) => {
             if (!prev) return prev;
@@ -212,6 +212,13 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
                   : prev.gameState.answeredQuestionIds,
                 currentTurnPlayerId: nextTurnPlayerId,
                 turnStartedAt: Date.now(),
+                // Sync speed bonuses from other players
+                speedBonuses: speedBonus
+                  ? {
+                      ...prev.gameState.speedBonuses,
+                      [message.senderId]: (prev.gameState.speedBonuses[message.senderId] || 0) + speedBonus,
+                    }
+                  : prev.gameState.speedBonuses,
               },
               lastActivity: Date.now(),
             };
@@ -371,6 +378,7 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
         gameState: {
           ...DEFAULT_GAME_STATE,
           scores: { [player.id]: 0 },
+          speedBonuses: { [player.id]: 0 },
         },
         createdAt: Date.now(),
         lastActivity: Date.now(),
@@ -417,6 +425,7 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
         gameState: {
           ...DEFAULT_GAME_STATE,
           scores: { [player.id]: 0 },
+          speedBonuses: { [player.id]: 0 },
         },
         createdAt: Date.now(),
         lastActivity: Date.now(),
@@ -562,7 +571,7 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
 
   // Go to next question
   const nextQuestion = useCallback(
-    (questionId: string, questionIndex: number) => {
+    (questionId: string, questionIndex: number, speedBonus?: number) => {
       if (!room || !currentPlayer) return;
 
       // Determine next turn player
@@ -596,6 +605,10 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
               ...prev.gameState.scores,
               [currentPlayer.id]: (prev.gameState.scores[currentPlayer.id] || 0) + 1,
             },
+            speedBonuses: {
+              ...prev.gameState.speedBonuses,
+              [currentPlayer.id]: (prev.gameState.speedBonuses[currentPlayer.id] || 0) + (speedBonus || 0),
+            },
           },
           lastActivity: Date.now(),
         };
@@ -608,6 +621,7 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
         questionId,
         questionIndex,
         nextTurnPlayerId,
+        speedBonus,
       } as NextQuestionPayload);
     },
     [room, currentPlayer, sendMessage]

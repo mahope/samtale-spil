@@ -171,5 +171,89 @@ export function useSound() {
     }
   }, [getAudioContext]);
 
-  return { playFlip, playSuccess, playTap, playTimeout, playTick };
+  // Intense speed tick - more urgent "tick-tock" for speed mode
+  const playSpeedTick = useCallback((secondsLeft: number) => {
+    try {
+      const ctx = getAudioContext();
+      
+      // Higher frequency and louder as time runs out
+      const baseFreq = secondsLeft <= 3 ? 1200 : 1000;
+      const volume = secondsLeft <= 3 ? 0.12 : 0.08;
+      
+      // First tick
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(baseFreq, ctx.currentTime);
+      gain1.gain.setValueAtTime(volume, ctx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(ctx.currentTime);
+      osc1.stop(ctx.currentTime + 0.05);
+
+      // Second tick (tock) - lower frequency
+      if (secondsLeft <= 5) {
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(baseFreq * 0.8, ctx.currentTime + 0.1);
+        gain2.gain.setValueAtTime(0, ctx.currentTime);
+        gain2.gain.setValueAtTime(volume * 0.7, ctx.currentTime + 0.1);
+        gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(ctx.currentTime + 0.1);
+        osc2.stop(ctx.currentTime + 0.15);
+      }
+    } catch {
+      // Audio not supported, fail silently
+    }
+  }, [getAudioContext]);
+
+  // Speed bonus celebration sound - triumphant fanfare
+  const playSpeedBonus = useCallback(() => {
+    try {
+      const ctx = getAudioContext();
+      
+      // Quick ascending arpeggio
+      const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+      
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08);
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.08 + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + i * 0.08);
+        osc.stop(ctx.currentTime + i * 0.08 + 0.15);
+      });
+      
+      // Add a final "sparkle" effect
+      setTimeout(() => {
+        try {
+          const sparkleOsc = ctx.createOscillator();
+          const sparkleGain = ctx.createGain();
+          sparkleOsc.type = "sine";
+          sparkleOsc.frequency.setValueAtTime(2093, ctx.currentTime); // C7 - high sparkle
+          sparkleGain.gain.setValueAtTime(0.08, ctx.currentTime);
+          sparkleGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+          sparkleOsc.connect(sparkleGain);
+          sparkleGain.connect(ctx.destination);
+          sparkleOsc.start(ctx.currentTime);
+          sparkleOsc.stop(ctx.currentTime + 0.2);
+        } catch {
+          // Ignore
+        }
+      }, 350);
+    } catch {
+      // Audio not supported, fail silently
+    }
+  }, [getAudioContext]);
+
+  return { playFlip, playSuccess, playTap, playTimeout, playTick, playSpeedTick, playSpeedBonus };
 }

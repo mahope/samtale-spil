@@ -293,7 +293,7 @@ export function MultiplayerLobby({
           </div>
 
           {/* Turn order */}
-          <div className="mb-2">
+          <div className="mb-4">
             <label className="text-sm text-white/70 block mb-2">
               Tur-rækkefølge
             </label>
@@ -322,6 +322,43 @@ export function MultiplayerLobby({
               ))}
             </div>
           </div>
+
+          {/* Speed Round toggle */}
+          <div className="mb-2">
+            <button
+              onClick={() => onUpdateSettings({ speedRound: !settings.speedRound })}
+              className={`w-full min-h-[64px] py-4 px-4 rounded-xl transition-all touch-manipulation active:scale-[0.98] flex items-center justify-between ${
+                settings.speedRound
+                  ? "bg-gradient-to-r from-orange-500 to-red-500 border-2 border-white shadow-lg"
+                  : "bg-white/10 border-2 border-transparent hover:bg-white/20 active:bg-white/25"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <motion.span 
+                  className="text-2xl"
+                  animate={settings.speedRound ? { rotate: [0, -10, 10, -10, 0] } : {}}
+                  transition={{ duration: 0.5, repeat: settings.speedRound ? Infinity : 0, repeatDelay: 1 }}
+                >
+                  ⚡
+                </motion.span>
+                <div className="text-left">
+                  <span className="text-white font-bold block">Speed Round</span>
+                  <span className="text-white/70 text-xs">10 sek timer • Bonus for hurtige svar</span>
+                </div>
+              </div>
+              <div
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  settings.speedRound ? "bg-white/30" : "bg-white/10"
+                }`}
+              >
+                <motion.div
+                  className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm"
+                  animate={{ x: settings.speedRound ? 24 : 0 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              </div>
+            </button>
+          </div>
         </motion.div>
       )}
 
@@ -342,8 +379,18 @@ export function MultiplayerLobby({
             </span>
             <span className="flex items-center gap-1">
               <span>⏱️</span>
-              <span>{settings.turnDuration}s</span>
+              <span>{settings.speedRound ? "10s" : `${settings.turnDuration}s`}</span>
             </span>
+            {settings.speedRound && (
+              <motion.span 
+                className="flex items-center gap-1 text-orange-300 font-bold"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              >
+                <span>⚡</span>
+                <span>Speed Round!</span>
+              </motion.span>
+            )}
           </div>
         </motion.div>
       )}

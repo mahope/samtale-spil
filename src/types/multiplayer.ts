@@ -25,7 +25,18 @@ export interface MultiplayerSettings {
   turnOrderMode: "round-robin" | "random" | "free";
   showOthersFavorites: boolean;
   maxPlayers: number;
+  speedRound: boolean;
 }
+
+// Speed Round configuration
+export const SPEED_ROUND_CONFIG = {
+  turnDuration: 10, // 10 seconds per question
+  bonusThresholds: [
+    { maxTime: 3, bonus: 3 },  // Answer within 3 seconds = +3 bonus
+    { maxTime: 5, bonus: 2 },  // Answer within 5 seconds = +2 bonus
+    { maxTime: 7, bonus: 1 },  // Answer within 7 seconds = +1 bonus
+  ],
+} as const;
 
 export interface MultiplayerGameState {
   status: "lobby" | "playing" | "paused" | "finished";
@@ -35,6 +46,7 @@ export interface MultiplayerGameState {
   currentTurnPlayerId: string | null;
   turnStartedAt: number | null;
   scores: Record<string, number>; // playerId -> questionsAnswered
+  speedBonuses: Record<string, number>; // playerId -> total speed bonus points
   favoritedByPlayers: Record<string, string[]>; // questionId -> playerIds who favorited
 }
 
@@ -79,6 +91,7 @@ export interface NextQuestionPayload {
   questionId: string;
   questionIndex: number;
   nextTurnPlayerId: string | null;
+  speedBonus?: number;
 }
 
 // Card flip payload
@@ -132,6 +145,7 @@ export const DEFAULT_MULTIPLAYER_SETTINGS: MultiplayerSettings = {
   turnOrderMode: "round-robin",
   showOthersFavorites: true,
   maxPlayers: 8,
+  speedRound: false,
 };
 
 // Default game state
@@ -143,5 +157,6 @@ export const DEFAULT_GAME_STATE: MultiplayerGameState = {
   currentTurnPlayerId: null,
   turnStartedAt: null,
   scores: {},
+  speedBonuses: {},
   favoritedByPlayers: {},
 };
