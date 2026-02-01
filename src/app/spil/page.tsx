@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CategoryGridSkeleton } from "@/components/SkeletonLoader";
 import { PageTransition } from "@/components/PageTransition";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
+import { SearchOverlay, SearchButton } from "@/components/SearchOverlay";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -167,6 +168,20 @@ export default function SpilPage() {
   const router = useRouter();
   const { getCategoryProgress, isLoaded: progressLoaded } = useProgress();
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Keyboard shortcut for search (/)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Open search with "/" key, but not when typing in an input
+      if (e.key === "/" && !["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)) {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const handleCategorySelect = (category: Category) => {
     router.push(`/spil/${category.id}`);
@@ -206,6 +221,8 @@ export default function SpilPage() {
               </svg>
               Hjem
             </Link>
+            
+            <SearchButton onClick={() => setIsSearchOpen(true)} />
             
             <ThemeToggle className="text-slate-500 dark:text-slate-400" />
             
@@ -463,6 +480,9 @@ export default function SpilPage() {
           er klar til mere
         </motion.p>
       </main>
+
+      {/* Search Overlay */}
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   );
 }

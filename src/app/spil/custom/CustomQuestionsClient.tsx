@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useCallback, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { useCustomQuestions, CustomQuestion, CATEGORY_TAGS } from "@/hooks/useCustomQuestions";
 import { useFavorites, useProgress, useDifficultyFilter } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
@@ -140,6 +141,9 @@ function EmptyState() {
 }
 
 export default function CustomQuestionsClient() {
+  const searchParams = useSearchParams();
+  const initialQuestionId = searchParams.get("question") ?? undefined;
+  
   const { questions, isLoaded: customLoaded } = useCustomQuestions();
   const { isFavorite, toggleFavorite, isLoaded: favoritesLoaded } = useFavorites();
   const { getCategoryProgress, markAnswered, resetCategory, isLoaded: progressLoaded } = useProgress();
@@ -158,15 +162,32 @@ export default function CustomQuestionsClient() {
     return questions.filter(q => q.depth === difficultyFilter);
   }, [questions, difficultyFilter]);
 
-  // Shuffle questions for variety
+  // Shuffle questions for variety, but put initial question first if specified
   const shuffledQuestions = useMemo(() => {
     const shuffled = [...filteredQuestions];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
+    
+    // If there's an initial question ID, move it to the front
+    if (initialQuestionId) {
+      const initialIndex = shuffled.findIndex(q => q.id === initialQuestionId);
+      if (initialIndex > 0) {
+        const [initialQ] = shuffled.splice(initialIndex, 1);
+        shuffled.unshift(initialQ);
+      }
+    }
+    
     return shuffled;
-  }, [filteredQuestions]);
+  }, [filteredQuestions, initialQuestionId]);
+  
+  // Auto-flip if coming from search
+  useEffect(() => {
+    if (initialQuestionId && shuffledQuestions[0]?.id === initialQuestionId) {
+      setIsFlipped(true);
+    }
+  }, [initialQuestionId, shuffledQuestions]);
 
   const currentQuestion = shuffledQuestions[currentIndex];
   const totalQuestions = shuffledQuestions.length;
