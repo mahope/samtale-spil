@@ -104,7 +104,7 @@ export default function Home() {
             >
               <Link
                 href="/spil"
-                className="group inline-flex items-center gap-3 px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-violet-500 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800 relative overflow-hidden"
+                className="group inline-flex items-center justify-center gap-3 min-h-[56px] sm:min-h-[52px] px-8 sm:px-10 py-4 sm:py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-rose-500 to-violet-500 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800 relative overflow-hidden touch-manipulation active:scale-[0.98]"
                 aria-label="Start samtalen - gå til kategorivalg"
               >
                 {/* Shine effect */}
@@ -155,7 +155,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
-          className="mt-16 flex gap-4 perspective-1000"
+          className="mt-12 sm:mt-16 flex gap-2 sm:gap-4 perspective-1000"
           aria-hidden="true"
           role="presentation"
         >
@@ -169,8 +169,9 @@ export default function Home() {
               key={index}
               initial={{ rotate: 0 }}
               animate={{ rotate: card.rotation }}
+              whileHover={{ scale: 1.1, rotate: 0 }}
               transition={{ delay: 0.9 + index * 0.1, type: "spring" }}
-              className={`w-16 h-24 md:w-20 md:h-28 rounded-xl bg-gradient-to-br ${card.color} shadow-lg`}
+              className={`w-14 h-20 sm:w-16 sm:h-24 md:w-20 md:h-28 rounded-xl bg-gradient-to-br ${card.color} shadow-lg hover:shadow-xl transition-shadow`}
             />
           ))}
         </motion.div>
