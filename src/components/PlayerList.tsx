@@ -133,8 +133,11 @@ export function TurnIndicator({
           ? "bg-green-500/30 border-2 border-green-400"
           : "bg-white/20 border border-white/30"
       }`}
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
     >
-      <span className="text-2xl">{currentPlayer.emoji}</span>
+      <span className="text-2xl" aria-hidden="true">{currentPlayer.emoji}</span>
       <span className="text-white font-medium">
         {isMyTurn ? "Din tur!" : `${currentPlayer.name}s tur`}
       </span>
