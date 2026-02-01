@@ -9,6 +9,7 @@ import { getCategory } from "@/data/categories";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
+import { PageTransition } from "@/components/PageTransition";
 
 function DepthBadge({ depth }: { depth: FavoriteQuestion["depth"] }) {
   const config = {
@@ -191,9 +192,10 @@ export default function FavoritesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50 dark:from-slate-950 dark:to-slate-900">
-      <main id="main-content" className="max-w-2xl mx-auto px-6 py-8" role="main">
-        {/* Header */}
-        <motion.header
+      <PageTransition>
+        <main id="main-content" className="max-w-2xl mx-auto px-6 py-8" role="main">
+          {/* Header */}
+          <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center justify-between mb-8"
@@ -293,9 +295,10 @@ export default function FavoritesPage() {
           </motion.div>
         )}
 
-        {/* Bottom padding for mobile */}
-        <div className="h-8" />
-      </main>
+          {/* Bottom padding for mobile */}
+          <div className="h-8" />
+        </main>
+      </PageTransition>
     </div>
   );
 }
