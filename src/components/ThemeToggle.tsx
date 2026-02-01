@@ -56,7 +56,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   // Don't render until mounted to avoid hydration mismatch
   if (!mounted) {
     return (
-      <div className={`w-9 h-9 rounded-xl bg-white/10 ${className}`} />
+      <div className={`w-9 h-9 rounded-xl bg-white/10 dark:bg-slate-800/50 ${className}`} />
     );
   }
 
@@ -88,20 +88,50 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     return "Lys";
   };
 
+  // Theme-specific icon colors for better visibility
+  const getIconColor = () => {
+    if (theme === "system") return "text-blue-500 dark:text-blue-400";
+    if (isDark) return "text-indigo-400";
+    return "text-amber-500";
+  };
+
   return (
     <motion.button
       onClick={toggleTheme}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className={`p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-colors ${className}`}
+      whileHover={{ scale: 1.08 }}
+      whileTap={{ scale: 0.92 }}
+      className={`
+        relative p-2.5 rounded-xl 
+        bg-white/80 dark:bg-slate-800/80 
+        hover:bg-white dark:hover:bg-slate-700 
+        backdrop-blur-md 
+        border border-slate-200/50 dark:border-slate-700/50
+        shadow-sm hover:shadow-md
+        transition-all duration-200
+        focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-transparent
+        ${className}
+      `}
       title={`Tema: ${getLabel()}`}
       aria-label={`Skift tema (nu: ${getLabel()})`}
     >
+      {/* Subtle glow effect on hover */}
+      <motion.div
+        className="absolute inset-0 rounded-xl opacity-0 bg-gradient-to-br from-violet-400/20 to-purple-400/20"
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        aria-hidden="true"
+      />
+      
       <motion.div
         key={theme}
-        initial={{ rotate: -180, opacity: 0 }}
-        animate={{ rotate: 0, opacity: 1 }}
-        transition={{ duration: 0.3 }}
+        initial={{ rotate: -180, opacity: 0, scale: 0.5 }}
+        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+        transition={{ 
+          type: "spring",
+          stiffness: 200,
+          damping: 15
+        }}
+        className={`relative ${getIconColor()}`}
       >
         {getIcon()}
       </motion.div>

@@ -11,6 +11,7 @@ import { useQuestionRatings } from "@/hooks/useQuestionRatings";
 import { categories, getCategory, getQuestionById } from "@/data/categories";
 import { RatingStarsDisplay } from "@/components/RatingStars";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PageTransition } from "@/components/PageTransition";
 import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
 import { BadgeGrid, NextBadgeProgress, BadgeStats } from "@/components/CategoryBadge";
 import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
@@ -452,8 +453,9 @@ export default function StatistikPage() {
   const hasActivity = stats && (stats.totalAnswered > 0 || favorites.length > 0 || totalChallengesCompleted > 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
-      <main id="main-content" className="max-w-3xl mx-auto px-6 py-8" role="main">
+    <PageTransition>
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
+        <main id="main-content" className="max-w-3xl mx-auto px-6 py-8" role="main">
         {/* Header */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
@@ -958,7 +960,8 @@ export default function StatistikPage() {
 
         {/* Bottom padding */}
         <div className="h-8" />
-      </main>
-    </div>
+        </main>
+      </div>
+    </PageTransition>
   );
 }
