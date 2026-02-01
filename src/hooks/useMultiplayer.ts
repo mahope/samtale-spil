@@ -445,16 +445,45 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
     []
   );
 
-  // Leave current room
+  // Leave current room - use ref to prevent race condition
+  const isLeavingRef = useRef(false);
+  
   const leaveRoom = useCallback(() => {
-    if (room && currentPlayer && channelRef.current) {
-      sendMessage("player-leave", currentPlayer.id);
-    }
+    // Prevent double-leave race condition
+    if (isLeavingRef.current) return;
+    isLeavingRef.current = true;
 
+    // Capture channel and player info before clearing state
+    const channel = channelRef.current;
+    const playerId = currentPlayer?.id;
+    const roomCode = room?.roomCode;
+
+    // Clear state first
     setRoom(null);
     setIsConnected(false);
     localStorage.removeItem(ROOM_STORAGE_KEY);
-  }, [room, currentPlayer, sendMessage]);
+
+    // Send leave message after state is cleared (channel still open due to useEffect cleanup timing)
+    if (channel && playerId && roomCode) {
+      const message: MultiplayerMessage = {
+        type: "player-leave",
+        senderId: playerId,
+        roomCode: roomCode,
+        timestamp: Date.now(),
+        payload: playerId,
+      };
+      try {
+        channel.postMessage(message);
+      } catch {
+        // Channel may already be closed, ignore
+      }
+    }
+
+    // Reset leave flag after a short delay
+    setTimeout(() => {
+      isLeavingRef.current = false;
+    }, 100);
+  }, [room?.roomCode, currentPlayer?.id]);
 
   // Update player info
   const updatePlayer = useCallback(
