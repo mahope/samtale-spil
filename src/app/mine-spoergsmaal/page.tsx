@@ -9,6 +9,7 @@ import {
   CATEGORY_TAGS,
 } from "@/hooks/useCustomQuestions";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { InteractiveCard } from "@/components/InteractiveCard";
 
 // Depth options
 const DEPTH_OPTIONS = [
@@ -208,12 +209,14 @@ function QuestionCard({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   return (
-    <motion.article
+    <InteractiveCard
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -100 }}
-      className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-md border border-slate-100 dark:border-slate-700"
+      glowColor="violet"
+      hover={true}
+      press={false}
     >
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center gap-2 flex-wrap">
@@ -298,7 +301,7 @@ function QuestionCard({
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.article>
+    </InteractiveCard>
   );
 }
 

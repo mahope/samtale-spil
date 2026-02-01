@@ -10,6 +10,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
 import { PageTransition } from "@/components/PageTransition";
+import { InteractiveCard } from "@/components/InteractiveCard";
 
 function DepthBadge({ depth }: { depth: FavoriteQuestion["depth"] }) {
   const config = {
@@ -39,12 +40,14 @@ function FavoriteCard({
   const hasRating = isRated(favorite.id);
   
   return (
-    <motion.article
+    <InteractiveCard
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -100 }}
-      className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-md border border-slate-100 dark:border-slate-700"
+      glowColor="rose"
+      hover={true}
+      press={false}
       aria-label={`Favoritspørgsmål: ${favorite.text}`}
     >
       <div className="flex justify-between items-start mb-3">
@@ -114,7 +117,7 @@ function FavoriteCard({
           })}
         </time>
       </p>
-    </motion.article>
+    </InteractiveCard>
   );
 }
 
