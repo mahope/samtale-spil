@@ -1,16 +1,24 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, memo } from "react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-// Page transition wrapper
-export function PageTransition({
+// Page transition wrapper - respects reduced motion preference
+export const PageTransition = memo(function PageTransition({
   children,
   className = "",
 }: {
   children: ReactNode;
   className?: string;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+
+  // Skip animation for users who prefer reduced motion
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -27,7 +35,7 @@ export function PageTransition({
       {children}
     </motion.div>
   );
-}
+});
 
 // Fade transition
 export function FadeTransition({

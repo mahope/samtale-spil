@@ -1,11 +1,13 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PageTransition } from "@/components/PageTransition";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
-import { DailyQuestion } from "@/components/DailyQuestion";
+import { LazyDailyQuestion } from "@/components/LazyComponents";
+import { DecorativeCard } from "@/components/OptimizedComponents";
 
 export default function Home() {
   return (
@@ -136,8 +138,8 @@ export default function Home() {
           </motion.p>
         </motion.div>
 
-        {/* Daily Question Section */}
-        <DailyQuestion />
+        {/* Daily Question Section - Lazy loaded */}
+        <LazyDailyQuestion />
 
         {/* Decorative Cards Preview */}
         <motion.div
