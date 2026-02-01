@@ -65,28 +65,28 @@ export function MultiplayerLobby({
     players.filter((p) => p.isConnected).length >= 2;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex flex-col items-center px-4 py-8">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex flex-col items-center px-4 py-6 sm:py-8 overflow-y-auto pb-safe">
       {/* Header with room code */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
+        className="text-center mb-6 sm:mb-8 w-full max-w-md"
       >
-        <h1 className="text-2xl font-bold text-white mb-2">Multiplayer Lobby</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">Multiplayer Lobby</h1>
         <motion.button
           onClick={copyRoomCode}
-          className="group relative px-6 py-3 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 hover:bg-white/30 transition-all"
+          className="group relative w-full sm:w-auto px-4 sm:px-6 py-3 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/30 hover:bg-white/30 active:bg-white/40 transition-all touch-manipulation"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <div className="flex items-center gap-3">
-            <span className="text-white/70 text-sm">Rumkode:</span>
-            <span className="text-3xl font-mono font-bold text-white tracking-widest">
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <span className="text-white/70 text-xs sm:text-sm">Rumkode:</span>
+            <span className="text-2xl sm:text-3xl font-mono font-bold text-white tracking-widest">
               {roomCode}
             </span>
             <motion.span
               animate={copied ? { scale: [1, 1.2, 1] } : {}}
-              className="text-white/70"
+              className="text-white/70 text-lg"
             >
               {copied ? "✓" : "📋"}
             </motion.span>
@@ -104,7 +104,7 @@ export function MultiplayerLobby({
             )}
           </AnimatePresence>
         </motion.button>
-        <p className="text-white/70 text-sm mt-4">
+        <p className="text-white/70 text-xs sm:text-sm mt-4">
           Del koden med de andre spillere
         </p>
       </motion.div>
@@ -114,9 +114,9 @@ export function MultiplayerLobby({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-6 border border-white/20"
+        className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 sm:mb-6 border border-white/20"
       >
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <h2 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
           <span>👥</span> Spillere ({players.length}/{settings.maxPlayers})
         </h2>
         <div className="space-y-2">
@@ -128,7 +128,7 @@ export function MultiplayerLobby({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ delay: index * 0.05 }}
-                className={`flex items-center justify-between p-3 rounded-xl ${
+                className={`flex items-center justify-between p-3 sm:p-4 rounded-xl ${
                   player.id === currentPlayerId
                     ? "bg-white/30"
                     : "bg-white/10"
@@ -139,16 +139,17 @@ export function MultiplayerLobby({
                   {player.id === currentPlayerId ? (
                     <button
                       onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                      className="text-2xl hover:scale-110 transition-transform"
+                      className="text-2xl sm:text-3xl min-w-[44px] min-h-[44px] flex items-center justify-center hover:scale-110 active:scale-95 transition-transform touch-manipulation"
+                      aria-label="Vælg emoji"
                     >
                       {player.emoji}
                     </button>
                   ) : (
-                    <span className="text-2xl">{player.emoji}</span>
+                    <span className="text-2xl sm:text-3xl min-w-[44px] flex items-center justify-center">{player.emoji}</span>
                   )}
 
                   {/* Name */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col min-w-0">
                     {editingName && player.id === currentPlayerId ? (
                       <input
                         type="text"
@@ -156,15 +157,15 @@ export function MultiplayerLobby({
                         onChange={(e) => setTempName(e.target.value)}
                         onBlur={handleNameSave}
                         onKeyDown={(e) => e.key === "Enter" && handleNameSave()}
-                        className="bg-white/20 rounded px-2 py-1 text-white text-sm outline-none"
+                        className="bg-white/20 rounded px-2 py-1 text-white text-sm outline-none w-full max-w-[150px]"
                         autoFocus
                         maxLength={20}
                       />
                     ) : (
                       <span
-                        className={`font-medium text-white ${
+                        className={`font-medium text-white text-sm sm:text-base truncate ${
                           player.id === currentPlayerId
-                            ? "cursor-pointer hover:underline"
+                            ? "cursor-pointer hover:underline active:opacity-70"
                             : ""
                         }`}
                         onClick={
@@ -188,10 +189,11 @@ export function MultiplayerLobby({
                 {isHost && player.id !== currentPlayerId && onKickPlayer && (
                   <button
                     onClick={() => onKickPlayer(player.id)}
-                    className="p-2 text-white/50 hover:text-red-400 transition-colors"
+                    className="min-w-[44px] min-h-[44px] flex items-center justify-center text-white/50 hover:text-red-400 active:text-red-500 transition-colors touch-manipulation"
                     title="Fjern spiller"
+                    aria-label="Fjern spiller"
                   >
-                    ✕
+                    <span className="text-lg">✕</span>
                   </button>
                 )}
               </motion.div>
@@ -208,8 +210,8 @@ export function MultiplayerLobby({
               exit={{ opacity: 0, height: 0 }}
               className="mt-4 pt-4 border-t border-white/20"
             >
-              <p className="text-sm text-white/70 mb-2">Vælg emoji:</p>
-              <div className="flex flex-wrap gap-2">
+              <p className="text-sm text-white/70 mb-3">Vælg emoji:</p>
+              <div className="grid grid-cols-6 sm:grid-cols-8 gap-1">
                 {PLAYER_EMOJIS.map((emoji) => (
                   <button
                     key={emoji}
@@ -217,7 +219,7 @@ export function MultiplayerLobby({
                       onUpdatePlayer({ emoji });
                       setShowEmojiPicker(false);
                     }}
-                    className={`text-2xl p-1 rounded hover:bg-white/20 transition-colors ${
+                    className={`text-2xl min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-white/20 active:bg-white/30 transition-colors touch-manipulation ${
                       currentPlayer?.emoji === emoji ? "bg-white/30" : ""
                     }`}
                   >
@@ -236,9 +238,9 @@ export function MultiplayerLobby({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-6 border border-white/20"
+          className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 sm:mb-6 border border-white/20"
         >
-          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
             <span>⚙️</span> Spilindstillinger
           </h2>
 
@@ -247,19 +249,19 @@ export function MultiplayerLobby({
             <label className="text-sm text-white/70 block mb-2">
               Kategori
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => onUpdateSettings({ categoryId: cat.id })}
-                  className={`p-3 rounded-xl text-left transition-all ${
+                  className={`min-h-[52px] p-3 sm:p-4 rounded-xl text-left transition-all touch-manipulation active:scale-[0.98] ${
                     settings.categoryId === cat.id
-                      ? "bg-white/30 border-2 border-white"
-                      : "bg-white/10 border-2 border-transparent hover:bg-white/20"
+                      ? "bg-white/30 border-2 border-white shadow-lg"
+                      : "bg-white/10 border-2 border-transparent hover:bg-white/20 active:bg-white/25"
                   }`}
                 >
-                  <span className="text-lg">{cat.emoji}</span>
-                  <span className="ml-2 text-white text-sm font-medium">
+                  <span className="text-xl sm:text-lg">{cat.emoji}</span>
+                  <span className="ml-2 text-white text-sm sm:text-base font-medium">
                     {cat.name}
                   </span>
                 </button>
@@ -277,24 +279,24 @@ export function MultiplayerLobby({
                 <button
                   key={duration}
                   onClick={() => onUpdateSettings({ turnDuration: duration })}
-                  className={`flex-1 py-2 rounded-xl transition-all ${
+                  className={`flex-1 min-h-[48px] py-3 rounded-xl transition-all touch-manipulation active:scale-[0.98] ${
                     settings.turnDuration === duration
-                      ? "bg-white/30 border-2 border-white"
-                      : "bg-white/10 border-2 border-transparent hover:bg-white/20"
+                      ? "bg-white/30 border-2 border-white shadow-lg"
+                      : "bg-white/10 border-2 border-transparent hover:bg-white/20 active:bg-white/25"
                   }`}
                 >
-                  <span className="text-white font-medium">{duration}s</span>
+                  <span className="text-white font-medium text-base">{duration}s</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Turn order */}
-          <div className="mb-4">
+          <div className="mb-2">
             <label className="text-sm text-white/70 block mb-2">
               Tur-rækkefølge
             </label>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {[
                 { id: "round-robin", label: "Rundt", icon: "🔄" },
                 { id: "random", label: "Tilfældig", icon: "🎲" },
@@ -307,14 +309,14 @@ export function MultiplayerLobby({
                       turnOrderMode: id as MultiplayerSettings["turnOrderMode"],
                     })
                   }
-                  className={`flex-1 py-2 px-3 rounded-xl transition-all ${
+                  className={`min-h-[56px] py-3 px-2 rounded-xl transition-all touch-manipulation active:scale-[0.98] flex flex-col items-center justify-center gap-1 ${
                     settings.turnOrderMode === id
-                      ? "bg-white/30 border-2 border-white"
-                      : "bg-white/10 border-2 border-transparent hover:bg-white/20"
+                      ? "bg-white/30 border-2 border-white shadow-lg"
+                      : "bg-white/10 border-2 border-transparent hover:bg-white/20 active:bg-white/25"
                   }`}
                 >
-                  <span className="text-lg">{icon}</span>
-                  <span className="ml-1 text-white text-sm">{label}</span>
+                  <span className="text-xl">{icon}</span>
+                  <span className="text-white text-xs sm:text-sm font-medium">{label}</span>
                 </button>
               ))}
             </div>
@@ -327,17 +329,20 @@ export function MultiplayerLobby({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-6 border border-white/20"
+          className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 sm:mb-6 border border-white/20"
         >
-          <p className="text-white/70 text-center">
+          <p className="text-white/70 text-center text-sm sm:text-base">
             Venter på at værten starter spillet...
           </p>
-          <div className="flex justify-center gap-4 mt-3 text-white">
-            <span>
-              {categories.find((c) => c.id === settings.categoryId)?.emoji}{" "}
-              {categories.find((c) => c.id === settings.categoryId)?.name}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-3 text-white text-sm sm:text-base">
+            <span className="flex items-center gap-1">
+              <span>{categories.find((c) => c.id === settings.categoryId)?.emoji}</span>
+              <span>{categories.find((c) => c.id === settings.categoryId)?.name}</span>
             </span>
-            <span>⏱️ {settings.turnDuration}s</span>
+            <span className="flex items-center gap-1">
+              <span>⏱️</span>
+              <span>{settings.turnDuration}s</span>
+            </span>
           </div>
         </motion.div>
       )}
@@ -347,7 +352,7 @@ export function MultiplayerLobby({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="w-full max-w-md space-y-3"
+        className="w-full max-w-md space-y-3 mt-auto"
       >
         {isHost && (
           <motion.button
@@ -355,9 +360,9 @@ export function MultiplayerLobby({
             disabled={!canStart}
             whileHover={canStart ? { scale: 1.02 } : {}}
             whileTap={canStart ? { scale: 0.98 } : {}}
-            className={`w-full py-4 rounded-2xl font-bold text-lg shadow-lg transition-all ${
+            className={`w-full min-h-[56px] py-4 rounded-2xl font-bold text-base sm:text-lg shadow-lg transition-all touch-manipulation ${
               canStart
-                ? "bg-white text-purple-600 hover:shadow-xl"
+                ? "bg-white text-purple-600 hover:shadow-xl active:bg-gray-100"
                 : "bg-white/30 text-white/50 cursor-not-allowed"
             }`}
           >
@@ -373,11 +378,14 @@ export function MultiplayerLobby({
           onClick={onLeaveRoom}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full py-3 rounded-2xl bg-white/10 text-white font-medium border border-white/20 hover:bg-white/20 transition-all"
+          className="w-full min-h-[52px] py-3 rounded-2xl bg-white/10 text-white font-medium border border-white/20 hover:bg-white/20 active:bg-white/30 transition-all touch-manipulation"
         >
           Forlad rum
         </motion.button>
       </motion.div>
+
+      {/* Bottom safe area spacer */}
+      <div className="h-4 sm:h-0" />
     </div>
   );
 }

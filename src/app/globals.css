@@ -142,6 +142,15 @@ a:focus-visible,
   }
 }
 
+/* Safe area utilities for components */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
 /* Dark mode card styles */
 .dark .card-front {
   background: rgba(255, 255, 255, 0.1);
@@ -180,6 +189,12 @@ a:focus-visible,
   }
   .xs\:p-6 {
     padding: 1.5rem;
+  }
+  .xs\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .xs\:gap-3 {
+    gap: 0.75rem;
   }
 }
 
