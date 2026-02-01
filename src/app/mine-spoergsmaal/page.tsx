@@ -12,9 +12,9 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Depth options
 const DEPTH_OPTIONS = [
-  { id: "let" as const, label: "Let", emoji: "🟢", color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300" },
-  { id: "medium" as const, label: "Medium", emoji: "🟡", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300" },
-  { id: "dyb" as const, label: "Dyb", emoji: "🔴", color: "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" },
+  { id: "let" as const, label: "Let", shortLabel: "Let", emoji: "🟢", color: "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300" },
+  { id: "medium" as const, label: "Medium", shortLabel: "Mid", emoji: "🟡", color: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300" },
+  { id: "dyb" as const, label: "Dyb", shortLabel: "Dyb", emoji: "🔴", color: "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" },
 ];
 
 // Question form component
@@ -111,21 +111,23 @@ function QuestionForm({
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
           Dybde
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 sm:gap-3">
           {DEPTH_OPTIONS.map((option) => (
-            <button
+            <motion.button
               key={option.id}
               type="button"
               onClick={() => setDepth(option.id)}
-              className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-1.5 ${
+              whileTap={{ scale: 0.95 }}
+              className={`flex-1 py-3 sm:py-2 px-2 sm:px-3 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-1 sm:gap-1.5 min-h-[44px] ${
                 depth === option.id
                   ? option.color + " ring-2 ring-offset-2 ring-slate-400 dark:ring-slate-600"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500"
               }`}
             >
-              <span>{option.emoji}</span>
-              <span>{option.label}</span>
-            </button>
+              <span className="text-base">{option.emoji}</span>
+              <span className="hidden xs:inline">{option.label}</span>
+              <span className="xs:hidden">{option.shortLabel}</span>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -136,31 +138,33 @@ function QuestionForm({
           Kategori (valgfrit)
         </label>
         <div className="flex flex-wrap gap-2">
-          <button
+          <motion.button
             type="button"
             onClick={() => setCategoryTag("")}
-            className={`py-1.5 px-3 rounded-full text-xs font-medium transition-all ${
+            whileTap={{ scale: 0.95 }}
+            className={`py-2 px-3.5 rounded-full text-sm font-medium transition-all min-h-[40px] ${
               categoryTag === ""
                 ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
-                : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500"
             }`}
           >
             Ingen
-          </button>
+          </motion.button>
           {CATEGORY_TAGS.map((tag) => (
-            <button
+            <motion.button
               key={tag.id}
               type="button"
               onClick={() => setCategoryTag(tag.id)}
-              className={`py-1.5 px-3 rounded-full text-xs font-medium transition-all flex items-center gap-1 ${
+              whileTap={{ scale: 0.95 }}
+              className={`py-2 px-3.5 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 min-h-[40px] ${
                 categoryTag === tag.id
                   ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500"
               }`}
             >
               <span>{tag.emoji}</span>
-              <span>{tag.label}</span>
-            </button>
+              <span className="hidden sm:inline">{tag.label}</span>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -225,13 +229,13 @@ function QuestionCard({
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 -mr-1">
           <motion.button
             type="button"
             onClick={onEdit}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2.5 sm:p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors active:bg-slate-200 dark:active:bg-slate-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Rediger spørgsmål"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -241,9 +245,9 @@ function QuestionCard({
           <motion.button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-1.5 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 hover:text-red-500 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-2.5 sm:p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 hover:text-red-500 transition-colors active:bg-red-100 dark:active:bg-red-900/50 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Slet spørgsmål"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -371,34 +375,44 @@ export default function MineSpoergsmaalPage() {
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-8"
+          className="mb-8"
         >
-          <Link
-            href="/spil"
-            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+          {/* Top row: back + theme toggle */}
+          <div className="flex items-center justify-between mb-3 sm:mb-0">
+            <Link
+              href="/spil"
+              className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-2 -ml-2 pl-2 pr-3 rounded-xl active:bg-slate-100 dark:active:bg-slate-800 min-h-[44px]"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11 17l-5-5m0 0l5-5m-5 5h12"
-              />
-            </svg>
-            <span>Tilbage</span>
-          </Link>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11 17l-5-5m0 0l5-5m-5 5h12"
+                />
+              </svg>
+              <span className="hidden sm:inline">Tilbage</span>
+            </Link>
 
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            {/* Desktop: title in center */}
+            <h1 className="hidden sm:flex text-2xl font-bold text-slate-800 dark:text-white items-center gap-2">
+              <span>✍️</span>
+              <span>Mine Spørgsmål</span>
+            </h1>
+
+            <ThemeToggle className="text-slate-600 dark:text-slate-400" />
+          </div>
+
+          {/* Mobile: title below */}
+          <h1 className="sm:hidden text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
             <span>✍️</span>
             <span>Mine Spørgsmål</span>
           </h1>
-
-          <ThemeToggle className="text-slate-600 dark:text-slate-400" />
         </motion.header>
 
         {/* Stats banner */}
@@ -408,19 +422,22 @@ export default function MineSpoergsmaalPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6 p-4 bg-gradient-to-r from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 rounded-xl"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-slate-700 dark:text-slate-200 font-medium">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <span className="text-slate-700 dark:text-slate-200 font-medium text-sm sm:text-base">
                 {stats.total} {stats.total === 1 ? "spørgsmål" : "spørgsmål"} oprettet
               </span>
-              <div className="flex gap-2 text-xs">
-                <span className="text-green-600 dark:text-green-400">
-                  🟢 {stats.byDepth.let}
+              <div className="flex gap-3 sm:gap-2 text-sm sm:text-xs">
+                <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
+                  <span>🟢</span>
+                  <span>{stats.byDepth.let}</span>
                 </span>
-                <span className="text-yellow-600 dark:text-yellow-400">
-                  🟡 {stats.byDepth.medium}
+                <span className="text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
+                  <span>🟡</span>
+                  <span>{stats.byDepth.medium}</span>
                 </span>
-                <span className="text-red-600 dark:text-red-400">
-                  🔴 {stats.byDepth.dyb}
+                <span className="text-red-600 dark:text-red-400 flex items-center gap-1">
+                  <span>🔴</span>
+                  <span>{stats.byDepth.dyb}</span>
                 </span>
               </div>
             </div>
@@ -518,17 +535,19 @@ export default function MineSpoergsmaalPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="mt-8 text-center"
+            className="mt-8"
           >
-            <Link
-              href="/spil/custom"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity shadow-lg"
-            >
-              <span>Spil med dine spørgsmål</span>
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
+            <motion.div whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/spil/custom"
+                className="flex items-center justify-center gap-2 w-full sm:w-auto sm:mx-auto px-6 py-4 sm:py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity shadow-lg active:opacity-80 min-h-[52px]"
+              >
+                <span>Spil med dine spørgsmål</span>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </motion.div>
           </motion.div>
         )}
 
