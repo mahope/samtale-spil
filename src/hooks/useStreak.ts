@@ -3,6 +3,7 @@
 import { useCallback, useState, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { TIMING, STORAGE_KEYS } from "@/constants";
+import { toDateKey, getDaysDifference } from "@/utils/date";
 
 export interface StreakData {
   currentStreak: number;
@@ -22,17 +23,6 @@ const DEFAULT_STREAK_DATA: StreakData = {
 export const STREAK_MILESTONES = [3, 7, 14, 30, 50, 100] as const;
 export type StreakMilestone = typeof STREAK_MILESTONES[number];
 
-function getDateString(date: Date = new Date()): string {
-  return date.toISOString().split("T")[0];
-}
-
-function getDaysDifference(date1: string, date2: string): number {
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-  const diffTime = Math.abs(d2.getTime() - d1.getTime());
-  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-}
-
 export function useStreak() {
   const [streakData, setStreakData, isLoaded] = useLocalStorage<StreakData>(
     STORAGE_KEYS.STREAK,
@@ -51,7 +41,7 @@ export function useStreak() {
       return { isActive: false, isAtRisk: false, daysSinceActivity: Infinity };
     }
 
-    const today = getDateString();
+    const today = toDateKey();
     const daysDiff = getDaysDifference(streakData.lastActiveDate, today);
 
     return {
@@ -63,7 +53,7 @@ export function useStreak() {
 
   // Record activity for today
   const recordActivity = useCallback(() => {
-    const today = getDateString();
+    const today = toDateKey();
 
     setStreakData((prev) => {
       // If already played today, no change

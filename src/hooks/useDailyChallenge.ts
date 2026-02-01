@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { getDailyQuestion } from "@/utils/dailyQuestion";
 import { STORAGE_KEYS } from "@/constants";
+import { toDateKey, getDaysDifference } from "@/utils/date";
 
 export interface DailyChallengeData {
   // Completion tracking
@@ -37,17 +38,6 @@ export const DAILY_CHALLENGE_POINTS = {
 export const DAILY_CHALLENGE_MILESTONES = [3, 7, 14, 30, 50, 100] as const;
 export type DailyChallengeMilestone = typeof DAILY_CHALLENGE_MILESTONES[number];
 
-function getDateString(date: Date = new Date()): string {
-  return date.toISOString().split("T")[0];
-}
-
-function getDaysDifference(date1: string, date2: string): number {
-  const d1 = new Date(date1);
-  const d2 = new Date(date2);
-  const diffTime = d2.getTime() - d1.getTime();
-  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-}
-
 export function useDailyChallenge() {
   const [data, setData, isLoaded] = useLocalStorage<DailyChallengeData>(
     STORAGE_KEYS.DAILY_CHALLENGE,
@@ -61,7 +51,7 @@ export function useDailyChallenge() {
 
   // Check if today's challenge is completed
   const isCompletedToday = useMemo(() => {
-    const today = getDateString();
+    const today = toDateKey();
     return data.completedDates.includes(today);
   }, [data.completedDates]);
 
@@ -71,7 +61,7 @@ export function useDailyChallenge() {
       return { currentStreak: 0, isAtRisk: false, daysSinceCompletion: Infinity };
     }
 
-    const today = getDateString();
+    const today = toDateKey();
     const daysDiff = getDaysDifference(data.lastCompletedDate, today);
 
     // Check if streak should be broken
@@ -97,7 +87,7 @@ export function useDailyChallenge() {
 
   // Complete today's challenge
   const completeChallenge = useCallback(() => {
-    const today = getDateString();
+    const today = toDateKey();
 
     setData((prev) => {
       // Already completed today

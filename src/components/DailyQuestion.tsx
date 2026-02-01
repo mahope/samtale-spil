@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { getDailyQuestion, formatDepth, getDepthColor } from "@/utils/dailyQuestion";
+import { toDateKey } from "@/utils/date";
 import { useShare } from "@/hooks/useShare";
 
 export function DailyQuestion() {
@@ -52,7 +53,7 @@ export function DailyQuestion() {
             </div>
             <time
               className="text-xs text-slate-500 dark:text-slate-400"
-              dateTime={new Date().toISOString().split("T")[0]}
+              dateTime={toDateKey()}
             >
               {new Date().toLocaleDateString("da-DK", {
                 day: "numeric",
