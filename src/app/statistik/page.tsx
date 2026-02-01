@@ -3,9 +3,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useFavorites, useProgress, useQuestionHistory, FavoriteQuestion, HistoryEntry } from "@/hooks/useLocalStorage";
+import { useFavorites, useProgress, useQuestionHistory } from "@/hooks/useLocalStorage";
 import { useStreak } from "@/hooks/useStreak";
-import { useDailyChallenge, DAILY_CHALLENGE_POINTS } from "@/hooks/useDailyChallenge";
+import { useDailyChallenge } from "@/hooks/useDailyChallenge";
 import { useCategoryBadges } from "@/hooks/useCategoryBadges";
 import { useQuestionRatings } from "@/hooks/useQuestionRatings";
 import { categories, getCategory, getQuestionById } from "@/data/categories";
@@ -15,268 +15,12 @@ import { PageTransition } from "@/components/PageTransition";
 import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
 import { BadgeGrid, NextBadgeProgress, BadgeStats } from "@/components/CategoryBadge";
 import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
-
-// Stat card component - mobile optimized
-function StatCard({
-  icon,
-  label,
-  value,
-  subtext,
-  gradient,
-  delay = 0,
-}: {
-  icon: string;
-  label: string;
-  value: string | number;
-  subtext?: string;
-  gradient: string;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.9 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay, type: "spring", stiffness: 100 }}
-      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${gradient} p-3 sm:p-5 text-white shadow-lg`}
-    >
-      {/* Decorative circles - smaller on mobile */}
-      <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-14 h-14 sm:w-20 sm:h-20 bg-white/10 rounded-full" />
-      <div className="absolute -bottom-3 -left-3 sm:-bottom-4 sm:-left-4 w-12 h-12 sm:w-16 sm:h-16 bg-white/10 rounded-full" />
-      <div className="relative">
-        <span className="text-2xl sm:text-3xl mb-1 sm:mb-2 block" aria-hidden="true">
-          {icon}
-        </span>
-        <p className="text-white/80 text-xs sm:text-sm font-medium leading-tight">{label}</p>
-        <p className="text-2xl sm:text-3xl font-bold mt-0.5 sm:mt-1">{value}</p>
-        {subtext && (
-          <p className="text-white/70 text-[10px] sm:text-xs mt-0.5 sm:mt-1 leading-tight">{subtext}</p>
-        )}
-      </div>
-    </motion.div>
-  );
-}
-
-// Category progress item - mobile optimized
-function CategoryProgressItem({
-  emoji,
-  name,
-  answered,
-  total,
-  color,
-  index,
-}: {
-  emoji: string;
-  name: string;
-  answered: number;
-  total: number;
-  color: string;
-  index: number;
-}) {
-  const percent = Math.round((answered / total) * 100);
-  const isCompleted = answered >= total;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.1 * index }}
-      className="bg-white dark:bg-slate-800 rounded-xl p-3 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-700"
-    >
-      <div className="flex items-center justify-between mb-2 gap-2">
-        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-          <span className="text-lg sm:text-xl shrink-0" aria-hidden="true">
-            {emoji}
-          </span>
-          <span className="font-medium text-sm sm:text-base text-slate-800 dark:text-slate-100 truncate">
-            {name}
-          </span>
-          {isCompleted && (
-            <span className="text-emerald-500 text-sm shrink-0">✓</span>
-          )}
-        </div>
-        <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 shrink-0 tabular-nums">
-          {answered}/{total}
-        </span>
-      </div>
-      <div className="h-1.5 sm:h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-        <motion.div
-          className={`h-full bg-gradient-to-r ${color}`}
-          initial={{ width: 0 }}
-          animate={{ width: `${percent}%` }}
-          transition={{ delay: 0.2 + 0.1 * index, duration: 0.5 }}
-        />
-      </div>
-      <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 mt-1 text-right tabular-nums">
-        {percent}%
-      </p>
-    </motion.div>
-  );
-}
-
-// Fun stat badge - mobile optimized
-function FunStatBadge({
-  icon,
-  title,
-  value,
-  color,
-  delay = 0,
-}: {
-  icon: string;
-  title: string;
-  value: string;
-  color: string;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay, type: "spring", stiffness: 150 }}
-      className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-gradient-to-r ${color} shadow-md min-h-[60px] sm:min-h-[72px]`}
-    >
-      <span className="text-xl sm:text-2xl shrink-0" aria-hidden="true">
-        {icon}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[10px] sm:text-xs text-white/70 font-medium leading-tight">{title}</p>
-        <p className="text-xs sm:text-sm font-bold text-white leading-tight mt-0.5 break-words">{value}</p>
-      </div>
-    </motion.div>
-  );
-}
-
-// Favorite preview card
-function FavoritePreviewCard({
-  favorite,
-  index,
-}: {
-  favorite: FavoriteQuestion;
-  index: number;
-}) {
-  const category = getCategory(favorite.categoryId);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 * index }}
-      className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
-    >
-      <div className="flex items-start gap-2">
-        {category && (
-          <span className="text-lg shrink-0" aria-hidden="true">
-            {category.emoji}
-          </span>
-        )}
-        <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed line-clamp-2">
-          {favorite.text}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
-
-// History item card
-function HistoryItemCard({
-  entry,
-  index,
-}: {
-  entry: HistoryEntry;
-  index: number;
-}) {
-  const category = getCategory(entry.categoryId);
-  const date = new Date(entry.answeredAt);
-  const formattedDate = date.toLocaleDateString("da-DK", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  const depthEmoji = {
-    let: "🟢",
-    medium: "🟡",
-    dyb: "🔴",
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.05 * index }}
-      className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
-    >
-      <div className="flex items-start gap-3">
-        {category && (
-          <span className="text-xl shrink-0" aria-hidden="true">
-            {category.emoji}
-          </span>
-        )}
-        <div className="flex-1 min-w-0">
-          <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed line-clamp-2">
-            {entry.text}
-          </p>
-          <div className="flex items-center gap-2 mt-2 text-xs text-slate-400 dark:text-slate-500">
-            <span aria-label={`Dybde: ${entry.depth}`}>{depthEmoji[entry.depth]}</span>
-            <span>•</span>
-            <span>{formattedDate}</span>
-            {category && (
-              <>
-                <span>•</span>
-                <span>{category.name}</span>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Empty state component
-function EmptyState() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="text-center py-12"
-    >
-      <motion.div
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className="text-6xl mb-4"
-        aria-hidden="true"
-      >
-        📊
-      </motion.div>
-      <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-200 mb-2">
-        Ingen statistik endnu
-      </h2>
-      <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
-        Start et spil for at se din fremgang her!
-      </p>
-      <Link
-        href="/spil"
-        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity"
-      >
-        <span>Start et spil</span>
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M13 7l5 5m0 0l-5 5m5-5H6"
-          />
-        </svg>
-      </Link>
-    </motion.div>
-  );
-}
+import { EmptyState } from "@/components/EmptyState";
+import { StatCard } from "@/components/StatCard";
+import { CategoryProgressItem } from "@/components/CategoryProgressItem";
+import { FunStatBadge } from "@/components/FunStatBadge";
+import { FavoritePreviewCard } from "@/components/FavoritePreviewCard";
+import { HistoryItemCard } from "@/components/HistoryItemCard";
 
 export default function StatistikPage() {
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
@@ -507,7 +251,15 @@ export default function StatistikPage() {
         <BadgeCelebrationWithConfetti />
 
         {!hasActivity ? (
-          <EmptyState />
+          <EmptyState
+            icon="📊"
+            title="Ingen statistik endnu"
+            description="Start et spil for at se din fremgang her!"
+            action={{
+              href: "/spil",
+              label: "Start et spil",
+            }}
+          />
         ) : (
           <>
             {/* Streak Display */}
