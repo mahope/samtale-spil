@@ -102,5 +102,62 @@ export function useSound() {
     }
   }, [getAudioContext]);
 
-  return { playFlip, playSuccess, playTap };
+  // Timeout warning sound - urgent double beep
+  const playTimeout = useCallback(() => {
+    try {
+      const ctx = getAudioContext();
+      
+      // First beep
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "square";
+      osc1.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      gain1.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(ctx.currentTime);
+      osc1.stop(ctx.currentTime + 0.1);
+
+      // Second beep
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "square";
+      osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+      gain2.gain.setValueAtTime(0, ctx.currentTime);
+      gain2.gain.setValueAtTime(0.1, ctx.currentTime + 0.15);
+      gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(ctx.currentTime + 0.15);
+      osc2.stop(ctx.currentTime + 0.25);
+    } catch {
+      // Audio not supported, fail silently
+    }
+  }, [getAudioContext]);
+
+  // Timer tick sound - subtle tick for last 5 seconds
+  const playTick = useCallback(() => {
+    try {
+      const ctx = getAudioContext();
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(1000, ctx.currentTime);
+
+      gainNode.gain.setValueAtTime(0.05, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.03);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.03);
+    } catch {
+      // Audio not supported, fail silently
+    }
+  }, [getAudioContext]);
+
+  return { playFlip, playSuccess, playTap, playTimeout, playTick };
 }

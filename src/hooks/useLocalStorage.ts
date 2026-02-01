@@ -94,6 +94,56 @@ export function useFavorites() {
   };
 }
 
+// Timer settings
+export interface TimerSettings {
+  enabled: boolean;
+  duration: 30 | 60 | 90;
+  soundEnabled: boolean;
+  vibrationEnabled: boolean;
+}
+
+const DEFAULT_TIMER_SETTINGS: TimerSettings = {
+  enabled: false,
+  duration: 60,
+  soundEnabled: true,
+  vibrationEnabled: true,
+};
+
+export function useTimerSettings() {
+  const [settings, setSettings, isLoaded] = useLocalStorage<TimerSettings>(
+    "samtale-spil-timer-settings",
+    DEFAULT_TIMER_SETTINGS
+  );
+
+  const toggleTimer = useCallback(() => {
+    setSettings((prev) => ({ ...prev, enabled: !prev.enabled }));
+  }, [setSettings]);
+
+  const setDuration = useCallback(
+    (duration: 30 | 60 | 90) => {
+      setSettings((prev) => ({ ...prev, duration }));
+    },
+    [setSettings]
+  );
+
+  const toggleSound = useCallback(() => {
+    setSettings((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }));
+  }, [setSettings]);
+
+  const toggleVibration = useCallback(() => {
+    setSettings((prev) => ({ ...prev, vibrationEnabled: !prev.vibrationEnabled }));
+  }, [setSettings]);
+
+  return {
+    settings,
+    toggleTimer,
+    setDuration,
+    toggleSound,
+    toggleVibration,
+    isLoaded,
+  };
+}
+
 // Session progress management
 export interface CategoryProgress {
   answeredIds: string[];

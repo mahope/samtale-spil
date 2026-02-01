@@ -6,13 +6,14 @@ import { useState, useCallback, useEffect } from "react";
 import { getCategory, getRandomQuestion } from "@/data/categories";
 import { notFound } from "next/navigation";
 import type { Question } from "@/types";
-import { useFavorites, useProgress } from "@/hooks/useLocalStorage";
+import { useFavorites, useProgress, useTimerSettings } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Confetti, CelebrationBurst, useConfetti, CelebrationOverlay } from "@/components/Confetti";
 import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
 import { FloatingParticles } from "@/components/FloatingParticles";
+import { TimerDisplay, TimerSettingsPanel } from "@/components/TimerDisplay";
 
 interface Props {
   categoryId: string;
@@ -193,7 +194,15 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   
   const { isFavorite, toggleFavorite, isLoaded: favoritesLoaded } = useFavorites();
   const { getCategoryProgress, markAnswered, resetCategory, isLoaded: progressLoaded } = useProgress();
-  const { playFlip, playSuccess, playTap } = useSound();
+  const { playFlip, playSuccess, playTap, playTimeout, playTick } = useSound();
+  const { 
+    settings: timerSettings, 
+    toggleTimer, 
+    setDuration: setTimerDuration, 
+    toggleSound: toggleTimerSound, 
+    toggleVibration: toggleTimerVibration,
+    isLoaded: timerLoaded 
+  } = useTimerSettings();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
@@ -203,6 +212,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [hasShownCelebration, setHasShownCelebration] = useState(false);
+  const [timerKey, setTimerKey] = useState(0); // Used to reset timer on new question
 
   // Initialize from saved progress
   useEffect(() => {
@@ -239,6 +249,16 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     playFlip();
     setIsFlipped((prev) => !prev);
   }, [playFlip]);
+
+  // Handle timer tick for last 5 seconds
+  const handleTimerTick = useCallback((secondsLeft: number) => {
+    if (timerSettings.soundEnabled && secondsLeft <= 5) {
+      playTick();
+    }
+    if (timerSettings.vibrationEnabled && navigator.vibrate && secondsLeft <= 3) {
+      navigator.vibrate(50);
+    }
+  }, [timerSettings.soundEnabled, timerSettings.vibrationEnabled, playTick]);
 
   const handleNextQuestion = useCallback(() => {
     if (!category || isTransitioning) return;
@@ -281,6 +301,8 @@ export default function CategoryPlayClient({ categoryId }: Props) {
         );
         setCurrentQuestion(nextQuestion);
         setAnsweredCount((prev) => prev + 1);
+        // Reset timer for new question
+        setTimerKey((prev) => prev + 1);
       }
 
       setIsTransitioning(false);
@@ -296,6 +318,18 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     playTap,
     triggerConfetti,
   ]);
+
+  // Handle timer timeout - auto skip to next question
+  const handleTimerTimeout = useCallback(() => {
+    if (timerSettings.soundEnabled) {
+      playTimeout();
+    }
+    if (timerSettings.vibrationEnabled && navigator.vibrate) {
+      navigator.vibrate([200, 100, 200]); // Vibration pattern
+    }
+    // Auto-skip to next question
+    handleNextQuestion();
+  }, [timerSettings.soundEnabled, timerSettings.vibrationEnabled, playTimeout, handleNextQuestion]);
 
   const handleResetProgress = useCallback(() => {
     resetCategory(categoryId);
@@ -327,7 +361,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   }
 
   // Show loading state while localStorage loads
-  if (!progressLoaded || !favoritesLoaded) {
+  if (!progressLoaded || !favoritesLoaded || !timerLoaded) {
     return (
       <div 
         className={`min-h-screen bg-gradient-to-br ${category.color} flex flex-col items-center justify-center px-6`}
@@ -422,6 +456,16 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           </div>
 
           <nav className="flex items-center gap-2" aria-label="Hurtighandlinger">
+            <TimerSettingsPanel
+              isEnabled={timerSettings.enabled}
+              duration={timerSettings.duration}
+              soundEnabled={timerSettings.soundEnabled}
+              vibrationEnabled={timerSettings.vibrationEnabled}
+              onToggle={toggleTimer}
+              onDurationChange={setTimerDuration}
+              onSoundToggle={toggleTimerSound}
+              onVibrationToggle={toggleTimerVibration}
+            />
             <ThemeToggle className="text-white" />
             <Link
               href="/favoritter"
@@ -476,6 +520,33 @@ export default function CategoryPlayClient({ categoryId }: Props) {
             </span>
           </div>
         </motion.div>
+
+        {/* Timer Display */}
+        {timerSettings.enabled && currentQuestion && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4"
+          >
+            <TimerDisplay
+              key={timerKey}
+              duration={timerSettings.duration}
+              isActive={timerSettings.enabled && !isTransitioning}
+              onTimeout={handleTimerTimeout}
+              onTick={handleTimerTick}
+              isPaused={!isFlipped} // Pause timer until card is flipped
+            />
+            {!isFlipped && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-white/70 text-xs text-center mt-2"
+              >
+                Vend kortet for at starte timeren
+              </motion.p>
+            )}
+          </motion.div>
+        )}
 
         {/* Question Card */}
         <div className="flex-1 flex items-center justify-center w-full">
