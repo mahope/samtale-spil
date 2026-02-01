@@ -663,3 +663,14 @@ export function getCategoryQuestionCount(
   if (difficultyFilter === "alle") return category.questions.length;
   return category.questions.filter((q) => q.depth === difficultyFilter).length;
 }
+
+// Get a specific question by its ID
+export function getQuestionById(questionId: string) {
+  for (const category of categories) {
+    const question = category.questions.find((q) => q.id === questionId);
+    if (question) {
+      return { question, category };
+    }
+  }
+  return null;
+}

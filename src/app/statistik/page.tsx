@@ -7,7 +7,9 @@ import { useFavorites, useProgress, useQuestionHistory, FavoriteQuestion, Histor
 import { useStreak } from "@/hooks/useStreak";
 import { useDailyChallenge, DAILY_CHALLENGE_POINTS } from "@/hooks/useDailyChallenge";
 import { useCategoryBadges } from "@/hooks/useCategoryBadges";
-import { categories, getCategory } from "@/data/categories";
+import { useQuestionRatings } from "@/hooks/useQuestionRatings";
+import { categories, getCategory, getQuestionById } from "@/data/categories";
+import { RatingStarsDisplay } from "@/components/RatingStars";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
 import { BadgeGrid, NextBadgeProgress, BadgeStats } from "@/components/CategoryBadge";
@@ -292,6 +294,11 @@ export default function StatistikPage() {
     nextBadge,
     isLoaded: badgesLoaded,
   } = useCategoryBadges();
+  const {
+    getTopRated,
+    stats: ratingStats,
+    isLoaded: ratingsLoaded,
+  } = useQuestionRatings();
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [showAllHistory, setShowAllHistory] = useState(false);
 
@@ -423,7 +430,7 @@ export default function StatistikPage() {
     };
   }, [favorites, progress, progressLoaded, favoritesLoaded]);
 
-  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded && dailyChallengeLoaded && badgesLoaded;
+  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded && dailyChallengeLoaded && badgesLoaded && ratingsLoaded;
 
   if (!isLoaded) {
     return (
@@ -546,6 +553,81 @@ export default function StatistikPage() {
                     delay={0.3}
                   />
                 </div>
+              </section>
+            )}
+
+            {/* Top Rated Questions */}
+            {ratingStats.totalRated > 0 && (
+              <section className="mb-8" aria-labelledby="top-rated-heading">
+                <motion.h2
+                  id="top-rated-heading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.25 }}
+                  className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2"
+                >
+                  <span aria-hidden="true">⭐</span>
+                  Højest ratede spørgsmål
+                </motion.h2>
+                <div className="space-y-3">
+                  {getTopRated(5).map((rating, index) => {
+                    const questionData = getQuestionById(rating.questionId);
+                    if (!questionData) return null;
+                    const { question, category } = questionData;
+                    
+                    return (
+                      <motion.div
+                        key={rating.questionId}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 * index }}
+                        className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="text-xl shrink-0" aria-hidden="true">
+                            {category.emoji}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed line-clamp-2">
+                              {question.text}
+                            </p>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="text-xs text-slate-400 dark:text-slate-500">
+                                {category.name}
+                              </span>
+                              <RatingStarsDisplay
+                                questionId={rating.questionId}
+                                size="sm"
+                                showValue={false}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+                {/* Rating stats summary */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="mt-4 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-xl"
+                >
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-slate-600 dark:text-slate-300">
+                      {ratingStats.totalRated} spørgsmål ratet
+                    </span>
+                    <span className="text-amber-600 dark:text-amber-400 font-medium">
+                      ⭐ {ratingStats.averageRating} gennemsnit
+                    </span>
+                  </div>
+                  {ratingStats.fiveStarCount > 0 && (
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {ratingStats.fiveStarCount} spørgsmål med 5 stjerner ✨
+                    </p>
+                  )}
+                </motion.div>
               </section>
             )}
 

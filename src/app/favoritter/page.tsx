@@ -4,9 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { useFavorites, FavoriteQuestion } from "@/hooks/useLocalStorage";
+import { useQuestionRatings } from "@/hooks/useQuestionRatings";
 import { getCategory } from "@/data/categories";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
 
 function DepthBadge({ depth }: { depth: FavoriteQuestion["depth"] }) {
   const config = {
@@ -32,6 +34,8 @@ function FavoriteCard({
   onRemove: () => void;
 }) {
   const category = getCategory(favorite.categoryId);
+  const { isRated } = useQuestionRatings();
+  const hasRating = isRated(favorite.id);
   
   return (
     <motion.article
@@ -82,6 +86,23 @@ function FavoriteCard({
       <p className="text-slate-800 dark:text-slate-100 text-lg leading-relaxed">
         {favorite.text}
       </p>
+      
+      {/* Rating section */}
+      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
+        {hasRating ? (
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-slate-400 dark:text-slate-500">Din rating:</span>
+            <RatingStarsDisplay questionId={favorite.id} size="sm" />
+          </div>
+        ) : (
+          <RatingStars
+            questionId={favorite.id}
+            size="sm"
+            showLabel={false}
+            compact
+          />
+        )}
+      </div>
       
       <p className="text-slate-400 dark:text-slate-500 text-xs mt-3">
         <time dateTime={new Date(favorite.savedAt).toISOString()}>
