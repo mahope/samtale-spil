@@ -7,7 +7,9 @@ import { getCategory, getRandomQuestionFromAll, getTotalQuestionCount } from "@/
 import type { Question } from "@/types";
 import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
+import { useStreak } from "@/hooks/useStreak";
 import { ShareButton } from "@/components/ShareButton";
+import { StreakBadge, StreakCelebration } from "@/components/StreakDisplay";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Confetti, useConfetti, CelebrationOverlay } from "@/components/Confetti";
 import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
@@ -224,6 +226,7 @@ export default function ShuffleAllClient() {
   } = useTimerSettings();
   const { filter: difficultyFilter, setFilter: setDifficultyFilter, isLoaded: filterLoaded } = useDifficultyFilter();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
+  const { recordActivity, currentStreak } = useStreak();
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
@@ -289,6 +292,7 @@ export default function ShuffleAllClient() {
 
     if (currentQuestion) {
       markAnswered(SHUFFLE_ALL_ID, currentQuestion.id);
+      recordActivity();
     }
 
     if (isFlipped) {
@@ -403,6 +407,7 @@ export default function ShuffleAllClient() {
   return (
     <>
       <Confetti isActive={confettiActive} />
+      <StreakCelebration />
       
       <CelebrationOverlay
         isVisible={showCelebration}
@@ -463,6 +468,7 @@ export default function ShuffleAllClient() {
                 🎲
               </motion.span>
               <h1 className="text-white font-semibold">Shuffle All</h1>
+              {currentStreak > 0 && <StreakBadge />}
             </div>
 
             <nav className="flex items-center gap-2" aria-label="Hurtighandlinger">

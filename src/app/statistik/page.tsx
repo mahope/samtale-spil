@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useFavorites, useProgress, useQuestionHistory, FavoriteQuestion, HistoryEntry } from "@/hooks/useLocalStorage";
+import { useStreak } from "@/hooks/useStreak";
 import { categories, getCategory } from "@/data/categories";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
 
 // Stat card component
 function StatCard({
@@ -272,6 +274,7 @@ export default function StatistikPage() {
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
   const { progress, isLoaded: progressLoaded } = useProgress();
   const { history, clearHistory, isLoaded: historyLoaded } = useQuestionHistory();
+  const { isLoaded: streakLoaded } = useStreak();
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [showAllHistory, setShowAllHistory] = useState(false);
 
@@ -403,7 +406,7 @@ export default function StatistikPage() {
     };
   }, [favorites, progress, progressLoaded, favoritesLoaded]);
 
-  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded;
+  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded;
 
   if (!isLoaded) {
     return (
@@ -461,10 +464,21 @@ export default function StatistikPage() {
           <ThemeToggle className="text-slate-600 dark:text-slate-400" />
         </motion.header>
 
+        {/* Streak Celebration Modal */}
+        <StreakCelebration />
+
         {!hasActivity ? (
           <EmptyState />
         ) : (
           <>
+            {/* Streak Display */}
+            <section className="mb-8" aria-labelledby="streak-heading">
+              <h2 id="streak-heading" className="sr-only">
+                Streak
+              </h2>
+              <StreakDisplay />
+            </section>
+
             {/* Overview Stats */}
             <section className="mb-8" aria-labelledby="overview-heading">
               <h2 id="overview-heading" className="sr-only">

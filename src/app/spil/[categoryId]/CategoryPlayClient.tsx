@@ -8,7 +8,9 @@ import { notFound } from "next/navigation";
 import type { Question } from "@/types";
 import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter, useQuestionHistory } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
+import { useStreak } from "@/hooks/useStreak";
 import { ShareButton } from "@/components/ShareButton";
+import { StreakBadge, StreakCelebration } from "@/components/StreakDisplay";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
 import { AchievementToast } from "@/components/AchievementToast";
@@ -211,6 +213,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const { addToHistory } = useQuestionHistory();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
   const { pendingAchievement, dismissPendingAchievement } = useAchievements();
+  const { recordActivity, currentStreak, isAtRisk } = useStreak();
   
   // Calculate filtered question count
   const filteredQuestionCount = category ? getCategoryQuestionCount(categoryId, difficultyFilter) : 0;
@@ -286,6 +289,8 @@ export default function CategoryPlayClient({ categoryId }: Props) {
         text: currentQuestion.text,
         depth: currentQuestion.depth,
       });
+      // Record streak activity
+      recordActivity();
     }
 
     // Flip back first if flipped
@@ -424,6 +429,9 @@ export default function CategoryPlayClient({ categoryId }: Props) {
         onDismiss={dismissPendingAchievement}
       />
       
+      {/* Streak celebration */}
+      <StreakCelebration />
+      
       {/* Celebration overlay */}
       <CelebrationOverlay
         isVisible={showCelebration}
@@ -479,6 +487,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           <div className="flex items-center gap-3">
             <span className="text-3xl" aria-hidden="true">{category.emoji}</span>
             <h1 className="text-white font-semibold">{category.name}</h1>
+            {currentStreak > 0 && <StreakBadge />}
           </div>
 
           <nav className="flex items-center gap-2" aria-label="Hurtighandlinger">
