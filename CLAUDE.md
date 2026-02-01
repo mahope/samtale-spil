@@ -10,9 +10,16 @@ Et web-baseret samtale/spørgsmålsspil inspireret af Vertellis og Big Questions
 ## Tech Stack
 - **Framework:** Next.js 16 (App Router)
 - **Sprog:** TypeScript
-- **Styling:** Tailwind CSS
+- **Styling:** Tailwind CSS v4 (class-based dark mode via `@variant dark`)
 - **Animationer:** Framer Motion
 - **Hosting:** GitHub Pages (auto-deploy via Actions)
+
+### Dark Mode Configuration (Tailwind v4)
+Tailwind v4 uses `prefers-color-scheme` media queries by default. To enable class-based dark mode (`.dark` class on `<html>`), we override the built-in variant in `globals.css`:
+```css
+@variant dark (&:where(.dark, .dark *));
+```
+The theme is initialized via an inline script in `layout.tsx` to prevent FOUC.
 
 ## Features
 - 🎴 **9 kategorier** med 400+ spørgsmål total
