@@ -4,10 +4,11 @@ import { useCallback, useState, useEffect } from "react";
 import { useLocalStorage, useFavorites, useProgress } from "./useLocalStorage";
 import { Achievement, ACHIEVEMENTS } from "@/components/AchievementToast";
 import { categories } from "@/data/categories";
+import { STORAGE_KEYS } from "@/constants";
 
 export function useAchievements() {
   const [unlockedAchievements, setUnlockedAchievements, isLoaded] = useLocalStorage<Achievement[]>(
-    "samtale-spil-achievements",
+    STORAGE_KEYS.ACHIEVEMENTS,
     []
   );
   const [pendingAchievement, setPendingAchievement] = useState<Achievement | null>(null);

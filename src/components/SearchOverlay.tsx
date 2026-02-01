@@ -9,7 +9,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Question } from "@/types";
 import { DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
 import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
-import { TIMING } from "@/constants";
+import { TIMING, STORAGE_KEYS } from "@/constants";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface SearchResult {
@@ -51,7 +51,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [recentSearches, setRecentSearches, recentLoaded] = useLocalStorage<string[]>(
-    "samtale-spil-recent-searches",
+    STORAGE_KEYS.RECENT_SEARCHES,
     []
   );
   const { questions: customQuestions, isLoaded: customLoaded } = useCustomQuestions();

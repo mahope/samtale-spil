@@ -5,6 +5,7 @@ import { useLocalStorage, useFavorites, useProgress } from "./useLocalStorage";
 import { useQuestionRatings } from "./useQuestionRatings";
 import { categories } from "@/data/categories";
 import type { Question } from "@/types";
+import { STORAGE_KEYS } from "@/constants";
 
 export interface Recommendation {
   question: Question;
@@ -27,7 +28,7 @@ export function useRecommendations() {
   const { progress, isLoaded: progressLoaded } = useProgress();
   
   const [dismissedIds, setDismissedIds, dismissedLoaded] = useLocalStorage<string[]>(
-    "samtale-spil-dismissed-recommendations",
+    STORAGE_KEYS.DISMISSED_RECOMMENDATIONS,
     []
   );
 

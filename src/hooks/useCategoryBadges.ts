@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocalStorage, useProgress } from "./useLocalStorage";
 import { categories } from "@/data/categories";
+import { STORAGE_KEYS } from "@/constants";
 
 export interface CategoryBadge {
   categoryId: string;
@@ -35,7 +36,7 @@ export interface CategoryBadgeInfo {
 
 export function useCategoryBadges() {
   const [badgeData, setBadgeData, isLoaded] = useLocalStorage<BadgeData>(
-    "samtale-spil-badges",
+    STORAGE_KEYS.BADGES,
     DEFAULT_BADGE_DATA
   );
   const { progress, isLoaded: progressLoaded } = useProgress();

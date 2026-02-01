@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { Question } from "@/types";
+import { STORAGE_KEYS } from "@/constants";
 
 export interface CustomQuestion extends Question {
   createdAt: number;
@@ -25,7 +26,7 @@ function generateId(): string {
 
 export function useCustomQuestions() {
   const [state, setState, isLoaded] = useLocalStorage<CustomQuestionsState>(
-    "samtale-spil-custom-questions",
+    STORAGE_KEYS.CUSTOM_QUESTIONS,
     DEFAULT_STATE
   );
 

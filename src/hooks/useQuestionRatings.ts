@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo } from "react";
 import { useLocalStorage } from "./useLocalStorage";
+import { STORAGE_KEYS } from "@/constants";
 
 export interface QuestionRating {
   questionId: string;
@@ -19,7 +20,7 @@ const DEFAULT_STATE: QuestionRatingsState = {
 
 export function useQuestionRatings() {
   const [state, setState, isLoaded] = useLocalStorage<QuestionRatingsState>(
-    "samtale-spil-question-ratings",
+    STORAGE_KEYS.QUESTION_RATINGS,
     DEFAULT_STATE
   );
 

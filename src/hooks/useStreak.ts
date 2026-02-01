@@ -2,7 +2,7 @@
 
 import { useCallback, useState, useEffect } from "react";
 import { useLocalStorage } from "./useLocalStorage";
-import { TIMING } from "@/constants";
+import { TIMING, STORAGE_KEYS } from "@/constants";
 
 export interface StreakData {
   currentStreak: number;
@@ -35,7 +35,7 @@ function getDaysDifference(date1: string, date2: string): number {
 
 export function useStreak() {
   const [streakData, setStreakData, isLoaded] = useLocalStorage<StreakData>(
-    "samtale-spil-streak",
+    STORAGE_KEYS.STREAK,
     DEFAULT_STREAK_DATA
   );
   const [pendingMilestone, setPendingMilestone] = useState<StreakMilestone | null>(null);

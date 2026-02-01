@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { logger } from "@/utils/logger";
+import { STORAGE_KEYS } from "@/constants";
 
 // Generic hook for localStorage with SSR safety
 export function useLocalStorage<T>(key: string, initialValue: T) {
@@ -48,7 +49,7 @@ export interface FavoriteQuestion {
 
 export function useFavorites() {
   const [favorites, setFavorites, isLoaded] = useLocalStorage<FavoriteQuestion[]>(
-    "samtale-spil-favorites",
+    STORAGE_KEYS.FAVORITES,
     []
   );
 
@@ -112,7 +113,7 @@ const DEFAULT_TIMER_SETTINGS: TimerSettings = {
 
 export function useTimerSettings() {
   const [settings, setSettings, isLoaded] = useLocalStorage<TimerSettings>(
-    "samtale-spil-timer-settings",
+    STORAGE_KEYS.TIMER_SETTINGS,
     DEFAULT_TIMER_SETTINGS
   );
 
@@ -151,7 +152,7 @@ export type DifficultyFilter = DifficultyLevel | "alle";
 
 export function useDifficultyFilter() {
   const [filter, setFilter, isLoaded] = useLocalStorage<DifficultyFilter>(
-    "samtale-spil-difficulty-filter",
+    STORAGE_KEYS.DIFFICULTY_FILTER,
     "alle"
   );
 
@@ -181,7 +182,7 @@ export interface HistoryEntry {
 
 export function useQuestionHistory() {
   const [history, setHistory, isLoaded] = useLocalStorage<HistoryEntry[]>(
-    "samtale-spil-question-history",
+    STORAGE_KEYS.QUESTION_HISTORY,
     []
   );
 
@@ -244,7 +245,7 @@ export interface SessionProgress {
 
 export function useProgress() {
   const [progress, setProgress, isLoaded] = useLocalStorage<SessionProgress>(
-    "samtale-spil-progress",
+    STORAGE_KEYS.PROGRESS,
     {}
   );
 

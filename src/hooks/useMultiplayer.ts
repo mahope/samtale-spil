@@ -21,11 +21,11 @@ import {
   DEFAULT_MULTIPLAYER_SETTINGS,
   DEFAULT_GAME_STATE,
 } from "@/types/multiplayer";
-import { TIMING } from "@/constants";
+import { TIMING, STORAGE_KEYS } from "@/constants";
 
-// Storage key for persisting player identity
-const PLAYER_STORAGE_KEY = "samtale-spil-player";
-const ROOM_STORAGE_KEY = "samtale-spil-room";
+// Storage keys imported from constants
+const PLAYER_STORAGE_KEY = STORAGE_KEYS.PLAYER;
+const ROOM_STORAGE_KEY = STORAGE_KEYS.ROOM;
 
 interface StoredPlayer {
   id: string;

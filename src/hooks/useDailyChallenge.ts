@@ -3,6 +3,7 @@
 import { useCallback, useMemo } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import { getDailyQuestion } from "@/utils/dailyQuestion";
+import { STORAGE_KEYS } from "@/constants";
 
 export interface DailyChallengeData {
   // Completion tracking
@@ -49,7 +50,7 @@ function getDaysDifference(date1: string, date2: string): number {
 
 export function useDailyChallenge() {
   const [data, setData, isLoaded] = useLocalStorage<DailyChallengeData>(
-    "samtale-spil-daily-challenge",
+    STORAGE_KEYS.DAILY_CHALLENGE,
     DEFAULT_DAILY_CHALLENGE_DATA
   );
 
