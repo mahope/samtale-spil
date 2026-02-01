@@ -225,11 +225,9 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
       ctx.fillText("🎴 Mine Samtalekort-statistikker", canvas.width / 2, 100);
 
       // Add stats boxes
-      const boxWidth = 320;
-      const boxHeight = 120;
-      const boxSpacing = 40;
-      const startX = (canvas.width - (2 * boxWidth + boxSpacing)) / 2;
-      const startY = 160;
+      const boxWidth = 280;
+      const boxHeight = 100;
+      const boxSpacing = 30;
 
       // Stats data
       const statsBoxes = [
@@ -252,7 +250,13 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
           value: `${stats.achievementsCount}`,
           subtitle: `${stats.achievementPercentage}% låst op`,
         });
-      ];
+      }
+
+      // Calculate dynamic positioning based on number of boxes
+      const totalBoxes = statsBoxes.length;
+      const totalWidth = totalBoxes * boxWidth + (totalBoxes - 1) * boxSpacing;
+      const startX = (canvas.width - totalWidth) / 2;
+      const startY = 160;
 
       statsBoxes.forEach((box, index) => {
         const x = startX + (boxWidth + boxSpacing) * index;
