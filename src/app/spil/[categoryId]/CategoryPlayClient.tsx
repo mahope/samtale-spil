@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
 import { notFound } from "next/navigation";
 import type { Question } from "@/types";
@@ -198,6 +199,8 @@ function QuestionCard({
 
 export default function CategoryPlayClient({ categoryId }: Props) {
   const category = getCategory(categoryId);
+  const searchParams = useSearchParams();
+  const initialQuestionId = searchParams.get("question") ?? undefined;
   
   const { isFavorite, toggleFavorite, isLoaded: favoritesLoaded } = useFavorites();
   const { getCategoryProgress, markAnswered, resetCategory, isLoaded: progressLoaded } = useProgress();
@@ -229,7 +232,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const [hasShownCelebration, setHasShownCelebration] = useState(false);
   const [timerKey, setTimerKey] = useState(0); // Used to reset timer on new question
 
-  // Initialize from saved progress
+  // Initialize from saved progress or initial question ID
   useEffect(() => {
     if (!progressLoaded || !filterLoaded || !category) return;
     
@@ -239,13 +242,23 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       setAnsweredCount(savedProgress.answeredIds.length);
     }
     
+    // Check if we have an initial question ID from URL (e.g., from recommendations)
+    if (initialQuestionId) {
+      const specificQuestion = category.questions.find(q => q.id === initialQuestionId);
+      if (specificQuestion) {
+        setCurrentQuestion(specificQuestion);
+        setIsFlipped(true); // Auto-flip to show the question
+        return;
+      }
+    }
+    
     // Get initial question excluding already answered ones, respecting filter
     const excludeIds = savedProgress.answeredIds.length >= filteredQuestionCount 
       ? [] 
       : savedProgress.answeredIds;
     const firstQuestion = getRandomQuestion(categoryId, excludeIds, difficultyFilter);
     setCurrentQuestion(firstQuestion);
-  }, [progressLoaded, filterLoaded, category, categoryId, getCategoryProgress, difficultyFilter, filteredQuestionCount]);
+  }, [progressLoaded, filterLoaded, category, categoryId, getCategoryProgress, difficultyFilter, filteredQuestionCount, initialQuestionId]);
 
   // Check for category completion
   useEffect(() => {

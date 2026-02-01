@@ -86,3 +86,31 @@ function DailyChallengeSkeleton() {
     </div>
   );
 }
+
+export const LazyRecommendations = dynamic(
+  () => import("./Recommendations").then((mod) => ({ default: mod.Recommendations })),
+  { ssr: false, loading: () => <RecommendationsSkeleton /> }
+);
+
+// Skeleton for Recommendations while loading
+function RecommendationsSkeleton() {
+  return (
+    <div className="w-full max-w-2xl mx-auto mt-12 px-4 animate-pulse">
+      <div className="h-6 w-48 bg-slate-200 dark:bg-slate-700 rounded mb-4"></div>
+      <div className="grid gap-3 sm:grid-cols-1 lg:grid-cols-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-white/80 dark:bg-slate-800/80 rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 bg-slate-200 dark:bg-slate-700 rounded"></div>
+              <div className="h-4 w-24 bg-slate-200 dark:bg-slate-700 rounded"></div>
+            </div>
+            <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded mb-2"></div>
+            <div className="h-5 w-3/4 bg-slate-200 dark:bg-slate-700 rounded mb-3"></div>
+            <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded mb-3"></div>
+            <div className="h-9 w-28 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
