@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { TIMING } from "@/constants";
 
@@ -20,6 +20,7 @@ interface AchievementToastProps {
 
 export function AchievementToast({ achievement, onDismiss }: AchievementToastProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (achievement) {
@@ -45,23 +46,23 @@ export function AchievementToast({ achievement, onDismiss }: AchievementToastPro
         >
           <motion.div
             className="bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-2xl shadow-2xl p-4 border border-amber-300"
-            animate={{ 
+            animate={prefersReducedMotion ? {} : { 
               boxShadow: [
                 "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
                 "0 20px 25px -5px rgba(245, 158, 11, 0.4)",
                 "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
               ]
             }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={prefersReducedMotion ? {} : { duration: 2, repeat: Infinity }}
           >
             <div className="flex items-center gap-3">
               <motion.div
                 className="text-3xl"
-                animate={{ 
+                animate={prefersReducedMotion ? {} : { 
                   rotate: [0, 10, -10, 0],
                   scale: [1, 1.2, 1]
                 }}
-                transition={{ 
+                transition={prefersReducedMotion ? {} : { 
                   duration: 0.6, 
                   repeat: Infinity, 
                   repeatDelay: 1 

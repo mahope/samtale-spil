@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { Question } from "@/types";
 import { ShareButton } from "@/components/ShareButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
@@ -27,6 +27,8 @@ export function QuestionCard({
   isFavorite,
   onToggleFavorite,
 }: QuestionCardProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <div className="perspective-1000 w-full max-w-[320px] sm:max-w-sm mx-auto px-2 sm:px-0">
       <motion.div
@@ -44,7 +46,7 @@ export function QuestionCard({
         aria-pressed={isFlipped}
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
+        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
         style={{ transformStyle: "preserve-3d" }}
       >
         {/* Front of card (hidden question) */}
@@ -55,8 +57,8 @@ export function QuestionCard({
         >
           <div className="w-full h-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 dark:border-white/20 flex flex-col items-center justify-center p-6 sm:p-8">
             <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
+              animate={prefersReducedMotion ? {} : { scale: [1, 1.1, 1] }}
+              transition={prefersReducedMotion ? {} : { repeat: Infinity, duration: 2 }}
               className="text-5xl sm:text-7xl mb-4 sm:mb-6"
               aria-hidden="true"
             >
@@ -67,8 +69,8 @@ export function QuestionCard({
             </p>
             <motion.div
               className="mt-4 flex gap-1"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
+              animate={prefersReducedMotion ? {} : { opacity: [0.5, 1, 0.5] }}
+              transition={prefersReducedMotion ? {} : { repeat: Infinity, duration: 1.5 }}
               aria-hidden="true"
             >
               <span className="text-white/60">•</span>

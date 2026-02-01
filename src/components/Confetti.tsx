@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useEffect, useState, useCallback } from "react";
 import { TIMING } from "@/constants";
 
@@ -65,8 +65,12 @@ export function Confetti({
   pieceCount?: number;
 }) {
   const [pieces, setPieces] = useState<ConfettiPiece[]>([]);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    // Skip if user prefers reduced motion
+    if (prefersReducedMotion) return;
+    
     if (isActive) {
       const newPieces: ConfettiPiece[] = Array.from({ length: pieceCount }).map((_, i) => ({
         id: i,
@@ -85,7 +89,12 @@ export function Confetti({
       return () => clearTimeout(timer);
     }
     return undefined;
-  }, [isActive, duration, pieceCount]);
+  }, [isActive, duration, pieceCount, prefersReducedMotion]);
+
+  // Skip rendering if user prefers reduced motion
+  if (prefersReducedMotion) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden" aria-hidden="true">
@@ -145,8 +154,12 @@ export function CelebrationBurst({ isActive }: { isActive: boolean }) {
     color: string;
     size: number;
   }>>([]);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
+    // Skip if user prefers reduced motion
+    if (prefersReducedMotion) return;
+    
     if (isActive) {
       const newParticles = Array.from({ length: 12 }).map((_, i) => ({
         id: i,
@@ -161,7 +174,12 @@ export function CelebrationBurst({ isActive }: { isActive: boolean }) {
       return () => clearTimeout(timer);
     }
     return undefined;
-  }, [isActive]);
+  }, [isActive, prefersReducedMotion]);
+
+  // Skip rendering if user prefers reduced motion
+  if (prefersReducedMotion) {
+    return null;
+  }
 
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden="true">

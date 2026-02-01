@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useMemo, useEffect, useState } from "react";
 
 interface Particle {
@@ -58,6 +58,12 @@ export function FloatingParticles({
   themeAware?: boolean;
 }) {
   const isDarkMode = useIsDarkMode();
+  const prefersReducedMotion = useReducedMotion();
+
+  // Return null if user prefers reduced motion
+  if (prefersReducedMotion) {
+    return null;
+  }
   
   // Determine particle color based on theme
   const particleColor = useMemo(() => {
@@ -128,6 +134,8 @@ export function FloatingBubbles({
   count?: number;
   className?: string;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+
   const bubbles = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
@@ -137,6 +145,11 @@ export function FloatingBubbles({
       delay: Math.random() * 10,
     }));
   }, [count]);
+
+  // Return null if user prefers reduced motion
+  if (prefersReducedMotion) {
+    return null;
+  }
 
   return (
     <div 
@@ -177,6 +190,8 @@ export function FloatingHearts({
   count?: number;
   className?: string;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+
   const hearts = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
@@ -187,6 +202,11 @@ export function FloatingHearts({
       color: ["#fca5a5", "#f472b6", "#fb7185", "#fda4af"][Math.floor(Math.random() * 4)],
     }));
   }, [count]);
+
+  // Return null if user prefers reduced motion
+  if (prefersReducedMotion) {
+    return null;
+  }
 
   return (
     <div 
