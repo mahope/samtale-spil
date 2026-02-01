@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 
 // Web Audio API-based sound effects (no external files needed)
 export function useSound() {
@@ -11,6 +11,18 @@ export function useSound() {
       audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     }
     return audioContextRef.current;
+  }, []);
+
+  // Cleanup AudioContext on unmount to prevent memory leak
+  useEffect(() => {
+    return () => {
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {
+          // Ignore errors during cleanup
+        });
+        audioContextRef.current = null;
+      }
+    };
   }, []);
 
   // Card flip sound - soft "whoosh" effect
