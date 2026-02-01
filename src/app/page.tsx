@@ -4,18 +4,20 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PageTransition } from "@/components/PageTransition";
+import { ShareProgressButton } from "@/components/ShareProgressButton";
 
 export default function Home() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      {/* Theme toggle in corner */}
+      {/* Theme toggle and share in corner */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="absolute top-4 right-4 z-10"
+        className="absolute top-4 right-4 z-10 flex items-center gap-2"
       >
+        <ShareProgressButton className="text-slate-600 dark:text-slate-400" />
         <ThemeToggle className="text-slate-600 dark:text-slate-400" />
       </motion.div>
 

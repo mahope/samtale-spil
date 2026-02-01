@@ -610,3 +610,26 @@ export function getRandomQuestion(categoryId: string, excludeIds: string[] = [])
   const randomIndex = Math.floor(Math.random() * availableQuestions.length);
   return availableQuestions[randomIndex];
 }
+
+// Get all questions from all categories (for Shuffle All mode)
+export function getAllQuestions() {
+  return categories.flatMap((c) => c.questions);
+}
+
+// Get a random question from all categories
+export function getRandomQuestionFromAll(excludeIds: string[] = []) {
+  const allQuestions = getAllQuestions();
+  const availableQuestions = allQuestions.filter(
+    (q) => !excludeIds.includes(q.id)
+  );
+  
+  if (availableQuestions.length === 0) return null;
+  
+  const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+  return availableQuestions[randomIndex];
+}
+
+// Get total question count across all categories
+export function getTotalQuestionCount() {
+  return categories.reduce((sum, c) => sum + c.questions.length, 0);
+}

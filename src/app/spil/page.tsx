@@ -3,12 +3,13 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { categories } from "@/data/categories";
+import { categories, getTotalQuestionCount } from "@/data/categories";
 import { Category } from "@/types";
 import { useProgress, useFavorites } from "@/hooks/useLocalStorage";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CategoryGridSkeleton } from "@/components/SkeletonLoader";
 import { PageTransition } from "@/components/PageTransition";
+import { ShareProgressButton } from "@/components/ShareProgressButton";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -203,6 +204,8 @@ export default function SpilPage() {
             
             <ThemeToggle className="text-slate-500 dark:text-slate-400" />
             
+            <ShareProgressButton className="text-slate-500 dark:text-slate-400" />
+            
             <Link
               href="/statistik"
               className="inline-flex items-center gap-2 text-violet-500 hover:text-violet-600 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 rounded-lg px-2 py-1"
@@ -263,12 +266,101 @@ export default function SpilPage() {
           </motion.div>
         )}
 
+        {/* Shuffle All Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
+          className="max-w-5xl mx-auto w-full mt-8"
+        >
+          <motion.button
+            type="button"
+            onClick={() => router.push("/spil/shuffle-all")}
+            whileHover={{ scale: 1.02, y: -4 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full relative group overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-white shadow-lg hover:shadow-2xl transition-all duration-300 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800"
+            aria-label={`Shuffle All: Spil med alle ${getTotalQuestionCount()} spørgsmål blandet sammen`}
+          >
+            {/* Animated background effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-pink-500 via-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              aria-hidden="true"
+            />
+            
+            {/* Shine effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+              aria-hidden="true"
+            />
+            
+            {/* Decorative elements */}
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl" aria-hidden="true" />
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-xl" aria-hidden="true" />
+            
+            {/* Content */}
+            <div className="relative flex items-center justify-center gap-4">
+              <motion.span
+                className="text-4xl"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                aria-hidden="true"
+              >
+                🎲
+              </motion.span>
+              <div className="text-left">
+                <h3 className="text-xl font-bold">Shuffle All</h3>
+                <p className="text-sm text-white/80">
+                  Bland alle {getTotalQuestionCount()} spørgsmål fra alle kategorier
+                </p>
+              </div>
+              <motion.svg
+                className="w-6 h-6 ml-auto"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+                animate={{ x: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </motion.svg>
+            </div>
+            
+            {/* Progress indicator for Shuffle All */}
+            {(() => {
+              const shuffleProgress = getCategoryProgress("shuffle-all");
+              const totalQuestions = getTotalQuestionCount();
+              const hasProgress = shuffleProgress.answeredIds.length > 0;
+              const progressPercent = (shuffleProgress.answeredIds.length / totalQuestions) * 100;
+              
+              if (!hasProgress) return null;
+              
+              return (
+                <div className="relative mt-4">
+                  <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-white/80 rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progressPercent}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </div>
+                  <p className="text-xs text-white/70 mt-1 text-right">
+                    {shuffleProgress.answeredIds.length} / {totalQuestions} besvaret
+                  </p>
+                </div>
+              );
+            })()}
+          </motion.button>
+        </motion.div>
+
         {/* Random Category Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
-          className="text-center mt-12"
+          className="text-center mt-8"
         >
           <button
             type="button"

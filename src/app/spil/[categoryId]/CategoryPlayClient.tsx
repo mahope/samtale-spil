@@ -10,6 +10,9 @@ import { useFavorites, useProgress, useTimerSettings } from "@/hooks/useLocalSto
 import { useSound } from "@/hooks/useSound";
 import { ShareButton } from "@/components/ShareButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ShareProgressButton } from "@/components/ShareProgressButton";
+import { AchievementToast } from "@/components/AchievementToast";
+import { useAchievements } from "@/hooks/useAchievements";
 import { Confetti, CelebrationBurst, useConfetti, CelebrationOverlay } from "@/components/Confetti";
 import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
 import { FloatingParticles } from "@/components/FloatingParticles";
@@ -204,6 +207,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     isLoaded: timerLoaded 
   } = useTimerSettings();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
+  const { pendingAchievement, dismissPendingAchievement } = useAchievements();
 
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
@@ -398,6 +402,12 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       {/* Confetti celebration */}
       <Confetti isActive={confettiActive} />
       
+      {/* Achievement toast */}
+      <AchievementToast 
+        achievement={pendingAchievement}
+        onDismiss={dismissPendingAchievement}
+      />
+      
       {/* Celebration overlay */}
       <CelebrationOverlay
         isVisible={showCelebration}
@@ -467,6 +477,12 @@ export default function CategoryPlayClient({ categoryId }: Props) {
               onVibrationToggle={toggleTimerVibration}
             />
             <ThemeToggle className="text-white" />
+            <ShareButton 
+              category={category}
+              type="category"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-colors"
+            />
+            <ShareProgressButton className="text-white/90 hover:text-white" />
             <Link
               href="/favoritter"
               className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50"
