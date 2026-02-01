@@ -8,11 +8,14 @@ import { PageTransition } from "@/components/PageTransition";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
 import { LazyDailyChallenge, LazyRecommendations, LazyCustomQuestionsBanner } from "@/components/LazyComponents";
 import { DecorativeCard } from "@/components/OptimizedComponents";
+import { FloatingParticles } from "@/components/FloatingParticles";
 
 export default function Home() {
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden">
+      {/* Ambient floating particles for visual polish */}
+      <FloatingParticles count={20} opacity={0.06} />
       {/* Theme toggle and share in corner */}
       <motion.div
         initial={{ opacity: 0 }}
