@@ -68,7 +68,7 @@ export function useSocialShare() {
       achievementPercentage,
       latestAchievement,
     };
-  }, [progress, favorites]);
+  }, [progress, favorites, getUnlockedCount, getCompletionPercentage, unlockedAchievements]);
 
   // Generate achievement text based on progress
   const generateAchievementText = useCallback((stats: ShareStats): string => {
@@ -188,7 +188,6 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
     
     try {
       const stats = calculateStats();
-      const achievements = generateAchievementText(stats);
 
       // Add polyfill for roundRect if needed
       addRoundRectPolyfill();

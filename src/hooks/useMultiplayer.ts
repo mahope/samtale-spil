@@ -13,6 +13,7 @@ import type {
   CardFlipPayload,
   FavoriteTogglePayload,
   SettingsUpdatePayload,
+  ReactionPayload,
 } from "@/types/multiplayer";
 import {
   generateRoomCode,
@@ -64,6 +65,7 @@ export interface UseMultiplayerOptions {
   onGameStart?: () => void;
   onNextQuestion?: (questionId: string) => void;
   onTurnChange?: (playerId: string) => void;
+  onReaction?: (emoji: string, playerId: string, playerName: string) => void;
   onError?: (error: string) => void;
 }
 
@@ -300,6 +302,17 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
           if (currentPlayer.id === kickedId) {
             leaveRoom();
             optionsRef.current.onError?.("Du blev fjernet fra rummet");
+          }
+          break;
+        }
+
+        case "reaction": {
+          const { emoji, playerId, playerName, questionId } =
+            message.payload as ReactionPayload;
+          
+          // Only handle reactions for current question
+          if (questionId === room.gameState.currentQuestionId) {
+            optionsRef.current.onReaction?.(emoji, playerId, playerName);
           }
           break;
         }
@@ -702,6 +715,26 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
     (p) => p.id === room.gameState.currentTurnPlayerId
   );
 
+  // Send reaction
+  const sendReaction = useCallback((emoji: string) => {
+    if (!room || !currentPlayer) return;
+    
+    const message: MultiplayerMessage = {
+      type: "reaction",
+      senderId: currentPlayer.id,
+      roomCode: room.roomCode,
+      timestamp: Date.now(),
+      payload: {
+        emoji,
+        playerId: currentPlayer.id,
+        playerName: currentPlayer.name,
+        questionId: room.gameState.currentQuestionId,
+      } as ReactionPayload,
+    };
+    
+    sendMessage("reaction", message.payload);
+  }, [room, currentPlayer, sendMessage]);
+
   return {
     // State
     isConnected,
@@ -725,5 +758,6 @@ export function useMultiplayer(options: UseMultiplayerOptions = {}) {
     toggleCardFlip,
     toggleFavorite,
     kickPlayer,
+    sendReaction,
   };
 }

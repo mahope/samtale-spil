@@ -326,7 +326,15 @@ export function MultiplayerLobby({
           {/* Speed Round toggle */}
           <div className="mb-2">
             <button
-              onClick={() => onUpdateSettings({ speedRound: !settings.speedRound })}
+              onClick={() => {
+                const newSpeedRound = !settings.speedRound;
+                if (newSpeedRound && settings.turnOrderMode === "free") {
+                  // Force round-robin when enabling speed round in free mode
+                  onUpdateSettings({ speedRound: true, turnOrderMode: "round-robin" });
+                } else {
+                  onUpdateSettings({ speedRound: newSpeedRound });
+                }
+              }}
               className={`w-full min-h-[64px] py-4 px-4 rounded-xl transition-all touch-manipulation active:scale-[0.98] flex items-center justify-between ${
                 settings.speedRound
                   ? "bg-gradient-to-r from-orange-500 to-red-500 border-2 border-white shadow-lg"
@@ -358,6 +366,21 @@ export function MultiplayerLobby({
                 />
               </div>
             </button>
+            
+            {/* Speed Round + Free Mode Conflict Warning */}
+            {settings.speedRound && settings.turnOrderMode === "free" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-2 p-3 bg-amber-500/20 border border-amber-500/30 rounded-lg"
+              >
+                <p className="text-amber-200 text-sm flex items-center gap-2">
+                  <span>⚠️</span>
+                  Speed round automatisk skifter til "Rundt om bordet" mode for bedre spilflow
+                </p>
+              </motion.div>
+            )}
           </div>
         </motion.div>
       )}

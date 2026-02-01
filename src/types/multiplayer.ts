@@ -66,7 +66,8 @@ export type MultiplayerMessageType =
   | "settings-update"
   | "room-state-sync"
   | "heartbeat"
-  | "kick-player";
+  | "kick-player"
+  | "reaction";
 
 export interface MultiplayerMessage {
   type: MultiplayerMessageType;
@@ -107,6 +108,14 @@ export interface FavoriteTogglePayload {
   isFavorite: boolean;
 }
 
+// Reaction payload
+export interface ReactionPayload {
+  emoji: string;
+  playerId: string;
+  playerName: string;
+  questionId: string;
+}
+
 // Settings update payload
 export interface SettingsUpdatePayload {
   settings: Partial<MultiplayerSettings>;
@@ -117,6 +126,9 @@ export const PLAYER_EMOJIS = [
   "😊", "😎", "🤓", "🥳", "😺", "🦊", "🐸", "🦋",
   "🌟", "🔥", "💎", "🎭", "🎨", "🎵", "🚀", "🌈"
 ];
+
+// Reaction emojis
+export const REACTION_EMOJIS = ["😂", "❤️", "🔥", "🤔", "😮", "👏", "💯", "🙈"];
 
 // Generate a random 4-letter room code
 export function generateRoomCode(): string {

@@ -55,45 +55,88 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const filteredQuestionCount = category ? getCategoryQuestionCount(categoryId, difficultyFilter) : 0;
   const totalQuestionCount = category ? category.questions.length : 0;
 
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
-  const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
-  const [answeredCount, setAnsweredCount] = useState(0);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showCelebration, setShowCelebration] = useState(false);
-  const [hasShownCelebration, setHasShownCelebration] = useState(false);
-  const [timerKey, setTimerKey] = useState(0); // Used to reset timer on new question
-
-  // Initialize from saved progress or initial question ID
-  useEffect(() => {
-    if (!progressLoaded || !filterLoaded || !category) return;
-    
-    const savedProgress = getCategoryProgress(categoryId);
-    if (savedProgress.answeredIds.length > 0) {
-      setAskedQuestionIds(savedProgress.answeredIds);
-      setAnsweredCount(savedProgress.answeredIds.length);
+  // Lazy initializer for asked question IDs and answered count
+  const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>(() => {
+    if (progressLoaded && category) {
+      const savedProgress = getCategoryProgress(categoryId);
+      return savedProgress.answeredIds;
     }
+    return [];
+  });
+
+  const [answeredCount, setAnsweredCount] = useState(() => {
+    if (progressLoaded && category) {
+      const savedProgress = getCategoryProgress(categoryId);
+      return savedProgress.answeredIds.length;
+    }
+    return 0;
+  });
+
+  // Lazy initializer for current question
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(() => {
+    if (!progressLoaded || !filterLoaded || !category) return null;
     
     // Check if we have an initial question ID from URL (e.g., from recommendations)
     if (initialQuestionId) {
       const specificQuestion = category.questions.find(q => q.id === initialQuestionId);
       if (specificQuestion) {
-        setCurrentQuestion(specificQuestion);
-        setIsFlipped(true); // Auto-flip to show the question
-        return;
+        return specificQuestion;
       }
     }
     
     // Get initial question excluding already answered ones, respecting filter
+    const savedProgress = getCategoryProgress(categoryId);
     const excludeIds = savedProgress.answeredIds.length >= filteredQuestionCount 
       ? [] 
       : savedProgress.answeredIds;
-    const firstQuestion = getRandomQuestion(categoryId, excludeIds, difficultyFilter);
-    setCurrentQuestion(firstQuestion);
-  }, [progressLoaded, filterLoaded, category, categoryId, getCategoryProgress, difficultyFilter, filteredQuestionCount, initialQuestionId]);
+    return getRandomQuestion(categoryId, excludeIds, difficultyFilter);
+  });
 
-  // Check for category completion
+  // Lazy initializer for isFlipped - auto-flip if we have an initial question ID
+  const [isFlipped, setIsFlipped] = useState(() => {
+    return Boolean(initialQuestionId && progressLoaded && filterLoaded && category);
+  });
+
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [hasShownCelebration, setHasShownCelebration] = useState(false);
+  const [timerKey, setTimerKey] = useState(0); // Used to reset timer on new question
+
+  // Update state when dependencies change
   useEffect(() => {
+    if (!progressLoaded || !filterLoaded || !category) return;
+    
+    const savedProgress = getCategoryProgress(categoryId);
+    
+    // Only update if state is stale
+    if (askedQuestionIds.length === 0 && savedProgress.answeredIds.length > 0) {
+      setAskedQuestionIds(savedProgress.answeredIds);
+      setAnsweredCount(savedProgress.answeredIds.length);
+    }
+    
+    // Only set initial question if we don't have one yet
+    if (!currentQuestion) {
+      // Check if we have an initial question ID from URL
+      if (initialQuestionId) {
+        const specificQuestion = category.questions.find(q => q.id === initialQuestionId);
+        if (specificQuestion) {
+          setCurrentQuestion(specificQuestion);
+          setIsFlipped(true);
+          return;
+        }
+      }
+      
+      // Get initial question excluding already answered ones, respecting filter
+      const excludeIds = savedProgress.answeredIds.length >= filteredQuestionCount 
+        ? [] 
+        : savedProgress.answeredIds;
+      const firstQuestion = getRandomQuestion(categoryId, excludeIds, difficultyFilter);
+      setCurrentQuestion(firstQuestion);
+    }
+  }, [progressLoaded, filterLoaded, category, categoryId, getCategoryProgress, difficultyFilter, filteredQuestionCount, initialQuestionId, askedQuestionIds.length, currentQuestion]);
+
+  // Check for category completion - use callback to avoid setState in effect
+  const handleCelebration = useCallback(() => {
     if (!category || hasShownCelebration) return;
     
     const totalQuestions = category.questions.length;
@@ -104,6 +147,11 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       setHasShownCelebration(true);
     }
   }, [answeredCount, category, hasShownCelebration, playSuccess]);
+
+  // Trigger celebration check when answered count changes
+  useEffect(() => {
+    handleCelebration();
+  }, [handleCelebration]);
 
   const handleFlip = useCallback(() => {
     playFlip();

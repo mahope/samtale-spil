@@ -222,10 +222,23 @@ export function useRecommendations() {
 
     // Sort by score and take top recommendations
     // Add some randomization for variety among top scores
+    const dailySeed = new Date().toDateString();
+    
+    // Seeded random function that's stable per day
+    const seededRandom = (str: string, index: number) => {
+      let hash = 0;
+      const seed = str + index.toString();
+      for (let i = 0; i < seed.length; i++) {
+        hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+        hash |= 0;
+      }
+      return (hash & 0x7FFFFFFF) / 0x7FFFFFFF * 0.5;
+    };
+    
     const sorted = scored.sort((a, b) => {
-      // Add small random factor to prevent same recommendations always
-      const randomA = Math.random() * 0.5;
-      const randomB = Math.random() * 0.5;
+      // Add small random factor to prevent same recommendations always (stable per day)
+      const randomA = seededRandom(dailySeed, scored.indexOf(a));
+      const randomB = seededRandom(dailySeed, scored.indexOf(b));
       return (b.score + randomB) - (a.score + randomA);
     });
 

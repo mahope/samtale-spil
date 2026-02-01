@@ -99,6 +99,10 @@ export function TimerDisplay({
   const shouldPulse = speedMode || timeLeft <= urgentThreshold;
   const pulseIntensity = speedMode && timeLeft <= urgentThreshold ? 1.15 : 1.1;
 
+  // Only announce at important thresholds to avoid screen reader spam
+  const announceSeconds = [10, 5, 3, 2, 1];
+  const shouldAnnounce = announceSeconds.includes(timeLeft);
+
   return (
     <AnimatePresence>
       <motion.div
@@ -115,8 +119,7 @@ export function TimerDisplay({
           speedMode ? "drop-shadow-[0_0_15px_rgba(249,115,22,0.5)]" : ""
         }`}
         role="timer"
-        aria-label={`${timeLeft} sekunder tilbage`}
-        aria-live="polite"
+        aria-label={`Timer: ${timeLeft} sekunder`}
       >
         {/* Outer glow for speed mode */}
         {speedMode && (
@@ -191,6 +194,13 @@ export function TimerDisplay({
               ⚡
             </motion.span>
           </>
+        )}
+
+        {/* Accessibility announcer - only at key thresholds */}
+        {shouldAnnounce && (
+          <span className="sr-only" role="status" aria-live="assertive">
+            {timeLeft} sekunder tilbage
+          </span>
         )}
       </motion.div>
     </AnimatePresence>

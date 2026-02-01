@@ -1,40 +1,47 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
+
+/**
+ * Get current value of prefers-reduced-motion
+ */
+function getSnapshot(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/**
+ * Server-side fallback for SSR
+ */
+function getServerSnapshot(): boolean {
+  return false;
+}
+
+/**
+ * Subscribe to changes in prefers-reduced-motion
+ */
+function subscribe(callback: () => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  
+  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  
+  // Modern browsers
+  if (mediaQuery.addEventListener) {
+    mediaQuery.addEventListener('change', callback);
+    return () => mediaQuery.removeEventListener('change', callback);
+  }
+
+  // Fallback for older browsers
+  mediaQuery.addListener(callback);
+  return () => mediaQuery.removeListener(callback);
+}
 
 /**
  * Hook to detect if user prefers reduced motion
  * Used to disable animations for accessibility
  */
 export function useReducedMotion(): boolean {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    // Check for SSR
-    if (typeof window === 'undefined') return;
-
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    
-    // Set initial value
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    // Listen for changes
-    const handleChange = (event: MediaQueryListEvent) => {
-      setPrefersReducedMotion(event.matches);
-    };
-
-    // Modern browsers
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-
-    // Fallback for older browsers
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
-  }, []);
-
-  return prefersReducedMotion;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 /**

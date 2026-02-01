@@ -6,8 +6,17 @@ import { MultiplayerLobby } from "@/components/MultiplayerLobby";
 import { MultiplayerGame } from "./MultiplayerGame";
 import { motion } from "framer-motion";
 import { logger } from "@/utils/logger";
+import { useState } from "react";
+
+interface Reaction {
+  id: string;
+  emoji: string;
+  playerName: string;
+  x: number;
+}
 
 export default function MultiplayerPage() {
+  const [reactions, setReactions] = useState<Reaction[]>([]);
   const {
     isLoading,
     room,
@@ -27,6 +36,7 @@ export default function MultiplayerPage() {
     toggleCardFlip,
     toggleFavorite,
     kickPlayer,
+    sendReaction,
   } = useMultiplayer({
     onPlayerJoin: (player) => {
       logger.debug("Player joined:", player.name);
@@ -39,6 +49,19 @@ export default function MultiplayerPage() {
     },
     onNextQuestion: (questionId) => {
       logger.debug("Next question:", questionId);
+    },
+    onReaction: (emoji, playerId, playerName) => {
+      // Create a reaction animation entry
+      const reaction = {
+        id: `${playerId}-${Date.now()}`,
+        emoji,
+        playerName,
+        x: 20 + Math.random() * 60,
+      } as Reaction;
+      setReactions((prev) => [...prev, reaction]);
+      setTimeout(() => {
+        setReactions((prev) => prev.filter((r) => r.id !== reaction.id));
+      }, 2500);
     },
     onError: (error) => {
       logger.error("Multiplayer error:", error);
@@ -97,9 +120,11 @@ export default function MultiplayerPage() {
       isMyTurn={isMyTurn}
       currentTurnPlayer={currentTurnPlayer}
       isCardFlipped={isCardFlipped}
+      reactions={reactions}
       onNextQuestion={nextQuestion}
       onToggleCardFlip={toggleCardFlip}
       onToggleFavorite={toggleFavorite}
+      onSendReaction={sendReaction}
       onLeaveRoom={leaveRoom}
     />
   );

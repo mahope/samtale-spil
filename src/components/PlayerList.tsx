@@ -63,10 +63,10 @@ export function PlayerList({
             <span>{player.emoji}</span>
             <span className="max-w-[60px] truncate">{player.name}</span>
             {speedRound ? (
-              <span className="text-xs font-bold">
+              <span className="text-xs font-bold min-w-[40px] text-right">
                 {getTotalScore(player.id)}
                 {(speedBonuses[player.id] || 0) > 0 && (
-                  <span className="text-orange-500 ml-0.5">+{speedBonuses[player.id]}</span>
+                  <span className="text-orange-500 ml-0.5">+{speedBonuses[player.id] > 999 ? '999+' : speedBonuses[player.id]}</span>
                 )}
               </span>
             ) : scores[player.id] !== undefined && (

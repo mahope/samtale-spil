@@ -2,17 +2,27 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { GameRoom, Player } from "@/types/multiplayer";
+import type { GameRoom, Player, ReactionPayload } from "@/types/multiplayer";
 import { SPEED_ROUND_CONFIG } from "@/types/multiplayer";
 import { getCategory, getRandomQuestion } from "@/data/categories";
 import type { Question } from "@/types";
 import { useFavorites } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { PlayerList, TurnIndicator, FavoriteIndicators } from "@/components/PlayerList";
 import { TimerDisplay } from "@/components/TimerDisplay";
 import { Confetti, CelebrationOverlay, useConfetti } from "@/components/Confetti";
 import { FloatingParticles } from "@/components/FloatingParticles";
+import { ReactionOverlay } from "@/components/ReactionOverlay";
+import { ReactionPicker } from "@/components/ReactionPicker";
 import { TIMING } from "@/constants";
+
+interface Reaction {
+  id: string;
+  emoji: string;
+  playerName: string;
+  x: number; // Random horizontal position (0-100%)
+}
 
 interface MultiplayerGameProps {
   room: GameRoom;
@@ -21,9 +31,11 @@ interface MultiplayerGameProps {
   isMyTurn: boolean;
   currentTurnPlayer: Player | undefined;
   isCardFlipped: boolean;
+  reactions: Reaction[];
   onNextQuestion: (questionId: string, questionIndex: number, speedBonus?: number) => void;
   onToggleCardFlip: (questionId: string) => void;
   onToggleFavorite: (questionId: string, isFavorite: boolean) => void;
+  onSendReaction: (emoji: string) => void;
   onLeaveRoom: () => void;
 }
 
@@ -62,9 +74,11 @@ export function MultiplayerGame({
   isMyTurn,
   currentTurnPlayer,
   isCardFlipped,
+  reactions,
   onNextQuestion,
   onToggleCardFlip,
   onToggleFavorite,
+  onSendReaction,
   onLeaveRoom,
 }: MultiplayerGameProps) {
   const category = room.settings.categoryId
@@ -80,11 +94,17 @@ export function MultiplayerGame({
   const [timerKey, setTimerKey] = useState(0);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [showSpeedBonus, setShowSpeedBonus] = useState<number | null>(null);
-  const [questionStartTime, setQuestionStartTime] = useState<number | null>(null);
 
   // Refs to track initialization and prevent stale closures
   const hasInitializedRef = useRef(false);
   const lastQuestionIdRef = useRef<string | null>(null);
+  const questionStartTimeRef = useRef<number | null>(null);
+
+  // Focus trap for speed bonus popup
+  const speedBonusRef = useFocusTrap<HTMLDivElement>({
+    isActive: showSpeedBonus !== null,
+    onEscape: () => setShowSpeedBonus(null),
+  });
 
   // Initialize question when game starts or question changes
   useEffect(() => {
@@ -132,7 +152,7 @@ export function MultiplayerGame({
     
     // Start timing for speed bonus (only on first flip)
     if (!isCardFlipped && room.settings.speedRound) {
-      setQuestionStartTime(Date.now());
+      questionStartTimeRef.current = Date.now();
     }
   }, [currentQuestion, room.settings.turnOrderMode, room.settings.speedRound, isMyTurn, isCardFlipped, playFlip, onToggleCardFlip]);
 
@@ -148,8 +168,8 @@ export function MultiplayerGame({
 
     // Calculate speed bonus if in speed round mode
     let speedBonus = 0;
-    if (room.settings.speedRound && questionStartTime && isCardFlipped) {
-      const elapsedSeconds = (Date.now() - questionStartTime) / 1000;
+    if (room.settings.speedRound && questionStartTimeRef.current && isCardFlipped) {
+      const elapsedSeconds = (Date.now() - questionStartTimeRef.current) / 1000;
       
       // Find applicable bonus threshold
       for (const threshold of SPEED_ROUND_CONFIG.bonusThresholds) {
@@ -168,7 +188,7 @@ export function MultiplayerGame({
     }
 
     // Reset question start time
-    setQuestionStartTime(null);
+    questionStartTimeRef.current = null;
 
     // Get next question
     const answeredIds = currentQuestion
@@ -196,7 +216,6 @@ export function MultiplayerGame({
     room.gameState.currentQuestionIndex,
     room.settings.turnOrderMode,
     room.settings.speedRound,
-    questionStartTime,
     isCardFlipped,
     isMyTurn,
     isHost,
@@ -421,10 +440,14 @@ export function MultiplayerGame({
           <AnimatePresence>
             {showSpeedBonus !== null && (
               <motion.div
+                ref={speedBonusRef}
                 initial={{ opacity: 0, y: 20, scale: 0.5 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.5 }}
                 className="fixed top-1/3 left-1/2 -translate-x-1/2 z-50"
+                role="alertdialog"
+                aria-label={`Speed bonus: +${showSpeedBonus} point`}
+                tabIndex={-1}
               >
                 <motion.div
                   animate={{ 
@@ -435,12 +458,12 @@ export function MultiplayerGame({
                   className="px-6 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl shadow-2xl"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-4xl">🔥</span>
+                    <span className="text-4xl" aria-hidden="true">🔥</span>
                     <div className="text-white">
                       <p className="text-2xl font-black">+{showSpeedBonus} BONUS!</p>
                       <p className="text-sm opacity-90">Hurtig reaktion!</p>
                     </div>
-                    <span className="text-4xl">⚡</span>
+                    <span className="text-4xl" aria-hidden="true">⚡</span>
                   </div>
                 </motion.div>
               </motion.div>
@@ -547,9 +570,21 @@ export function MultiplayerGame({
                     </div>
                   </div>
                 </motion.div>
+                
+                {/* Reaction Overlay */}
+                <ReactionOverlay reactions={reactions} />
               </motion.div>
             </AnimatePresence>
           </div>
+
+          {/* Reaction Picker */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-4 w-full max-w-sm mx-auto"
+          >
+            <ReactionPicker onReact={onSendReaction} disabled={!isCardFlipped} />
+          </motion.div>
 
           {/* Next question button */}
           <motion.div
