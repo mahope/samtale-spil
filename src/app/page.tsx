@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PageTransition } from "@/components/PageTransition";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
-import { LazyDailyQuestion } from "@/components/LazyComponents";
+import { LazyDailyChallenge } from "@/components/LazyComponents";
 import { DecorativeCard } from "@/components/OptimizedComponents";
 
 export default function Home() {
@@ -138,8 +138,8 @@ export default function Home() {
           </motion.p>
         </motion.div>
 
-        {/* Daily Question Section - Lazy loaded */}
-        <LazyDailyQuestion />
+        {/* Daily Challenge Section - Lazy loaded */}
+        <LazyDailyChallenge />
 
         {/* Decorative Cards Preview */}
         <motion.div

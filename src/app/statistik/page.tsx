@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useFavorites, useProgress, useQuestionHistory, FavoriteQuestion, HistoryEntry } from "@/hooks/useLocalStorage";
 import { useStreak } from "@/hooks/useStreak";
+import { useDailyChallenge, DAILY_CHALLENGE_POINTS } from "@/hooks/useDailyChallenge";
 import { categories, getCategory } from "@/data/categories";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
@@ -275,6 +276,13 @@ export default function StatistikPage() {
   const { progress, isLoaded: progressLoaded } = useProgress();
   const { history, clearHistory, isLoaded: historyLoaded } = useQuestionHistory();
   const { isLoaded: streakLoaded } = useStreak();
+  const { 
+    totalChallengesCompleted, 
+    currentStreak: dailyChallengeStreak, 
+    longestStreak: dailyChallengeLongestStreak,
+    totalBonusPoints,
+    isLoaded: dailyChallengeLoaded 
+  } = useDailyChallenge();
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [showAllHistory, setShowAllHistory] = useState(false);
 

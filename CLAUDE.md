@@ -81,12 +81,35 @@ npm run start    # Start production server
 npm run lint     # Run ESLint
 ```
 
+## Testing
+
+Projektet bruger Vitest med React Testing Library:
+
+```bash
+npm run test        # Watch mode
+npm run test:run    # Kør én gang
+npm run test:coverage  # Med coverage
+```
+
+**Test coverage:**
+- `src/__tests__/categories.test.ts` - Validerer alle kategorier og spørgsmål
+- `src/__tests__/dailyQuestion.test.ts` - Daily question utilities
+- `src/__tests__/performance.test.ts` - Performance utilities
+- `src/__tests__/hooks.test.tsx` - React hooks (useLocalStorage, useFavorites, etc.)
+
 ## Bygget af
-6 AI-agents natten 31. jan - 1. feb 2026 🤖
+10 AI-agents natten 31. jan - 1. feb 2026 🤖
+
+- Agent 1-3: Core game, kategorier, multiplayer
+- Agent 4-5: UI polish, animationer, accessibility  
+- Agent 6-7: PWA, service worker, offline
+- Agent 8: Statistics, achievements, sound
+- Agent 9: Performance optimizations
+- Agent 10: Testing, dokumentation, JSDoc
 
 ## Idéer til næste version
 - Custom domain
-- Flere spørgsmål
-- Multi-player mode
+- Analytics/tracking
+- Error boundaries
+- i18n (flere sprog)
 - Temaer/skins
-- Analytics

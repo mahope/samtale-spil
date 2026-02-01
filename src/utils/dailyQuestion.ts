@@ -1,6 +1,15 @@
+/**
+ * Daily question utilities for the Samtale-Spil app.
+ * Provides deterministic daily question selection and formatting helpers.
+ * @module utils/dailyQuestion
+ */
+
 import { categories } from "@/data/categories";
 import { Question, Category } from "@/types";
 
+/**
+ * The result of getting a daily question.
+ */
 interface DailyQuestionResult {
   question: Question;
   category: Category;
@@ -35,7 +44,14 @@ export function getDailyQuestion(): DailyQuestionResult {
 }
 
 /**
- * Formaterer sværhedsgrad til dansk tekst
+ * Formats a depth level to Danish text for display.
+ * 
+ * @param {"let" | "medium" | "dyb"} depth - The depth level to format
+ * @returns {string} The formatted Danish text ("Let", "Medium", or "Dyb")
+ * 
+ * @example
+ * formatDepth('let'); // Returns "Let"
+ * formatDepth('dyb'); // Returns "Dyb"
  */
 export function formatDepth(depth: "let" | "medium" | "dyb"): string {
   const depthMap = {
@@ -47,7 +63,15 @@ export function formatDepth(depth: "let" | "medium" | "dyb"): string {
 }
 
 /**
- * Får farve til sværhedsgrad badge
+ * Gets the Tailwind CSS classes for styling a depth level badge.
+ * Includes both light and dark mode colors.
+ * 
+ * @param {"let" | "medium" | "dyb"} depth - The depth level
+ * @returns {string} Tailwind CSS classes for background and text colors
+ * 
+ * @example
+ * // Returns "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+ * getDepthColor('let');
  */
 export function getDepthColor(depth: "let" | "medium" | "dyb"): string {
   const colorMap = {

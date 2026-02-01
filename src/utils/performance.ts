@@ -163,7 +163,11 @@ export function requestIdleCallback(
   }, 1) as unknown as number;
 }
 
-// Cancel idle callback polyfill
+/**
+ * Cancels an idle callback previously scheduled with requestIdleCallback.
+ * 
+ * @param {number} handle - The handle returned by requestIdleCallback
+ */
 export function cancelIdleCallback(handle: number): void {
   if (typeof window === 'undefined') return;
   
@@ -174,12 +178,22 @@ export function cancelIdleCallback(handle: number): void {
   }
 }
 
-// Defer non-critical work
+/**
+ * Defers non-critical work to be executed during the browser's idle time.
+ * Has a 2-second timeout to ensure the work eventually executes.
+ * 
+ * @param {() => void} callback - The work to defer
+ */
 export function deferWork(callback: () => void): void {
   requestIdleCallback(() => callback(), { timeout: 2000 });
 }
 
-// Check if the device is low-end (for reduced animations)
+/**
+ * Detects if the current device is low-end based on hardware specs.
+ * Used to determine if animations should be reduced.
+ * 
+ * @returns {boolean} True if the device has fewer than 4 CPU cores or less than 4GB memory
+ */
 export function isLowEndDevice(): boolean {
   if (typeof window === 'undefined') return false;
   
@@ -193,7 +207,17 @@ export function isLowEndDevice(): boolean {
   return cores < 4 || memory < 4;
 }
 
-// Create a stable object reference for React comparisons
+/**
+ * Creates a deep copy of an object with stable references.
+ * Useful for React comparisons where reference equality matters.
+ * 
+ * @template T - The object type
+ * @param {T} obj - The object to copy
+ * @returns {T} A deep copy of the object
+ * 
+ * @example
+ * const stable = stableObject({ a: 1, b: { c: 2 } });
+ */
 export function stableObject<T extends object>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }

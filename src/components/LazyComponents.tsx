@@ -48,6 +48,11 @@ export const LazyDailyQuestion = dynamic(
   { ssr: false, loading: () => <DailyQuestionSkeleton /> }
 );
 
+export const LazyDailyChallenge = dynamic(
+  () => import("./DailyChallenge").then((mod) => ({ default: mod.DailyChallenge })),
+  { ssr: false, loading: () => <DailyChallengeSkeleton /> }
+);
+
 // Skeleton for DailyQuestion while loading
 function DailyQuestionSkeleton() {
   return (
@@ -56,6 +61,27 @@ function DailyQuestionSkeleton() {
         <div className="h-4 w-24 bg-white/10 rounded mb-4"></div>
         <div className="h-6 bg-white/10 rounded mb-2"></div>
         <div className="h-6 w-3/4 bg-white/10 rounded"></div>
+      </div>
+    </div>
+  );
+}
+
+// Skeleton for DailyChallenge while loading
+function DailyChallengeSkeleton() {
+  return (
+    <div className="mt-12 w-full max-w-lg mx-auto px-4 animate-pulse">
+      <div className="rounded-2xl bg-gradient-to-br from-violet-200 to-purple-200 dark:from-slate-700 dark:to-slate-800 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-5 w-32 bg-white/30 dark:bg-white/10 rounded"></div>
+          <div className="h-4 w-16 bg-white/30 dark:bg-white/10 rounded"></div>
+        </div>
+        <div className="h-6 bg-white/30 dark:bg-white/10 rounded mb-2"></div>
+        <div className="h-6 w-3/4 bg-white/30 dark:bg-white/10 rounded mb-4"></div>
+        <div className="flex gap-2 mb-4">
+          <div className="h-6 w-20 bg-white/30 dark:bg-white/10 rounded-full"></div>
+          <div className="h-6 w-16 bg-white/30 dark:bg-white/10 rounded-full"></div>
+        </div>
+        <div className="h-12 bg-white/30 dark:bg-white/10 rounded-xl"></div>
       </div>
     </div>
   );
