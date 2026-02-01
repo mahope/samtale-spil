@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 
 interface Particle {
   id: number;
@@ -12,18 +12,68 @@ interface Particle {
   delay: number;
 }
 
+// Hook to detect dark mode
+function useIsDarkMode() {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    // Check initial state
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    
+    checkDarkMode();
+
+    // Watch for changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          checkDarkMode();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return isDark;
+}
+
 // Subtle floating particles for ambient background effects
+// Now theme-aware: uses light particles on dark backgrounds and vice versa
 export function FloatingParticles({
   count = 15,
   className = "",
-  color = "white",
+  color,
   opacity = 0.1,
+  themeAware = true,
 }: {
   count?: number;
   className?: string;
   color?: string;
   opacity?: number;
+  /** When true, automatically picks contrasting colors for light/dark mode */
+  themeAware?: boolean;
 }) {
+  const isDarkMode = useIsDarkMode();
+  
+  // Determine particle color based on theme
+  const particleColor = useMemo(() => {
+    if (color) return color; // Use explicit color if provided
+    if (!themeAware) return "white"; // Default fallback
+    // In dark mode, use light particles; in light mode, use darker particles
+    return isDarkMode ? "rgba(255, 255, 255, 1)" : "rgba(99, 102, 241, 1)"; // white or indigo
+  }, [color, themeAware, isDarkMode]);
+
+  // Adjust opacity for better visibility in each mode
+  const particleOpacity = useMemo(() => {
+    if (color) return opacity; // Use explicit opacity if color is provided
+    if (!themeAware) return opacity;
+    return isDarkMode ? opacity : opacity * 1.5; // Slightly more visible in light mode
+  }, [color, themeAware, isDarkMode, opacity]);
+
   const particles = useMemo<Particle[]>(() => {
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
@@ -49,14 +99,14 @@ export function FloatingParticles({
             top: `${particle.y}%`,
             width: particle.size,
             height: particle.size,
-            backgroundColor: color,
-            opacity: opacity,
+            backgroundColor: particleColor,
+            opacity: particleOpacity,
           }}
           animate={{
             y: [0, -30, 0],
             x: [0, Math.random() * 20 - 10, 0],
             scale: [1, 1.2, 1],
-            opacity: [opacity, opacity * 1.5, opacity],
+            opacity: [particleOpacity, particleOpacity * 1.5, particleOpacity],
           }}
           transition={{
             duration: particle.duration,

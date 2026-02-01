@@ -109,31 +109,37 @@ export function useKeyboardShortcuts({
 }
 
 /**
- * Component that displays keyboard shortcut hints
+ * Component that displays keyboard shortcut hints with glassmorphism styling
  */
 export function KeyboardShortcutHints({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex flex-wrap justify-center gap-3 text-xs ${className}`}>
-      <ShortcutHint keys={["Space"]} label="Vend kort" />
-      <ShortcutHint keys={["→", "N"]} label="Næste" />
-      <ShortcutHint keys={["F"]} label="Favorit" />
-      <ShortcutHint keys={["Esc"]} label="Tilbage" />
+    <div 
+      className={`inline-flex items-center gap-4 px-4 py-2 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-sm border border-white/20 dark:border-white/10 ${className}`}
+    >
+      <ShortcutHint keys={["Space"]} label="Vend" icon="↩️" />
+      <span className="w-px h-4 bg-white/20" aria-hidden="true" />
+      <ShortcutHint keys={["→"]} label="Næste" icon="➡️" />
+      <span className="w-px h-4 bg-white/20" aria-hidden="true" />
+      <ShortcutHint keys={["F"]} label="Favorit" icon="❤️" />
+      <span className="w-px h-4 bg-white/20" aria-hidden="true" />
+      <ShortcutHint keys={["Esc"]} label="Tilbage" icon="🔙" />
     </div>
   );
 }
 
-function ShortcutHint({ keys, label }: { keys: string[]; label: string }) {
+function ShortcutHint({ keys, label, icon }: { keys: string[]; label: string; icon?: string }) {
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5 text-xs">
+      {icon && <span className="text-[10px]" aria-hidden="true">{icon}</span>}
       {keys.map((key, index) => (
-        <span key={key}>
-          <kbd className="px-1.5 py-0.5 bg-white/20 dark:bg-white/10 rounded text-[10px] font-mono">
+        <span key={key} className="flex items-center">
+          <kbd className="px-1.5 py-0.5 bg-white/25 dark:bg-white/15 rounded text-[10px] font-mono font-medium shadow-sm">
             {key}
           </kbd>
           {index < keys.length - 1 && <span className="mx-0.5 opacity-50">/</span>}
         </span>
       ))}
-      <span className="opacity-70 ml-1">{label}</span>
+      <span className="opacity-80 ml-0.5">{label}</span>
     </div>
   );
 }
