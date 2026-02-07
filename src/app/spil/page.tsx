@@ -434,6 +434,71 @@ export default function SpilPage() {
           </Link>
         </motion.div>
 
+        {/* Adult/18+ Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.85, duration: 0.5 }}
+          className="max-w-5xl mx-auto w-full mt-6"
+        >
+          <Link href="/spil/voksne">
+            <motion.div
+              whileHover={{ scale: 1.02, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative group overflow-hidden rounded-3xl bg-gradient-to-r from-red-600 via-rose-600 to-pink-700 p-6 text-white shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-red-500/30"
+            >
+              {/* Subtle glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-rose-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true" />
+              
+              {/* Shine effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                aria-hidden="true"
+              />
+              
+              {/* Content */}
+              <div className="relative flex items-center justify-center gap-4">
+                <motion.span
+                  className="text-4xl"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  aria-hidden="true"
+                >
+                  🔞
+                </motion.span>
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-bold">Voksne</h3>
+                    <span className="px-2 py-0.5 bg-white/20 text-xs font-medium rounded-full">
+                      18+
+                    </span>
+                  </div>
+                  <p className="text-sm text-white/80">
+                    Intime spørgsmål kun for voksne par
+                  </p>
+                </div>
+                <motion.div
+                  className="ml-auto flex items-center gap-2"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  <span className="text-2xl">🔥</span>
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </motion.div>
+              </div>
+            </motion.div>
+          </Link>
+        </motion.div>
+
         {/* Random Category Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

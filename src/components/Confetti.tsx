@@ -1,9 +1,18 @@
 "use client";
 
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { TIMING } from "@/constants";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+
+// Seeded random for deterministic confetti
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+// Counter for generating unique seeds without Date.now()
+let confettiSeedCounter = 0;
 
 interface ConfettiPiece {
   id: number;
@@ -12,6 +21,8 @@ interface ConfettiPiece {
   delay: number;
   rotation: number;
   scale: number;
+  duration: number;
+  shapeIndex: number;
 }
 
 const COLORS = [
@@ -67,21 +78,30 @@ export function Confetti({
 }) {
   const [pieces, setPieces] = useState<ConfettiPiece[]>([]);
   const prefersReducedMotion = useReducedMotion();
+  const seedRef = useRef(confettiSeedCounter++);
 
   useEffect(() => {
     // Skip if user prefers reduced motion
     if (prefersReducedMotion) return;
     
     if (isActive) {
+      // Generate new seed for each activation
+      const seed = seedRef.current = confettiSeedCounter++;
       const newPieces: ConfettiPiece[] = Array.from({ length: pieceCount }).map((_, i) => ({
         id: i,
-        x: Math.random() * 100,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        delay: Math.random() * 0.5,
-        rotation: Math.random() * 360,
-        scale: 0.5 + Math.random() * 0.5,
+        x: seededRandom(seed + i * 1) * 100,
+        color: COLORS[Math.floor(seededRandom(seed + i * 2) * COLORS.length)],
+        delay: seededRandom(seed + i * 3) * 0.5,
+        rotation: seededRandom(seed + i * 4) * 360,
+        scale: 0.5 + seededRandom(seed + i * 5) * 0.5,
+        duration: 2.5 + seededRandom(seed + i * 6) * 1.5,
+        shapeIndex: Math.floor(seededRandom(seed + i * 7) * SHAPES.length),
       }));
-      setPieces(newPieces);
+      
+      // Use requestAnimationFrame to defer state update
+      requestAnimationFrame(() => {
+        setPieces(newPieces);
+      });
 
       const timer = setTimeout(() => {
         setPieces([]);
@@ -117,14 +137,14 @@ export function Confetti({
             }}
             exit={{ opacity: 0 }}
             transition={{
-              duration: 2.5 + Math.random() * 1.5,
+              duration: piece.duration,
               delay: piece.delay,
               ease: [0.25, 0.46, 0.45, 0.94],
             }}
             className="absolute"
           >
             <ConfettiShape
-              shape={SHAPES[Math.floor(Math.random() * SHAPES.length)]}
+              shape={SHAPES[piece.shapeIndex]}
               color={piece.color}
             />
           </motion.div>
@@ -156,20 +176,26 @@ export function CelebrationBurst({ isActive }: { isActive: boolean }) {
     size: number;
   }>>([]);
   const prefersReducedMotion = useReducedMotion();
+  const seedRef = useRef(confettiSeedCounter++);
 
   useEffect(() => {
     // Skip if user prefers reduced motion
     if (prefersReducedMotion) return;
     
     if (isActive) {
+      const seed = seedRef.current = confettiSeedCounter++;
       const newParticles = Array.from({ length: 12 }).map((_, i) => ({
         id: i,
         angle: (i / 12) * 360,
-        distance: 60 + Math.random() * 40,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        size: 4 + Math.random() * 4,
+        distance: 60 + seededRandom(seed + i * 1) * 40,
+        color: COLORS[Math.floor(seededRandom(seed + i * 2) * COLORS.length)],
+        size: 4 + seededRandom(seed + i * 3) * 4,
       }));
-      setParticles(newParticles);
+      
+      // Use requestAnimationFrame to defer state update
+      requestAnimationFrame(() => {
+        setParticles(newParticles);
+      });
 
       const timer = setTimeout(() => setParticles([]), TIMING.CONFETTI_CLEAR);
       return () => clearTimeout(timer);

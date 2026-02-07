@@ -19,12 +19,16 @@ interface AchievementToastProps {
 }
 
 export function AchievementToast({ achievement, onDismiss }: AchievementToastProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  // Initialize visibility based on whether we have an achievement
+  const [isVisible, setIsVisible] = useState(() => Boolean(achievement));
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (achievement) {
-      setIsVisible(true);
+      // Use requestAnimationFrame to defer state update and avoid cascading renders
+      requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
       const timer = setTimeout(() => {
         setIsVisible(false);
         setTimeout(onDismiss, TIMING.ACHIEVEMENT_DISMISS);

@@ -6,20 +6,35 @@ import { STORAGE_KEYS } from "@/constants";
 
 // Generic hook for localStorage with SSR safety
 export function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(initialValue);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
+  // Use lazy initializer to read from localStorage on first render (client-side only)
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === 'undefined') return initialValue;
     try {
       const item = window.localStorage.getItem(key);
-      if (item) {
-        setStoredValue(JSON.parse(item));
-      }
-    } catch (error) {
-      logger.warn(`Error reading localStorage key "${key}":`, error);
+      return item ? JSON.parse(item) : initialValue;
+    } catch {
+      return initialValue;
     }
-    setIsLoaded(true);
-  }, [key]);
+  });
+  const [isLoaded, setIsLoaded] = useState(() => typeof window !== 'undefined');
+
+  // Handle hydration and key changes
+  useEffect(() => {
+    // Only update if we haven't loaded yet (SSR case)
+    if (!isLoaded) {
+      requestAnimationFrame(() => {
+        try {
+          const item = window.localStorage.getItem(key);
+          if (item) {
+            setStoredValue(JSON.parse(item));
+          }
+        } catch (error) {
+          logger.warn(`Error reading localStorage key "${key}":`, error);
+        }
+        setIsLoaded(true);
+      });
+    }
+  }, [key, isLoaded]);
 
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {

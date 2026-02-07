@@ -117,8 +117,11 @@ export function MultiplayerGame({
       );
       if (question && question.id !== lastQuestionIdRef.current) {
         lastQuestionIdRef.current = question.id;
-        setCurrentQuestion(question);
-        setTimerKey((prev) => prev + 1);
+        // Defer state updates with requestAnimationFrame to avoid cascading renders
+        requestAnimationFrame(() => {
+          setCurrentQuestion(question);
+          setTimerKey((prev) => prev + 1);
+        });
       }
     } else if (!hasInitializedRef.current && isHost) {
       // Get first question only once

@@ -377,7 +377,7 @@ export function MultiplayerLobby({
               >
                 <p className="text-amber-200 text-sm flex items-center gap-2">
                   <span>⚠️</span>
-                  Speed round automatisk skifter til "Rundt om bordet" mode for bedre spilflow
+                  Speed round automatisk skifter til &quot;Rundt om bordet&quot; mode for bedre spilflow
                 </p>
               </motion.div>
             )}

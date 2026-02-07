@@ -4,12 +4,41 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { useCustomQuestions, CustomQuestion, CATEGORY_TAGS } from "@/hooks/useCustomQuestions";
+import { useCustomQuestions, CATEGORY_TAGS } from "@/hooks/useCustomQuestions";
+import type { CustomQuestion } from "@/hooks/useCustomQuestions";
 import { useFavorites, useProgress, useDifficultyFilter } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Confetti, useConfetti, CelebrationOverlay } from "@/components/Confetti";
 import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
+
+// Seeded random for deterministic shuffle
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+// Pure shuffle function
+function shuffleWithSeed(questions: CustomQuestion[], seed: number, initialQuestionId?: string): CustomQuestion[] {
+  const shuffled = [...questions];
+  
+  // Fisher-Yates shuffle with seeded random
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(seededRandom(seed + i) * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  // If there's an initial question ID, move it to the front
+  if (initialQuestionId) {
+    const initialIndex = shuffled.findIndex(q => q.id === initialQuestionId);
+    if (initialIndex > 0) {
+      const [initialQ] = shuffled.splice(initialIndex, 1);
+      shuffled.unshift(initialQ);
+    }
+  }
+  
+  return shuffled;
+}
 
 const CUSTOM_CATEGORY_ID = "custom";
 
@@ -140,30 +169,18 @@ export default function CustomQuestionsClient() {
     return questions.filter(q => q.depth === difficultyFilter);
   }, [questions, difficultyFilter]);
 
-  // Shuffle questions for variety, but put initial question first if specified
+  // Use lazy state initializer with stable seed (42) for shuffled questions
+  // The shuffle happens once per mount, and is re-computed when filteredQuestions change
   const shuffledQuestions = useMemo(() => {
-    const shuffled = [...filteredQuestions];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    
-    // If there's an initial question ID, move it to the front
-    if (initialQuestionId) {
-      const initialIndex = shuffled.findIndex(q => q.id === initialQuestionId);
-      if (initialIndex > 0) {
-        const [initialQ] = shuffled.splice(initialIndex, 1);
-        shuffled.unshift(initialQ);
-      }
-    }
-    
-    return shuffled;
+    return shuffleWithSeed(filteredQuestions, 42, initialQuestionId);
   }, [filteredQuestions, initialQuestionId]);
   
-  // Auto-flip if coming from search
+  // Auto-flip if coming from search - defer with requestAnimationFrame
   useEffect(() => {
     if (initialQuestionId && shuffledQuestions[0]?.id === initialQuestionId) {
-      setIsFlipped(true);
+      requestAnimationFrame(() => {
+        setIsFlipped(true);
+      });
     }
   }, [initialQuestionId, shuffledQuestions]);
 
@@ -173,15 +190,17 @@ export default function CustomQuestionsClient() {
 
   const isLoaded = customLoaded && favoritesLoaded && progressLoaded;
 
-  // Check for completion
+  // Check for completion - defer state updates with requestAnimationFrame
   useEffect(() => {
     if (hasShownCelebration) return;
     
     if (isComplete && totalQuestions > 0) {
-      playSuccess();
-      triggerConfetti();
-      setShowCelebration(true);
-      setHasShownCelebration(true);
+      requestAnimationFrame(() => {
+        playSuccess();
+        triggerConfetti();
+        setShowCelebration(true);
+        setHasShownCelebration(true);
+      });
     }
   }, [isComplete, totalQuestions, hasShownCelebration, playSuccess, triggerConfetti]);
 

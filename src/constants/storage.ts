@@ -34,6 +34,10 @@ export const STORAGE_KEYS = {
   RECENT_SEARCHES: "samtale-spil-recent-searches",
   /** Dismissed recommendation cards */
   DISMISSED_RECOMMENDATIONS: "samtale-spil-dismissed-recommendations",
+  /** Response time tracking data */
+  RESPONSE_TIMES: "samtale-spil-response-times",
+  /** Activity tracking for heatmap */
+  ACTIVITY_DATA: "samtale-spil-activity-data",
 } as const;
 
 /** Type for storage key values */

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { categories } from "@/data/categories";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Question } from "@/types";
-import { DEPTH_CONFIG, type DepthLevel } from "@/components/DepthBadge";
+import { DEPTH_CONFIG } from "@/components/DepthBadge";
 import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
-import { TIMING, STORAGE_KEYS } from "@/constants";
+import { STORAGE_KEYS } from "@/constants";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface SearchResult {
@@ -56,18 +56,16 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   );
   const { questions: customQuestions, isLoaded: customLoaded } = useCustomQuestions();
 
-  // Focus trap with Escape handling
+  // Focus trap with Escape handling and clear query on escape
+  const handleClose = useCallback(() => {
+    setQuery("");
+    onClose();
+  }, [onClose]);
+
   const focusTrapRef = useFocusTrap<HTMLDivElement>({
     isActive: isOpen,
-    onEscape: onClose,
+    onEscape: handleClose,
   });
-
-  // Clear query when closing
-  useEffect(() => {
-    if (!isOpen) {
-      setQuery("");
-    }
-  }, [isOpen]);
 
   // Build all questions list (categories + custom)
   const allQuestions = useMemo(() => {
@@ -154,14 +152,14 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   // Handle result click
   const handleResultClick = useCallback((result: SearchResult) => {
     saveRecentSearch(query);
-    onClose();
+    handleClose();
     
     if (result.isCustom) {
       router.push(`/spil/custom?question=${result.question.id}`);
     } else {
       router.push(`/spil/${result.categoryId}?question=${result.question.id}`);
     }
-  }, [query, onClose, router, saveRecentSearch]);
+  }, [query, handleClose, router, saveRecentSearch]);
 
   // Handle recent search click
   const handleRecentClick = useCallback((search: string) => {
@@ -185,7 +183,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           animate="visible"
           exit="exit"
           className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4"
-          onClick={onClose}
+          onClick={handleClose}
         >
           {/* Backdrop */}
           <motion.div
@@ -244,7 +242,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
               )}
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="px-3 py-1 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-lg transition-colors"
               >
                 ESC

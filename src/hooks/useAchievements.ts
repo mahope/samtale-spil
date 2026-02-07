@@ -113,8 +113,12 @@ export function useAchievements() {
   }, [unlockedAchievements, calculateStats, setUnlockedAchievements, isLoaded]);
 
   // Auto-check achievements when stats change
+  // Use requestAnimationFrame to defer the check and avoid cascading renders
   useEffect(() => {
-    checkAchievements();
+    const frameId = requestAnimationFrame(() => {
+      checkAchievements();
+    });
+    return () => cancelAnimationFrame(frameId);
   }, [checkAchievements]);
 
   const dismissPendingAchievement = useCallback(() => {

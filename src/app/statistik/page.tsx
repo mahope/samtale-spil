@@ -21,6 +21,9 @@ import { CategoryProgressItem } from "@/components/CategoryProgressItem";
 import { FunStatBadge } from "@/components/FunStatBadge";
 import { FavoritePreviewCard } from "@/components/FavoritePreviewCard";
 import { HistoryItemCard } from "@/components/HistoryItemCard";
+import { StatsHeatMap } from "@/components/StatsHeatMap";
+import { RadarChart } from "@/components/RadarChart";
+import { useAdvancedStats } from "@/hooks/useAdvancedStats";
 
 export default function StatistikPage() {
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
@@ -45,6 +48,7 @@ export default function StatistikPage() {
     stats: ratingStats,
     isLoaded: ratingsLoaded,
   } = useQuestionRatings();
+  const advancedStats = useAdvancedStats();
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [showAllHistory, setShowAllHistory] = useState(false);
 
@@ -268,6 +272,38 @@ export default function StatistikPage() {
                 Streak
               </h2>
               <StreakDisplay />
+            </section>
+
+            {/* Activity Heatmap - GitHub style */}
+            <section className="mb-6 sm:mb-8" aria-labelledby="heatmap-heading">
+              <h2 id="heatmap-heading" className="sr-only">
+                Aktivitetskalender
+              </h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+              >
+                <StatsHeatMap
+                  data={advancedStats.heatmap.data}
+                  getActivityLevel={advancedStats.heatmap.getLevel}
+                  stats={advancedStats.heatmap.stats}
+                />
+              </motion.div>
+            </section>
+
+            {/* Category Radar Chart */}
+            <section className="mb-6 sm:mb-8" aria-labelledby="radar-heading">
+              <h2 id="radar-heading" className="sr-only">
+                Kategori-fremgang
+              </h2>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <RadarChart data={advancedStats.categories} />
+              </motion.div>
             </section>
 
             {/* Daily Challenge Stats */}
@@ -585,6 +621,26 @@ export default function StatistikPage() {
                     value={`${Math.round((stats!.totalAnswered / stats!.totalQuestions) * 100)}% udforsket`}
                     color="from-emerald-400 to-green-500"
                     delay={1.1}
+                  />
+                )}
+                {/* Diversity score */}
+                {advancedStats.diversity.diversityScore > 0 && (
+                  <FunStatBadge
+                    icon="🌈"
+                    title="Diversitetsscore"
+                    value={`${advancedStats.diversity.diversityScore}% varieret`}
+                    color="from-pink-400 to-rose-500"
+                    delay={1.2}
+                  />
+                )}
+                {/* Response time */}
+                {advancedStats.responseTime.totalTracked > 0 && (
+                  <FunStatBadge
+                    icon="⏱️"
+                    title="Gns. svartid"
+                    value={`${Math.round(advancedStats.responseTime.average / 1000)}s per spørgsmål`}
+                    color="from-cyan-400 to-teal-500"
+                    delay={1.3}
                   />
                 )}
               </div>

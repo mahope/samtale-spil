@@ -3,6 +3,50 @@
 import { useReducedMotion } from "framer-motion";
 import { useMemo, useEffect, useState } from "react";
 
+// Seeded random for deterministic particle generation
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+// Generate particles with stable seed - pure function
+function generateParticles(count: number, seed: number) {
+  return Array.from({ length: count }).map((_, i) => ({
+    id: i,
+    x: seededRandom(seed + i * 1) * 100,
+    y: seededRandom(seed + i * 2) * 100,
+    size: 2 + seededRandom(seed + i * 3) * 4,
+    duration: 15 + seededRandom(seed + i * 4) * 20,
+    delay: seededRandom(seed + i * 5) * 5,
+    xOffset: seededRandom(seed + i * 6) * 20 - 10,
+  }));
+}
+
+function generateBubbles(count: number, seed: number) {
+  return Array.from({ length: count }).map((_, i) => ({
+    id: i,
+    x: seededRandom(seed + i * 1) * 100,
+    size: 10 + seededRandom(seed + i * 2) * 30,
+    duration: 8 + seededRandom(seed + i * 3) * 12,
+    delay: seededRandom(seed + i * 4) * 10,
+  }));
+}
+
+const HEART_COLORS = ["#fca5a5", "#f472b6", "#fb7185", "#fda4af"];
+
+function generateHearts(count: number, seed: number) {
+  return Array.from({ length: count }).map((_, i) => ({
+    id: i,
+    x: 10 + seededRandom(seed + i * 1) * 80,
+    size: 8 + seededRandom(seed + i * 2) * 8,
+    duration: 10 + seededRandom(seed + i * 3) * 10,
+    delay: seededRandom(seed + i * 4) * 15,
+    color: HEART_COLORS[Math.floor(seededRandom(seed + i * 5) * 4)],
+    xSwing: Math.sin(i) * 20,
+    rotation: i % 2 ? 20 : -20,
+  }));
+}
+
 interface Particle {
   id: number;
   x: number;
@@ -61,12 +105,10 @@ export function FloatingParticles({
 }) {
   const isDarkMode = useIsDarkMode();
   const prefersReducedMotion = useReducedMotion();
-
-  // Return null if user prefers reduced motion
-  if (prefersReducedMotion) {
-    return null;
-  }
   
+  // Use lazy state initializer with stable seed (42)
+  const [particles] = useState<Particle[]>(() => generateParticles(count, 42));
+
   // Determine particle color based on theme
   const particleColor = useMemo(() => {
     if (color) return color; // Use explicit color if provided
@@ -82,17 +124,10 @@ export function FloatingParticles({
     return isDarkMode ? opacity : opacity * 1.5; // Slightly more visible in light mode
   }, [color, themeAware, isDarkMode, opacity]);
 
-  const particles = useMemo<Particle[]>(() => {
-    return Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: 2 + Math.random() * 4,
-      duration: 15 + Math.random() * 20,
-      delay: Math.random() * 5,
-      xOffset: Math.random() * 20 - 10,
-    }));
-  }, [count]);
+  // Return null if user prefers reduced motion (after all hooks)
+  if (prefersReducedMotion) {
+    return null;
+  }
 
   return (
     <div 
@@ -144,17 +179,10 @@ export function FloatingBubbles({
 }) {
   const prefersReducedMotion = useReducedMotion();
 
-  const bubbles = useMemo(() => {
-    return Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      size: 10 + Math.random() * 30,
-      duration: 8 + Math.random() * 12,
-      delay: Math.random() * 10,
-    }));
-  }, [count]);
+  // Use lazy state initializer with stable seed (123)
+  const [bubbles] = useState(() => generateBubbles(count, 123));
 
-  // Return null if user prefers reduced motion
+  // Return null if user prefers reduced motion (after all hooks)
   if (prefersReducedMotion) {
     return null;
   }
@@ -211,20 +239,10 @@ export function FloatingHearts({
 }) {
   const prefersReducedMotion = useReducedMotion();
 
-  const hearts = useMemo(() => {
-    return Array.from({ length: count }).map((_, i) => ({
-      id: i,
-      x: 10 + Math.random() * 80,
-      size: 8 + Math.random() * 8,
-      duration: 10 + Math.random() * 10,
-      delay: Math.random() * 15,
-      color: ["#fca5a5", "#f472b6", "#fb7185", "#fda4af"][Math.floor(Math.random() * 4)],
-      xSwing: Math.sin(i) * 20,
-      rotation: i % 2 ? 20 : -20,
-    }));
-  }, [count]);
+  // Use lazy state initializer with stable seed (456)
+  const [hearts] = useState(() => generateHearts(count, 456));
 
-  // Return null if user prefers reduced motion
+  // Return null if user prefers reduced motion (after all hooks)
   if (prefersReducedMotion) {
     return null;
   }

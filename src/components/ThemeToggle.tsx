@@ -1,22 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useLayoutEffect } from "react";
 
 type Theme = "light" | "dark" | "system";
 
+// Use useLayoutEffect on client, useEffect on server to avoid hydration mismatch
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 export function ThemeToggle({ className = "" }: { className?: string }) {
-  const [theme, setThemeState] = useState<Theme>("system");
+  // Initialize with lazy function to read from localStorage immediately if available
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window === 'undefined') return "system";
+    const stored = localStorage.getItem("theme") as Theme | null;
+    return stored && ["light", "dark", "system"].includes(stored) ? stored : "system";
+  });
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Initialize from localStorage and system preference
-  useEffect(() => {
+  // Mark as mounted (synchronously with layout effect to avoid flash)
+  useIsomorphicLayoutEffect(() => {
     setMounted(true);
-    const stored = localStorage.getItem("theme") as Theme | null;
-    if (stored && ["light", "dark", "system"].includes(stored)) {
-      setThemeState(stored);
-    }
   }, []);
 
   // Update resolved theme

@@ -1,8 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
 import { notFound } from "next/navigation";
@@ -102,37 +101,46 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const [hasShownCelebration, setHasShownCelebration] = useState(false);
   const [timerKey, setTimerKey] = useState(0); // Used to reset timer on new question
 
-  // Update state when dependencies change
+  // Track if initial load has been done
+  const hasInitializedRef = useRef(false);
+
+  // Update state when dependencies change - defer state updates to avoid cascading renders
   useEffect(() => {
     if (!progressLoaded || !filterLoaded || !category) return;
+    if (hasInitializedRef.current) return;
     
     const savedProgress = getCategoryProgress(categoryId);
     
-    // Only update if state is stale
-    if (askedQuestionIds.length === 0 && savedProgress.answeredIds.length > 0) {
-      setAskedQuestionIds(savedProgress.answeredIds);
-      setAnsweredCount(savedProgress.answeredIds.length);
-    }
-    
-    // Only set initial question if we don't have one yet
-    if (!currentQuestion) {
-      // Check if we have an initial question ID from URL
-      if (initialQuestionId) {
-        const specificQuestion = category.questions.find(q => q.id === initialQuestionId);
-        if (specificQuestion) {
-          setCurrentQuestion(specificQuestion);
-          setIsFlipped(true);
-          return;
-        }
+    // Use requestAnimationFrame to defer state updates
+    requestAnimationFrame(() => {
+      hasInitializedRef.current = true;
+      
+      // Only update if state is stale
+      if (askedQuestionIds.length === 0 && savedProgress.answeredIds.length > 0) {
+        setAskedQuestionIds(savedProgress.answeredIds);
+        setAnsweredCount(savedProgress.answeredIds.length);
       }
       
-      // Get initial question excluding already answered ones, respecting filter
-      const excludeIds = savedProgress.answeredIds.length >= filteredQuestionCount 
-        ? [] 
-        : savedProgress.answeredIds;
-      const firstQuestion = getRandomQuestion(categoryId, excludeIds, difficultyFilter);
-      setCurrentQuestion(firstQuestion);
-    }
+      // Only set initial question if we don't have one yet
+      if (!currentQuestion) {
+        // Check if we have an initial question ID from URL
+        if (initialQuestionId) {
+          const specificQuestion = category.questions.find(q => q.id === initialQuestionId);
+          if (specificQuestion) {
+            setCurrentQuestion(specificQuestion);
+            setIsFlipped(true);
+            return;
+          }
+        }
+        
+        // Get initial question excluding already answered ones, respecting filter
+        const excludeIds = savedProgress.answeredIds.length >= filteredQuestionCount 
+          ? [] 
+          : savedProgress.answeredIds;
+        const firstQuestion = getRandomQuestion(categoryId, excludeIds, difficultyFilter);
+        setCurrentQuestion(firstQuestion);
+      }
+    });
   }, [progressLoaded, filterLoaded, category, categoryId, getCategoryProgress, difficultyFilter, filteredQuestionCount, initialQuestionId, askedQuestionIds.length, currentQuestion]);
 
   // Check for category completion - use callback to avoid setState in effect
@@ -148,9 +156,12 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     }
   }, [answeredCount, category, hasShownCelebration, playSuccess]);
 
-  // Trigger celebration check when answered count changes
+  // Trigger celebration check when answered count changes - defer with requestAnimationFrame
   useEffect(() => {
-    handleCelebration();
+    const frameId = requestAnimationFrame(() => {
+      handleCelebration();
+    });
+    return () => cancelAnimationFrame(frameId);
   }, [handleCelebration]);
 
   const handleFlip = useCallback(() => {
@@ -236,6 +247,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     triggerConfetti,
     difficultyFilter,
     filteredQuestionCount,
+    recordActivity,
   ]);
 
   // Handle timer timeout - auto skip to next question

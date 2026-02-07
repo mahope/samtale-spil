@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface TimerDisplayProps {
@@ -21,16 +21,29 @@ export function TimerDisplay({
   isPaused = false,
   speedMode = false,
 }: TimerDisplayProps) {
-  const [timeLeft, setTimeLeft] = useState(duration);
+  // Initialize timeLeft with duration - use lazy initializer
+  const [timeLeft, setTimeLeft] = useState(() => duration);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasTimedOut = useRef(false);
+  const prevDurationRef = useRef(duration);
+  const prevActiveRef = useRef(isActive);
 
   // Reset timer when duration changes or when isActive becomes true
+  // Use refs to track changes and avoid direct setState in effect
   useEffect(() => {
-    if (isActive) {
-      setTimeLeft(duration);
-      hasTimedOut.current = false;
+    const durationChanged = prevDurationRef.current !== duration;
+    const becameActive = !prevActiveRef.current && isActive;
+    
+    if (isActive && (durationChanged || becameActive)) {
+      // Use requestAnimationFrame to defer state update
+      requestAnimationFrame(() => {
+        setTimeLeft(duration);
+        hasTimedOut.current = false;
+      });
     }
+    
+    prevDurationRef.current = duration;
+    prevActiveRef.current = isActive;
   }, [duration, isActive]);
 
   // Timer countdown logic

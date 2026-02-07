@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useId } from "react";
 
 /**
  * Props for the EmptyState component
@@ -109,7 +109,8 @@ export function EmptyState({
   headingId,
 }: EmptyStateProps) {
   const Component = as === "section" ? motion.section : motion.div;
-  const generatedHeadingId = headingId || `empty-heading-${Math.random().toString(36).slice(2, 9)}`;
+  const reactId = useId();
+  const generatedHeadingId = headingId || `empty-heading-${reactId}`;
 
   return (
     <Component

@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { getCategory, getRandomQuestionFromAllWithCustom, getTotalQuestionCountWithCustom } from "@/data/categories";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";
 import type { Question } from "@/types";
@@ -245,26 +245,35 @@ export default function ShuffleAllClient() {
   const filteredQuestionCount = getTotalQuestionCountWithCustom(customQuestions, difficultyFilter);
   const activeQuestionCount = filteredQuestionCount > 0 ? filteredQuestionCount : totalQuestions;
 
-  // Initialize from saved progress
+  // Track if initial load has been done
+  const hasInitializedRef = useRef(false);
+
+  // Initialize from saved progress - only run once per mount
   useEffect(() => {
     if (!progressLoaded || !filterLoaded || !customLoaded) return;
+    if (hasInitializedRef.current) return;
+    hasInitializedRef.current = true;
     
     const savedProgress = getCategoryProgress(SHUFFLE_ALL_ID);
-    if (savedProgress.answeredIds.length > 0) {
-      setAskedQuestionIds(savedProgress.answeredIds);
-      setAnsweredCount(savedProgress.answeredIds.length);
-    }
     
-    // Get initial question excluding already answered ones, respecting filter
-    const excludeIds = savedProgress.answeredIds.length >= activeQuestionCount 
-      ? [] 
-      : savedProgress.answeredIds;
-    const firstQuestion = getRandomQuestionFromAllWithCustom(customQuestions, excludeIds, difficultyFilter);
-    setCurrentQuestion(firstQuestion);
+    // Use requestAnimationFrame to defer state updates
+    requestAnimationFrame(() => {
+      if (savedProgress.answeredIds.length > 0) {
+        setAskedQuestionIds(savedProgress.answeredIds);
+        setAnsweredCount(savedProgress.answeredIds.length);
+      }
+      
+      // Get initial question excluding already answered ones, respecting filter
+      const excludeIds = savedProgress.answeredIds.length >= activeQuestionCount 
+        ? [] 
+        : savedProgress.answeredIds;
+      const firstQuestion = getRandomQuestionFromAllWithCustom(customQuestions, excludeIds, difficultyFilter);
+      setCurrentQuestion(firstQuestion);
+    });
   }, [progressLoaded, filterLoaded, customLoaded, activeQuestionCount, getCategoryProgress, difficultyFilter, customQuestions]);
 
-  // Check for completion
-  useEffect(() => {
+  // Check for completion - use callback pattern to avoid setState in effect
+  const checkCompletion = useCallback(() => {
     if (hasShownCelebration) return;
     
     if (answeredCount >= activeQuestionCount && answeredCount > 0) {
@@ -273,6 +282,14 @@ export default function ShuffleAllClient() {
       setHasShownCelebration(true);
     }
   }, [answeredCount, activeQuestionCount, hasShownCelebration, playSuccess]);
+
+  // Trigger completion check with requestAnimationFrame to avoid cascading renders
+  useEffect(() => {
+    const frameId = requestAnimationFrame(() => {
+      checkCompletion();
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [checkCompletion]);
 
   const handleFlip = useCallback(() => {
     playFlip();
@@ -340,6 +357,7 @@ export default function ShuffleAllClient() {
     triggerConfetti,
     difficultyFilter,
     customQuestions,
+    recordActivity,
   ]);
 
   const handleTimerTimeout = useCallback(() => {
