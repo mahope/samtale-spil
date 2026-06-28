@@ -2,18 +2,22 @@
   "name": "Samtalekort",
   "short_name": "Samtalekort",
   "description": "Dybe samtaler med dem du holder af - Et spil der skaber meningsfulde samtaler mellem par, familier og venner",
-  "start_url": "/samtale-spil/",
-  "scope": "/samtale-spil/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#6366f1",
   "theme_color": "#6366f1",
   "orientation": "portrait-primary",
-  "categories": ["games", "lifestyle", "social"],
+  "categories": [
+    "games",
+    "lifestyle",
+    "social"
+  ],
   "lang": "da",
   "id": "samtale-spil",
   "icons": [
     {
-      "src": "/samtale-spil/icons/icon.svg",
+      "src": "/icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
@@ -21,7 +25,7 @@
   ],
   "screenshots": [
     {
-      "src": "/samtale-spil/screenshots/home.png",
+      "src": "/screenshots/home.png",
       "sizes": "390x844",
       "type": "image/png",
       "form_factor": "narrow",
@@ -33,15 +37,25 @@
       "name": "Start spil",
       "short_name": "Spil",
       "description": "Vælg en kategori og start",
-      "url": "/samtale-spil/spil",
-      "icons": [{ "src": "/samtale-spil/icons/icon.svg", "sizes": "any" }]
+      "url": "/spil",
+      "icons": [
+        {
+          "src": "/icons/icon.svg",
+          "sizes": "any"
+        }
+      ]
     },
     {
       "name": "Mine favoritter",
       "short_name": "Favoritter",
       "description": "Se dine gemte spørgsmål",
-      "url": "/samtale-spil/favoritter",
-      "icons": [{ "src": "/samtale-spil/icons/icon.svg", "sizes": "any" }]
+      "url": "/favoritter",
+      "icons": [
+        {
+          "src": "/icons/icon.svg",
+          "sizes": "any"
+        }
+      ]
     }
   ]
 }
