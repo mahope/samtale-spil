@@ -139,6 +139,11 @@ const themeInitScript = `
 })();
 `;
 
+// Plausible CE (analytics.holstjensen.eu): cookieless, self-hosted in the EU.
+// The pa-<id>.js script only sends events once plausible.init() has run.
+const plausibleInitScript =
+  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -148,6 +153,8 @@ export default function RootLayout({
     <html lang="da" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script async src="https://analytics.holstjensen.eu/js/pa-yk0peyirQvnSBppLjWJYB.js" />
+        <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
         <link rel="icon" href="/samtale-spil/icons/icon.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/samtale-spil/icons/icon.svg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
