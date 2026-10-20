@@ -11,12 +11,15 @@ on:
       - "src/**"
       - "public/**"
       - "capacitor.config.ts"
+      - "next.config.ts"
       - "package.json"
       - "package-lock.json"
       - ".forgejo/workflows/android.yml"
   pull_request:
     paths:
       - "android/**"
+      - "src/**"
+      - "next.config.ts"
       - "capacitor.config.ts"
       - "package.json"
       - ".forgejo/workflows/android.yml"
@@ -46,7 +49,14 @@ jobs:
           packages: "platform-tools platforms;android-36 build-tools;36.0.0"
 
       - run: npm ci
-      - run: npm run build
+      - name: Build without the 18+ deck
+        env:
+          APP_BUILD: "1"
+        run: |
+          set -euo pipefail
+          npm run build
+          # The adult cards must not be anywhere in the app bundle (issue #54)
+          if grep -rqE '"adult-[0-9]+"|et helt upassende sted' out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
       - run: npx cap sync android
 
       - name: Upload key

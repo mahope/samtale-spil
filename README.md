@@ -73,7 +73,7 @@ After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, 
 
 - `android/`: signed `.aab`/`.apk` from `.forgejo/workflows/android.yml` (upload key in repo secrets and in Bitwarden, "Snakkespil: Android upload-keystore"). Google Play App Signing holds the app key.
 - `ios/`: Swift Package Manager project; `.forgejo/workflows/ios.yml` compiles it unsigned on the Mac runner. Signing and TestFlight need the Apple team's certificates.
-- After changing web code for the apps: `npm run cap:sync`. Icons and splash screens: `npm run cap:assets`.
+- After changing web code for the apps: `npm run cap:sync` (builds with `APP_BUILD=1`, which leaves out the 18+ deck so the apps can carry a 13+ rating). Icons and splash screens: `npm run cap:assets`.
 
 ## Licence
 

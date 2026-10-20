@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { adultQuestions } from "@/data/questions/voksne";
 import { OG_BASE, QUESTION_COUNT, CATEGORY_COUNT } from "@/config/site";
 import Link from "next/link";
 import { TextPage } from "@/components/site/TextPage";
@@ -21,7 +22,7 @@ export default function AboutPage() {
         fortælle noget, de ellers ikke ville have sagt. Snakkespil gør det samme, bare på telefonen, gratis og på dansk.
       </p>
       <p>
-        Der er {QUESTION_COUNT.toLocaleString("da-DK")} spørgsmål fordelt på {CATEGORY_COUNT} spil og et spil kun for voksne.
+        Der er {QUESTION_COUNT.toLocaleString("da-DK")} spørgsmål fordelt på {CATEGORY_COUNT} spil{adultQuestions.length > 0 && " og et spil kun for voksne"}.
         Hvert spørgsmål er mærket let, medium eller dyb, så I selv kan vælge, hvor langt ind I vil.
       </p>
 
