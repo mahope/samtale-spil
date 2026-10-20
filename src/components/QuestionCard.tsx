@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { Question } from "@/types";
 import { ShareButton } from "@/components/ShareButton";
@@ -8,6 +8,8 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { CardFace, DeckBack } from "@/components/deck/DeckParts";
 import { getDeck } from "@/data/decks";
 import { tap } from "@/lib/platform";
+import { randomFollowUp } from "@/data/followUps";
+import { track } from "@/utils/track";
 
 interface QuestionCardProps {
   question: Question;
@@ -31,6 +33,7 @@ export const QuestionCard = memo(function QuestionCard({
 }: QuestionCardProps) {
   const prefersReducedMotion = useReducedMotion();
   const deck = getDeck(question.categoryId);
+  const [followUp, setFollowUp] = useState<string | null>(null);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -108,7 +111,27 @@ export const QuestionCard = memo(function QuestionCard({
             path={question.categoryId === "custom" ? undefined : `/spil/${question.categoryId}/?question=${question.id}`}
           />
         </span>
+        <button
+          type="button"
+          onClick={() => {
+            tap();
+            setFollowUp((prev) => randomFollowUp(prev ?? undefined));
+            if (!followUp) track("Spørg videre", { kategori: question.categoryId });
+          }}
+          className="min-h-11 rounded-full bg-white px-4 text-[0.95rem] font-bold text-[#15201b] shadow-kort"
+        >
+          Spørg videre
+        </button>
       </div>
+      {/* A follow-up question: the second question is often the best one (docs/forskning.md 2.3) */}
+      <p
+        className={`mx-auto mt-3 min-h-7 max-w-[20rem] text-center font-display text-lg font-semibold text-white transition-opacity ${
+          followUp && isFlipped ? "opacity-100" : "opacity-0"
+        }`}
+        aria-live="polite"
+      >
+        {isFlipped ? followUp : ""}
+      </p>
     </div>
   );
 });

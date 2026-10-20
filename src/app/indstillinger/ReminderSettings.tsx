@@ -3,14 +3,17 @@
 import { useState, useSyncExternalStore } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { isNative } from "@/lib/platform";
-import { REMINDER_KEY, DEFAULT_REMINDER, type Reminder } from "@/lib/reminder";
+import { REMINDER_KEY, DEFAULT_REMINDER, normalizeReminder, type Reminder } from "@/lib/reminder";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { track } from "@/utils/track";
 
 const HOURS = [7, 8, 12, 16, 17, 18, 19, 20, 21];
+const WEEKDAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
 
 export function ReminderSettings() {
-  const [reminder, setReminder] = useLocalStorage<Reminder>(REMINDER_KEY, DEFAULT_REMINDER);
+  const [stored, setReminder] = useLocalStorage<Reminder>(REMINDER_KEY, DEFAULT_REMINDER);
+  // Older versions stored no frequency or weekday
+  const reminder = normalizeReminder(stored);
   const native = useSyncExternalStore(() => () => {}, isNative, () => false);
   const [message, setMessage] = useState("");
 
@@ -24,15 +27,19 @@ export function ReminderSettings() {
         setMessage("Påmindelsen er slået fra.");
         return;
       }
-      ok = await scheduleDailyQuestion(next.hour);
+      ok = await scheduleDailyQuestion(next);
     } catch {
       setReminder({ ...next, enabled: false });
       setMessage("Påmindelsen kunne ikke sættes op. Prøv igen om lidt.");
       return;
     }
     if (ok) {
-      setMessage(`Du får dagens spørgsmål kl. ${next.hour}.`);
-      track("Påmindelse slået til", { time: next.hour });
+      setMessage(
+        next.frequency === "uge"
+          ? `Du får ugens kort hver ${WEEKDAYS[next.weekday]} kl. ${next.hour}.`
+          : `Du får dagens spørgsmål kl. ${next.hour}.`
+      );
+      track("Påmindelse slået til", { time: next.hour, rytme: next.frequency });
     } else {
       setReminder({ ...next, enabled: false });
       setMessage("Telefonen tillader ikke notifikationer fra Snakkespil. Slå dem til under Indstillinger på telefonen.");
@@ -46,8 +53,8 @@ export function ReminderSettings() {
         {native ? (
           <>
             <p className="mt-2 text-blaek-2">
-              Få et nyt spørgsmål på telefonen hver dag. Påmindelsen planlægges på telefonen og sendes ikke gennem nogen
-              server.
+              Få et nyt spørgsmål på telefonen hver dag, eller ét kort om ugen. Et par kort jævnligt giver mere end en lang
+              aften en gang om året. Påmindelsen planlægges på telefonen og sendes ikke gennem nogen server.
             </p>
             <label className="mt-5 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-flade px-4 ring-1 ring-streg">
               <span className="font-semibold">Send mig dagens spørgsmål</span>
@@ -57,6 +64,25 @@ export function ReminderSettings() {
                 checked={reminder.enabled}
                 onChange={(e) => apply({ ...reminder, enabled: e.target.checked })}
               />
+            </label>
+            <label className="mt-3 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-flade px-4 ring-1 ring-streg">
+              <span className="font-semibold">Hvor tit</span>
+              <select
+                className="min-h-10 rounded-lg bg-flade-2 px-3 font-semibold"
+                value={reminder.frequency}
+                onChange={(e) =>
+                  apply({
+                    ...reminder,
+                    frequency: e.target.value === "uge" ? "uge" : "dag",
+                    // the weekly card arrives on the weekday it was chosen
+                    weekday: new Date().getDay(),
+                  })
+                }
+                disabled={!reminder.enabled}
+              >
+                <option value="dag">Hver dag</option>
+                <option value="uge">En gang om ugen</option>
+              </select>
             </label>
             <label className="mt-3 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-flade px-4 ring-1 ring-streg">
               <span className="font-semibold">Klokken</span>
