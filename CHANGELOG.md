@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-10-21
+
+### Added
+- Ten audience decks (new parents, parents again, student life, upper secondary, boarding school, three school levels, scouts, Gilwell) and Følelseskort for children; 30 more first-date cards
+- Decks grouped by audience on the chooser, the home page and /spoergsmaal/
+- Card types (task, point-at with a 3-2-1 countdown, never-have-I-ever, joker) and a "family friendly" filter
+- Game modes: Gæt svaret (secret answers and points for Kend din partner), Året der gik (four rounds), a joker about every tenth card and a closing card
+- /dagens-spoergsmaal/ (same card as the app reminder), /generator/, four guides under /guide/, crush, date night and Valentine's pages, five alcohol-free party games and wedding games under /lege/
+- Free A4 print PDFs for every deck under /print/
+- snakkespil.com redirects to snakkespil.dk
+
+### Changed
+- The native apps no longer contain the 18+ deck (rated for a younger audience); CI fails if an adult card leaks into the app build
+- Tests guard: no alcohol on any card outside 18+, curated page counts, print font coverage
+
 ## [2.1.0] - 2026-10-20
 
 ### Added
