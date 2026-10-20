@@ -16,7 +16,7 @@ export const CARD_TYPE_HINT: Record<Exclude<CardType, "spoergsmaal">, string> = 
 
 /**
  * Decks that work with children at the table. Used by "Kun familievenlige" on /spil/.
- * categories.test.ts checks that these decks never mention alcohol, sex or nudity.
+ * cardTypes.test.ts checks that these decks never mention alcohol, sex or nudity.
  */
 export const FAMILY_FRIENDLY_DECKS = new Set([
   "familie",

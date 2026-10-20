@@ -545,8 +545,11 @@ a:not(.no-underline):hover {
   box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
 }
 
-/* "Kun familievenlige" on /spil/ (ChooserTools sets the attribute) */
-:root[data-kun-familie] [data-familie="nej"],
+/* "Kun familievenlige" on /spil/ (ChooserTools sets the attribute). Two rules, so browsers
+   without :has() still hide the tiles and only keep the empty group headings. */
+:root[data-kun-familie] [data-familie="nej"] {
+  display: none;
+}
 :root[data-kun-familie] [data-bunkegruppe]:not(:has([data-familie="ja"])) {
   display: none;
 }

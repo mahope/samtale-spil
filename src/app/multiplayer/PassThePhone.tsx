@@ -221,6 +221,7 @@ export function PassThePhone() {
                 onFlip={() => setIsFlipped((f) => !f)}
                 isFavorite={isFavorite(question.id)}
                 onToggleFavorite={() => toggleFavorite(question)}
+                sharePath={deckId.startsWith("lege-") ? `/lege/${deckId.slice("lege-".length)}/` : undefined}
               />
             </motion.div>
           </AnimatePresence>

@@ -11,7 +11,7 @@ import { tap } from "@/lib/platform";
 import { randomFollowUp } from "@/data/followUps";
 import { track } from "@/utils/track";
 import { ReportCard } from "@/components/ReportCard";
-import { CARD_TYPE_HINT } from "@/data/cardTypes";
+import { CARD_TYPE_HINT, CARD_TYPE_LABEL } from "@/data/cardTypes";
 
 interface QuestionCardProps {
   question: Question;
@@ -73,6 +73,11 @@ export const QuestionCard = memo(function QuestionCard({
         className="relative aspect-[5/7] w-full cursor-pointer touch-manipulation rounded-[1.25rem]"
         onClick={() => {
           tap();
+          if (isFlipped) {
+            // turning the card back stops a running countdown
+            timers.current.forEach(clearTimeout);
+            setCountdown(null);
+          }
           if (!isFlipped && !flippedOnce) {
             setFlippedOnce(true);
             track("Kort vendt", { kort: question.id, kategori: question.categoryId });
@@ -82,7 +87,11 @@ export const QuestionCard = memo(function QuestionCard({
         onKeyDown={handleKeyDown}
         role="button"
         tabIndex={0}
-        aria-label={isFlipped ? `${question.text} Tryk for at vende kortet tilbage.` : "Vend kortet"}
+        aria-label={
+          isFlipped
+            ? `${type === "spoergsmaal" ? "" : `${CARD_TYPE_LABEL[type]}: `}${question.text} Tryk for at vende kortet tilbage.`
+            : "Vend kortet"
+        }
         aria-pressed={isFlipped}
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}

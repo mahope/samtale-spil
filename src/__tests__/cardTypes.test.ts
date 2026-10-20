@@ -6,9 +6,10 @@ import { CARD_TYPE_LABEL, FAMILY_FRIENDLY_DECKS, WORK_SAFE_DECKS } from "@/data/
 const TYPES = new Set(["spoergsmaal", ...Object.keys(CARD_TYPE_LABEL)]);
 const allCards = categories.flatMap((c) => c.questions);
 
-// "fuld af" (full of) is fine; "fuld" on its own means drunk
-const ALCOHOL = /\b(fuld(?! af)|beruset|øl|vin|vodka|shots?|alkohol\w*|druk\w*|bajer\w*)\b/i;
-const ADULT = /\b(sex\w*|seksu\w*|nøgen\w*|frække?)\b/i;
+// Word boundaries that understand æøå (\b in JS is ASCII only). "fuld af" (full of) is fine.
+const word = (alternatives: string) => new RegExp(`(?<!\\p{L})(?:${alternatives})(?!\\p{L})`, "iu");
+const ALCOHOL = word("fuld(?! af)|beruset|øl|fadøl|vin|vodka|snaps|shots?|drinks?|skål|promille|alkohol\\p{L}*|druk(?!ne)\\p{L}*|bajer\\p{L}*");
+const ADULT = word("sex\\p{L}*|seksu\\p{L}*|nøgen\\p{L}*|frække?");
 
 describe("card types", () => {
   it("only uses known card types", () => {
@@ -26,6 +27,16 @@ describe("card types", () => {
     const types = new Set(legeSider.flatMap((s) => s.kort.map((k) => k.type)));
     expect(types.has("opgave")).toBe(true);
     expect(types.has("peg")).toBe(true);
+  });
+});
+
+describe("word filters", () => {
+  it("catch Danish words with æøå and skip harmless look-alikes", () => {
+    expect(ALCOHOL.test("En kold øl i solen")).toBe(true);
+    expect(ALCOHOL.test("Hvad gjorde du fuld?")).toBe(true);
+    expect(ALCOHOL.test("En dag fuld af eventyr")).toBe(false);
+    expect(ALCOHOL.test("Hvem var tæt på at drukne?")).toBe(false);
+    expect(ALCOHOL.test("Hvad har du i køleskabet?")).toBe(false);
   });
 });
 
