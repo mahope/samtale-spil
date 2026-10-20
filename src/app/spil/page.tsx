@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { OG_BASE } from "@/config/site";
 import Link from "next/link";
-import { adultQuestions } from "@/data/questions/voksne";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { DeckBack, DeckTile } from "@/components/deck/DeckParts";
-import { categories, getTotalQuestionCount } from "@/data/categories";
+import { DeckBack } from "@/components/deck/DeckParts";
+import { GroupedDecks } from "@/components/deck/GroupedDecks";
+import { getTotalQuestionCount } from "@/data/categories";
 import { ChooserTools } from "./ChooserTools";
 
 export const metadata: Metadata = {
@@ -66,25 +66,7 @@ export default function ChooserPage() {
           <ChooserTools />
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {categories.map((c) => (
-            <DeckTile
-              key={c.id}
-              categoryId={c.id}
-              name={c.name}
-              description={c.description}
-              count={c.questions.length}
-              href={`/spil/${c.id}/`}
-            />
-          ))}
-          <DeckTile
-            categoryId="voksne"
-            name="Kun for voksne"
-            description="Intime spørgsmål til par. Kræver at du er fyldt 18."
-            count={adultQuestions.length}
-            href="/spil/voksne/"
-          />
-        </div>
+        <GroupedDecks headingLevel="h2" />
 
         <h2 className="mt-16 text-2xl font-bold sm:text-3xl">Andre måder at spille på</h2>
         <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

@@ -3,6 +3,11 @@
  * Question counts in seoTitle match the data; categories.test.ts guards it.
  */
 
+import { foraeldreTexts } from "@/data/questions/foraeldre";
+import { uddannelseTexts } from "@/data/questions/uddannelse";
+import { skoleTexts } from "@/data/questions/skole";
+import { spejderTexts } from "@/data/questions/spejder";
+
 export interface CategoryText {
   seoTitle: string;
   metaDescription: string;
@@ -92,8 +97,8 @@ export const categoryTexts: Record<string, CategoryText> = {
     tips: ["Start med de lette kort, og skru op, når stemningen er der.", "Lad kortet gå rundt, så alle får svaret.", "Gem et par af de dybe til slutningen af aftenen."],
   },
   "foerste-date": {
-    seoTitle: "Spørgsmål til første date: 100 kort der bryder isen",
-    metaDescription: "100 spørgsmål til første date, der hverken er pinlige eller for personlige. Lær hinanden at kende, og undgå de akavede pauser.",
+    seoTitle: "Spørgsmål til første date: 130 kort der bryder isen",
+    metaDescription: "130 spørgsmål til første date, der hverken er pinlige eller for personlige. Lær hinanden at kende, og undgå de akavede pauser.",
     intro: "Første date går lettere, når man har noget at tale om. Spørgsmålene her er nysgerrige, lette og ærlige, så I hurtigt kommer forbi vejret og jobbet og videre til det, der er interessant.",
     passerTil: "Første og anden date, og alle der vil lære et nyt menneske at kende.",
     tips: ["Hold dig til de lette kort i starten.", "Svar også selv, så det ikke bliver en jobsamtale.", "Følg op på det, der gør den anden glad at tale om."],
@@ -181,4 +186,8 @@ export const categoryTexts: Record<string, CategoryText> = {
     tips: ["Lad et barn trække kortet og interviewe den ældste ved bordet.", "Spørg videre: »Hvordan så det ud?« og »Hvad sagde de så?«.", "Skriv de bedste historier ned, eller optag dem på telefonen."],
     forskning: "Børn, der kender deres families historier, har det i gennemsnit bedre, og fortællinger, hvor de voksne spørger ind, styrker samtalen (Fivush og kolleger; Fivush, Haden og Reese 2006).",
   },
+  ...foraeldreTexts,
+  ...uddannelseTexts,
+  ...skoleTexts,
+  ...spejderTexts,
 };

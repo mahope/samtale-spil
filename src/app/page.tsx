@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import { OG_BASE, SITE_URL, SITE_NAME, QUESTION_COUNT, CATEGORY_COUNT } from "@/config/site";
 import Link from "next/link";
 import { categories } from "@/data/categories";
-import { adultQuestions } from "@/data/questions/voksne";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CardDraw, type DrawCard } from "@/components/home/CardDraw";
-import { DeckTile } from "@/components/deck/DeckParts";
+import { GroupedDecks } from "@/components/deck/GroupedDecks";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -133,25 +132,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {categories.map((c) => (
-              <DeckTile
-                key={c.id}
-                categoryId={c.id}
-                name={c.name}
-                description={c.description}
-                count={c.questions.length}
-                href={`/spil/${c.id}/`}
-              />
-            ))}
-            <DeckTile
-              categoryId="voksne"
-              name="Kun for voksne"
-              description="Intime spørgsmål til par. Kræver at du er fyldt 18."
-              count={adultQuestions.length}
-              href="/spil/voksne/"
-            />
-          </div>
+          <GroupedDecks headingLevel="h3" />
         </section>
 
         <section className="mx-auto mt-20 max-w-6xl px-4 sm:px-6" aria-labelledby="saadan-overskrift">
