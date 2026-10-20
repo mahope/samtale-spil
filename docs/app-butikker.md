@@ -2,7 +2,7 @@
 
 Tekster og svar til butikkerne. Kopiér felterne direkte. Tegnloft står ved hvert felt.
 
-Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan mærkes 12+ og bruges i skoler og spejdergrupper. Voksen-bunken findes kun på snakkespil.dk.
+Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en lav aldersmærkning (forventet 13+ hos Apple) og bruges af skoler og spejdergrupper. Voksen-bunken findes kun på snakkespil.dk.
 
 ## Fælles
 
@@ -26,7 +26,7 @@ Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan mærkes 
 `samtalekort,samtalespil,spørgsmål,par,kæreste,familie,venner,date,dybe spørgsmål,hvad vil du helst`
 
 **Nyheder i denne version:**
-`Første version af Snakkespil som app: alle bunker, spil uden internet og påmindelse om dagens spørgsmål.`
+`Første version af Snakkespil som app: alle bunker til par, familie, venner, skole og spejder, spil uden internet og påmindelse om dagens spørgsmål.`
 
 ## Google Play
 
@@ -69,11 +69,18 @@ Lavet i Danmark af Mahope.
 
 ## Aldersmærkning
 
-Appen indeholder ingen voksenkort. Parforholds- og intimitetsbunkerne handler om nærhed, ikke sex.
+Appen indeholder ingen voksenkort. Et par kort i de almindelige bunker nævner dog alkohol (fx »det dummeste du har gjort fuld?«) og sex i forbifarten, og det skal svares ærligt.
 
-**App Store (spørgeskema):** svar "Ingen" til alt (vold, seksuelt indhold, nøgenhed, grov humor, rusmidler, gambling, rædsel). "Moden/antydende tematik": **Sjælden/mild** (enkelte kort om forelskelse og nærhed). Ubegrænset webadgang: Nej. Forventet resultat: **12+** (vælg 9+, hvis Apple vurderer tematikken som ingen).
+**App Store** (skalaen 4+/9+/13+/16+/18+; Apple beregner mærkningen ud fra svarene):
+- Vold, rædsel, våben, gambling, konkurrencer, ubegrænset web, brugergenereret indhold delt med andre: **Ingen/Nej**
+- Alkohol, tobak eller stoffer (omtale): **Sjælden/mild**
+- Moden eller antydende tematik: **Sjælden/mild**
+- Seksuelt indhold eller nøgenhed: **Ingen** (kun ord som »sex« i forbifarten; ingen beskrivelser)
+- Forventet resultat: **13+**
 
-**Google Play (IARC):** vold nej, seksuelt indhold nej, groft sprog nej, rusmidler nej, gambling nej, brugerinteraktion nej (en anonym rapport om et kort er ikke kommunikation mellem brugere). Forventet resultat: **PEGI 3/7 eller USK 6**. Målgruppe i Play Console: 13 år og opefter (appen er ikke lavet specifikt til børn, så Familiepolitikken gælder ikke; skolebunkerne bruges af en voksen, der læser højt).
+**Google Play (IARC):** vold nej, seksuelt indhold nej (ingen beskrivelser), groft sprog nej, omtale af alkohol **ja** (tekst, ingen opfordring), gambling nej, brugerinteraktion nej (en anonym rapport om et kort er ikke kommunikation mellem brugere). Forventet resultat: **PEGI 12 / USK 12**.
+
+**Målgruppe i Play Console:** 13 år og opefter. Bunkerne til børn og skoleklasser er skrevet til, at en voksen læser højt, og appen er ikke lavet primært til børn. Bliver det udfordret af Google, er planen at fjerne alkoholkortene fra app-buildet og vælge Familiepolitikken.
 
 ## Datasikkerhed (Google Play) og privatlivsoplysninger (App Store)
 

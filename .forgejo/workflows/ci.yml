@@ -59,6 +59,14 @@ jobs:
           echo "og:image -> $og"
           case "$og" in */opengraph-image) test -f "out$og" ;; *) echo "unexpected og:image path"; exit 1 ;; esac
 
+      - name: App build leaves out the 18+ deck
+        run: |
+          set -euo pipefail
+          grep -rqE '"adult-[0-9]+"' out/ || { echo "guard finds no adult cards in the web build"; exit 1; }
+          rm -rf out
+          APP_BUILD=1 npm run build >/dev/null
+          if grep -rqE '"adult-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
+
       - name: Verify nginx config
         run: |
           set -euo pipefail

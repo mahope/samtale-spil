@@ -13,7 +13,7 @@
     "test:ui": "vitest --ui",
     "analyze": "ANALYZE=true next build",
     "typecheck": "tsc --noEmit",
-    "cap:sync": "npm run build && cap sync",
+    "cap:sync": "APP_BUILD=1 next build && cap sync",
     "cap:assets": "capacitor-assets generate --iconBackgroundColor '#1d4a38' --splashBackgroundColor '#1d4a38' --splashBackgroundColorDark '#0e1a15'"
   },
   "dependencies": {
