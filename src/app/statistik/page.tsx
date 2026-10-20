@@ -1,53 +1,34 @@
 "use client";
 
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useFavorites, useProgress, useQuestionHistory } from "@/hooks/useLocalStorage";
-import { useStreak } from "@/hooks/useStreak";
-import { useDailyChallenge } from "@/hooks/useDailyChallenge";
-import { useCategoryBadges } from "@/hooks/useCategoryBadges";
 import { useQuestionRatings } from "@/hooks/useQuestionRatings";
 import { categories, getCategory, getQuestionById } from "@/data/categories";
+import { getDeck } from "@/data/decks";
 import { RatingStarsDisplay } from "@/components/RatingStars";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { PageTransition } from "@/components/PageTransition";
-import { StreakDisplay, StreakCelebration } from "@/components/StreakDisplay";
-import { BadgeGrid, NextBadgeProgress, BadgeStats } from "@/components/CategoryBadge";
-import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
-import { EmptyState } from "@/components/EmptyState";
-import { StatCard } from "@/components/StatCard";
-import { CategoryProgressItem } from "@/components/CategoryProgressItem";
-import { FunStatBadge } from "@/components/FunStatBadge";
 import { FavoritePreviewCard } from "@/components/FavoritePreviewCard";
 import { HistoryItemCard } from "@/components/HistoryItemCard";
 import { StatsHeatMap } from "@/components/StatsHeatMap";
-import { RadarChart } from "@/components/RadarChart";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 import { useAdvancedStats } from "@/hooks/useAdvancedStats";
+
+function Figure({ value, label }: { value: string | number; label: string }) {
+  return (
+    <div className="rounded-2xl bg-flade p-4 ring-1 ring-streg">
+      <p className="font-display text-3xl font-bold tabular-nums">{value}</p>
+      <p className="mt-1 text-sm text-blaek-2">{label}</p>
+    </div>
+  );
+}
 
 export default function StatistikPage() {
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
   const { progress, isLoaded: progressLoaded } = useProgress();
   const { history, clearHistory, isLoaded: historyLoaded } = useQuestionHistory();
-  const { isLoaded: streakLoaded } = useStreak();
-  const { 
-    totalChallengesCompleted, 
-    currentStreak: dailyChallengeStreak, 
-    longestStreak: dailyChallengeLongestStreak,
-    totalBonusPoints,
-    isLoaded: dailyChallengeLoaded 
-  } = useDailyChallenge();
-  const {
-    allBadges,
-    unlockedBadges,
-    nextBadge,
-    isLoaded: badgesLoaded,
-  } = useCategoryBadges();
-  const {
-    getTopRated,
-    stats: ratingStats,
-    isLoaded: ratingsLoaded,
-  } = useQuestionRatings();
+  const { getTopRated, stats: ratingStats, isLoaded: ratingsLoaded } = useQuestionRatings();
   const advancedStats = useAdvancedStats();
   const [showAllFavorites, setShowAllFavorites] = useState(false);
   const [showAllHistory, setShowAllHistory] = useState(false);
@@ -180,606 +161,180 @@ export default function StatistikPage() {
     };
   }, [favorites, progress, progressLoaded, favoritesLoaded]);
 
-  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && streakLoaded && dailyChallengeLoaded && badgesLoaded && ratingsLoaded;
-
-  if (!isLoaded) {
-    return (
-      <div
-        className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900 flex items-center justify-center"
-        role="status"
-        aria-live="polite"
-      >
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="w-8 h-8 border-3 border-violet-400 border-t-transparent rounded-full"
-        />
-        <span className="sr-only">Indlæser...</span>
-      </div>
-    );
-  }
-
-  const hasActivity = stats && (stats.totalAnswered > 0 || favorites.length > 0 || totalChallengesCompleted > 0);
+  const isLoaded = progressLoaded && favoritesLoaded && historyLoaded && ratingsLoaded;
+  const hasActivity = stats && (stats.totalAnswered > 0 || favorites.length > 0);
 
   return (
-    <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
-        {/* Safe area padding for mobile devices with notches */}
-        <main 
-          id="main-content" 
-          className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-safe" 
-          role="main"
-          style={{ paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}
-        >
-        {/* Header - mobile optimized with touch-friendly targets */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-6 sm:mb-8 gap-2"
-        >
-          <Link
-            href="/spil"
-            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors min-w-[44px] min-h-[44px] -ml-2 pl-2 pr-1 sm:pr-2 active:scale-95"
-            aria-label="Tilbage til spil"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+    <>
+      <SiteHeader />
+      <main id="main-content" className="mx-auto max-w-3xl px-4 pt-8 sm:px-6">
+        <h1 className="text-4xl font-extrabold tracking-[-0.025em] sm:text-5xl" style={{ fontStretch: "88%" }}>
+          Din statistik
+        </h1>
+        <p className="mt-3 text-lg text-blaek-2">Hvad I har spillet på denne enhed. Intet af det forlader telefonen.</p>
+
+        {!isLoaded ? (
+          <p className="mt-8 text-blaek-2" role="status">Henter din statistik</p>
+        ) : !hasActivity ? (
+          <div className="mt-8 rounded-2xl bg-flade p-6 ring-1 ring-streg">
+            <p>Der er intet at vise endnu. Når I har spillet lidt, kan du se her, hvor langt I er nået i hver bunke.</p>
+            <Link
+              href="/spil/"
+              className="mt-5 inline-flex min-h-12 items-center rounded-full bg-bord px-6 font-bold text-white dark:bg-kridt dark:text-kridt-blaek"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11 17l-5-5m0 0l5-5m-5 5h12"
-              />
-            </svg>
-            <span className="hidden xs:inline sm:inline">Tilbage</span>
-          </Link>
-
-          <h1 className="text-lg sm:text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-1.5 sm:gap-2">
-            <span aria-hidden="true">📊</span>
-            <span>Statistik</span>
-          </h1>
-
-          <div className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2">
-            <ThemeToggle className="text-slate-600 dark:text-slate-400" />
+              Vælg et spil
+            </Link>
           </div>
-        </motion.header>
-
-        {/* Streak Celebration Modal */}
-        <StreakCelebration />
-        
-        {/* Badge Celebration with Confetti */}
-        <BadgeCelebrationWithConfetti />
-
-        {!hasActivity ? (
-          <EmptyState
-            icon="📊"
-            title="Ingen statistik endnu"
-            description="Start et spil for at se din fremgang her!"
-            action={{
-              href: "/spil",
-              label: "Start et spil",
-            }}
-          />
         ) : (
           <>
-            {/* Streak Display */}
-            <section className="mb-8" aria-labelledby="streak-heading">
-              <h2 id="streak-heading" className="sr-only">
-                Streak
-              </h2>
-              <StreakDisplay />
+            <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Overblik">
+              <Figure value={stats!.totalAnswered} label={`af ${stats!.totalQuestions.toLocaleString("da-DK")} kort spillet`} />
+              <Figure value={favorites.length} label={favorites.length === 1 ? "favorit" : "favoritter"} />
+              <Figure value={`${stats!.completedCategories}/${stats!.totalCategories}`} label="bunker spillet igennem" />
+              <Figure value={stats!.deepQuestionsAnswered} label="dybe kort" />
             </section>
 
-            {/* Activity Heatmap - GitHub style */}
-            <section className="mb-6 sm:mb-8" aria-labelledby="heatmap-heading">
-              <h2 id="heatmap-heading" className="sr-only">
-                Aktivitetskalender
-              </h2>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 }}
-              >
+            <section className="mt-12" aria-labelledby="progress-heading">
+              <h2 id="progress-heading" className="text-2xl font-bold">Hvor langt I er nået</h2>
+              <ul className="mt-4 space-y-3">
+                {stats!.categoryStats.map((cat) => {
+                  const pct = cat.total > 0 ? Math.round((cat.answered / cat.total) * 100) : 0;
+                  const deck = getDeck(cat.id);
+                  return (
+                    <li key={cat.id}>
+                      <div className="flex items-baseline justify-between gap-3 text-[0.95rem]">
+                        <Link href={`/spil/${cat.id}/`} className="font-semibold hover:underline">
+                          {cat.name}
+                        </Link>
+                        <span className="tabular-nums text-blaek-2">
+                          {cat.answered} af {cat.total}
+                        </span>
+                      </div>
+                      <div
+                        className="mt-1.5 h-2 overflow-hidden rounded-full bg-flade-2"
+                        role="progressbar"
+                        aria-valuenow={pct}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={`${cat.name}: ${pct} procent`}
+                      >
+                        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: deck.bg }} />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+
+            <section className="mt-12" aria-labelledby="heatmap-heading">
+              <h2 id="heatmap-heading" className="text-2xl font-bold">Hvornår I har spillet</h2>
+              <div className="mt-4">
                 <StatsHeatMap
                   data={advancedStats.heatmap.data}
                   getActivityLevel={advancedStats.heatmap.getLevel}
                   stats={advancedStats.heatmap.stats}
                 />
-              </motion.div>
+              </div>
             </section>
 
-            {/* Category Radar Chart */}
-            <section className="mb-6 sm:mb-8" aria-labelledby="radar-heading">
-              <h2 id="radar-heading" className="sr-only">
-                Kategori-fremgang
-              </h2>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <RadarChart data={advancedStats.categories} />
-              </motion.div>
-            </section>
-
-            {/* Daily Challenge Stats */}
-            {totalChallengesCompleted > 0 && (
-              <section className="mb-6 sm:mb-8" aria-labelledby="daily-challenge-heading">
-                <motion.h2
-                  id="daily-challenge-heading"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
-                >
-                  <span aria-hidden="true">🎯</span>
-                  Daily Challenge
-                </motion.h2>
-                <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                  <StatCard
-                    icon="🎯"
-                    label="Challenges klaret"
-                    value={totalChallengesCompleted}
-                    subtext="daglige udfordringer"
-                    gradient="from-violet-500 to-purple-600"
-                    delay={0}
-                  />
-                  <StatCard
-                    icon="⭐"
-                    label="Bonus points"
-                    value={totalBonusPoints}
-                    subtext="points optjent"
-                    gradient="from-amber-400 to-orange-500"
-                    delay={0.1}
-                  />
-                  <StatCard
-                    icon="🔥"
-                    label="Challenge streak"
-                    value={dailyChallengeStreak}
-                    subtext={`rekord: ${dailyChallengeLongestStreak}`}
-                    gradient="from-orange-500 to-red-500"
-                    delay={0.2}
-                  />
-                  <StatCard
-                    icon="🏆"
-                    label="Gennemsnit"
-                    value={`${Math.round(totalBonusPoints / totalChallengesCompleted)}p`}
-                    subtext="per challenge"
-                    gradient="from-emerald-400 to-teal-500"
-                    delay={0.3}
-                  />
-                </div>
-              </section>
-            )}
-
-            {/* Top Rated Questions */}
             {ratingStats.totalRated > 0 && (
-              <section className="mb-6 sm:mb-8" aria-labelledby="top-rated-heading">
-                <motion.h2
-                  id="top-rated-heading"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.25 }}
-                  className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
-                >
-                  <span aria-hidden="true">⭐</span>
-                  Højest ratede spørgsmål
-                </motion.h2>
-                <div className="space-y-3">
-                  {getTopRated(5).map((rating, index) => {
+              <section className="mt-12" aria-labelledby="top-rated-heading">
+                <h2 id="top-rated-heading" className="text-2xl font-bold">Dem I bedst kunne lide</h2>
+                <p className="mt-1 text-blaek-2">
+                  {ratingStats.totalRated} kort bedømt, i gennemsnit {ratingStats.averageRating} stjerner.
+                </p>
+                <ul className="mt-4 space-y-2">
+                  {getTopRated(5).map((rating) => {
                     const questionData = getQuestionById(rating.questionId);
                     if (!questionData) return null;
                     const { question, category } = questionData;
-                    
                     return (
-                      <motion.div
-                        key={rating.questionId}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 * index }}
-                        className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
-                      >
-                        <div className="flex items-start gap-3">
-                          <span className="text-xl shrink-0" aria-hidden="true">
-                            {category.emoji}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed line-clamp-2">
-                              {question.text}
-                            </p>
-                            <div className="flex items-center justify-between mt-2">
-                              <span className="text-xs text-slate-400 dark:text-slate-500">
-                                {category.name}
-                              </span>
-                              <RatingStarsDisplay
-                                questionId={rating.questionId}
-                                size="sm"
-                                showValue={false}
-                              />
-                            </div>
-                          </div>
+                      <li key={rating.questionId} className="rounded-2xl bg-flade p-4 ring-1 ring-streg">
+                        <p className="leading-snug">{question.text}</p>
+                        <div className="mt-2 flex items-center justify-between text-sm text-blaek-2">
+                          <span>{category.name}</span>
+                          <RatingStarsDisplay questionId={rating.questionId} size="sm" showValue={false} />
                         </div>
-                      </motion.div>
+                      </li>
                     );
                   })}
-                </div>
-                {/* Rating stats summary */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                  className="mt-4 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-xl"
-                >
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-600 dark:text-slate-300">
-                      {ratingStats.totalRated} spørgsmål ratet
-                    </span>
-                    <span className="text-amber-600 dark:text-amber-400 font-medium">
-                      ⭐ {ratingStats.averageRating} gennemsnit
-                    </span>
-                  </div>
-                  {ratingStats.fiveStarCount > 0 && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      {ratingStats.fiveStarCount} spørgsmål med 5 stjerner ✨
-                    </p>
-                  )}
-                </motion.div>
+                </ul>
               </section>
             )}
 
-            {/* Overview Stats */}
-            <section className="mb-6 sm:mb-8" aria-labelledby="overview-heading">
-              <h2 id="overview-heading" className="sr-only">
-                Overblik
-              </h2>
-              <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                <StatCard
-                  icon="💬"
-                  label="Spørgsmål besvaret"
-                  value={stats!.totalAnswered}
-                  subtext={`af ${stats!.totalQuestions} total`}
-                  gradient="from-violet-500 to-purple-600"
-                  delay={0}
-                />
-                <StatCard
-                  icon="❤️"
-                  label="Favoritter"
-                  value={favorites.length}
-                  subtext={favorites.length === 1 ? "gemt spørgsmål" : "gemte spørgsmål"}
-                  gradient="from-rose-400 to-pink-500"
-                  delay={0.1}
-                />
-                <StatCard
-                  icon="✨"
-                  label="Kategorier fuldført"
-                  value={`${stats!.completedCategories}/${stats!.totalCategories}`}
-                  gradient="from-emerald-400 to-teal-500"
-                  delay={0.2}
-                />
-                <StatCard
-                  icon="🌊"
-                  label="Dybe samtaler"
-                  value={stats!.deepQuestionsAnswered}
-                  subtext="dybe spørgsmål besvaret"
-                  gradient="from-blue-400 to-indigo-500"
-                  delay={0.3}
-                />
-              </div>
-            </section>
-
-            {/* Category Badges Section */}
-            <section className="mb-6 sm:mb-8" aria-labelledby="badges-heading">
-              <motion.h2
-                id="badges-heading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.25 }}
-                className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
-              >
-                <span aria-hidden="true">🎖️</span>
-                Kategori Badges
-              </motion.h2>
-              
-              {/* Badge Stats */}
-              <div className="mb-6">
-                <BadgeStats
-                  unlockedCount={unlockedBadges.length}
-                  totalCount={allBadges.length}
-                />
-              </div>
-
-              {/* Next Badge Progress */}
-              {nextBadge && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mb-6"
-                >
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
-                    Din næste badge:
-                  </p>
-                  <NextBadgeProgress badge={nextBadge} />
-                </motion.div>
-              )}
-
-              {/* All Badges Grid */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700"
-              >
-                <h3 className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-4">
-                  Alle badges ({unlockedBadges.length}/{allBadges.length} låst op)
-                </h3>
-                <BadgeGrid badges={allBadges} showProgress />
-              </motion.div>
-            </section>
-
-            {/* Category Progress */}
-            <section className="mb-6 sm:mb-8" aria-labelledby="progress-heading">
-              <motion.h2
-                id="progress-heading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
-              >
-                <span aria-hidden="true">📈</span>
-                Fremskridt per kategori
-              </motion.h2>
-              <div className="space-y-3">
-                {stats!.categoryStats.map((cat, index) => (
-                  <CategoryProgressItem
-                    key={cat.id}
-                    emoji={cat.emoji}
-                    name={cat.name}
-                    answered={cat.answered}
-                    total={cat.total}
-                    color={cat.color}
-                    index={index}
-                  />
-                ))}
-              </div>
-            </section>
-
-            {/* Fun Stats */}
-            <section className="mb-6 sm:mb-8" aria-labelledby="fun-stats-heading">
-              <motion.h2
-                id="fun-stats-heading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2"
-              >
-                <span aria-hidden="true">🎯</span>
-                Fun Facts
-              </motion.h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                {stats!.mostPlayedCategory && (
-                  <FunStatBadge
-                    icon={stats!.mostPlayedCategory.emoji}
-                    title="Mest spillede kategori"
-                    value={`${stats!.mostPlayedCategory.name} (${stats!.mostPlayedCategory.answered} spørgsmål)`}
-                    color="from-amber-400 to-orange-500"
-                    delay={0.6}
-                  />
-                )}
-                {stats!.favoriteCategory && (
-                  <FunStatBadge
-                    icon={stats!.favoriteCategory.emoji}
-                    title="Flest favoritter fra"
-                    value={`${stats!.favoriteCategory.name} (${stats!.favoriteCategory.count} favoritter)`}
-                    color="from-rose-400 to-red-500"
-                    delay={0.7}
-                  />
-                )}
-                {stats!.mostActiveDay && (
-                  <FunStatBadge
-                    icon="📅"
-                    title="Mest aktive dag"
-                    value={stats!.mostActiveDay.day}
-                    color="from-cyan-400 to-blue-500"
-                    delay={0.8}
-                  />
-                )}
-                {stats!.totalDaysActive > 0 && (
-                  <FunStatBadge
-                    icon="🔥"
-                    title="Aktive dage"
-                    value={`${stats!.totalDaysActive} ${stats!.totalDaysActive === 1 ? "dag" : "dage"}`}
-                    color="from-red-400 to-orange-500"
-                    delay={0.9}
-                  />
-                )}
-                {/* Depth distribution */}
-                {favorites.length > 0 && (
-                  <FunStatBadge
-                    icon={stats!.depthStats.dyb > stats!.depthStats.let ? "🧘" : "😊"}
-                    title="Din samtalestil"
-                    value={
-                      stats!.depthStats.dyb > stats!.depthStats.let
-                        ? "Dyb tænker"
-                        : stats!.depthStats.let > stats!.depthStats.dyb
-                        ? "Isbryder-ekspert"
-                        : "Balanceret"
-                    }
-                    color="from-purple-400 to-violet-500"
-                    delay={1.0}
-                  />
-                )}
-                {/* Total progress percentage */}
-                {stats!.totalAnswered > 0 && (
-                  <FunStatBadge
-                    icon="🏆"
-                    title="Total fremskridt"
-                    value={`${Math.round((stats!.totalAnswered / stats!.totalQuestions) * 100)}% udforsket`}
-                    color="from-emerald-400 to-green-500"
-                    delay={1.1}
-                  />
-                )}
-                {/* Diversity score */}
-                {advancedStats.diversity.diversityScore > 0 && (
-                  <FunStatBadge
-                    icon="🌈"
-                    title="Diversitetsscore"
-                    value={`${advancedStats.diversity.diversityScore}% varieret`}
-                    color="from-pink-400 to-rose-500"
-                    delay={1.2}
-                  />
-                )}
-                {/* Response time */}
-                {advancedStats.responseTime.totalTracked > 0 && (
-                  <FunStatBadge
-                    icon="⏱️"
-                    title="Gns. svartid"
-                    value={`${Math.round(advancedStats.responseTime.average / 1000)}s per spørgsmål`}
-                    color="from-cyan-400 to-teal-500"
-                    delay={1.3}
-                  />
-                )}
-              </div>
-            </section>
-
-            {/* Question History */}
             {history.length > 0 && (
-              <section className="mb-6 sm:mb-8" aria-labelledby="history-heading">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.7 }}
-                  className="flex items-center justify-between mb-3 sm:mb-4 gap-2"
-                >
-                  <h2
-                    id="history-heading"
-                    className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-1.5 sm:gap-2"
-                  >
-                    <span aria-hidden="true">📜</span>
-                    <span className="truncate">Seneste spørgsmål</span>
-                  </h2>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+              <section className="mt-12" aria-labelledby="history-heading">
+                <div className="flex items-center justify-between gap-2">
+                  <h2 id="history-heading" className="text-2xl font-bold">Seneste kort</h2>
+                  <button
+                    type="button"
                     onClick={clearHistory}
-                    className="text-xs sm:text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors flex items-center gap-1 shrink-0 min-h-[44px] px-2 active:bg-red-50 dark:active:bg-red-900/20 rounded-lg"
+                    className="min-h-11 rounded px-2 text-sm font-semibold text-blaek-2 underline underline-offset-4 hover:text-blaek"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Ryd historik
-                  </motion.button>
-                </motion.div>
-                <div className="space-y-2">
+                    Ryd listen
+                  </button>
+                </div>
+                <div className="mt-4 space-y-2">
                   <AnimatePresence>
-                    {(showAllHistory ? history.slice(0, 20) : history.slice(0, 5)).map(
-                      (entry, index) => (
-                        <HistoryItemCard
-                          key={entry.id}
-                          entry={entry}
-                          index={index}
-                        />
-                      )
-                    )}
+                    {(showAllHistory ? history.slice(0, 20) : history.slice(0, 5)).map((entry, index) => (
+                      <HistoryItemCard key={entry.id} entry={entry} index={index} />
+                    ))}
                   </AnimatePresence>
                 </div>
                 {history.length > 5 && (
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.9 }}
+                  <button
+                    type="button"
                     onClick={() => setShowAllHistory(!showAllHistory)}
-                    className="mt-3 w-full py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                    className="mt-3 min-h-11 w-full rounded-lg text-sm font-semibold text-blaek-2 hover:bg-flade-2"
                   >
-                    {showAllHistory
-                      ? "Vis færre"
-                      : `Vis ${Math.min(history.length - 5, 15)} mere`}
-                  </motion.button>
+                    {showAllHistory ? "Vis færre" : `Vis ${Math.min(history.length - 5, 15)} mere`}
+                  </button>
                 )}
               </section>
             )}
 
-            {/* Favorites Preview */}
             {favorites.length > 0 && (
-              <section aria-labelledby="favorites-heading">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.7 }}
-                  className="flex items-center justify-between mb-3 sm:mb-4 gap-2"
-                >
-                  <h2
-                    id="favorites-heading"
-                    className="text-base sm:text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-1.5 sm:gap-2"
-                  >
-                    <span aria-hidden="true">❤️</span>
-                    Dine favoritter
-                  </h2>
-                  <Link
-                    href="/favoritter"
-                    className="text-xs sm:text-sm text-violet-600 dark:text-violet-400 hover:underline min-h-[44px] flex items-center px-2 active:opacity-70"
-                  >
-                    Se alle →
+              <section className="mt-12" aria-labelledby="favorites-heading">
+                <div className="flex items-center justify-between gap-2">
+                  <h2 id="favorites-heading" className="text-2xl font-bold">Dine favoritter</h2>
+                  <Link href="/favoritter/" className="inline-flex min-h-11 items-center px-2 text-sm font-semibold underline underline-offset-4">
+                    Se alle
                   </Link>
-                </motion.div>
-                <div className="space-y-2">
+                </div>
+                <div className="mt-4 space-y-2">
                   <AnimatePresence>
-                    {(showAllFavorites ? favorites : favorites.slice(0, 3)).map(
-                      (fav, index) => (
-                        <FavoritePreviewCard
-                          key={fav.id}
-                          favorite={fav}
-                          index={index}
-                        />
-                      )
-                    )}
+                    {(showAllFavorites ? favorites : favorites.slice(0, 3)).map((fav, index) => (
+                      <FavoritePreviewCard key={fav.id} favorite={fav} index={index} />
+                    ))}
                   </AnimatePresence>
                 </div>
                 {favorites.length > 3 && (
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.9 }}
+                  <button
+                    type="button"
                     onClick={() => setShowAllFavorites(!showAllFavorites)}
-                    className="mt-3 w-full py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                    className="mt-3 min-h-11 w-full rounded-lg text-sm font-semibold text-blaek-2 hover:bg-flade-2"
                   >
-                    {showAllFavorites
-                      ? "Vis færre"
-                      : `Vis ${favorites.length - 3} mere`}
-                  </motion.button>
+                    {showAllFavorites ? "Vis færre" : `Vis ${favorites.length - 3} mere`}
+                  </button>
                 )}
               </section>
             )}
 
-            {/* Last activity */}
             {stats!.lastPlayedTimestamp > 0 && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2 }}
-                className="text-center text-slate-400 dark:text-slate-500 text-xs mt-8"
-              >
-                Sidst aktiv:{" "}
+              <p className="mt-10 text-sm text-blaek-2">
+                Sidst spillet{" "}
                 {new Date(stats!.lastPlayedTimestamp).toLocaleDateString("da-DK", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
                 })}
-              </motion.p>
+                .
+              </p>
             )}
           </>
         )}
-
-        {/* Bottom padding */}
-        <div className="h-8" />
-        </main>
-      </div>
-    </PageTransition>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

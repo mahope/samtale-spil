@@ -93,17 +93,17 @@ export const StatsHeatMap = memo(function StatsHeatMap({
   const weeks = useMemo(() => {
     const result: ActivityEntry[][] = [];
     let currentWeek: ActivityEntry[] = [];
-    
+
     // Get the last 365 days, starting from the most recent
     const recentData = data.slice(-365);
-    
+
     // Find the starting day of the week for the first entry
     const firstDate = new Date(recentData[0]?.date || new Date());
     const startDayOfWeek = firstDate.getDay(); // 0 = Sunday
-    
+
     // Adjust for Monday start (European standard)
     const adjustedStartDay = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
-    
+
     // Add empty cells for days before the first entry
     for (let i = 0; i < adjustedStartDay; i++) {
       currentWeek.push({
@@ -114,7 +114,7 @@ export const StatsHeatMap = memo(function StatsHeatMap({
         totalTimeMs: 0,
       });
     }
-    
+
     recentData.forEach((entry) => {
       currentWeek.push(entry);
       if (currentWeek.length === 7) {
@@ -122,12 +122,12 @@ export const StatsHeatMap = memo(function StatsHeatMap({
         currentWeek = [];
       }
     });
-    
+
     // Add remaining days
     if (currentWeek.length > 0) {
       result.push(currentWeek);
     }
-    
+
     return result;
   }, [data]);
 
@@ -135,7 +135,7 @@ export const StatsHeatMap = memo(function StatsHeatMap({
   const monthLabels = useMemo(() => {
     const labels: { month: string; weekIndex: number }[] = [];
     let lastMonth = -1;
-    
+
     weeks.forEach((week, weekIndex) => {
       const firstValidDay = week.find((d) => d.date);
       if (firstValidDay) {
@@ -146,7 +146,7 @@ export const StatsHeatMap = memo(function StatsHeatMap({
         }
       }
     });
-    
+
     return labels;
   }, [weeks]);
 
@@ -170,20 +170,19 @@ export const StatsHeatMap = memo(function StatsHeatMap({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-700">
+    <div className="rounded-2xl bg-flade p-4 ring-1 ring-streg sm:p-6">
       {/* Header with stats */}
       {stats && (
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2">
-            <span aria-hidden="true">📅</span>
-            Aktivitetskalender
+          <h3 className="text-sm font-semibold">
+            De sidste måneder
           </h3>
           <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
             <span>
-              <strong className="text-violet-600 dark:text-violet-400">{stats.activeDays}</strong> aktive dage
+              <strong className="text-blaek">{stats.activeDays}</strong> dage med spil
             </span>
             <span>
-              <strong className="text-violet-600 dark:text-violet-400">{stats.totalQuestions}</strong> spørgsmål
+              <strong className="text-blaek">{stats.totalQuestions}</strong> kort
             </span>
           </div>
         </div>
@@ -221,7 +220,7 @@ export const StatsHeatMap = memo(function StatsHeatMap({
         </div>
 
         {/* Heatmap grid */}
-        <div 
+        <div
           className="flex gap-[2px] overflow-x-auto pb-2"
           role="grid"
           aria-label="Aktivitetskalender - sidste 365 dage"
@@ -295,10 +294,9 @@ export const StatsHeatMap = memo(function StatsHeatMap({
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-400 to-red-500 rounded-full text-white text-xs font-medium shadow-sm"
+              className="rounded-full bg-flade-2 px-3 py-1.5 text-xs font-semibold text-blaek"
             >
-              <span aria-hidden="true">🔥</span>
-              <span>{stats.currentStreak} dages streak</span>
+              <span>{stats.currentStreak} {stats.currentStreak === 1 ? "dag" : "dage"} i træk lige nu</span>
             </motion.div>
           )}
           {stats.longestStreak > stats.currentStreak && (
@@ -306,10 +304,9 @@ export const StatsHeatMap = memo(function StatsHeatMap({
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full text-white text-xs font-medium shadow-sm"
+              className="rounded-full bg-flade-2 px-3 py-1.5 text-xs font-semibold text-blaek"
             >
-              <span aria-hidden="true">🏆</span>
-              <span>Rekord: {stats.longestStreak} dage</span>
+              <span>Længst i træk: {stats.longestStreak} dage</span>
             </motion.div>
           )}
         </div>

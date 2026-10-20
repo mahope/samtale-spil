@@ -6,257 +6,159 @@ import { useState } from "react";
 import { useFavorites, FavoriteQuestion } from "@/hooks/useLocalStorage";
 import { useQuestionRatings } from "@/hooks/useQuestionRatings";
 import { getCategory } from "@/data/categories";
+import { getDeck, markColorOnWhite } from "@/data/decks";
 import { ShareButton } from "@/components/ShareButton";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
-import { PageTransition } from "@/components/PageTransition";
-import { InteractiveCard } from "@/components/InteractiveCard";
-import { DepthBadge } from "@/components/DepthBadge";
-import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
+import { DepthPips, depthLabel } from "@/components/deck/DeckParts";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
-function FavoriteCard({
-  favorite,
-  onRemove,
-}: {
-  favorite: FavoriteQuestion;
-  onRemove: () => void;
-}) {
-  const category = getCategory(favorite.categoryId);
+/** Name of the deck a favourite came from; custom questions have no category */
+function deckFor(categoryId: string) {
+  const category = getCategory(categoryId);
+  return {
+    id: category ? category.id : categoryId === "custom" ? "egne" : categoryId,
+    name: category?.name ?? (categoryId === "custom" ? "Dine egne" : categoryId === "voksne" ? "Kun for voksne" : "Ukendt"),
+  };
+}
+
+function FavoriteCard({ favorite, onRemove }: { favorite: FavoriteQuestion; onRemove: () => void }) {
   const { isRated } = useQuestionRatings();
   const hasRating = isRated(favorite.id);
-  
+  const d = deckFor(favorite.categoryId);
+  const deck = getDeck(d.id);
+  const mark = markColorOnWhite(deck);
+
   return (
-    <InteractiveCard
+    <motion.li
       layout
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      glowColor="rose"
-      hover={true}
-      press={false}
-      aria-label={`Favoritspørgsmål: ${favorite.text}`}
+      exit={{ opacity: 0, x: -60 }}
+      className="relative overflow-hidden rounded-2xl bg-flade p-5 pl-6 shadow-kort ring-1 ring-streg"
     >
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center gap-2">
-          {category && (
-            <>
-              <span className="text-lg" aria-hidden="true">{category.emoji}</span>
-              <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                {category.name}
-              </span>
-            </>
-          )}
-          <DepthBadge depth={favorite.depth} />
+      <span className="absolute inset-y-0 left-0 w-1.5" style={{ background: deck.bg }} aria-hidden="true" />
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2.5 text-sm font-semibold text-blaek-2">
+          <span style={{ color: mark }} className="font-display text-base font-extrabold">{deck.mark}</span>
+          <span>{d.name}</span>
+          <span aria-hidden="true" className="text-streg">|</span>
+          <DepthPips depth={favorite.depth} color={mark} />
+          <span aria-hidden="true">{depthLabel(favorite.depth)}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <ShareButton 
-            text={favorite.text} 
-            categoryName={category?.name} 
-            className="text-slate-400"
-          />
-          <motion.button
+        <div className="-mr-2 -mt-2 flex items-center">
+          <ShareButton text={favorite.text} categoryName={d.name} />
+          <button
             type="button"
             onClick={onRemove}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="min-w-[44px] min-h-[44px] p-2.5 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 hover:text-red-500 transition-colors focus:ring-2 focus:ring-red-300 touch-manipulation flex items-center justify-center"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-rose-500 hover:bg-black/5"
             aria-label={`Fjern "${favorite.text.substring(0, 30)}..." fra favoritter`}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path
                 fillRule="evenodd"
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                 clipRule="evenodd"
               />
             </svg>
-          </motion.button>
+          </button>
         </div>
       </div>
-      
-      <p className="text-slate-800 dark:text-slate-100 text-lg leading-relaxed">
-        {favorite.text}
-      </p>
-      
-      {/* Rating section */}
-      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
-        {hasRating ? (
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400 dark:text-slate-500">Din rating:</span>
-            <RatingStarsDisplay questionId={favorite.id} size="sm" />
-          </div>
-        ) : (
-          <RatingStars
-            questionId={favorite.id}
-            size="sm"
-            showLabel={false}
-            compact
-          />
-        )}
-      </div>
-      
-      <p className="text-slate-400 dark:text-slate-500 text-xs mt-3">
+
+      <p className="font-display mt-2 text-xl font-semibold leading-snug">{favorite.text}</p>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-streg pt-3 text-sm text-blaek-2">
         <time dateTime={new Date(favorite.savedAt).toISOString()}>
-          Gemt {new Date(favorite.savedAt).toLocaleDateString("da-DK", {
+          Gemt{" "}
+          {new Date(favorite.savedAt).toLocaleDateString("da-DK", {
             day: "numeric",
             month: "short",
             year: "numeric",
           })}
         </time>
-      </p>
-    </InteractiveCard>
+        {hasRating ? (
+          <RatingStarsDisplay questionId={favorite.id} size="sm" />
+        ) : (
+          <RatingStars questionId={favorite.id} size="sm" showLabel={false} compact />
+        )}
+      </div>
+    </motion.li>
   );
-}
-
-/** FavoritesEmptyState uses the shared EmptyState component with favorites preset */
-function FavoritesEmptyState() {
-  return <EmptyState {...EmptyStatePresets.favorites} />;
 }
 
 export default function FavoritesPage() {
   const { favorites, removeFavorite, isLoaded } = useFavorites();
   const [filter, setFilter] = useState<string | null>(null);
 
-  // Get unique categories from favorites
-  const categoryIds = [...new Set(favorites.map((f) => f.categoryId))];
-  const categories = categoryIds.map((id) => getCategory(id)).filter(Boolean);
-
-  const filteredFavorites = filter
-    ? favorites.filter((f) => f.categoryId === filter)
-    : favorites;
-
-  // Sort by most recently saved
-  const sortedFavorites = [...filteredFavorites].sort(
-    (a, b) => b.savedAt - a.savedAt
-  );
-
-  if (!isLoaded) {
-    return (
-      <div 
-        className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50 dark:from-slate-950 dark:to-slate-900 flex items-center justify-center"
-        role="status"
-        aria-live="polite"
-        aria-label="Indlæser favoritter"
-      >
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="w-8 h-8 border-3 border-rose-400 border-t-transparent rounded-full"
-          aria-hidden="true"
-        />
-        <span className="sr-only">Indlæser...</span>
-      </div>
-    );
-  }
+  const deckIds = [...new Set(favorites.map((f) => f.categoryId))];
+  const filteredFavorites = filter ? favorites.filter((f) => f.categoryId === filter) : favorites;
+  const sortedFavorites = [...filteredFavorites].sort((a, b) => b.savedAt - a.savedAt);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50 dark:from-slate-950 dark:to-slate-900">
-      <PageTransition>
-        <main id="main-content" className="max-w-2xl mx-auto px-6 py-8" role="main">
-          {/* Header */}
-          <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-8"
-        >
-          <Link
-            href="/spil"
-            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 rounded-lg px-2 py-1"
-            aria-label="Tilbage til kategorioversigt"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M11 17l-5-5m0 0l5-5m-5 5h12"
-              />
-            </svg>
-            <span>Tilbage</span>
-          </Link>
+    <>
+      <SiteHeader />
+      <main id="main-content" className="mx-auto max-w-2xl px-4 pt-8 sm:px-6">
+        <h1 className="text-4xl font-extrabold tracking-[-0.025em] sm:text-5xl" style={{ fontStretch: "88%" }}>
+          Dine favoritter
+        </h1>
+        <p className="mt-3 text-lg text-blaek-2" aria-live="polite">
+          {!isLoaded
+            ? "Henter dine gemte kort"
+            : favorites.length === 0
+              ? "Du har ikke gemt nogen kort endnu."
+              : `${favorites.length} ${favorites.length === 1 ? "gemt kort" : "gemte kort"}. De ligger kun på denne enhed.`}
+        </p>
 
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <span aria-hidden="true">❤️</span>
-            <span>Favoritter</span>
-          </h1>
-
-          <div className="flex items-center gap-3">
-            <ThemeToggle className="text-slate-600 dark:text-slate-400" />
-            <span className="text-slate-500 dark:text-slate-400 text-sm" aria-live="polite">
-              {favorites.length} {favorites.length === 1 ? "spørgsmål" : "spørgsmål"}
-            </span>
+        {isLoaded && deckIds.length > 1 && (
+          <div className="mt-6 flex flex-wrap gap-2" role="group" aria-label="Vis kort fra">
+            {[null, ...deckIds].map((id) => {
+              const active = filter === id;
+              const label = id === null ? "Alle" : deckFor(id).name;
+              return (
+                <button
+                  type="button"
+                  key={id ?? "alle"}
+                  onClick={() => setFilter(id)}
+                  aria-pressed={active}
+                  className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold ring-1 ${
+                    active ? "bg-blaek text-papir ring-blaek" : "bg-flade ring-streg hover:bg-flade-2"
+                  }`}
+                >
+                  {id !== null && (
+                    <span className="h-3 w-3 rounded-full" style={{ background: getDeck(deckFor(id).id).bg }} aria-hidden="true" />
+                  )}
+                  {label}
+                </button>
+              );
+            })}
           </div>
-        </motion.header>
-
-        {/* Filter chips */}
-        {categories.length > 1 && (
-          <motion.nav
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-wrap gap-2 mb-6 -mx-1"
-            aria-label="Filtrer efter kategori"
-            role="group"
-          >
-            <button
-              type="button"
-              onClick={() => setFilter(null)}
-              className={`min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium transition-all focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 touch-manipulation active:scale-95 ${
-                filter === null
-                  ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
-                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-              }`}
-              aria-pressed={filter === null}
-            >
-              Alle
-            </button>
-            {categories.map(
-              (cat) =>
-                cat && (
-                  <button
-                    type="button"
-                    key={cat.id}
-                    onClick={() => setFilter(cat.id)}
-                    className={`min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 touch-manipulation active:scale-95 ${
-                      filter === cat.id
-                        ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
-                        : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-                    }`}
-                    aria-pressed={filter === cat.id}
-                  >
-                    <span aria-hidden="true">{cat.emoji}</span>
-                    <span>{cat.name}</span>
-                  </button>
-                )
-            )}
-          </motion.nav>
         )}
 
-        {/* Favorites list or empty state */}
-        {favorites.length === 0 ? (
-          <FavoritesEmptyState />
-        ) : (
-          <motion.div layout className="space-y-4">
+        {isLoaded && favorites.length === 0 && (
+          <div className="mt-8 rounded-2xl bg-flade p-6 ring-1 ring-streg">
+            <p>
+              Tryk på hjertet på et kort, mens I spiller, så havner det her. Godt til de spørgsmål, I vil tage op igen.
+            </p>
+            <Link
+              href="/spil/"
+              className="mt-5 inline-flex min-h-12 items-center rounded-full bg-bord px-6 font-bold text-white dark:bg-kridt dark:text-kridt-blaek"
+            >
+              Vælg et spil
+            </Link>
+          </div>
+        )}
+
+        {isLoaded && sortedFavorites.length > 0 && (
+          <motion.ul layout className="mt-8 space-y-4">
             <AnimatePresence>
               {sortedFavorites.map((favorite) => (
-                <FavoriteCard
-                  key={favorite.id}
-                  favorite={favorite}
-                  onRemove={() => removeFavorite(favorite.id)}
-                />
+                <FavoriteCard key={favorite.id} favorite={favorite} onRemove={() => removeFavorite(favorite.id)} />
               ))}
             </AnimatePresence>
-          </motion.div>
+          </motion.ul>
         )}
-
-          {/* Bottom padding for mobile */}
-          <div className="h-8" />
-        </main>
-      </PageTransition>
-    </div>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

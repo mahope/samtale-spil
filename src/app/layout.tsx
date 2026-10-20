@@ -1,37 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
-import { SITE_URL, CATEGORY_COUNT, QUESTION_COUNT_LABEL } from "@/config/site";
+import { SITE_URL, SITE_NAME, CATEGORY_COUNT, QUESTION_COUNT_LABEL } from "@/config/site";
 
-const inter = Inter({
-  variable: "--font-inter",
+const display = Bricolage_Grotesque({
+  variable: "--font-display",
+  subsets: ["latin"],
+  axes: ["opsz", "wdth"],
+});
+
+const body = Atkinson_Hyperlegible_Next({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
-const siteUrl = SITE_URL;
+const description = `Gratis samtalekort på dansk. ${QUESTION_COUNT_LABEL} spørgsmål i ${CATEGORY_COUNT} kategorier til par, familier, venner og kollegaer. Spil direkte i browseren eller på telefonen.`;
 
+// No canonical here: Next.js inherits `alternates` into every child route, which
+// made personal pages canonicalise to the front page. Each page sets its own.
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Samtalekort - Dybe samtaler med dem du holder af",
-    template: "%s | Samtalekort",
+    default: `Gratis samtalekort online: samtalespil på dansk | ${SITE_NAME}`,
+    template: `%s | ${SITE_NAME}`,
   },
-  description: `Et gratis online samtalespil der skaber meningsfulde samtaler mellem par, familier og venner. ${QUESTION_COUNT_LABEL} spørgsmål i ${CATEGORY_COUNT} kategorier. Perfekt til date night, familiehygge eller venneaftener.`,
-  keywords: [
-    "samtalespil",
-    "samtalekort",
-    "parforhold",
-    "familie",
-    "samtale",
-    "spørgsmål",
-    "relationer",
-    "date night",
-    "hygge",
-    "kvalitetstid",
-    "gratis samtalespil",
-    "dansk samtalespil",
-  ],
+  description,
+  applicationName: SITE_NAME,
   authors: [{ name: "Mahope", url: "https://mahoje.dk" }],
   creator: "Mahope",
   publisher: "Mahope",
@@ -39,33 +34,18 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Samtalekort",
+    title: SITE_NAME,
   },
   formatDetection: {
     telephone: false,
   },
   openGraph: {
-    title: "Samtalekort - Dybe samtaler med dem du holder af",
-    description: `${QUESTION_COUNT_LABEL} spørgsmål der skaber meningsfulde samtaler mellem par, familier og venner. Gratis online samtalespil.`,
-    url: siteUrl,
-    siteName: "Samtalekort",
+    siteName: SITE_NAME,
     locale: "da_DK",
     type: "website",
-    images: [
-      {
-        url: `${siteUrl}/og-image.svg`,
-        width: 1200,
-        height: 630,
-        alt: "Samtalekort - Dybe samtaler med dem du holder af",
-        type: "image/svg+xml",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Samtalekort - Dybe samtaler med dem du holder af",
-    description: `${QUESTION_COUNT_LABEL} spørgsmål der skaber meningsfulde samtaler. Gratis online samtalespil.`,
-    images: [`${siteUrl}/og-image.svg`],
   },
   robots: {
     index: true,
@@ -73,50 +53,21 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-  alternates: {
-    canonical: "/",
   },
   category: "games",
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#6366f1" },
-    { media: "(prefers-color-scheme: dark)", color: "#4338ca" },
+    { media: "(prefers-color-scheme: light)", color: "#1d4a38" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1a15" },
   ],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-};
-
-// JSON-LD Structured Data for WebApplication
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: "Samtalekort",
-  description:
-    `Et gratis online samtalespil der skaber meningsfulde samtaler mellem par, familier og venner. ${QUESTION_COUNT_LABEL} spørgsmål i ${CATEGORY_COUNT} kategorier.`,
-  url: siteUrl,
-  applicationCategory: "GameApplication",
-  operatingSystem: "Web Browser",
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "DKK",
-  },
-  author: {
-    "@type": "Organization",
-    name: "Mahope",
-    url: "https://mahoje.dk",
-  },
-  inLanguage: "da",
-  browserRequirements: "Requires JavaScript. Requires HTML5.",
-  softwareVersion: "1.0.0",
 };
 
 // Inline script to set theme before hydration (prevents flash)
@@ -124,7 +75,7 @@ const themeInitScript = `
 (function() {
   try {
     var theme = localStorage.getItem('theme');
-    var isDark = theme === 'dark' || 
+    var isDark = theme === 'dark' ||
       (theme === 'system' || !theme) && window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.documentElement.classList.add(isDark ? 'dark' : 'light');
     document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
@@ -143,22 +94,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="da" suppressHydrationWarning>
+    <html lang="da" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src="https://analytics.holstjensen.eu/js/pa-yk0peyirQvnSBppLjWJYB.js" />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
-        <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icons/icon.svg" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
       </head>
-      <body className={`${inter.variable} antialiased`}>
+      <body>
         <a href="#main-content" className="skip-link">
-          Spring til hovedindhold
+          Spring til indholdet
         </a>
         {children}
         <ServiceWorkerRegistration />

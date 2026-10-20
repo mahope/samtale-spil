@@ -1,9 +1,8 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { categories, getCategory } from "@/data/categories";
+import { appScreenMetadata } from "@/config/site";
 import CategoryPlayClient from "./CategoryPlayClient";
-
-import { SITE_URL as siteUrl } from "@/config/site";
 
 // Generate static params for all categories at build time
 export function generateStaticParams() {
@@ -12,7 +11,7 @@ export function generateStaticParams() {
   }));
 }
 
-// Generate dynamic metadata for each category
+// The play screen is app state; the indexable page for a category is /spoergsmaal/<id>/
 export async function generateMetadata({
   params,
 }: {
@@ -20,34 +19,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { categoryId } = await params;
   const category = getCategory(categoryId);
-
-  if (!category) {
-    return {
-      title: "Kategori ikke fundet",
-    };
-  }
-
-  const title = `${category.name} - Samtalekort`;
-  const description = `${category.description}. ${category.questions.length} spørgsmål om ${category.name.toLowerCase()} til meningsfulde samtaler.`;
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      url: `${siteUrl}/spil/${categoryId}/`,
-      type: "website",
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
-    alternates: {
-      canonical: `${siteUrl}/spil/${categoryId}/`,
-    },
-  };
+  if (!category) return { title: "Spillet findes ikke" };
+  return appScreenMetadata(`${category.name}: spil med kortene`, `${category.description}. ${category.questions.length} spørgsmål.`);
 }
 
 interface Props {
@@ -63,21 +36,11 @@ export default async function CategoryPlayPage({ params }: Props) {
   );
 }
 
-// Loading fallback component
+// Loading fallback: the empty table, so the screen does not jump when the game mounts
 function CategoryLoadingFallback({ categoryId }: { categoryId: string }) {
-  const category = getCategory(categoryId);
-  const color = category?.color || "from-violet-400 to-purple-500";
-  
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${color} flex flex-col items-center justify-center px-6`}>
-      <div className="animate-pulse">
-        <div className="w-full max-w-sm mx-auto">
-          <div className="w-full h-[400px] bg-white/20 rounded-3xl" />
-        </div>
-        <div className="mt-8 w-full max-w-sm">
-          <div className="h-14 bg-white/20 rounded-2xl" />
-        </div>
-      </div>
+    <div className="filt flex min-h-dvh items-center justify-center px-6" data-category={categoryId}>
+      <div className="aspect-[5/7] w-full max-w-sm animate-pulse rounded-[1.25rem] bg-white/10" />
     </div>
   );
 }

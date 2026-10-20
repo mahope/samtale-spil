@@ -1,243 +1,63 @@
-# 🎴 Samtale-Spil
+# Snakkespil
 
-Et moderne, dansk samtalekort-spil bygget med Next.js. Inspireret af Vertellis og Big Questions — designet til par, familier og venner der ønsker dybere samtaler.
+Free Danish conversation cards for couples, families, friends and colleagues. Draw a card, read the question out loud, talk.
 
-🌐 **[Prøv det live →](https://mahope.github.io/samtale-spil/)**
+Live at **https://snakkespil.dk**.
 
-![GitHub Pages Deploy](https://github.com/mahope/samtale-spil/actions/workflows/deploy.yml/badge.svg)
+## What it is
 
-## ✨ Features
+- 1,000+ questions in 16 decks plus an 18+ deck, each marked light, medium or deep
+- Play screen per deck, "shuffle all", pass-the-phone mode for groups and your own question sets
+- Server-rendered question pages under `/spoergsmaal/<deck>/` for search
+- No accounts and no cookies: favourites, progress and custom questions live in `localStorage`
+- Cookieless analytics with self-hosted Plausible (`src/utils/track.ts`)
+- Installable PWA; native iOS/Android builds are planned with Capacitor (issue #20)
 
-### 🎴 Spilmekanik
-- **9 kategorier** med 400+ unikke spørgsmål
-- **3D kort-flip animationer** med Framer Motion
-- **Dagligt spørgsmål** — nyt spørgsmål hver dag
-- **Sværhedsgrader** — Let (grøn), Medium (gul), Dyb (rød)
-- **Shuffle All** mode — bland alle kategorier
+## Stack
 
-### 👥 Multiplayer
-- **Lokal multiplayer** — spil sammen på samme enhed
-- **Spillerliste** med turbaseret visning
-- **Score tracking** og statistik
+Next.js 16 (App Router, `output: "export"`, `trailingSlash: true`), React 19, TypeScript, Tailwind CSS 4, Motion, Vitest.
 
-### 📊 Statistik & Achievements
-- **Progress tracking** — se hvor mange spørgsmål du har besvaret
-- **10 achievements** at låse op
-- **Historik** over besvarede spørgsmål
-- **Favoritter** — gem dine yndlingsspørgsmål
+The static export is served by nginx in Docker (`Dockerfile`, `deploy/nginx.conf`) on Dokploy.
 
-### 🎨 Design & UX
-- **Dark mode** med smooth transitions (class-based, ingen flash)
-- **Floating particles** baggrund
-- **Confetti** ved achievements
-- **Toast notifications** — success/error/info/warning med animationer
-- **Form validation feedback** — shake animation, real-time hints
-- **Reduceret motion** support (a11y)
-- **Skeleton loaders** for bedre perceived performance
+## Layout
 
-### 🔊 Lyd & Feedback
-- **Web Audio API** lydeffekter
-  - Kort-flip lyd
-  - Success/achievement ding
-  - Timer tick og timeout warning
-- **Vibration feedback** på mobil
+```
+src/app/                 routes (play screens are noindex; content pages are indexed)
+src/app/spoergsmaal/     landing page per deck, with every question in the HTML
+src/components/deck/     card face, card back, deck tiles
+src/components/site/     header, footer, text pages
+src/data/categories.ts   all questions (ids are stable: localStorage depends on them)
+src/data/decks.ts        deck colours, patterns and marks: the single colour source
+src/data/categoryTexts.ts  copy for the landing pages
+src/config/site.ts       site URL, name and derived counts
+scripts/generate-icons.mjs  renders favicon, PWA and store icons from assets/icon*.svg
+```
 
-### 📱 PWA & Offline
-- **Installérbar** som app på mobil/desktop
-- **Offline support** via Service Worker
-- **Caching** af alle assets
+## Design
 
-### ⚡ Performance
-- **Lazy loading** af komponenter
-- **React.memo** optimering
-- **Bundle analysis** med @next/bundle-analyzer
-- **Debounce/throttle** utilities
+"Spillebordet": a green felt table, white playing cards and one coloured, patterned box per deck. Tokens live in `src/app/globals.css` (`papir`, `flade`, `blaek`, `bord`, `kridt`). Tailwind's `slate`, `violet` and `rose` scales are remapped to the palette so older screens follow along. Display type is Bricolage Grotesque, body type Atkinson Hyperlegible Next.
 
-## 🚀 Kom i gang
+## Development
 
-### Prerequisites
-- Node.js 18+
-- npm, yarn, pnpm eller bun
-
-### Installation
+The repo lives on Forgejo (`git.mahoje.dk/mahope/samtale-spil`); GitHub is a push mirror.
 
 ```bash
-# Clone repository
-git clone https://github.com/mahope/samtale-spil.git
-cd samtale-spil
-
-# Installer dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-Åbn [http://localhost:3000](http://localhost:3000) i din browser.
-
-### Scripts
-
-| Kommando | Beskrivelse |
-|----------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Kør ESLint |
-| `npm run test` | Kør tests i watch mode |
-| `npm run test:run` | Kør tests én gang |
-| `npm run test:coverage` | Kør tests med coverage |
-| `npm run analyze` | Analysér bundle størrelse |
-
-## 📁 Projektstruktur
-
-```
-src/
-├── app/                      # Next.js App Router
-│   ├── layout.tsx            # Root layout med metadata
-│   ├── page.tsx              # Landing page
-│   ├── favoritter/           # Favoritter side
-│   ├── multiplayer/          # Multiplayer spil
-│   ├── spil/                 # Spil-sider
-│   │   ├── [categoryId]/     # Kategori spil
-│   │   └── shuffle-all/      # Shuffle alle kategorier
-│   └── statistik/            # Statistik & achievements
-├── components/               # React komponenter
-│   ├── AchievementToast.tsx  # Achievement notifikationer
-│   ├── Confetti.tsx          # Konfetti animation
-│   ├── DailyQuestion.tsx     # Dagligt spørgsmål widget
-│   ├── DifficultyFilter.tsx  # Sværhedsgrad filter
-│   ├── FloatingParticles.tsx # Animeret baggrund
-│   ├── InteractiveCard.tsx   # Hover micro-interactions
-│   ├── LazyComponents.tsx    # Lazy-loaded komponenter
-│   ├── OptimizedComponents.tsx # Memoized komponenter
-│   ├── PageTransition.tsx    # Side transitions
-│   ├── RippleButton.tsx      # Material Design ripple
-│   ├── ServiceWorkerRegistration.tsx
-│   ├── ShareButton.tsx       # Del-funktionalitet
-│   ├── SkeletonLoader.tsx    # Loading skeletons
-│   ├── ThemeToggle.tsx       # Dark mode toggle
-│   ├── TimerDisplay.tsx      # Nedtællingstimer
-│   ├── Toast.tsx             # Toast notifications + useToast hook
-│   └── TouchFriendlyButton.tsx # 44px touch targets
-├── data/
-│   └── categories.ts         # Alle kategorier og spørgsmål
-├── hooks/
-│   ├── useAchievements.ts    # Achievement tracking
-│   ├── useLocalStorage.ts    # LocalStorage hooks
-│   ├── useMultiplayer.ts     # Multiplayer logik
-│   ├── useReducedMotion.ts   # A11y motion preference
-│   ├── useShare.ts           # Web Share API
-│   ├── useSocialShare.ts     # Social sharing
-│   └── useSound.ts           # Web Audio API
-├── types/
-│   ├── index.ts              # Core types
-│   └── multiplayer.ts        # Multiplayer types
-├── utils/
-│   ├── canvasPolyfill.ts     # Canvas polyfill til PWA
-│   ├── dailyQuestion.ts      # Dagligt spørgsmål logik
-│   └── performance.ts        # Performance utilities
-└── __tests__/                # Vitest tests
-    ├── setup.ts              # Test setup
-    ├── categories.test.ts
-    ├── dailyQuestion.test.ts
-    ├── hooks.test.tsx
-    └── performance.test.ts
-```
-
-## 🎯 Kategorier
-
-| Kategori | Emoji | Spørgsmål | Beskrivelse |
-|----------|-------|-----------|-------------|
-| Parforhold | 💑 | 50 | Styrker jeres forbindelse |
-| Familie | 👨‍👩‍👧‍👦 | 50 | På tværs af generationer |
-| Intimitet | 🔥 | 50 | Dybe, personlige spørgsmål for par |
-| Fremtid | 🚀 | 50 | Drømme og mål |
-| Fortid | 📜 | 50 | Minder og livslærdom |
-| Sjove | 😂 | 50 | Lette og underholdende |
-| Dybe | 🌊 | 50 | Filosofiske spørgsmål |
-| Filosofiske | 🧠 | 50 | Eksistentielle tanker |
-| Barndom | 👶 | 50+ | Minder fra barndommen |
-
-## 🧪 Testing
-
-Projektet bruger [Vitest](https://vitest.dev/) med React Testing Library.
-
-```bash
-# Kør alle tests
+npm ci
+npm run dev        # local dev server
+npm run typecheck
+npm run lint
 npm run test:run
-
-# Kør tests i watch mode
-npm run test
-
-# Generer coverage rapport
-npm run test:coverage
+npm run build      # static export to out/
 ```
 
-### Test coverage
-- **55+ unit tests** for utilities og hooks
-- **Data validation** for alle kategorier og spørgsmål
-- **Hook testing** med React Testing Library
+CI (`.forgejo/workflows/ci.yml`) runs typecheck, lint, tests, build, checks the export (noindex on play screens, questions in landing-page HTML, canonical URLs) and validates the nginx config.
 
-## 🛠 Tech Stack
+## Deploy
 
-| Teknologi | Version | Beskrivelse |
-|-----------|---------|-------------|
-| [Next.js](https://nextjs.org/) | 16.1.6 | React framework med App Router |
-| [React](https://react.dev/) | 19.2.3 | UI library |
-| [TypeScript](https://www.typescriptlang.org/) | 5.x | Type safety |
-| [Tailwind CSS](https://tailwindcss.com/) | 4.x | Styling |
-| [Framer Motion](https://www.framer.com/motion/) | 12.x | Animationer |
-| [Vitest](https://vitest.dev/) | 4.x | Unit testing |
+Every push to `master` triggers a Dokploy deploy through a Forgejo webhook. Dokploy builds the Dockerfile and serves the export on port 3000 behind Traefik and Cloudflare.
 
-## 🚀 Deployment
+After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, `/spoergsmaal/parforhold/`, a missing path (should be 404) and the response headers.
 
-Projektet deployes automatisk til GitHub Pages via GitHub Actions:
+## Licence
 
-1. Push til `master` branch
-2. GitHub Actions bygger med `npm run build`
-3. Deployer `out/` folder til GitHub Pages
-
-### Manuel deploy
-
-```bash
-# Build for GitHub Pages
-GITHUB_PAGES=true npm run build
-
-# Resultat ligger i out/ mappen
-```
-
-## 🎨 Accessibility
-
-- **Reduceret motion** — respekterer `prefers-reduced-motion`
-- **Keyboard navigation** — fuld keyboard support
-- **ARIA labels** — screen reader venlig
-- **Color contrast** — WCAG 2.1 kompatibel
-- **Focus indicators** — synlige focus states
-
-## 📱 PWA Features
-
-- **Manifest** med app ikoner
-- **Service Worker** til offline caching
-- **Add to Home Screen** prompt
-- **Splash screens** for iOS/Android
-
-## 🤝 Bygget af
-
-Skabt af 10 AI-agenter i en kæde, januar-februar 2026 🤖
-
-- **Agent 1-3:** Core game mechanics, kategorier, multiplayer
-- **Agent 4-5:** UI polish, animationer, accessibility
-- **Agent 6-7:** PWA, service worker, offline support
-- **Agent 8:** Statistics, achievements, sound effects
-- **Agent 9:** Performance optimizations, lazy loading
-- **Agent 10:** Testing, dokumentation, JSDoc
-
-## 📄 Licens
-
-MIT © [Mahope](https://github.com/mahope)
-
----
-
-<p align="center">
-  Lavet med ❤️ i Danmark
-</p>
+Code and questions © Mahope. Bricolage Grotesque is used under the SIL Open Font License (`assets/fonts/OFL-bricolage.txt`).

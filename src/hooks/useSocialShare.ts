@@ -54,7 +54,7 @@ export function useSocialShare() {
     const completionPercentage = Math.round((answeredQuestions / totalQuestions) * 100);
     const achievementsCount = getUnlockedCount();
     const achievementPercentage = getCompletionPercentage();
-    const latestAchievement = unlockedAchievements.length > 0 
+    const latestAchievement = unlockedAchievements.length > 0
       ? unlockedAchievements[unlockedAchievements.length - 1]?.title
       : undefined;
 
@@ -74,63 +74,36 @@ export function useSocialShare() {
   // Generate achievement text based on progress
   const generateAchievementText = useCallback((stats: ShareStats): string => {
     const achievements = [];
-    
+
     if (stats.completedCategories > 0) {
-      achievements.push(`${stats.completedCategories} kategorier fuldført 🎉`);
+      achievements.push(`${stats.completedCategories} bunker spillet igennem`);
     }
-    
+
     if (stats.completionPercentage >= 50) {
-      achievements.push(`${stats.completionPercentage}% gennemført 🚀`);
+      achievements.push(`${stats.completionPercentage} % af kortene spillet`);
     }
-    
+
     if (stats.favoritesCount > 0) {
-      achievements.push(`${stats.favoritesCount} favoritspørgsmål gemt ❤️`);
+      achievements.push(`${stats.favoritesCount} favoritter gemt`);
     }
 
-    if (stats.achievementsCount > 0) {
-      achievements.push(`${stats.achievementsCount} præstationer låst op 🏅`);
-    }
-
-    if (stats.latestAchievement) {
-      achievements.push(`Nyeste: ${stats.latestAchievement} ⭐`);
-    }
-
-    if (stats.completionPercentage === 100) {
-      achievements.push("Alle spørgsmål besvaret! 🏆");
-    } else if (stats.completionPercentage >= 75) {
-      achievements.push("Næsten færdig! 🎯");
-    } else if (stats.completionPercentage >= 25) {
-      achievements.push("Godt i gang! 💪");
-    }
-
-    return achievements.length > 0 ? achievements.join(", ") : "Ny i Samtalekort 🌟";
+    return achievements.length > 0 ? achievements.join(", ") : "Lige begyndt";
   }, []);
 
   // Share overall progress
   const shareProgress = useCallback(async () => {
     const stats = calculateStats();
     const achievements = generateAchievementText(stats);
-    
-    const shareText = `🎴 Mine Samtalekort-statistikker:
 
-${achievements}
+    const shareText = `Vi har spillet Snakkespil: ${achievements}.
+${stats.favoriteCategory ? `Vores yndlingsbunke er ${stats.favoriteCategory}.` : ""}
 
-📊 Fremskridt:
-• ${stats.answeredQuestions}/${stats.totalQuestions} spørgsmål besvaret
-• ${stats.completedCategories}/${categories.length} kategorier fuldført
-• ${stats.favoritesCount} favoritspørgsmål gemt
-• ${stats.achievementsCount} præstationer låst op 🏅
-${stats.favoriteCategory ? `• Favorit: ${stats.favoriteCategory}` : ""}
-
-Vil du også prøve dybere samtaler? 💭
-${SITE_URL}/
-
-#Samtalekort #DybereForhold #Samtale`;
+Gratis samtalekort på dansk: ${SITE_URL}/`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Mine Samtalekort-statistikker",
+          title: "Vores Snakkespil",
           text: shareText,
           url: `${SITE_URL}/`,
         });
@@ -152,23 +125,16 @@ ${SITE_URL}/
     const totalCount = category.questions.length;
     const completionPercentage = Math.round((answeredCount / totalCount) * 100);
 
-    const shareText = `🎴 ${category.emoji} ${category.name} - ${completionPercentage}% fuldført!
+    const shareText = `${completionPercentage === 100
+  ? `Vi har spillet alle ${totalCount} kort i ${category.name} på Snakkespil.`
+  : `Vi har spillet ${answeredCount} af ${totalCount} kort i ${category.name} på Snakkespil.`}
 
-${answeredCount}/${totalCount} spørgsmål besvaret
-
-${completionPercentage === 100 
-  ? "Jeg har fuldført denne kategori! 🎉" 
-  : `${totalCount - answeredCount} spørgsmål tilbage til at fuldføre kategorien.`
-}
-
-Prøv selv: ${SITE_URL}/spil/${category.id}/
-
-#Samtalekort #${category.name} #DybereForhold`;
+Prøv selv: ${SITE_URL}/spil/${category.id}/`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: `${category.name} - Samtalekort`,
+          title: `${category.name} | Snakkespil`,
           text: shareText,
           url: `${SITE_URL}/spil/${category.id}/`,
         });
@@ -186,7 +152,7 @@ Prøv selv: ${SITE_URL}/spil/${category.id}/
   // Generate shareable image using Canvas
   const generateStatsImage = useCallback(async (): Promise<string | null> => {
     setIsGeneratingImage(true);
-    
+
     try {
       const stats = calculateStats();
 
@@ -201,12 +167,8 @@ Prøv selv: ${SITE_URL}/spil/${category.id}/
       canvas.width = 1200;
       canvas.height = 630;
 
-      // Create gradient background
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      gradient.addColorStop(0, "#4F46E5"); // indigo-600
-      gradient.addColorStop(1, "#7C3AED"); // violet-600
-      
-      ctx.fillStyle = gradient;
+      // The felt
+      ctx.fillStyle = "#1d4a38";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Add subtle pattern overlay
@@ -223,7 +185,7 @@ Prøv selv: ${SITE_URL}/spil/${category.id}/
       ctx.fillStyle = "white";
       ctx.font = "bold 48px system-ui, -apple-system, sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("🎴 Mine Samtalekort-statistikker", canvas.width / 2, 100);
+      ctx.fillText("Vores Snakkespil", canvas.width / 2, 100);
 
       // Add stats boxes
       const boxWidth = 280;
@@ -233,25 +195,16 @@ Prøv selv: ${SITE_URL}/spil/${category.id}/
       // Stats data
       const statsBoxes = [
         {
-          title: "Spørgsmål besvaret",
+          title: "Kort spillet",
           value: `${stats.answeredQuestions}/${stats.totalQuestions}`,
-          subtitle: `${stats.completionPercentage}% gennemført`,
+          subtitle: `${stats.completionPercentage} % af alle kort`,
         },
         {
-          title: "Kategorier fuldført",
+          title: "Bunker spillet igennem",
           value: `${stats.completedCategories}/${categories.length}`,
-          subtitle: stats.favoriteCategory ? `Favorit: ${stats.favoriteCategory}` : "Godt i gang!",
+          subtitle: stats.favoriteCategory ? `Yndlingsbunke: ${stats.favoriteCategory}` : "",
         },
       ];
-
-      // Add achievements box if there are any
-      if (stats.achievementsCount > 0) {
-        statsBoxes.push({
-          title: "Præstationer",
-          value: `${stats.achievementsCount}`,
-          subtitle: `${stats.achievementPercentage}% låst op`,
-        });
-      }
 
       // Calculate dynamic positioning based on number of boxes
       const totalBoxes = statsBoxes.length;
@@ -295,18 +248,11 @@ Prøv selv: ${SITE_URL}/spil/${category.id}/
         ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
         ctx.font = "20px system-ui, -apple-system, sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(`❤️ ${stats.favoritesCount} favoritspørgsmål gemt`, canvas.width / 2, 350);
+        ctx.fillText(`${stats.favoritesCount} favoritter gemt`, canvas.width / 2, 350);
       }
 
       // Add motivational text
-      let motivationalText = "Dybere samtaler, stærkere forbindelser 💭";
-      if (stats.completionPercentage === 100) {
-        motivationalText = "Du har mastered Samtalekort! 🏆";
-      } else if (stats.completionPercentage >= 75) {
-        motivationalText = "Du er så tæt på at fuldføre alt! 🎯";
-      } else if (stats.completionPercentage >= 25) {
-        motivationalText = "Fantastisk fremskridt! Fortsæt! 🚀";
-      }
+      const motivationalText = "Gratis samtalekort på dansk";
 
       ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
       ctx.font = "24px system-ui, -apple-system, sans-serif";
@@ -323,7 +269,7 @@ Prøv selv: ${SITE_URL}/spil/${category.id}/
       ctx.beginPath();
       ctx.arc(100, 100, 50, 0, Math.PI * 2);
       ctx.fill();
-      
+
       ctx.beginPath();
       ctx.arc(canvas.width - 100, canvas.height - 100, 60, 0, Math.PI * 2);
       ctx.fill();
@@ -360,8 +306,8 @@ Prøv selv: ${SITE_URL}/spil/${category.id}/
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
-          title: "Mine Samtalekort-statistikker",
-          text: "Se mine fremskridt i Samtalekort! 🎴",
+          title: "Vores Snakkespil",
+          text: "Vores Snakkespil",
           files: [file],
         });
         return { success: true, method: "native" as const };

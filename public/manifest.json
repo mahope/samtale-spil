@@ -1,13 +1,13 @@
 {
-  "name": "Samtalekort",
-  "short_name": "Samtalekort",
-  "description": "Dybe samtaler med dem du holder af - Et spil der skaber meningsfulde samtaler mellem par, familier og venner",
+  "name": "Snakkespil",
+  "short_name": "Snakkespil",
+  "description": "Gratis samtalekort på dansk til par, familier, venner og kollegaer.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#6366f1",
-  "theme_color": "#6366f1",
-  "orientation": "portrait-primary",
+  "background_color": "#1d4a38",
+  "theme_color": "#1d4a38",
+  "orientation": "portrait",
   "categories": [
     "games",
     "lifestyle",
@@ -17,22 +17,41 @@
   "id": "/",
   "icons": [
     {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "/icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
-      "name": "Start spil",
+      "name": "Vælg et spil",
       "short_name": "Spil",
-      "description": "Vælg en kategori og start",
+      "description": "Vælg en bunke og begynd",
       "url": "/spil/",
       "icons": [
         {
-          "src": "/icons/icon.svg",
-          "sizes": "any"
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -43,8 +62,9 @@
       "url": "/favoritter/",
       "icons": [
         {
-          "src": "/icons/icon.svg",
-          "sizes": "any"
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }

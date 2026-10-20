@@ -39,7 +39,7 @@ export function QuestionForm({
   onSubmit,
   initialValues,
   onCancel,
-  submitLabel = "Opret spørgsmål",
+  submitLabel = "Læg i bunken",
   onSuccess,
   onError,
 }: QuestionFormProps) {
@@ -68,7 +68,7 @@ export function QuestionForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (text.trim().length < 10) {
       setError("Spørgsmålet skal være mindst 10 tegn");
       triggerShake();
@@ -76,7 +76,7 @@ export function QuestionForm({
       textareaRef.current?.focus();
       return;
     }
-    
+
     if (text.trim().length > 500) {
       setError("Spørgsmålet må højst være 500 tegn");
       triggerShake();
@@ -101,8 +101,8 @@ export function QuestionForm({
   };
 
   return (
-    <motion.form 
-      onSubmit={handleSubmit} 
+    <motion.form
+      onSubmit={handleSubmit}
       className="space-y-4"
       variants={shakeAnimation}
       animate={shouldShake ? "shake" : undefined}
@@ -116,7 +116,7 @@ export function QuestionForm({
           Dit spørgsmål
         </label>
         <motion.div
-          animate={error ? { 
+          animate={error ? {
             boxShadow: ["0 0 0 0 rgba(239, 68, 68, 0)", "0 0 0 4px rgba(239, 68, 68, 0.3)", "0 0 0 0 rgba(239, 68, 68, 0)"]
           } : {}}
           transition={{ duration: 0.6 }}
@@ -132,12 +132,12 @@ export function QuestionForm({
             }}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder="Skriv dit samtalespørgsmål her..."
+            placeholder="Fx: Hvad ville du gøre, hvis du fik en fridag i morgen?"
             rows={3}
-            className={`w-full px-4 py-3 rounded-xl border bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:border-transparent transition-all resize-none ${
-              error 
-                ? "border-red-400 dark:border-red-500 focus:ring-red-400" 
-                : "border-slate-200 dark:border-slate-700 focus:ring-violet-400"
+            className={`w-full resize-none rounded-xl border bg-papir px-4 py-3 text-blaek placeholder:text-blaek-2/70 transition-all focus:border-transparent focus:ring-2 ${
+              error
+                ? "border-red-400 dark:border-red-500 focus:ring-red-400"
+                : "border-streg focus:ring-bord dark:focus:ring-kridt"
             }`}
             required
           />
@@ -168,12 +168,12 @@ export function QuestionForm({
               </motion.p>
             )}
           </AnimatePresence>
-          <motion.p 
+          <motion.p
             className={`text-xs ml-auto font-medium transition-colors ${
-              isOverLimit 
-                ? "text-red-500" 
-                : isNearLimit 
-                  ? "text-amber-500" 
+              isOverLimit
+                ? "text-red-500"
+                : isNearLimit
+                  ? "text-amber-500"
                   : "text-slate-400"
             }`}
             animate={isOverLimit ? { scale: [1, 1.1, 1] } : {}}
@@ -195,7 +195,7 @@ export function QuestionForm({
       {/* Category tag */}
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-          Kategori (valgfrit)
+          Emne (valgfrit)
         </label>
         <div className="flex flex-wrap gap-2">
           <motion.button
@@ -204,7 +204,7 @@ export function QuestionForm({
             whileTap={{ scale: 0.95 }}
             className={`py-2 px-3.5 rounded-full text-sm font-medium transition-all min-h-[40px] ${
               categoryTag === ""
-                ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
+                ? "bg-blaek text-papir"
                 : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500"
             }`}
           >
@@ -218,12 +218,11 @@ export function QuestionForm({
               whileTap={{ scale: 0.95 }}
               className={`py-2 px-3.5 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 min-h-[40px] ${
                 categoryTag === tag.id
-                  ? "bg-slate-800 dark:bg-white text-white dark:text-slate-900"
+                  ? "bg-blaek text-papir"
                   : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-500"
               }`}
             >
-              <span>{tag.emoji}</span>
-              <span className="hidden sm:inline">{tag.label}</span>
+              <span>{tag.label}</span>
             </motion.button>
           ))}
         </div>
@@ -235,19 +234,17 @@ export function QuestionForm({
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 py-3 px-4 rounded-xl font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all"
+            className="min-h-12 flex-1 rounded-full px-4 font-semibold ring-1 ring-streg hover:bg-flade-2"
           >
             Annuller
           </button>
         )}
-        <motion.button
+        <button
           type="submit"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex-1 py-3 px-4 rounded-xl font-medium bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all"
+          className="min-h-12 flex-1 rounded-full bg-bord px-4 font-bold text-white dark:bg-kridt dark:text-kridt-blaek"
         >
           {submitLabel}
-        </motion.button>
+        </button>
       </div>
     </motion.form>
   );

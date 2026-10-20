@@ -21,15 +21,15 @@ export function FavoriteButton({ isFavorite, onToggle }: FavoriteButtonProps) {
       }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="min-w-[44px] min-h-[44px] p-2.5 sm:p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus:ring-2 focus:ring-rose-400 touch-manipulation flex items-center justify-center"
+      className="min-w-[44px] min-h-[44px] p-2.5 sm:p-2 rounded-full hover:bg-black/5 transition-colors touch-manipulation flex items-center justify-center"
       aria-label={isFavorite ? "Fjern fra favoritter" : "Tilføj til favoritter"}
       aria-pressed={isFavorite}
     >
       <motion.svg
         className="w-6 h-6 sm:w-6 sm:h-6"
         viewBox="0 0 24 24"
-        fill={isFavorite ? "#ef4444" : "none"}
-        stroke={isFavorite ? "#ef4444" : "currentColor"}
+        fill={isFavorite ? "#c8384f" : "none"}
+        stroke={isFavorite ? "#c8384f" : "currentColor"}
         strokeWidth={2}
         initial={false}
         animate={isFavorite ? { scale: [1, 1.3, 1] } : { scale: 1 }}

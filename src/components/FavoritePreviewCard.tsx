@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { getCategory } from "@/data/categories";
+import { getDeck } from "@/data/decks";
 import type { FavoriteQuestion } from "@/hooks/useLocalStorage";
 
 export interface FavoritePreviewCardProps {
@@ -11,46 +12,21 @@ export interface FavoritePreviewCardProps {
   index: number;
 }
 
-/**
- * FavoritePreviewCard - Preview card for a favorite question
- * 
- * Displays the question text with category emoji.
- * 
- * @example
- * <FavoritePreviewCard
- *   favorite={{
- *     id: "q1",
- *     categoryId: "parforhold",
- *     text: "Hvad er dit yndlingsminde med mig?",
- *     depth: "medium",
- *     savedAt: Date.now()
- *   }}
- *   index={0}
- * />
- */
-export function FavoritePreviewCard({
-  favorite,
-  index,
-}: FavoritePreviewCardProps) {
+/** Short preview of a saved card, marked with its deck colour. */
+export function FavoritePreviewCard({ favorite, index }: FavoritePreviewCardProps) {
   const category = getCategory(favorite.categoryId);
+  const deck = getDeck(favorite.categoryId === "custom" ? "egne" : favorite.categoryId);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 * index }}
-      className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
+      className="relative overflow-hidden rounded-xl bg-flade p-4 pl-5 ring-1 ring-streg"
     >
-      <div className="flex items-start gap-2">
-        {category && (
-          <span className="text-lg shrink-0" aria-hidden="true">
-            {category.emoji}
-          </span>
-        )}
-        <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed line-clamp-2">
-          {favorite.text}
-        </p>
-      </div>
+      <span className="absolute inset-y-0 left-0 w-1" style={{ background: deck.bg }} aria-hidden="true" />
+      <p className="line-clamp-2 leading-snug">{favorite.text}</p>
+      {category && <p className="mt-1 text-sm text-blaek-2">{category.name}</p>}
     </motion.div>
   );
 }

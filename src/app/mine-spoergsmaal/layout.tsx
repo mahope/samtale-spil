@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
+import { appScreenMetadata } from "@/config/site";
 
-export const metadata: Metadata = {
-  title: "Mine Spørgsmål - Samtalespil",
-  description: "Opret og administrer dine egne samtalespørgsmål",
-};
+export const metadata: Metadata = appScreenMetadata("Dine egne spørgsmål");
 
 export default function MineSpørgsmaalLayout({
   children,

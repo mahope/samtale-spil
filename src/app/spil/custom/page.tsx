@@ -1,23 +1,14 @@
 import { Metadata } from "next";
+import { appScreenMetadata } from "@/config/site";
 import { Suspense } from "react";
+import { PlayScreenLoading } from "@/components/PlayScreen";
 import CustomQuestionsClient from "./CustomQuestionsClient";
 
-export const metadata: Metadata = {
-  title: "Mine Spørgsmål - Samtalekort",
-  description: "Spil med dine egne samtalespørgsmål",
-};
-
-function LoadingState() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center">
-      <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
-}
+export const metadata: Metadata = appScreenMetadata("Spil med dine egne spørgsmål");
 
 export default function CustomQuestionsPage() {
   return (
-    <Suspense fallback={<LoadingState />}>
+    <Suspense fallback={<PlayScreenLoading />}>
       <CustomQuestionsClient />
     </Suspense>
   );

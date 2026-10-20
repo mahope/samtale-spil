@@ -41,7 +41,7 @@ export function RatingStars({
   const handleRate = useCallback(
     (rating: number) => {
       if (readOnly) return;
-      
+
       rateQuestion(questionId, rating);
       setJustRated(true);
       onRated?.(rating);
@@ -155,9 +155,9 @@ export function RatingStars({
             initial={{ opacity: 0, y: 5, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -5, scale: 0.8 }}
-            className={`text-amber-500 ${config.text} mt-1 font-medium`}
+            className={`text-blaek-2 ${config.text} mt-1 font-medium`}
           >
-            Tak for din rating! ⭐
+            Gemt
           </motion.p>
         )}
       </AnimatePresence>

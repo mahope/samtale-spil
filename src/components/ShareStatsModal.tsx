@@ -21,7 +21,7 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
     calculateStats,
     isGeneratingImage
   } = useSocialShare();
-  
+
   const [shareResult, setShareResult] = useState<string | null>(null);
   const [isSharing, setIsSharing] = useState(false);
 
@@ -74,7 +74,7 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
       if (newWindow) {
         newWindow.document.write(`
           <html>
-            <head><title>Mine Samtalekort-statistikker</title></head>
+            <head><title>Vores Snakkespil</title></head>
             <body style="margin:0;padding:20px;background:#f3f4f6;display:flex;justify-content:center;align-items:center;">
               <img src="${imageUrl}" style="max-width:100%;height:auto;border-radius:12px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);" />
             </body>
@@ -95,10 +95,10 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/50 z-50"
             onClick={onClose}
           />
-          
+
           {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -107,17 +107,17 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div 
+            <div
               ref={focusTrapRef}
-              className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
+              className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-flade p-6 text-blaek shadow-kort ring-1 ring-streg"
               role="dialog"
               aria-modal="true"
               aria-labelledby="share-stats-title"
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h2 id="share-stats-title" className="text-2xl font-bold text-slate-800 dark:text-white">
-                  📊 Del dine statistikker
+                <h2 id="share-stats-title" className="text-2xl font-bold">
+                  Del hvor langt I er nået
                 </h2>
                 <button
                   onClick={onClose}
@@ -130,42 +130,42 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
               </div>
 
               {/* Stats Preview */}
-              <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl p-6 mb-6 text-white">
-                <h3 className="text-lg font-semibold mb-4">🎴 Dine fremskridt</h3>
-                
+              <div className="filt mb-6 rounded-2xl p-6">
+                <h3 className="mb-4 text-lg font-semibold">Jeres spil indtil nu</h3>
+
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold">{stats.answeredQuestions}</div>
-                    <div className="text-sm opacity-80">Spørgsmål besvaret</div>
+                    <div className="text-sm opacity-80">Kort spillet</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold">{stats.completedCategories}</div>
-                    <div className="text-sm opacity-80">Kategorier fuldført</div>
+                    <div className="text-sm opacity-80">Bunker spillet igennem</div>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
-                  <span>Samlet fremskridt</span>
+                  <span>Af alle kort</span>
                   <span className="font-semibold">{stats.completionPercentage}%</span>
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-2 mt-2">
                   <motion.div
-                    className="bg-white rounded-full h-2"
+                    className="bg-kridt rounded-full h-2"
                     initial={{ width: 0 }}
                     animate={{ width: `${stats.completionPercentage}%` }}
                     transition={{ duration: 1, delay: 0.5 }}
                   />
                 </div>
-                
+
                 {stats.favoritesCount > 0 && (
                   <div className="mt-3 text-sm opacity-90">
-                    ❤️ {stats.favoritesCount} favoritspørgsmål gemt
+                    {stats.favoritesCount} favoritter gemt
                   </div>
                 )}
-                
+
                 {stats.favoriteCategory && (
                   <div className="mt-2 text-sm opacity-90">
-                    🏆 Favorit: {stats.favoriteCategory}
+                    Yndlingsbunke: {stats.favoriteCategory}
                   </div>
                 )}
               </div>
@@ -178,12 +178,12 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
                   disabled={isSharing}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full flex items-center justify-center gap-3 p-4 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl font-semibold transition-colors disabled:opacity-50"
+                  className="flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-bord px-4 font-bold text-white disabled:opacity-50 dark:bg-kridt dark:text-kridt-blaek"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.476L3 21l2.524-5.906A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
                   </svg>
-                  {isSharing ? "Deler..." : "Del som tekst"}
+                  {isSharing ? "Deler" : "Del som tekst"}
                 </motion.button>
 
                 {/* Share as Image */}
@@ -192,12 +192,12 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
                   disabled={isSharing || isGeneratingImage}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full flex items-center justify-center gap-3 p-4 bg-purple-500 hover:bg-purple-600 text-white rounded-2xl font-semibold transition-colors disabled:opacity-50"
+                  className="flex min-h-12 w-full items-center justify-center gap-3 rounded-full px-4 font-semibold ring-1 ring-streg hover:bg-flade-2 disabled:opacity-50"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  {isGeneratingImage ? "Genererer billede..." : isSharing ? "Deler..." : "Del som billede"}
+                  {isGeneratingImage ? "Laver billedet" : isSharing ? "Deler" : "Del som billede"}
                 </motion.button>
 
                 {/* Preview Image */}
@@ -206,13 +206,13 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
                   disabled={isGeneratingImage}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full flex items-center justify-center gap-3 p-4 bg-slate-500 hover:bg-slate-600 text-white rounded-2xl font-semibold transition-colors disabled:opacity-50"
+                  className="flex min-h-12 w-full items-center justify-center gap-3 rounded-full px-4 font-semibold ring-1 ring-streg hover:bg-flade-2 disabled:opacity-50"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
-                  {isGeneratingImage ? "Forbereder..." : "Se forhåndsvisning"}
+                  {isGeneratingImage ? "Laver billedet" : "Se billedet først"}
                 </motion.button>
               </div>
 
@@ -224,7 +224,7 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     className={`mt-4 p-3 rounded-xl text-center font-medium ${
-                      shareResult.includes("fejl") 
+                      shareResult.includes("fejl")
                         ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                         : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                     }`}
@@ -236,7 +236,7 @@ function ShareStatsModalInner({ isOpen, onClose }: ShareStatsModalProps) {
 
               {/* Help Text */}
               <p className="mt-6 text-sm text-slate-500 dark:text-slate-400 text-center">
-                Del dine fremskridt med venner og familie! 💫
+                Der deles kun tal, aldrig spørgsmålene eller jeres svar.
               </p>
             </div>
           </motion.div>

@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const STATIC_CACHE = `samtalekort-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `samtalekort-runtime-${CACHE_VERSION}`;
 

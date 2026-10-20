@@ -5,7 +5,8 @@ import { motion, useReducedMotion } from "motion/react";
 import type { Question } from "@/types";
 import { ShareButton } from "@/components/ShareButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
-import { DepthIndicator } from "@/components/DepthBadge";
+import { CardFace, DeckBack } from "@/components/deck/DeckParts";
+import { getDeck } from "@/data/decks";
 
 interface QuestionCardProps {
   question: Question;
@@ -17,9 +18,7 @@ interface QuestionCardProps {
 }
 
 /**
- * Interactive 3D flip card for displaying questions.
- * Features smooth flip animation, depth indicator, and action buttons.
- * Wrapped in React.memo to prevent unnecessary re-renders.
+ * A playing card: the deck's patterned back until it is turned, then the question.
  */
 export const QuestionCard = memo(function QuestionCard({
   question,
@@ -30,6 +29,7 @@ export const QuestionCard = memo(function QuestionCard({
   onToggleFavorite,
 }: QuestionCardProps) {
   const prefersReducedMotion = useReducedMotion();
+  const deck = getDeck(question.categoryId);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -42,87 +42,57 @@ export const QuestionCard = memo(function QuestionCard({
   );
 
   return (
-    <div className="perspective-1000 w-full max-w-[320px] sm:max-w-sm mx-auto px-2 sm:px-0">
+    <div className="perspective-1000 mx-auto w-full max-w-[21rem] sm:max-w-[23rem]">
       <motion.div
-        className="relative w-full h-[320px] xs:h-[360px] sm:h-[400px] lg:h-[440px] cursor-pointer focus:outline-none focus:ring-4 focus:ring-white/50 rounded-3xl touch-manipulation"
+        className="relative aspect-[5/7] w-full cursor-pointer touch-manipulation rounded-[1.25rem]"
         onClick={onFlip}
         onKeyDown={handleKeyDown}
         role="button"
         tabIndex={0}
-        aria-label={isFlipped ? `Spørgsmål: ${question.text}. Tryk for at vende kortet` : "Tryk for at se spørgsmålet"}
+        aria-label={isFlipped ? `${question.text} Tryk for at vende kortet tilbage.` : "Vend kortet"}
         aria-pressed={isFlipped}
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
+        transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 140, damping: 18 }}
         style={{ transformStyle: "preserve-3d" }}
       >
-        {/* Front of card (hidden question) */}
-        <motion.div
-          className="absolute inset-0 w-full h-full backface-hidden"
-          style={{ backfaceVisibility: "hidden" }}
-          aria-hidden={isFlipped}
-        >
-          <div className="w-full h-full bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 dark:border-white/20 flex flex-col items-center justify-center p-6 sm:p-8">
-            <motion.div
-              animate={prefersReducedMotion ? {} : { scale: [1, 1.1, 1] }}
-              transition={prefersReducedMotion ? {} : { repeat: Infinity, duration: 2 }}
-              className="text-5xl sm:text-7xl mb-4 sm:mb-6"
-              aria-hidden="true"
-            >
-              🎴
-            </motion.div>
-            <p className="text-white text-lg sm:text-xl font-medium text-center">
-              Tryk for at se spørgsmålet
-            </p>
-            <motion.div
-              className="mt-4 flex gap-1"
-              animate={prefersReducedMotion ? {} : { opacity: [0.5, 1, 0.5] }}
-              transition={prefersReducedMotion ? {} : { repeat: Infinity, duration: 1.5 }}
-              aria-hidden="true"
-            >
-              <span className="text-white/60">•</span>
-              <span className="text-white/60">•</span>
-              <span className="text-white/60">•</span>
-            </motion.div>
-          </div>
-        </motion.div>
+        {/* Back: the deck */}
+        <div className="backface-hidden absolute inset-0" aria-hidden={isFlipped}>
+          <DeckBack
+            categoryId={question.categoryId}
+            className="flex h-full w-full flex-col items-center justify-center rounded-[1.25rem] p-6 shadow-kort ring-4 ring-inset ring-white/25"
+          >
+            <span className="font-display text-7xl font-extrabold leading-none" style={{ color: deck.ink }}>
+              {deck.mark}
+            </span>
+            <span className="mt-6 rounded-full bg-black/15 px-4 py-2 text-base font-semibold" style={{ color: deck.ink }}>
+              Tryk for at vende kortet
+            </span>
+          </DeckBack>
+        </div>
 
-        {/* Back of card (question revealed) */}
-        <motion.div
-          className="absolute inset-0 w-full h-full backface-hidden"
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        {/* Front: the question */}
+        <div
+          className="backface-hidden absolute inset-0"
+          style={{ transform: "rotateY(180deg)" }}
           aria-hidden={!isFlipped}
         >
-          <div className="w-full h-full bg-white dark:bg-slate-800 rounded-3xl shadow-2xl flex flex-col items-center justify-center p-5 sm:p-8 relative">
-            {/* Top bar with depth, share and favorite */}
-            <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-between items-center">
-              <DepthIndicator depth={question.depth} />
-              <div className="flex items-center gap-0.5 sm:gap-1">
-                <ShareButton 
-                  text={question.text} 
-                  categoryName={categoryName}
-                />
-                <FavoriteButton
-                  isFavorite={isFavorite}
-                  onToggle={onToggleFavorite}
-                />
+          <CardFace
+            categoryId={question.categoryId}
+            categoryName={categoryName}
+            question={question}
+            className="h-full"
+            footer={
+              <div className="-mb-1 -ml-2 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
+                <ShareButton text={question.text} categoryName={categoryName} />
               </div>
-            </div>
-            
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-slate-800 dark:text-slate-100 text-xl sm:text-2xl font-medium text-center leading-relaxed px-2"
-            >
-              {question.text}
-            </motion.p>
-          </div>
-        </motion.div>
+            }
+          />
+        </div>
       </motion.div>
     </div>
   );
 });
 
-// Display name for React DevTools
 QuestionCard.displayName = "QuestionCard";

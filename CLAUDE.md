@@ -1,134 +1,34 @@
-# Samtalekort - Projekt Dokumentation
+# Snakkespil
 
-## 🎉 Status: LIVE!
-**URL:** https://mahope.github.io/samtale-spil/
-**GitHub:** https://github.com/mahope/samtale-spil
+Gratis danske samtalekort: https://snakkespil.dk. Mads' eget produkt uden kunder (egne interne systemer, jf. global CLAUDE.md).
 
-## Oversigt
-Et web-baseret samtale/spørgsmålsspil inspireret af Vertellis og Big Questions. Designet til par, familier og venner der ønsker dybere samtaler.
+## Hvor ting bor
 
-## Tech Stack
-- **Framework:** Next.js 16 (App Router)
-- **Sprog:** TypeScript
-- **Styling:** Tailwind CSS v4 (class-based dark mode via `@variant dark`)
-- **Animationer:** Framer Motion
-- **Hosting:** GitHub Pages (auto-deploy via Actions)
+- **Repo:** Forgejo `git.mahoje.dk/mahope/samtale-spil` (primær). GitHub `mahope/samtale-spil` er push-spejl uden Actions. PR'er og issues med `tea` (login `mahoje`).
+- **CI:** `.forgejo/workflows/ci.yml` på Forgejo-runneren: tsc, lint, vitest, build, eksporttjek, `nginx -t`.
+- **Deploy:** push til `master` -> Forgejo-webhook -> Dokploy-appen `snakkespil` (worker1) bygger `Dockerfile` (Node 24 -> nginx). Detaljer i wikien (`samtale-spil`).
+- **Analytics:** Plausible CE på analytics.holstjensen.eu, events via `src/utils/track.ts` (danske eventnavne; goals skal oprettes i Plausible).
+- **Gammel adresse:** mahope.github.io/samtale-spil er en redirect-stub til snakkespil.dk.
 
-### Dark Mode Configuration (Tailwind v4)
-Tailwind v4 uses `prefers-color-scheme` media queries by default. To enable class-based dark mode (`.dark` class on `<html>`), we override the built-in variant in `globals.css`:
-```css
-@variant dark (&:where(.dark, .dark *));
-```
-The theme is initialized via an inline script in `layout.tsx` to prevent FOUC.
+## Arbejdsgang uden aftryk på PC'en
 
-## Features
-- 🎴 **9 kategorier** med 400+ spørgsmål total
-- 🎨 **3D kort-flip animation** - tryk for at vende kortet
-- 📊 **Depth-indikator** - grøn/gul/rød dots (let/medium/dyb)
-- ❤️ **Favorit-funktion** - gem dine yndlingsspørgsmål
-- 📈 **Progress tracking** - husker hvor du er i LocalStorage
-- 🔊 **Lyd-effekter** - Web Audio API (flip, tap, success)
-- 🌙 **Dark mode** - class-based toggle, ingen flash ved load
-- 📤 **Del-funktion** - Web Share API / clipboard fallback
-- 📱 **PWA** - installérbar, offline support
-- 🔔 **Toast notifications** - success/error/info/warning feedback
-- ✨ **Form validation** - shake animation, real-time hints
+Byg aldrig lokalt. Rediger og commit lokalt; byg og test på agent-worker (Tailscale) eller i CI:
+- Preview: tar arbejdstræet til `agent-worker:/home/mads/snakkespil-preview`, kør `npm ci` (kun ved ny lockfil), `npm run build`, og server `out/` på `http://agent-worker:3100`.
+- Lockfil: generér den på Linux (`npm install --package-lock-only` på agent-worker), ellers mangler Linux-optionals.
+- Ikoner: `node scripts/generate-icons.mjs` på agent-worker, kopiér PNG/ICO tilbage.
 
-## Projektstruktur
-```
-src/
-├── app/
-│   ├── layout.tsx              # Root layout med theme init script
-│   ├── globals.css             # Tailwind v4 + dark mode config
-│   ├── page.tsx                # Landing page
-│   ├── favoritter/page.tsx     # Favoritter side
-│   ├── mine-spoergsmaal/       # Custom questions
-│   ├── statistik/              # Statistik & achievements
-│   └── spil/
-│       ├── page.tsx            # Kategori-vælger
-│       ├── shuffle-all/        # Shuffle alle kategorier
-│       ├── custom/             # Spil med egne spørgsmål
-│       └── [categoryId]/
-│           ├── page.tsx        # Server component wrapper
-│           └── CategoryPlayClient.tsx  # Selve spillet
-├── components/
-│   ├── DepthBadge.tsx          # Unified depth indicators (Badge, Indicator, Selector)
-│   ├── InteractiveCard.tsx     # Hover micro-interactions
-│   ├── PageTransition.tsx      # Framer Motion transitions
-│   ├── FloatingParticles.tsx   # Animeret baggrund
-│   ├── Toast.tsx               # Toast notifications + useToast
-│   ├── ShareButton.tsx         # Del-knap
-│   ├── ThemeToggle.tsx         # Dark mode toggle (3-state)
-│   └── TouchFriendlyButton.tsx # 44px touch targets
-├── data/
-│   └── categories.ts           # Kategori-data og spørgsmål
-├── hooks/
-│   ├── useLocalStorage.ts      # Favorites & Progress hooks
-│   ├── useCustomQuestions.ts   # Custom questions CRUD
-│   └── useSound.ts             # Web Audio API hook
-└── types/
-    └── index.ts                # TypeScript interfaces
-```
+## Regler for koden
 
-## Kategorier
-| Kategori | Emoji | Spørgsmål | Beskrivelse |
-|----------|-------|-----------|-------------|
-| Parforhold | 💑 | 20 | Styrker forbindelsen mellem par |
-| Familie | 👨‍👩‍👧‍👦 | 20 | På tværs af generationer |
-| Intimitet | 🔥 | 18 | Dybe, personlige spørgsmål for par |
-| Fremtid | 🚀 | 18 | Drømme og mål |
-| Fortid | 📜 | 20 | Minder og livslærdom |
-| Sjove | 😂 | 20 | Lette og underholdende |
-| Dybe | 🌊 | 20 | Filosofiske spørgsmål |
-
-## Spørgsmåls-dybde
-- `let` - Gode ice-breakers (grøn dot)
-- `medium` - Lidt mere personlige (gul dot)
-- `dyb` - Kræver refleksion og sårbarhed (rød dot)
-
-## Deployment
-Auto-deploy via GitHub Actions:
-1. Push til `master`
-2. GitHub Actions bygger med `npm run build` (GITHUB_PAGES=true)
-3. Deployer `out/` folder til GitHub Pages
+- Spørgsmåls-id'er må aldrig ændres eller genbruges: favoritter og fremskridt i localStorage peger på dem. Nye spørgsmål får nye id'er.
+- localStorage-nøglerne hedder stadig `samtale-spil-*`. Lad dem være.
+- Farver pr. kategori kommer kun fra `src/data/decks.ts`. Testen kræver AA-kontrast mellem `bg` og `ink`.
+- Spilskærme (`/spil/...`, favoritter, statistik, egne spørgsmål, send rundt) er `noindex` via `appScreenMetadata`. Indhold til søgning hører under `/spoergsmaal/`.
+- Canonical sættes pr. side, aldrig i et layout (Next arver `alternates` til alle børn).
+- Antal spørgsmål i tekster afledes af data (`src/config/site.ts`), aldrig hardkodet.
+- Dansk UI-tekst: ingen anglicismer, ingen pointtal eller emoji-pynt i UI, ingen "→" i knapper.
 
 ## Kommandoer
-```bash
-npm run dev      # Start development server
-npm run build    # Build for production (static export)
-npm run start    # Start production server
-npm run lint     # Run ESLint
-```
-
-## Testing
-
-Projektet bruger Vitest med React Testing Library:
 
 ```bash
-npm run test        # Watch mode
-npm run test:run    # Kør én gang
-npm run test:coverage  # Med coverage
+npm run typecheck && npm run lint && npm run test:run && npm run build
 ```
-
-**Test coverage:**
-- `src/__tests__/categories.test.ts` - Validerer alle kategorier og spørgsmål
-- `src/__tests__/dailyQuestion.test.ts` - Daily question utilities
-- `src/__tests__/performance.test.ts` - Performance utilities
-- `src/__tests__/hooks.test.tsx` - React hooks (useLocalStorage, useFavorites, etc.)
-
-## Bygget af
-10 AI-agents natten 31. jan - 1. feb 2026 🤖
-
-- Agent 1-3: Core game, kategorier, multiplayer
-- Agent 4-5: UI polish, animationer, accessibility  
-- Agent 6-7: PWA, service worker, offline
-- Agent 8: Statistics, achievements, sound
-- Agent 9: Performance optimizations
-- Agent 10: Testing, dokumentation, JSDoc
-
-## Idéer til næste version
-- Custom domain
-- Analytics/tracking
-- Error boundaries
-- i18n (flere sprog)
-- Temaer/skins
