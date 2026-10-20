@@ -42,7 +42,7 @@ export default function Home() {
           <h2 id="decks" className="text-3xl font-bold sm:text-4xl">
             {intlDecks.length} decks to choose from
           </h2>
-          <p className="mt-2 max-w-xl text-blaek-2">Pick by who you are with, and by how deep you want to go. Every card is marked light, medium or deep.</p>
+          <p className="mt-2 max-w-xl text-blaek-2">Pick a deck based on who you&rsquo;re with and how deep you want to go. Every card is marked light, medium or deep.</p>
         <div className="mt-8 space-y-10">
           {intlGroups().map((g) => (
             <section key={g.id} aria-labelledby={`group-${g.id}`}>
@@ -61,8 +61,8 @@ export default function Home() {
         <section className="mx-auto mt-20 max-w-3xl px-4 sm:px-6" aria-labelledby="how">
           <h2 id="how" className="text-3xl font-bold sm:text-4xl">How it works</h2>
           <ol className="mt-5 list-decimal space-y-3 pl-6 text-lg">
-            <li>Pick a deck for the people you are with.</li>
-            <li>Tap the card to turn it, read the question out loud, and both answer.</li>
+            <li>Pick a deck for the people you&rsquo;re with.</li>
+            <li>Flip a card, read it out loud, and everyone answers.</li>
             <li>Ask a follow-up question. The second question is often the best one.</li>
             <li>Skip any card you like. Nobody has to explain why.</li>
           </ol>

@@ -15,11 +15,11 @@ export default function About() {
     <IntlTextPage title="About Goodtalk">
       <p>
         The idea comes from the box of conversation cards many people keep in a drawer: questions that get people to share things they
-        would not otherwise say. Goodtalk does the same on your phone, for free.
+        wouldn&rsquo;t otherwise say. Goodtalk does the same on your phone, for free.
       </p>
       <p>
         There are {INTL_CARD_COUNT.toLocaleString("en-US")} questions in {intlDecks.length} decks. Every question is marked light, medium
-        or deep, so you choose how far in you want to go.
+        or deep, so you can choose how deep you want to go.
       </p>
       <h2>Who makes it</h2>
       <p>

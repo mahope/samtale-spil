@@ -4,7 +4,7 @@ import { IntlTextPage } from "@/intl/Chrome";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "Goodtalk has no accounts, no ads and no tracking cookies. What you save stays on your device. Here is exactly what we store and why.",
+  description: "Goodtalk has no accounts, no ads and no tracking cookies. What you save stays on your device. Here's exactly what we store and why.",
   alternates: { canonical: "/privacy/" },
   openGraph: { ...OG_BASE, url: "/privacy/" },
 };
