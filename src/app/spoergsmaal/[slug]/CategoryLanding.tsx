@@ -82,6 +82,12 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
                 <li key={tip} className="text-blaek-2">{tip}</li>
               ))}
             </ul>
+            {text.forskning && (
+              <p className="mt-5 border-t border-streg pt-4 text-[0.95rem] text-blaek-2">
+                <strong className="font-semibold text-blaek">Hvorfor denne bunke?</strong> {text.forskning}{" "}
+                <Link href="/saadan-spiller-i/" className="underline">Læs mere om rådene bag spillet</Link>.
+              </p>
+            )}
           </aside>
         </section>
 
