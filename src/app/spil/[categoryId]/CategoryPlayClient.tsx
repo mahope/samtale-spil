@@ -105,10 +105,11 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     if (hasInitializedRef.current) return;
     
     const savedProgress = getCategoryProgress(categoryId);
-    
+    // Claim initialisation now, so a dependency change before the frame cannot schedule a second draw
+    hasInitializedRef.current = true;
+
     // Use requestAnimationFrame to defer state updates
     requestAnimationFrame(() => {
-      hasInitializedRef.current = true;
       
       // Only update if state is stale
       if (askedQuestionIds.length === 0 && savedProgress.answeredIds.length > 0) {
