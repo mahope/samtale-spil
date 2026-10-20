@@ -1,25 +1,25 @@
 import { Metadata } from "next";
 
-const siteUrl = "https://mahope.github.io/samtale-spil";
+import { SITE_URL as siteUrl, CATEGORY_COUNT, QUESTION_COUNT_LABEL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Vælg kategori - Samtalekort",
   description:
-    "Vælg mellem 7 kategorier: Parforhold, Familie, Intimitet, Fremtid, Fortid, Sjove og Dybe spørgsmål. 350+ samtale-spørgsmål der skaber meningsfulde samtaler.",
+    `Vælg mellem ${CATEGORY_COUNT} kategorier, fra parforhold og familie til sjove og filosofiske spørgsmål. ${QUESTION_COUNT_LABEL} samtalespørgsmål der skaber meningsfulde samtaler.`,
   openGraph: {
     title: "Vælg kategori - Samtalekort",
     description:
-      "7 kategorier med 350+ spørgsmål til meningsfulde samtaler mellem par, familier og venner.",
-    url: `${siteUrl}/spil`,
+      `${CATEGORY_COUNT} kategorier med ${QUESTION_COUNT_LABEL} spørgsmål til meningsfulde samtaler mellem par, familier og venner.`,
+    url: `${siteUrl}/spil/`,
     type: "website",
   },
   twitter: {
     card: "summary",
     title: "Vælg kategori - Samtalekort",
-    description: "7 kategorier med 350+ spørgsmål til meningsfulde samtaler.",
+    description: `${CATEGORY_COUNT} kategorier med ${QUESTION_COUNT_LABEL} spørgsmål til meningsfulde samtaler.`,
   },
   alternates: {
-    canonical: `${siteUrl}/spil`,
+    canonical: `${siteUrl}/spil/`,
   },
 };
 

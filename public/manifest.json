@@ -14,7 +14,7 @@
     "social"
   ],
   "lang": "da",
-  "id": "samtale-spil",
+  "id": "/",
   "icons": [
     {
       "src": "/icons/icon.svg",
@@ -23,21 +23,12 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/screenshots/home.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Samtalekort - Vælg kategori"
-    }
-  ],
   "shortcuts": [
     {
       "name": "Start spil",
       "short_name": "Spil",
       "description": "Vælg en kategori og start",
-      "url": "/spil",
+      "url": "/spil/",
       "icons": [
         {
           "src": "/icons/icon.svg",
@@ -49,7 +40,7 @@
       "name": "Mine favoritter",
       "short_name": "Favoritter",
       "description": "Se dine gemte spørgsmål",
-      "url": "/favoritter",
+      "url": "/favoritter/",
       "icons": [
         {
           "src": "/icons/icon.svg",

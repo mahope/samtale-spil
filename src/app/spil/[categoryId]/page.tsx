@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { categories, getCategory } from "@/data/categories";
 import CategoryPlayClient from "./CategoryPlayClient";
 
-const siteUrl = "https://mahope.github.io/samtale-spil";
+import { SITE_URL as siteUrl } from "@/config/site";
 
 // Generate static params for all categories at build time
 export function generateStaticParams() {
@@ -36,7 +36,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `${siteUrl}/spil/${categoryId}`,
+      url: `${siteUrl}/spil/${categoryId}/`,
       type: "website",
     },
     twitter: {
@@ -45,7 +45,7 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `${siteUrl}/spil/${categoryId}`,
+      canonical: `${siteUrl}/spil/${categoryId}/`,
     },
   };
 }
