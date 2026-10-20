@@ -22,11 +22,37 @@ function subscribe(onChange: () => void) {
 
 const subscribeNever = () => () => {};
 
+// Fallback when localStorage throws (private mode, full quota, blocked site data):
+// the game keeps working for the session, it just is not remembered.
+const memory = new Map<string, string>();
+
 function readRaw(key: string): string | null {
+  if (memory.has(key)) return memory.get(key)!;
   try {
     return window.localStorage.getItem(key);
   } catch {
     return null;
+  }
+}
+
+function writeRaw(key: string, raw: string) {
+  try {
+    window.localStorage.setItem(key, raw);
+    memory.delete(key);
+  } catch (error) {
+    memory.set(key, raw);
+    logger.warn(`Error setting localStorage key "${key}":`, error);
+  }
+  window.dispatchEvent(new Event(LOCAL_EVENT));
+}
+
+function parseOr<T>(raw: string | null, fallback: T, key: string): T {
+  if (raw === null) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch (error) {
+    logger.warn(`Error reading localStorage key "${key}":`, error);
+    return fallback;
   }
 }
 
@@ -42,28 +68,15 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   );
   const isLoaded = useSyncExternalStore(subscribeNever, () => true, () => false);
 
-  const storedValue = useMemo<T>(() => {
-    if (raw === null) return initial;
-    try {
-      return JSON.parse(raw) as T;
-    } catch (error) {
-      logger.warn(`Error reading localStorage key "${key}":`, error);
-      return initial;
-    }
-  }, [raw, key, initial]);
+  const storedValue = useMemo<T>(() => parseOr(raw, initial, key), [raw, key, initial]);
 
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {
-      try {
-        // Read the latest stored value, so two updates in one tick both apply
-        const currentRaw = readRaw(key);
-        const current = currentRaw === null ? initial : (JSON.parse(currentRaw) as T);
-        const valueToStore = value instanceof Function ? value(current) : value;
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        window.dispatchEvent(new Event(LOCAL_EVENT));
-      } catch (error) {
-        logger.warn(`Error setting localStorage key "${key}":`, error);
-      }
+      // Read the latest stored value, so two updates in one tick both apply;
+      // unreadable data falls back to the initial value and is overwritten
+      const current = parseOr(readRaw(key), initial, key);
+      const valueToStore = value instanceof Function ? value(current) : value;
+      writeRaw(key, JSON.stringify(valueToStore));
     },
     [key, initial]
   );
