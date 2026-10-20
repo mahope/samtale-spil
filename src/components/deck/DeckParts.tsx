@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { CARD_TYPE_HINT, CARD_TYPE_LABEL } from "@/data/cardTypes";
 import Link from "next/link";
 import { getDeck, markColorOnWhite, type Deck } from "@/data/decks";
 import type { Question } from "@/types";
@@ -63,7 +64,7 @@ export function CardFace({
 }: {
   categoryId: string;
   categoryName: string;
-  question: Pick<Question, "text" | "depth">;
+  question: Pick<Question, "text" | "depth" | "type">;
   className?: string;
   size?: "md" | "lg";
   footer?: ReactNode;
@@ -91,6 +92,12 @@ export function CardFace({
         </span>
         <span className="pt-0.5 text-sm font-semibold text-[#4b5a53]">{categoryName}</span>
       </div>
+      {question.type && question.type !== "spoergsmaal" && (
+        <p className="mx-6 mt-3 self-start rounded-full px-3 py-1 text-sm font-bold" style={{ backgroundColor: deck.bg, color: deck.ink }}>
+          {CARD_TYPE_LABEL[question.type]}
+          <span className="sr-only">: {CARD_TYPE_HINT[question.type]}</span>
+        </p>
+      )}
       <p
         className={`font-display flex flex-1 items-center px-6 py-6 font-semibold leading-[1.18] tracking-[-0.015em] ${textSize}`}
         style={{ fontStretch: "92%" }}
@@ -118,17 +125,21 @@ export function DeckTile({
   description,
   count,
   href,
+  familievenlig,
 }: {
   categoryId: string;
   name: string;
   description: string;
   count: number;
   href: string;
+  /** Marks the tile for the "Kun familievenlige" filter on /spil/ */
+  familievenlig?: boolean;
 }) {
   const deck = getDeck(categoryId);
   return (
     <Link
       href={href}
+      data-familie={familievenlig === undefined ? undefined : familievenlig ? "ja" : "nej"}
       className="group flex flex-col overflow-hidden rounded-2xl bg-flade shadow-kort ring-1 ring-streg transition-transform duration-150 active:scale-[0.99] motion-safe:hover:-translate-y-0.5"
     >
       <DeckBack categoryId={categoryId} className="relative flex h-24 items-end justify-between px-4 pb-3">

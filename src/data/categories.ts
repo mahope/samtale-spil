@@ -470,7 +470,7 @@ export const categories: Category[] = [
       { id: "sjov-9", categoryId: "sjove", text: "Hvilken sang synger du i badet?", depth: "let" },
       { id: "sjov-10", categoryId: "sjove", text: "Hvad er din mest upopulære holdning?", depth: "medium" },
       { id: "sjov-11", categoryId: "sjove", text: "Hvis du skulle overleve en zombie-apokalypse, hvem ville du have med?", depth: "let" },
-      { id: "sjov-12", categoryId: "sjove", text: "Hvad er det dummeste du har gjort fuld?", depth: "medium" },
+      { id: "sjov-12", categoryId: "sjove", text: "Hvad er det dummeste, du har gjort for at vinde et væddemål?", depth: "medium" },
       { id: "sjov-13", categoryId: "sjove", text: "Hvilken historisk person ville du invitere til middag?", depth: "let" },
       { id: "sjov-14", categoryId: "sjove", text: "Hvad er din værste vane?", depth: "medium" },
       { id: "sjov-15", categoryId: "sjove", text: "Hvis du var en Disney-skurk, hvem ville du være?", depth: "let" },

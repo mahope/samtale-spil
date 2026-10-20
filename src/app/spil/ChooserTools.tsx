@@ -4,11 +4,24 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SearchOverlay } from "@/components/SearchOverlay";
 import { categories } from "@/data/categories";
+import { FAMILY_FRIENDLY_DECKS } from "@/data/cardTypes";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 /** Search and "pick for us": the only interactive parts of the chooser. */
 export function ChooserTools() {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [kunFamilie, setKunFamilie] = useLocalStorage<boolean>("samtale-spil-kun-familie", false);
+
+  // The deck grid is server-rendered; the filter hides tiles with CSS (globals.css)
+  useEffect(() => {
+    const html = document.documentElement;
+    if (kunFamilie) html.dataset.kunFamilie = "";
+    else delete html.dataset.kunFamilie;
+    return () => {
+      delete html.dataset.kunFamilie;
+    };
+  }, [kunFamilie]);
 
   // "/" opens search, unless the user is typing
   useEffect(() => {
@@ -23,7 +36,8 @@ export function ChooserTools() {
   }, []);
 
   const pickRandom = () => {
-    const c = categories[Math.floor(Math.random() * categories.length)];
+    const pool = kunFamilie ? categories.filter((c) => FAMILY_FRIENDLY_DECKS.has(c.id)) : categories;
+    const c = pool[Math.floor(Math.random() * pool.length)];
     router.push(`/spil/${c.id}/`);
   };
 
@@ -46,6 +60,15 @@ export function ChooserTools() {
       >
         Vælg for os
       </button>
+      <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full bg-flade px-4 font-semibold ring-1 ring-streg hover:bg-flade-2">
+        <input
+          type="checkbox"
+          checked={kunFamilie ?? false}
+          onChange={(e) => setKunFamilie(e.target.checked)}
+          className="h-5 w-5 accent-[var(--bord)]"
+        />
+        Kun familievenlige
+      </label>
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   );

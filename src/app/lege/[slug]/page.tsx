@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CARD_TYPE_LABEL } from "@/data/cardTypes";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { legeSider, legeDeck } from "@/data/lege";
@@ -30,8 +31,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: { ...OG_BASE, url, title: side.seoTitle, description: side.metaDescription },
   };
 }
-
-const TYPE_LABEL = { spoergsmaal: "Spørgsmål", opgave: "Opgave", peg: "Peg på" } as const;
 
 export default async function LegePage({ params }: Props) {
   const { slug } = await params;
@@ -116,7 +115,7 @@ export default async function LegePage({ params }: Props) {
                     {i + 1}
                   </span>
                   <span className="text-[1.0625rem] leading-snug">
-                    {k.type !== "spoergsmaal" && <span className="mr-2 text-sm font-bold text-blaek-2">{TYPE_LABEL[k.type]}:</span>}
+                    {k.type !== "spoergsmaal" && <span className="mr-2 text-sm font-bold text-blaek-2">{CARD_TYPE_LABEL[k.type]}:</span>}
                     {k.text}
                   </span>
                 </li>

@@ -2,6 +2,7 @@
  * Party and season games under /lege/ (issue #42): game descriptions plus a small
  * deck of cards per page. Content lives in ./lege-indhold.ts.
  */
+import type { CardType, Question } from "@/types";
 export interface Leg {
   navn: string;
   antal: string;
@@ -14,7 +15,7 @@ export interface Leg {
 export interface LegeKort {
   id: string;
   text: string;
-  type: "spoergsmaal" | "opgave" | "peg";
+  type: CardType;
 }
 
 export interface LegeSide {
@@ -41,4 +42,9 @@ const DECK_BY_PAGE: Record<string, string> = {
 
 export function legeDeck(slug: string): string {
   return DECK_BY_PAGE[slug] ?? "blandet";
+}
+
+/** A /lege/ card as a playable card in that page's deck colours */
+export function legeKortSomKort(slug: string, k: LegeKort): Question {
+  return { id: k.id, categoryId: legeDeck(slug), text: k.text, depth: "let", type: k.type };
 }
