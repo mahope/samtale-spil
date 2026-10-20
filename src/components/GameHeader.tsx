@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import type { Category } from "@/types";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ShareProgressButton } from "@/components/ShareProgressButton";
-import { ShareButton } from "@/components/ShareButton";
+import { CategoryShareButton } from "@/components/CategoryShareButton";
 import { StreakBadge } from "@/components/StreakDisplay";
 import { TimerSettingsPanel } from "@/components/TimerDisplay";
 import { DifficultyFilter } from "@/components/DifficultyFilter";
@@ -151,9 +151,8 @@ export function GameHeader({
           {/* Desktop: Show all actions inline */}
           <div className="hidden md:flex items-center gap-1">
             <ThemeToggle className="text-white" />
-            <ShareButton 
+            <CategoryShareButton
               category={category}
-              type="category"
               className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/90 hover:text-white transition-colors"
             />
             <ShareProgressButton className="text-white/90 hover:text-white" />
@@ -277,9 +276,8 @@ export function GameHeader({
                           </div>
                           <p className="text-slate-800 dark:text-slate-100 font-medium">Del</p>
                         </div>
-                        <ShareButton 
+                        <CategoryShareButton
                           category={category}
-                          type="category"
                           className="p-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                         />
                       </div>

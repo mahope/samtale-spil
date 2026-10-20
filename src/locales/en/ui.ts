@@ -12,6 +12,7 @@ export const ui: typeof da = {
     countdownSteps: ["3", "2", "1", "Point!"],
   },
   depth: { let: "Light", medium: "Medium", dyb: "Deep" },
+  depthPrefix: "Depth",
   cardType: {
     label: { opgave: "Task", peg: "Point", "jeg-har-aldrig": "Never have I ever", joker: "Joker" },
     hint: {
@@ -28,7 +29,20 @@ export const ui: typeof da = {
     progress: (answered: string, total: string) => `${answered} of ${total} cards`,
     progressLabel: (answered: number, total: number) => `${answered} of ${total} cards played`,
     loading: "Shuffling the cards",
+    progressRegion: "Progress",
+    reshuffle: "Shuffle again",
     backHref: "/play/",
+    // Goodtalk shares the deck page; PlayDeck always passes sharePath
+    cardPath: (deckId: string) => `/play/${deckId}/`,
+  },
+  deck: { cards: (n: number) => `${n} cards` },
+  groups: {
+    par: "For the two of you",
+    familie: "Family",
+    venner: "Friends and fun",
+    skole: "School",
+    spejder: "Scouts",
+    dybt: "Deep talks and yourself",
   },
   favorite: { add: "Add to favorites", remove: "Remove from favorites" },
   share: {
@@ -36,5 +50,6 @@ export const ui: typeof da = {
     copy: "Copy question to clipboard",
     category: "Share progress",
     copied: "Copied",
+    dialogTitle: "Share the question",
   },
 };

@@ -21,6 +21,9 @@ const adultAlias = { '@/data/questions/voksne': './src/data/questions/voksne.app
 const localeAlias = {
   '@/locale/ui': `./src/locales/${locale}/ui.ts`,
   '@/locale/site': `./src/locales/${locale}/site.ts`,
+  '@/locale/decks': locale === 'da' ? './src/locales/da/decks.ts' : `./src/locales/${locale}/decks/index.ts`,
+  '@/locale/marks': `./src/locales/${locale}/marks.ts`,
+  ...(locale !== 'da' && { '@/data/followUps': `./src/locales/${locale}/followUps.ts` }),
 };
 
 const nextConfig: NextConfig = {

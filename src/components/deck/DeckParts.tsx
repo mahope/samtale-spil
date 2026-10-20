@@ -34,7 +34,7 @@ const DEPTH_LABEL = ui.depth;
 export function DepthPips({ depth, color }: { depth: Question["depth"]; color: string }) {
   const level = DEPTH_LEVEL[depth];
   return (
-    <span className="inline-flex items-center gap-1" title={`Dybde: ${DEPTH_LABEL[depth].toLowerCase()}`}>
+    <span className="inline-flex items-center gap-1" title={`${ui.depthPrefix}: ${DEPTH_LABEL[depth].toLowerCase()}`}>
       {[1, 2, 3].map((i) => (
         <span
           key={i}
@@ -42,7 +42,7 @@ export function DepthPips({ depth, color }: { depth: Question["depth"]; color: s
           style={i <= level ? { background: color } : { boxShadow: `inset 0 0 0 1.5px ${color}`, opacity: 0.45 }}
         />
       ))}
-      <span className="sr-only">Dybde: {DEPTH_LABEL[depth].toLowerCase()}</span>
+      <span className="sr-only">{`${ui.depthPrefix}: ${DEPTH_LABEL[depth].toLowerCase()}`}</span>
     </span>
   );
 }
@@ -146,7 +146,7 @@ export function DeckTile({
       <DeckBack categoryId={categoryId} className="relative flex h-24 items-end justify-between px-4 pb-3">
         <span className="font-display text-3xl font-extrabold leading-none">{deck.mark}</span>
         <span className="rounded-full bg-black/15 px-2.5 py-1 text-xs font-bold tabular-nums" style={{ color: deck.ink }}>
-          {count} kort
+          {ui.deck.cards(count)}
         </span>
       </DeckBack>
       <div className="flex flex-1 flex-col px-4 pb-4 pt-3">

@@ -4,4 +4,6 @@ export const site = {
   name: "Snakkespil",
   lang: "da",
   ogLocale: "da_DK",
+  /** The report worker (snakkespil.dk/api) only serves this site */
+  report: true,
 };

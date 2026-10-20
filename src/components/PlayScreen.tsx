@@ -73,7 +73,7 @@ export function PlayScreen({
           <div className="flex shrink-0 items-center gap-1">{actions}</div>
         </header>
 
-        <div className="w-full max-w-[23rem]" role="region" aria-label="Fremskridt">
+        <div className="w-full max-w-[23rem]" role="region" aria-label={ui.play.progressRegion}>
           {aboveProgress}
           <div
             className="h-1.5 overflow-hidden rounded-full bg-white/15"
@@ -94,7 +94,7 @@ export function PlayScreen({
               onClick={onReset}
               className="min-h-11 rounded px-2 underline decoration-white/40 underline-offset-4 hover:text-white"
             >
-              Bland forfra
+              {ui.play.reshuffle}
             </button>
           </div>
         </div>

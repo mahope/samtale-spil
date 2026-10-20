@@ -8,6 +8,7 @@
 import { Capacitor } from "@capacitor/core";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { Share } from "@capacitor/share";
+import { ui } from "@/locale/ui";
 
 export const isNative = () => Capacitor.isNativePlatform();
 
@@ -24,7 +25,7 @@ export async function tap(strength: "let" | "fast" = "let") {
 export async function shareText(text: string, url?: string): Promise<"delt" | "kopieret" | "afbrudt"> {
   try {
     if (isNative()) {
-      await Share.share({ text, url, dialogTitle: "Del spørgsmålet" });
+      await Share.share({ text, url, dialogTitle: ui.share.dialogTitle });
       return "delt";
     }
     if (navigator.share) {

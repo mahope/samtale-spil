@@ -99,6 +99,13 @@ jobs:
           grep -q '<html lang="en"' out/index.html || { echo "English build is not lang=en"; exit 1; }
           grep -q 'content="noindex' out/index.html || { echo "English site must be noindex until launch"; exit 1; }
           test ! -e out/spil && test ! -e out/spoergsmaal || { echo "Danish routes leaked into the English build"; exit 1; }
+          grep -q "<loc>https://goodtalkcards.com/questions/" out/sitemap.xml || { echo "English sitemap missing deck pages"; exit 1; }
+          for f in out/questions/*/index.html; do
+            n=$(grep -o 'data-kort="true"' "$f" | wc -l)
+            [ "$n" -ge 20 ] || { echo "$f lists only $n questions"; exit 1; }
+          done
+          # no Danish cards or UI words in the English client code or pages
+          if grep -rlqE 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort' out/; then echo "Danish text in the English build"; exit 1; fi
           if grep -rqE '"adult-[0-9]+"' out/; then echo "adult cards in the English build"; exit 1; fi
 
       - name: Verify nginx config

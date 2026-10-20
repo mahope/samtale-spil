@@ -2,7 +2,11 @@
 
 import { useCallback, useState } from "react";
 import { TIMING } from "@/constants";
-import { SITE_URL, SITE_NAME } from "@/config/site";
+// From the locale module, not config/site: that one counts every card and would pull them all into the bundle
+import { site } from "@/locale/site";
+
+const SITE_URL = site.url;
+const SITE_NAME = site.name;
 import { shareText } from "@/lib/platform";
 import { track } from "@/utils/track";
 
