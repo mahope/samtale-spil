@@ -7,6 +7,7 @@ import { useSocialShare } from "@/hooks/useSocialShare";
 import { Category } from "@/types";
 import { logger } from "@/utils/logger";
 import { TIMING } from "@/constants";
+import { ui } from "@/locale/ui";
 
 interface ShareButtonProps {
   text?: string;
@@ -50,10 +51,10 @@ export function ShareButton({
 
   const copied = type === "question" ? questionCopied : categoryShared;
   const ariaLabel = type === "category" 
-    ? "Del kategori-fremskridt" 
+    ? ui.share.category 
     : canShare 
-      ? "Del spørgsmål" 
-      : "Kopiér spørgsmål til udklipsholder";
+      ? ui.share.question 
+      : ui.share.copy;
 
   return (
     <motion.button

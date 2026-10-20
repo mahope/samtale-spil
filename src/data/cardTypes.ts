@@ -1,20 +1,11 @@
 import type { CardType } from "@/types";
+import { ui } from "@/locale/ui";
 
 /** Label shown on the card face for every type except plain questions */
-export const CARD_TYPE_LABEL: Record<Exclude<CardType, "spoergsmaal">, string> = {
-  opgave: "Opgave",
-  peg: "Peg",
-  "jeg-har-aldrig": "Jeg har aldrig",
-  joker: "Joker",
-};
+export const CARD_TYPE_LABEL: Record<Exclude<CardType, "spoergsmaal">, string> = ui.cardType.label;
 
 /** One line of instruction under the label */
-export const CARD_TYPE_HINT: Record<Exclude<CardType, "spoergsmaal">, string> = {
-  opgave: "Den, der trækker kortet, gør det.",
-  peg: "Tæl ned, og peg alle på samme tid.",
-  "jeg-har-aldrig": "Ræk hånden op, hvis du har.",
-  joker: "Et kort, der bryder rækken. Kan slås fra under Indstillinger.",
-};
+export const CARD_TYPE_HINT: Record<Exclude<CardType, "spoergsmaal">, string> = ui.cardType.hint;
 
 /**
  * Decks that work with children at the table. Used by "Kun familievenlige" on /spil/.

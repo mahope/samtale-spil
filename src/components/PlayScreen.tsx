@@ -5,6 +5,7 @@ import Link from "next/link";
 import { DeckBack } from "@/components/deck/DeckParts";
 import { getDeck } from "@/data/decks";
 import { tap } from "@/lib/platform";
+import { ui } from "@/locale/ui";
 
 interface PlayScreenProps {
   /** Deck id from src/data/decks.ts, used for the header swatch and progress colour */
@@ -35,7 +36,7 @@ interface PlayScreenProps {
 export function PlayScreen({
   deckId,
   title,
-  backHref = "/spil/",
+  backHref = ui.play.backHref,
   actions,
   answered,
   total,
@@ -45,8 +46,8 @@ export function PlayScreen({
   children,
   onNext,
   isTransitioning = false,
-  nextLabel = "Næste kort",
-  hint = "Tryk på kortet for at vende det",
+  nextLabel = ui.play.next,
+  hint = ui.play.hint,
 }: PlayScreenProps) {
   const deck = getDeck(deckId);
   const progress = total > 0 ? Math.min((answered / total) * 100, 100) : 0;
@@ -59,7 +60,7 @@ export function PlayScreen({
           <Link
             href={backHref}
             className="-ml-2 inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-white/90 hover:text-white"
-            aria-label="Tilbage til spillene"
+            aria-label={ui.play.back}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
@@ -80,13 +81,13 @@ export function PlayScreen({
             aria-valuenow={answered}
             aria-valuemin={0}
             aria-valuemax={total}
-            aria-label={`${answered} af ${total} kort spillet`}
+            aria-label={ui.play.progressLabel(answered, total)}
           >
             <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${progress}%`, background: barColor }} />
           </div>
           <div className="mt-2 flex items-center justify-between text-sm text-white/75">
             <span aria-live="polite" className="tabular-nums">
-              {Math.min(answered, total).toLocaleString("da-DK")} af {total.toLocaleString("da-DK")} kort
+              {ui.play.progress(Math.min(answered, total).toLocaleString(ui.numberLocale), total.toLocaleString(ui.numberLocale))}
             </span>
             <button
               type="button"
@@ -123,7 +124,7 @@ export function PlayScreen({
 }
 
 /** Loading state for play screens: the empty table */
-export function PlayScreenLoading({ label = "Blander kortene" }: { label?: string }) {
+export function PlayScreenLoading({ label = ui.play.loading }: { label?: string }) {
   return (
     <div className="filt flex min-h-dvh items-center justify-center px-6" role="status" aria-live="polite">
       <div className="aspect-[5/7] w-full max-w-sm animate-pulse rounded-[1.25rem] bg-white/10" />

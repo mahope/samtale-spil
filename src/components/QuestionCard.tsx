@@ -12,6 +12,7 @@ import { randomFollowUp } from "@/data/followUps";
 import { track } from "@/utils/track";
 import { ReportCard } from "@/components/ReportCard";
 import { CARD_TYPE_HINT, CARD_TYPE_LABEL } from "@/data/cardTypes";
+import { ui } from "@/locale/ui";
 
 interface QuestionCardProps {
   question: Question;
@@ -49,7 +50,7 @@ export const QuestionCard = memo(function QuestionCard({
   const startCountdown = () => {
     timers.current.forEach(clearTimeout);
     tap();
-    const steps = ["3", "2", "1", "Peg nu!"];
+    const steps = ui.card.countdownSteps;
     timers.current = steps.map((step, i) => setTimeout(() => setCountdown(step), i * 900));
     timers.current.push(setTimeout(() => setCountdown(null), steps.length * 900 + 1500));
     track("Peg nedtælling", { kort: question.id });
@@ -89,8 +90,8 @@ export const QuestionCard = memo(function QuestionCard({
         tabIndex={0}
         aria-label={
           isFlipped
-            ? `${type === "spoergsmaal" ? "" : `${CARD_TYPE_LABEL[type]}: `}${question.text} Tryk for at vende kortet tilbage.`
-            : "Vend kortet"
+            ? `${type === "spoergsmaal" ? "" : `${CARD_TYPE_LABEL[type]}: `}${question.text} ${ui.card.flipBack}`
+            : ui.card.flip
         }
         aria-pressed={isFlipped}
         initial={false}
@@ -108,7 +109,7 @@ export const QuestionCard = memo(function QuestionCard({
               {deck.mark}
             </span>
             <span className="mt-6 rounded-full bg-black/15 px-4 py-2 text-base font-semibold" style={{ color: deck.ink }}>
-              Tryk for at vende kortet
+              {ui.card.flipHint}
             </span>
           </DeckBack>
         </div>
@@ -155,7 +156,7 @@ export const QuestionCard = memo(function QuestionCard({
             onClick={startCountdown}
             className="min-h-11 rounded-full bg-white px-4 text-[0.95rem] font-bold text-[#15201b] shadow-kort"
           >
-            Tæl ned
+            {ui.card.countDown}
           </button>
         ) : type === "spoergsmaal" ? (
         <button
@@ -167,7 +168,7 @@ export const QuestionCard = memo(function QuestionCard({
           }}
           className="min-h-11 rounded-full bg-white px-4 text-[0.95rem] font-bold text-[#15201b] shadow-kort"
         >
-          Spørg videre
+          {ui.card.askMore}
         </button>
         ) : null}
       </div>
