@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { legeSider, legeDeck } from "@/data/lege";
+import { legeSider, legeDeck, legeKortSomKort } from "@/data/lege";
 import { useFavorites } from "@/hooks/useLocalStorage";
 import { QuestionCard } from "@/components/QuestionCard";
 import { PlayScreen, dealMotion } from "@/components/PlayScreen";
@@ -22,7 +22,7 @@ function shuffle<T>(items: T[]): T[] {
 export function LegeKortSpil({ slug }: { slug: string }) {
   const side = legeSider.find((s) => s.slug === slug)!;
   const deckId = legeDeck(slug);
-  const toQuestion = (k: (typeof side.kort)[number]): Question => ({ id: k.id, categoryId: deckId, text: k.text, depth: "let" });
+  const toQuestion = (k: (typeof side.kort)[number]): Question => legeKortSomKort(slug, k);
   const [pile, setPile] = useState(() => shuffle(side.kort).map(toQuestion));
   const [index, setIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);

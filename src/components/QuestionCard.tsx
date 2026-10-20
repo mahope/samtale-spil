@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { Question } from "@/types";
 import { ShareButton } from "@/components/ShareButton";
@@ -11,6 +11,7 @@ import { tap } from "@/lib/platform";
 import { randomFollowUp } from "@/data/followUps";
 import { track } from "@/utils/track";
 import { ReportCard } from "@/components/ReportCard";
+import { CARD_TYPE_HINT } from "@/data/cardTypes";
 
 interface QuestionCardProps {
   question: Question;
@@ -39,6 +40,20 @@ export const QuestionCard = memo(function QuestionCard({
   const deck = getDeck(question.categoryId);
   const [followUp, setFollowUp] = useState<string | null>(null);
   const [flippedOnce, setFlippedOnce] = useState(false);
+  const [countdown, setCountdown] = useState<string | null>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  const type = question.type ?? "spoergsmaal";
+
+  // Pointing games: everyone points at the same moment after 3-2-1
+  const startCountdown = () => {
+    timers.current.forEach(clearTimeout);
+    tap();
+    const steps = ["3", "2", "1", "Peg nu!"];
+    timers.current = steps.map((step, i) => setTimeout(() => setCountdown(step), i * 900));
+    timers.current.push(setTimeout(() => setCountdown(null), steps.length * 900 + 1500));
+    track("Peg nedtælling", { kort: question.id });
+  };
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -121,6 +136,15 @@ export const QuestionCard = memo(function QuestionCard({
           />
         </span>
         {question.categoryId !== "custom" && <ReportCard questionId={question.id} />}
+        {type === "peg" ? (
+          <button
+            type="button"
+            onClick={startCountdown}
+            className="min-h-11 rounded-full bg-white px-4 text-[0.95rem] font-bold text-[#15201b] shadow-kort"
+          >
+            Tæl ned
+          </button>
+        ) : type === "spoergsmaal" ? (
         <button
           type="button"
           onClick={() => {
@@ -132,15 +156,17 @@ export const QuestionCard = memo(function QuestionCard({
         >
           Spørg videre
         </button>
+        ) : null}
       </div>
       {/* A follow-up question: the second question is often the best one (docs/forskning.md 2.3) */}
       <p
         className={`mx-auto mt-3 min-h-7 max-w-[20rem] text-center font-display text-lg font-semibold text-white transition-opacity ${
-          followUp && isFlipped ? "opacity-100" : "opacity-0"
+          (followUp || countdown || type !== "spoergsmaal") && isFlipped ? "opacity-100" : "opacity-0"
+        } ${countdown ? "text-4xl" : ""
         }`}
         aria-live="polite"
       >
-        {isFlipped ? followUp : ""}
+        {isFlipped ? (countdown ?? followUp ?? (type !== "spoergsmaal" ? CARD_TYPE_HINT[type] : "")) : ""}
       </p>
     </div>
   );

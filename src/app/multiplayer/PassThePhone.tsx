@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { categories } from "@/data/categories";
+import { legeSider, legeDeck, legeKortSomKort } from "@/data/lege";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useFavorites } from "@/hooks/useLocalStorage";
 import { QuestionCard } from "@/components/QuestionCard";
@@ -14,6 +15,14 @@ import { tap } from "@/lib/platform";
 
 const PLAYERS_KEY = "samtale-spil-pass-players";
 const MIX = "blandet";
+
+/** The party decks from /lege/, with task and pointing cards */
+const LEGE_DECKS = legeSider.map((s) => ({
+  id: `lege-${s.slug}`,
+  name: s.h1.split(":")[0],
+  colourDeck: legeDeck(s.slug),
+  cards: s.kort.map((k) => legeKortSomKort(s.slug, k)),
+}));
 
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
@@ -39,7 +48,10 @@ export function PassThePhone() {
   const players = savedPlayers.length >= 2 ? savedPlayers : ["", ""];
   const named = players.map((p) => p.trim()).filter(Boolean);
   const categoryName = useMemo(
-    () => (deckId === MIX ? "Bland alle" : categories.find((c) => c.id === deckId)?.name ?? ""),
+    () =>
+      deckId === MIX
+        ? "Bland alle"
+        : (categories.find((c) => c.id === deckId) ?? LEGE_DECKS.find((d) => d.id === deckId))?.name ?? "",
     [deckId]
   );
 
@@ -48,7 +60,10 @@ export function PassThePhone() {
   const removePlayer = (i: number) => players.length > 2 && setSavedPlayers(players.filter((_, j) => j !== i));
 
   const start = () => {
-    const source = deckId === MIX ? categories.flatMap((c) => c.questions) : categories.find((c) => c.id === deckId)?.questions ?? [];
+    const source =
+      deckId === MIX
+        ? categories.flatMap((c) => c.questions)
+        : categories.find((c) => c.id === deckId)?.questions ?? LEGE_DECKS.find((d) => d.id === deckId)?.cards ?? [];
     setPile(shuffle(source));
     setTurn(0);
     setIsFlipped(false);
@@ -122,7 +137,7 @@ export function PassThePhone() {
             <fieldset className="mt-8">
               <legend className="text-xl font-bold">Hvilke kort?</legend>
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                {[{ id: MIX, name: "Bland alle" }, ...categories].map((c) => (
+                {[{ id: MIX, name: "Bland alle", colourDeck: MIX }, ...categories.map((c) => ({ ...c, colourDeck: c.id })), ...LEGE_DECKS].map((c) => (
                   <label
                     key={c.id}
                     className={`flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl px-3 ring-1 ${
@@ -137,7 +152,7 @@ export function PassThePhone() {
                       onChange={() => setDeckId(c.id)}
                       className="sr-only"
                     />
-                    <DeckBack categoryId={c.id} className="h-7 w-5 shrink-0 rounded-[4px]" />
+                    <DeckBack categoryId={c.colourDeck} className="h-7 w-5 shrink-0 rounded-[4px]" />
                     <span className="font-semibold leading-tight">{c.name}</span>
                   </label>
                 ))}
@@ -201,7 +216,7 @@ export function PassThePhone() {
             >
               <QuestionCard
                 question={question}
-                categoryName={categories.find((c) => c.id === question.categoryId)?.name ?? ""}
+                categoryName={deckId.startsWith("lege-") ? categoryName : categories.find((c) => c.id === question.categoryId)?.name ?? ""}
                 isFlipped={isFlipped}
                 onFlip={() => setIsFlipped((f) => !f)}
                 isFavorite={isFavorite(question.id)}

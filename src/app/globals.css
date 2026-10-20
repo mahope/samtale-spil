@@ -544,3 +544,9 @@ a:not(.no-underline):hover {
 .dark .glow-on-hover:hover {
   box-shadow: 0 0 20px rgba(129, 140, 248, 0.4);
 }
+
+/* "Kun familievenlige" on /spil/ (ChooserTools sets the attribute) */
+:root[data-kun-familie] [data-familie="nej"],
+:root[data-kun-familie] [data-bunkegruppe]:not(:has([data-familie="ja"])) {
+  display: none;
+}

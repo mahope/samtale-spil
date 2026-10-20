@@ -1,6 +1,7 @@
 import { DeckTile } from "@/components/deck/DeckParts";
 import { groupedCategories } from "@/data/deckGroups";
 import { adultQuestions } from "@/data/questions/voksne";
+import { FAMILY_FRIENDLY_DECKS } from "@/data/cardTypes";
 
 /** All decks as tiles, one section per audience. Server component. */
 export function GroupedDecks({ headingLevel = "h2" }: { headingLevel?: "h2" | "h3" }) {
@@ -8,7 +9,7 @@ export function GroupedDecks({ headingLevel = "h2" }: { headingLevel?: "h2" | "h
   return (
     <div className="mt-8 space-y-10">
       {groupedCategories().map((g) => (
-        <section key={g.id} aria-labelledby={`gruppe-${g.id}`}>
+        <section key={g.id} aria-labelledby={`gruppe-${g.id}`} data-bunkegruppe>
           <Heading id={`gruppe-${g.id}`} className="text-xl font-bold sm:text-2xl">
             {g.title}
           </Heading>
@@ -21,6 +22,7 @@ export function GroupedDecks({ headingLevel = "h2" }: { headingLevel?: "h2" | "h
                 description={c.description}
                 count={c.questions.length}
                 href={`/spil/${c.id}/`}
+                familievenlig={FAMILY_FRIENDLY_DECKS.has(c.id)}
               />
             ))}
             {g.withAdult && adultQuestions.length > 0 && (
@@ -30,6 +32,7 @@ export function GroupedDecks({ headingLevel = "h2" }: { headingLevel?: "h2" | "h
                 description="Intime spørgsmål til par. Kræver at du er fyldt 18."
                 count={adultQuestions.length}
                 href="/spil/voksne/"
+                familievenlig={false}
               />
             )}
           </div>
