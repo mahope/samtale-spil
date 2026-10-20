@@ -6,7 +6,7 @@ export interface DeckGroup {
   title: string;
   /** Category ids in display order */
   decks: string[];
-  /** Show the 18+ deck tile at the end of this group (web only) */
+  /** Show the 18+ deck tile at the end of this group */
   withAdult?: boolean;
 }
 
