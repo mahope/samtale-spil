@@ -91,6 +91,14 @@ jobs:
           APP_BUILD=1 npm run build >/dev/null
           if grep -rqE '"adult-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
 
+      - name: International build (Goodtalk, SITE_LOCALE=en)
+        run: |
+          set -euo pipefail
+          rm -rf out
+          SITE_LOCALE=en npm run build >/dev/null
+          grep -q '<html lang="en"' out/index.html || { echo "English build is not lang=en"; exit 1; }
+          if grep -rqE '"adult-[0-9]+"' out/; then echo "adult cards in the English build"; exit 1; fi
+
       - name: Verify nginx config
         run: |
           set -euo pipefail
