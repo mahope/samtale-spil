@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CardFace } from "@/components/deck/DeckParts";
 import { getCategory } from "@/data/categories";
@@ -12,6 +12,14 @@ import type { Question } from "@/types";
 const DECK = "kend-din-partner";
 const PLAYERS_KEY = "samtale-spil-gaet-spillere";
 const SCORES_KEY = "samtale-spil-gaet-point";
+const GAME_KEY = "samtale-spil-gaet-spil";
+
+interface SavedGame {
+  ids: string[];
+  round: number;
+  mode: Mode;
+  withPoints: boolean;
+}
 
 type Mode = "gaet" | "alle";
 type Phase = "svar" | "gaet" | "afsloeret";
@@ -45,9 +53,22 @@ export function GaetSpil() {
   const [phase, setPhase] = useState<Phase>("svar");
   const [answers, setAnswers] = useState<string[]>([]);
   const [draft, setDraft] = useState("");
+  const [saved, setSaved] = useLocalStorage<SavedGame | null>(GAME_KEY, null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  // Each phase replaces the focused button, so move focus to the new heading
+  useEffect(() => {
+    if (pile) headingRef.current?.focus();
+  }, [pile, phase, round]);
+
+  // Keep the game (not the secret answers) so points survive a reload
+  useEffect(() => {
+    if (pile) setSaved({ ids: pile.map((q) => q.id), round, mode, withPoints });
+  }, [pile, round, mode, withPoints, setSaved]);
 
   const players = (savedPlayers ?? ["", ""]).length >= 2 ? savedPlayers ?? ["", ""] : ["", ""];
   const named = players.map((p) => p.trim()).filter(Boolean);
+  const duplicate = new Set(named.map((p) => p.toLocaleLowerCase("da"))).size < named.length;
   const setPlayer = (i: number, name: string) => setSavedPlayers(players.map((p, j) => (j === i ? name : p)));
 
   const start = () => {
@@ -58,6 +79,20 @@ export function GaetSpil() {
     setDraft("");
     setScores(Object.fromEntries(named.map((n) => [n, 0])));
     track("Spil startet", { kategori: DECK, tilstand: mode === "gaet" ? "gaet-svaret" : "alle-svarer" });
+  };
+
+  const resume = () => {
+    if (!saved) return;
+    const byId = new Map(deck.questions.map((q) => [q.id, q]));
+    const restored = saved.ids.map((id) => byId.get(id)).filter((q): q is Question => Boolean(q));
+    if (restored.length === 0) return;
+    setMode(saved.mode);
+    setWithPoints(saved.withPoints);
+    setPile(restored);
+    setRound(saved.round);
+    setPhase("svar");
+    setAnswers([]);
+    setDraft("");
   };
 
   if (!pile) {
@@ -140,10 +175,16 @@ export function GaetSpil() {
               )}
             </fieldset>
 
-            <button type="submit" disabled={named.length < 2} className={`${primary} w-full text-lg`}>
+            <button type="submit" disabled={named.length < 2 || duplicate} className={`${primary} w-full text-lg`}>
               Start spillet
             </button>
             {named.length < 2 && <p className="text-white/80">Skriv mindst to navne.</p>}
+            {duplicate && <p className="text-white/80">To spillere har samme navn. Giv dem hver sit.</p>}
+            {saved && saved.ids.length > 0 && (
+              <button type="button" onClick={resume} className={`${secondary} w-full`}>
+                Fortsæt spillet fra kort {saved.round + 1}
+              </button>
+            )}
           </form>
         </div>
       </main>
@@ -193,11 +234,14 @@ export function GaetSpil() {
         </ul>
       )}
 
+      <p className="sr-only" aria-live="polite">
+        Kort {round + 1}: {question.text}
+      </p>
       <div className="mt-5 w-full max-w-[21rem] sm:max-w-[23rem]">
         <CardFace categoryId={DECK} categoryName={deck.name} question={question} className="aspect-[5/7]" />
       </div>
 
-      <div className="mt-6 w-full max-w-[23rem]" aria-live="polite">
+      <div className="mt-6 w-full max-w-[23rem]">
         {phase === "svar" && (
           <form
             onSubmit={(e) => {
@@ -205,7 +249,9 @@ export function GaetSpil() {
               saveAnswer();
             }}
           >
-            <h2 className="text-2xl font-bold">{writer}, skriv dit svar</h2>
+            <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold outline-none">
+              {writer}, skriv dit svar
+            </h2>
             <p className="mt-1 text-white/80">
               {mode === "gaet" ? `${guesser} kigger væk imens.` : "De andre kigger væk imens."}
             </p>
@@ -227,7 +273,9 @@ export function GaetSpil() {
 
         {phase === "gaet" && (
           <div>
-            <h2 className="text-2xl font-bold">{guesser}, hvad tror du, {answerer} svarede?</h2>
+            <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold outline-none">
+              {guesser}, hvad tror du, {answerer} svarede?
+            </h2>
             <p className="mt-1 text-white/80">Sig dit gæt højt, og tryk så på Afslør.</p>
             <button type="button" onClick={() => setPhase("afsloeret")} className={`${primary} mt-4 w-full`}>
               Afslør
@@ -237,7 +285,9 @@ export function GaetSpil() {
 
         {phase === "afsloeret" && mode === "gaet" && (
           <div>
-            <p className="text-white/80">{answerer} svarede:</p>
+            <h2 ref={headingRef} tabIndex={-1} className="text-white/80 outline-none">
+              {answerer} svarede:
+            </h2>
             <p className="mt-1 text-2xl font-bold">{answers[0]}</p>
             {withPoints ? (
               <div className="mt-4 grid grid-cols-2 gap-2">
@@ -265,7 +315,9 @@ export function GaetSpil() {
 
         {phase === "afsloeret" && mode === "alle" && (
           <div>
-            <h2 className="text-2xl font-bold">Jeres svar</h2>
+            <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold outline-none">
+              Jeres svar
+            </h2>
             <ul className="mt-3 space-y-2">
               {named.map((p, i) => (
                 <li key={p} className="rounded-xl bg-white/10 p-3">
