@@ -30,7 +30,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-4",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Beskriv en fantasi du gerne vil dele med mig",
+    text: "Hvilken fantasi vil du gerne dele med mig?",
     depth: "dyb",
   },
   {
@@ -68,7 +68,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-10",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Beskriv din perfekte romantiske aften med mig",
+    text: "Hvordan ser din perfekte romantiske aften med mig ud?",
     depth: "let",
   },
   {
@@ -106,7 +106,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-16",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvornår føler du dig mest forbundet med mig?",
+    text: "Hvornår har du lyst til mig, uden at jeg opdager det?",
     depth: "medium",
   },
   {
@@ -126,7 +126,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-19",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvad var det første, du lagde mærke til ved mig?",
+    text: "Hvad tænkte du om mig, første gang vi var alene sammen?",
     depth: "let",
   },
   {
