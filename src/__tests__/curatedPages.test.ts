@@ -4,10 +4,10 @@ import { categories } from "@/data/categories";
 
 const ids = new Set(categories.flatMap((c) => c.questions.map((q) => q.id)));
 
-// Sections whose heading starts with "Idéer" hold ideas, not questions
+// Sections headed "Idéer …" or "Sådan …" hold ideas and tips, not questions
 const questionCount = (p: (typeof curatedPages)[number]) =>
   p.sections
-    .filter((s) => !s.heading.startsWith("Idéer"))
+    .filter((s) => !/^(Idéer|Sådan)/.test(s.heading))
     .reduce((n, s) => n + (s.questionIds?.length ?? 0) + (s.items?.length ?? 0), 0);
 
 describe("curated pages", () => {
