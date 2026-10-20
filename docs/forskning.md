@@ -222,6 +222,10 @@ Med de søgninger der var til rådighed fandt jeg følgende nyere, fagfællebed�
 
 ---
 
+### 3.11 Kærlighedssprog
+
+Impett, Park & Muise (2024) konkluderer, at den sparsomme forskning samlet ikke giver stærk støtte til bogens tre antagelser (hver person har ét foretrukket sprog, der er fem sprog, og par er mere tilfredse, når de taler hinandens sprog). De foreslår i stedet billedet af en "alsidig kost". Enkeltstudierne er blandede: Bunt & Hazelwood (2017, 67 par) fandt begrænset støtte til at matchende sprog hænger sammen med tilfredshed, mens Mostova m.fl. (2022, 100 par) fandt en sammenhæng mellem at partneren udtrykker kærlighed på den foretrukne måde og tilfredshed. Begge er tværsnitsstudier. For Snakkespil: brug emnet som samtaleanledning, aldrig som test eller typeinddeling.
+
 ## 4. Forslag til nye bunker og spilformer
 
 Alle forslag kan bygges i det eksisterende format. Navne er forslag.
@@ -391,7 +395,7 @@ Statusmærker:
 | 23 | Gottman, J. M., Coan, J., Carrere, S., & Swanson, C. (1998) | Predicting marital happiness and stability from newlywed interactions | Journal of Marriage and the Family, 60 | 10.2307/353438 | Metadata + sekundær |
 | 24 | Gottman, J. M., & Levenson, R. W. (2000) | The timing of divorce: Predicting when a couple will divorce over a 14-year period | Journal of Marriage and the Family, 62, 737-745 | DOI ikke verificeret | Sekundær |
 | 25 | Driver, J. L., & Gottman, J. M. (2004) | Daily marital interactions and positive affect during marital conflict among newlywed couples | Family Process, 43(3), 301-314 | 10.1111/j.1545-5300.2004.00024.x | Metadata |
-| 26 | Heyman, R. E., & Smith Slep, A. M. (2001) | The hazards of predicting divorce without crossvalidation | Journal of Marriage and Family, 63(2), 473-479 | DOI ikke verificeret | Sekundær |
+| 26 | Heyman, R. E., & Smith Slep, A. M. (2001) | The hazards of predicting divorce without crossvalidation | Journal of Marriage and Family, 63(2), 473-479 | 10.1111/j.1741-3737.2001.00473.x | Sekundær (DOI verificeret i Crossref 20/10-2026) |
 | 27 | Rathgeber, M., Bürkner, P.-C., Schiller, E.-M., & Holling, H. (2019; online 2018) | The efficacy of emotionally focused couples therapy and behavioral couples therapy: A meta-analysis | Journal of Marital and Family Therapy, 45(3) | 10.1111/jmft.12336 | Metadata + sekundær (abstract-uddrag) |
 | 28 | Kennedy, N., Johnson, S. M., Wiebe, S. A., Willett, J. B., & Tasca, G. A. (2018/2019) | Conversations for connection: An outcome assessment of the Hold-Me-Tight relationship-education program for couples | Journal of Marital and Family Therapy | 10.1111/jmft.12356 | Metadata + sekundær (afhandlingens resumé, uOttawa) |
 | 29 | Mallory, A. B., Stanton, A. M., & Handy, A. B. (2019) | Couples' sexual communication and dimensions of sexual function: A meta-analysis | The Journal of Sex Research, 56(7) | 10.1080/00224499.2019.1568375 | Metadata + sekundær |
@@ -412,8 +416,16 @@ Statusmærker:
 | 43 | Rose, S., Bisson, J., Churchill, R., & Wessely, S. (2002) | Psychological debriefing for preventing post traumatic stress disorder (PTSD) | Cochrane Database of Systematic Reviews, CD000560 | 10.1002/14651858.CD000560 | Sekundær (plain language summary og abstract-uddrag) |
 | 44 | Welker, Slatcher m.fl. (ca. 2014-2015) | Fast Friends med to par (konferencebidrag, SPSP) | Pressemeddelelse, Wayne State University; ikke verificeret som tidsskriftsartikel | Ingen | Sekundær; bruges kun som inspiration |
 | 45 | (Grå litteratur) Master-afhandling, Utrecht Universitet (2024) | Icebreaker med selvafsløring og åben kommunikation i små grupper | studenttheses.uu.nl (handle 20.500.12932/47301) | Ingen | Sekundær; ikke fagfællebedømt, kun nævnt for at vise svag evidens |
+| 46 | Chapman, G. (1992) | The Five Love Languages: How to Express Heartfelt Commitment to Your Mate | Bog, Northfield Publishing (senere udgaver 2004 og 2015 med titlen The 5 Love Languages: The Secret to Love That Lasts) | Ingen DOI (bog) | Metadata (år, titel og forlag via bibliotekskataloger og Wikipedia; bogen ikke læst) |
+| 47 | Impett, E. A., Park, H. G., & Muise, A. (2024) | Popular psychology through a scientific lens: Evaluating love languages from a relationship science perspective | Current Directions in Psychological Science, 33(2), 87-92 | 10.1177/09637214231217663 | Abstract læst (udgiverens abstract via Crossref; preprint 10.31234/osf.io/ajcfu) |
+| 48 | Bunt, S., & Hazelwood, Z. J. (2017) | Walking the walk, talking the talk: Love languages, self-regulation, and relationship satisfaction | Personal Relationships, 24(2), 280-290 | 10.1111/pere.12182 | Abstract læst (udgiverens abstract via Crossref) |
+| 49 | Mostova, O., Stolarski, M., & Matthews, G. (2022) | I love the way you love me: Responding to partner's love language preferences boosts satisfaction in romantic heterosexual couples | PLOS ONE, 17(6), e0269429 | 10.1371/journal.pone.0269429 | Abstract læst (delvist, hos PLOS: 100 par, matchning hang sammen med relations- og seksuel tilfredshed) |
+| 50 | Carrère, S., & Gottman, J. M. (1999) | Predicting divorce among newlyweds from the first three minutes of a marital conflict discussion | Family Process, 38(3), 293-301 | 10.1111/j.1545-5300.1999.00293.x | Metadata |
+| 51 | Gottman, J. M., & Silver, N. (1999) | The Seven Principles for Making Marriage Work | Bog, Harmony Books (Crown Publishing Group), New York | Ingen DOI (bog) | Metadata (forlag og år via bibliotekskatalog; kapitel 4 "Enhance Your Love Maps" set i indholdsfortegnelse, ikke læst) |
 
-Antal kilder: 46, heraf 40 fagfællebedømte tidsskriftsartikler, metaanalyser og reviews, 3 bøger/bogkapitler (nr. 2, 12, 14) og 3 grå litteratur (nr. 34 arbejdspapir, nr. 44 pressemeddelelse, nr. 45 master-afhandling).
+Nr. 46-51 tilføjet 20. oktober 2026 til guiderne under /guide/ (issue #47).
+
+Antal kilder: 52 (nr. 46-51 se ovenfor), heraf 40 fagfællebedømte tidsskriftsartikler, metaanalyser og reviews, 3 bøger/bogkapitler (nr. 2, 12, 14) og 3 grå litteratur (nr. 34 arbejdspapir, nr. 44 pressemeddelelse, nr. 45 master-afhandling).
 
 ### Søgebudget
 41 af 45 WebSearch-kald brugt. Derudover WebFetch mod Crossref, Europe PMC, APS og originalen af Aron et al. 1997 (tæller ikke i budgettet).
