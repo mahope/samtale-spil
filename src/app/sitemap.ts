@@ -27,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.9,
     })),
+    { url: `${SITE_URL}/saadan-spiller-i/`, lastModified, changeFrequency: "yearly", priority: 0.5 },
     { url: `${SITE_URL}/om/`, lastModified, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/privatliv/`, lastModified, changeFrequency: "yearly", priority: 0.2 },
   ];
