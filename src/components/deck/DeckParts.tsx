@@ -127,6 +127,7 @@ export function DeckTile({
   count,
   href,
   familievenlig,
+  headingLevel = "h3",
 }: {
   categoryId: string;
   name: string;
@@ -135,7 +136,9 @@ export function DeckTile({
   href: string;
   /** Marks the tile for the "Kun familievenlige" filter on /spil/ */
   familievenlig?: boolean;
+  headingLevel?: "h3" | "h4";
 }) {
+  const Heading = headingLevel;
   const deck = getDeck(categoryId);
   return (
     <Link
@@ -150,7 +153,7 @@ export function DeckTile({
         </span>
       </DeckBack>
       <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
-        <h3 className="text-lg font-bold leading-snug group-hover:underline">{name}</h3>
+        <Heading className="text-lg font-bold leading-snug group-hover:underline">{name}</Heading>
         <p className="mt-1 text-[0.95rem] leading-snug text-blaek-2">{description}</p>
       </div>
     </Link>

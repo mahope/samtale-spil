@@ -51,7 +51,7 @@ export default function Home() {
               </h3>
               <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
                 {g.decks.map((d) => (
-                  <DeckTile key={d.id} categoryId={d.id} name={d.name} description={d.description} count={d.questions.length} href={`/play/${d.slug}/`} />
+                  <DeckTile key={d.id} categoryId={d.id} name={d.name} description={d.description} count={d.questions.length} href={`/play/${d.slug}/`} headingLevel="h4" />
                 ))}
               </div>
             </section>

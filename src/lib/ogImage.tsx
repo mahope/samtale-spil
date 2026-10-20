@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { getDeck, markColorOnWhite } from "@/data/decks";
+import { site } from "@/locale/site";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
@@ -45,10 +46,10 @@ export function renderOgImage({
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: 610 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 34, fontWeight: 700 }}>
             <div style={{ width: 44, height: 44, borderRadius: 10, background: "#f4c04e", display: "flex" }} />
-            Snakkespil
+            {site.name}
           </div>
           <div style={{ fontSize: title.length > 40 ? 62 : 74, fontWeight: 800, lineHeight: 1.04, letterSpacing: -2 }}>{title}</div>
-          <div style={{ fontSize: 30, color: "rgba(255,255,255,0.8)" }}>Gratis samtalekort på snakkespil.dk</div>
+          <div style={{ fontSize: 30, color: "rgba(255,255,255,0.8)" }}>{site.ogTagline}</div>
         </div>
         <div style={{ display: "flex", position: "relative", width: 420, marginLeft: 30 }}>
           <div

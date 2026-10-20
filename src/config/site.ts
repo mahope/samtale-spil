@@ -8,7 +8,13 @@ export const SITE_URL = site.url;
 export const SITE_NAME = site.name;
 
 /** Next.js merges openGraph shallowly: pages that set openGraph spread this first. */
-export const OG_BASE = { siteName: SITE_NAME, locale: site.ogLocale, type: "website" as const };
+export const OG_BASE = {
+  siteName: SITE_NAME,
+  locale: site.ogLocale,
+  type: "website" as const,
+  // International sites serve their image from /og.png; Danish pages get theirs from opengraph-image.tsx
+  ...(site.lang !== "da" && { images: [{ url: "/og.png", width: 1200, height: 630 }] }),
+};
 
 /** Totals derived from the question data, so copy never drifts from reality. */
 export const CATEGORY_COUNT = categories.length;

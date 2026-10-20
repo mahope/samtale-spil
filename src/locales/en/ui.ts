@@ -32,8 +32,8 @@ export const ui: typeof da = {
     progressRegion: "Progress",
     reshuffle: "Shuffle again",
     backHref: "/play/",
-    // Goodtalk shares the deck page; PlayDeck always passes sharePath
-    cardPath: (deckId: string) => `/play/${deckId}/`,
+    // Card ids are Danish deck ids, which are not URLs here; PlayDeck passes the real sharePath
+    cardPath: () => "/play/",
   },
   deck: { cards: (n: number) => `${n} cards` },
   groups: {

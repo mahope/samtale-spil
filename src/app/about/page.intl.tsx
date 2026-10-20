@@ -27,7 +27,7 @@ export default function About() {
         in Danish as <a href="https://snakkespil.dk" hrefLang="da">Snakkespil</a>.
       </p>
       <h2>No account, no ads</h2>
-      <p>Favorites and progress are saved in your own browser. We count visits without cookies, and we never sell or share data.</p>
+      <p>Nothing you do here is tied to you. There are no accounts, no tracking cookies, and we never sell or share data.</p>
     </IntlTextPage>
   );
 }

@@ -27,6 +27,7 @@ describe("Goodtalk (English) decks", () => {
     const marks = entries.map(([id]) => deckMarks[id]);
     expect(marks.every(Boolean)).toBe(true);
     expect(new Set(marks).size).toBe(marks.length);
+    for (const [id, d] of entries) expect(deckMarks[id], id).toBe(d.mark);
   });
 
   it("promise the right number of cards and keep search snippets short", () => {

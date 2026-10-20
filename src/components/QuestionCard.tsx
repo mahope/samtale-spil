@@ -136,7 +136,7 @@ export const QuestionCard = memo(function QuestionCard({
         aria-hidden={!isFlipped}
         inert={!isFlipped}
       >
-        {type !== "joker" && (
+        {type !== "joker" && site.favorites && (
           <span className="rounded-full bg-white text-[#15201b] shadow-kort">
             <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
           </span>

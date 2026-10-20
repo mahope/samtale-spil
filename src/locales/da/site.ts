@@ -6,4 +6,7 @@ export const site = {
   ogLocale: "da_DK",
   /** The report worker (snakkespil.dk/api) only serves this site */
   report: true,
+  /** Favourites page exists (/favoritter/) */
+  favorites: true,
+  ogTagline: "Gratis samtalekort på snakkespil.dk",
 };

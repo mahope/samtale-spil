@@ -1,13 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
+import { site } from "@/locale/site";
 
 // International sites (SITE_LOCALE != "da"), issue #30. Kept out of search until launch.
 const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], axes: ["opsz", "wdth"] });
 const body = Atkinson_Hyperlegible_Next({ variable: "--font-body", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://goodtalkcards.com"),
+  metadataBase: new URL(site.url),
+  openGraph: { siteName: site.name, locale: site.ogLocale, type: "website", images: [{ url: "/og.png", width: 1200, height: 630 }] },
   title: { default: "Goodtalk: free conversation cards", template: "%s | Goodtalk" },
   description: "Free conversation cards for couples, families and friends. Coming soon.",
   robots: { index: false, follow: false },
@@ -18,7 +20,12 @@ export const viewport: Viewport = { themeColor: "#1d4a38", width: "device-width"
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
-      <body className="bg-papir text-blaek antialiased">{children}</body>
+      <body className="bg-papir text-blaek antialiased">
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

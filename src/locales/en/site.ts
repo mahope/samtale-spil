@@ -7,4 +7,6 @@ export const site: typeof da = {
   lang: "en",
   ogLocale: "en_US",
   report: false,
+  favorites: false,
+  ogTagline: "Free conversation cards at goodtalkcards.com",
 };
