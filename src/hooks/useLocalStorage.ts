@@ -1,53 +1,84 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { logger } from "@/utils/logger";
 import { STORAGE_KEYS } from "@/constants";
 
-// Generic hook for localStorage with SSR safety
-export function useLocalStorage<T>(key: string, initialValue: T) {
-  // Use lazy initializer to read from localStorage on first render (client-side only)
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === 'undefined') return initialValue;
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch {
-      return initialValue;
-    }
-  });
-  const [isLoaded, setIsLoaded] = useState(() => typeof window !== 'undefined');
+// Generic hook for localStorage with SSR safety.
+// Built on useSyncExternalStore: while hydrating, React renders the server snapshot
+// (the initial value), so server HTML and the first client render always match;
+// right after, it re-renders with the stored value. Outside hydration the stored
+// value is read synchronously. Writes notify every hook instance using the key.
+const LOCAL_EVENT = "snakkespil-storage";
 
-  // Handle hydration and key changes
-  useEffect(() => {
-    // Only update if we haven't loaded yet (SSR case)
-    if (!isLoaded) {
-      requestAnimationFrame(() => {
-        try {
-          const item = window.localStorage.getItem(key);
-          if (item) {
-            setStoredValue(JSON.parse(item));
-          }
-        } catch (error) {
-          logger.warn(`Error reading localStorage key "${key}":`, error);
-        }
-        setIsLoaded(true);
-      });
-    }
-  }, [key, isLoaded]);
+function subscribe(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(LOCAL_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(LOCAL_EVENT, onChange);
+  };
+}
+
+const subscribeNever = () => () => {};
+
+// Fallback when localStorage throws (private mode, full quota, blocked site data):
+// the game keeps working for the session, it just is not remembered.
+const memory = new Map<string, string>();
+
+function readRaw(key: string): string | null {
+  if (memory.has(key)) return memory.get(key)!;
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeRaw(key: string, raw: string) {
+  try {
+    window.localStorage.setItem(key, raw);
+    memory.delete(key);
+  } catch (error) {
+    memory.set(key, raw);
+    logger.warn(`Error setting localStorage key "${key}":`, error);
+  }
+  window.dispatchEvent(new Event(LOCAL_EVENT));
+}
+
+function parseOr<T>(raw: string | null, fallback: T, key: string): T {
+  if (raw === null) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch (error) {
+    logger.warn(`Error reading localStorage key "${key}":`, error);
+    return fallback;
+  }
+}
+
+export function useLocalStorage<T>(key: string, initialValue: T) {
+  // The first initial value is kept, so callers may pass literals without
+  // producing a new identity on every render
+  const [initial] = useState(initialValue);
+
+  const raw = useSyncExternalStore(
+    subscribe,
+    () => readRaw(key),
+    () => null
+  );
+  const isLoaded = useSyncExternalStore(subscribeNever, () => true, () => false);
+
+  const storedValue = useMemo<T>(() => parseOr(raw, initial, key), [raw, key, initial]);
 
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {
-      try {
-        const valueToStore =
-          value instanceof Function ? value(storedValue) : value;
-        setStoredValue(valueToStore);
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-      } catch (error) {
-        logger.warn(`Error setting localStorage key "${key}":`, error);
-      }
+      // Read the latest stored value, so two updates in one tick both apply;
+      // unreadable data falls back to the initial value and is overwritten
+      const current = parseOr(readRaw(key), initial, key);
+      const valueToStore = value instanceof Function ? value(current) : value;
+      writeRaw(key, JSON.stringify(valueToStore));
     },
-    [key, storedValue]
+    [key, initial]
   );
 
   return [storedValue, setValue, isLoaded] as const;
