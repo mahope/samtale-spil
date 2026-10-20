@@ -8,7 +8,7 @@ export interface Category {
 }
 
 /** What the card asks you to do; plain questions are the default */
-export type CardType = "spoergsmaal" | "opgave" | "peg" | "jeg-har-aldrig";
+export type CardType = "spoergsmaal" | "opgave" | "peg" | "jeg-har-aldrig" | "joker";
 
 export interface Question {
   id: string;

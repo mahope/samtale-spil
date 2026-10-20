@@ -36,6 +36,21 @@ export default function HowToPlayPage() {
         Kom tilbage til spillet igen. Et par kort en gang om ugen giver mere end en lang aften en gang om året.
       </p>
 
+      <h2>Spilformer</h2>
+      <p>
+        <Link href="/spil/aaret-der-gik/">Året der gik</Link> er fire runder til nytår, fødselsdage og årsdage: først ser
+        I tilbage på året, så gætter I hinandens svar, så ser I frem, og til sidst gætter I igen.
+      </p>
+      <p>
+        <Link href="/spil/trappen/">Trappen</Link> går fra lette til dybe kort, og{" "}
+        <Link href="/spil/gaet/">Gæt svaret</Link> lader den ene svare i hemmelighed, mens den anden gætter.
+      </p>
+      <p>
+        Cirka hvert tiende kort er en joker, som bryder rækken: stil dit eget spørgsmål, eller giv kortet videre. Jokeren
+        kan slås fra under <Link href="/indstillinger/">Indstillinger</Link>. De faste runder slutter med et let kort, så I
+        slutter på noget godt.
+      </p>
+
       <h2>Når en snak bliver svær</h2>
       <p>Nogle gange rammer et spørgsmål noget ømt. Det er ikke et tegn på, at noget er galt. Et par gode greb:</p>
       <ul>

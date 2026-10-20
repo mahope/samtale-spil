@@ -30,6 +30,12 @@ const modes = [
     text: "Tre lette kort til familiebordet.",
   },
   {
+    href: "/spil/aaret-der-gik/",
+    deck: "aaret",
+    title: "Året der gik",
+    text: "Fire runder: se tilbage, gæt, se frem og gæt igen. Til nytår og fødselsdage.",
+  },
+  {
     href: "/spil/shuffle-all/",
     deck: "blandet",
     title: "Bland alle kort",

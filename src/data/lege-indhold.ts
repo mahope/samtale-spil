@@ -881,6 +881,7 @@ export const legeSider: LegeSide[] =
       }
     ],
     "relaterede": [
+      "/spil/aaret-der-gik/",
       "/spoergsmaal/fremtid/",
       "/spoergsmaal/selvindsigt/",
       "/spoergsmaal/tak/",

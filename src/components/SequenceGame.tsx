@@ -9,12 +9,23 @@ import { QuestionCard } from "@/components/QuestionCard";
 import { PlayScreen, dealMotion } from "@/components/PlayScreen";
 import { track } from "@/utils/track";
 import type { Question } from "@/types";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { JOKER_KEY, jokerAt } from "@/lib/joker";
 
 export interface SequenceStep {
   depth: Question["depth"];
   /** Shown above the card, e.g. "Trin 1: lette spørgsmål" */
   label: string;
+  /** Draw from these cards instead of the decks (depth is then ignored) */
+  from?: Question[];
 }
+
+// Every run ends on a light or grateful card (docs/forskning.md 2.5)
+const CLOSING: SequenceStep = {
+  depth: "let",
+  label: "Til sidst: et let kort at slutte af med",
+  from: (getCategory("tak")?.questions ?? []).filter((q) => q.depth === "let"),
+};
 
 function pick<T>(items: T[], n: number): T[] {
   const a = [...items];
@@ -50,6 +61,8 @@ export function SequenceGame({
   doneText: string;
 }) {
   const { isFavorite, toggleFavorite } = useFavorites();
+  const [jokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
+  const allSteps = [...steps, CLOSING];
   const [round, setRound] = useState(0);
   const [index, setIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -58,16 +71,18 @@ export function SequenceGame({
   const draw = () => {
     const pool = categories.filter((c) => decks.includes(c.id)).flatMap((c) => c.questions);
     const used = new Set<string>();
-    return steps.map((step) => {
-      const choice = pick(pool.filter((q) => q.depth === step.depth && !used.has(q.id)), 1)[0];
+    return allSteps.map((step) => {
+      const from = step.from ?? pool.filter((q) => q.depth === step.depth);
+      const choice = pick(from.filter((q) => !used.has(q.id)), 1)[0];
       if (choice) used.add(choice.id);
       return choice;
     });
   };
   const [cards, setCards] = useState(draw);
 
-  const done = index >= steps.length;
-  const card = cards[index];
+  const done = index >= allSteps.length;
+  const drawn = cards[index];
+  const card = (drawn && jokerAt(index, drawn.categoryId, jokerOn ?? true)) ?? drawn;
 
   const [isTransitioning, setIsTransitioning] = useState(false);
   const next = () => {
@@ -75,7 +90,7 @@ export function SequenceGame({
     setIsTransitioning(true);
     setTimeout(() => setIsTransitioning(false), 450);
     if (index === 0 && round === 0) track("Spil startet", { tilstand: mode });
-    if (index + 1 >= steps.length) track("Spil gennemført", { tilstand: mode });
+    if (index + 1 >= allSteps.length) track("Spil gennemført", { tilstand: mode });
     setIsFlipped(false);
     setIndex((i) => i + 1);
   };
@@ -113,19 +128,19 @@ export function SequenceGame({
       deckId={deckId}
       title={title}
       answered={index}
-      total={steps.length}
+      total={allSteps.length}
       onReset={restart}
-      aboveProgress={<p className="mb-2 text-center text-sm font-semibold text-white/85">{steps[index].label}</p>}
+      aboveProgress={<p className="mb-2 text-center text-sm font-semibold text-white/85">{allSteps[index].label}</p>}
       onNext={next}
       isTransitioning={isTransitioning}
-      nextLabel={index + 1 >= steps.length ? "Afslut" : "Næste kort"}
+      nextLabel={index + 1 >= allSteps.length ? "Afslut" : "Næste kort"}
       hint="Svar begge to, og spørg gerne videre"
     >
       <AnimatePresence mode="wait">
         <motion.div key={`${round}-${card.id}`} {...dealMotion} className="w-full">
           <QuestionCard
             question={card}
-            categoryName={getCategory(card.categoryId)?.name ?? title}
+            categoryName={card.type === "joker" ? "Joker" : getCategory(card.categoryId)?.name ?? title}
             isFlipped={isFlipped}
             onFlip={() => setIsFlipped((f) => !f)}
             isFavorite={isFavorite(card.id)}

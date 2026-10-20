@@ -7,6 +7,8 @@ import { useFavorites } from "@/hooks/useLocalStorage";
 import { QuestionCard } from "@/components/QuestionCard";
 import { PlayScreen, dealMotion } from "@/components/PlayScreen";
 import { track } from "@/utils/track";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { JOKER_KEY, jokerAt } from "@/lib/joker";
 import type { Question } from "@/types";
 
 function shuffle<T>(items: T[]): T[] {
@@ -27,7 +29,9 @@ export function LegeKortSpil({ slug }: { slug: string }) {
   const [index, setIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
-  const card = pile[index % pile.length];
+  const [jokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
+  const drawn = pile[index % pile.length];
+  const card = jokerAt(index, drawn.categoryId, jokerOn ?? true) ?? drawn;
 
   const next = () => {
     if (index === 0) track("Spil startet", { tilstand: `lege-${slug}` });
