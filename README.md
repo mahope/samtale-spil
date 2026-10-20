@@ -6,13 +6,15 @@ Live at **https://snakkespil.dk**.
 
 ## What it is
 
-- Over 2,000 cards in 23 decks plus an 18+ deck, each marked light, medium or deep (counts are derived from `src/data/`)
-- Play screen per deck, "shuffle all", pass-the-phone, Trappen (light to deep), Aftensmad, "Spørg videre" follow-ups and your own question sets
-- Server-rendered question pages under `/spoergsmaal/<deck>/` and party/season games under `/lege/` for search
+- About 2,700 cards in 35 decks grouped by audience (couples, family, friends, school, scouts, deep talks) plus an 18+ deck on the website only; counts are derived from `src/data/`
+- Card types: question, task, point-at, never-have-I-ever and joker (`src/data/cardTypes.ts`), and a "family friendly" filter
+- Play screen per deck, "shuffle all", pass-the-phone, Trappen, Aftensmad, Året der gik, Gæt svaret (secret answers and points), "Spørg videre" follow-ups and your own question sets
+- Server-rendered pages for search: decks and curated pages under `/spoergsmaal/`, party games under `/lege/`, guides under `/guide/`, `/dagens-spoergsmaal/` and `/generator/`
+- Free print-yourself PDFs for every deck under `/print/`, built at export time (`src/lib/printPdf.ts`)
 - "Rapportér" on every card and a public stats page (`/statistik/samlet/`), served by the Cloudflare Worker in `worker/`
 - No accounts and no cookies: favourites, progress and custom questions live in `localStorage`
 - Cookieless analytics with self-hosted Plausible (`src/utils/track.ts`)
-- Installable PWA and native iOS/Android apps (Capacitor) built from the same export
+- Installable PWA and native iOS/Android apps (Capacitor) built from the same export; the apps are built with `APP_BUILD=1` and leave out the 18+ deck
 
 ## Stack
 
