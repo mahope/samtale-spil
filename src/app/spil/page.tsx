@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useMemo, useCallback, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { categories, getTotalQuestionCount } from "@/data/categories";

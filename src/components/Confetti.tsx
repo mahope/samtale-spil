@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { TIMING } from "@/constants";
 import { useFocusTrap } from "@/hooks/useFocusTrap";

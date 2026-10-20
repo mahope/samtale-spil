@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { getCategory, getRandomQuestionFromAllWithCustom, getTotalQuestionCountWithCustom } from "@/data/categories";

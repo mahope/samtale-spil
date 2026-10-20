@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import type { PanInfo } from "framer-motion";
+import type { PanInfo } from "motion/react";
 
 export type SwipeDirection = "left" | "right" | "up" | "down" | null;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { CustomQuestion, CATEGORY_TAGS } from "@/hooks/useCustomQuestions";
 import { InteractiveCard } from "@/components/InteractiveCard";
 import { DepthBadgeWithEmoji } from "@/components/DepthBadge";

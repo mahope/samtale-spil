@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import type { Question } from "@/types";
 
 // Memoized Depth Indicator - prevents re-renders when depth doesn't change

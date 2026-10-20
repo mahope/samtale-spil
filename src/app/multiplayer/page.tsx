@@ -4,7 +4,7 @@ import { useMultiplayer } from "@/hooks/useMultiplayer";
 import { MultiplayerJoin } from "@/components/MultiplayerJoin";
 import { MultiplayerLobby } from "@/components/MultiplayerLobby";
 import { MultiplayerGame } from "./MultiplayerGame";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { logger } from "@/utils/logger";
 import { useState } from "react";
 

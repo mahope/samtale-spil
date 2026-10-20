@@ -10,7 +10,7 @@
  * - mine-spoergsmaal/page.tsx (DEPTH_OPTIONS)
  */
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export type DepthLevel = "let" | "medium" | "dyb";
 

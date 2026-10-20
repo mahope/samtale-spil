@@ -17,8 +17,8 @@ const nextConfig: NextConfig = {
   
   // Performance optimizations
   experimental: {
-    // Enable optimized package imports for framer-motion
-    optimizePackageImports: ['framer-motion'],
+    // Enable optimized package imports for motion
+    optimizePackageImports: ['motion'],
   },
   
   // Compiler optimizations

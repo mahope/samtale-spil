@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import type { Player, MultiplayerSettings } from "@/types/multiplayer";
 import { PLAYER_EMOJIS } from "@/types/multiplayer";
 import { categories } from "@/data/categories";
