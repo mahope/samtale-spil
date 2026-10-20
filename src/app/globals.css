@@ -21,6 +21,7 @@
   --kridt-blaek: #241a03;
   --fokus: #1d63d8;
   --skygge: 0 1px 2px rgb(21 32 27 / 0.12), 0 8px 24px -12px rgb(21 32 27 / 0.35);
+  --graf: var(--bord);   /* single-series chart marks */
 
   /* legacy names still used by older components */
   --background: var(--papir);
@@ -44,6 +45,7 @@
   --bord-dyb: #0b2219;
   --bord-lys: #24533f;
   --fokus: #f4c04e;
+  --graf: #f4c04e;
   --skygge: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -12px rgb(0 0 0 / 0.7);
 }
 

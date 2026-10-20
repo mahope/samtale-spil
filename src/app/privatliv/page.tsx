@@ -30,6 +30,17 @@ export default function PrivacyPage() {
       <p>
         Teksten i dine egne spørgsmål bliver aldrig sendt nogen steder hen.
       </p>
+      <p>
+        Tallene på siden »Hvad spiller folk?« kommer fra den samme anonyme statistik og viser kun summer.
+      </p>
+
+      <h2>Når du rapporterer et kort</h2>
+      <p>
+        Rapportér-knappen sender kortets nummer, den årsag du vælger, og din kommentar, hvis du skriver en, til os som en
+        mail. Vi får ikke dit navn, din mail eller din IP-adresse i mailen. For at holde spam ude bruger formularen
+        Cloudflare Turnstile, som tjekker, at du er et menneske. Den hentes først, når du åbner formularen, og sætter ikke
+        sporings-cookies.
+      </p>
 
       <h2>Appen</h2>
       <p>

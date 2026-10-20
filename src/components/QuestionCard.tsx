@@ -10,6 +10,7 @@ import { getDeck } from "@/data/decks";
 import { tap } from "@/lib/platform";
 import { randomFollowUp } from "@/data/followUps";
 import { track } from "@/utils/track";
+import { ReportCard } from "@/components/ReportCard";
 
 interface QuestionCardProps {
   question: Question;
@@ -37,6 +38,7 @@ export const QuestionCard = memo(function QuestionCard({
   const prefersReducedMotion = useReducedMotion();
   const deck = getDeck(question.categoryId);
   const [followUp, setFollowUp] = useState<string | null>(null);
+  const [flippedOnce, setFlippedOnce] = useState(false);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -56,6 +58,10 @@ export const QuestionCard = memo(function QuestionCard({
         className="relative aspect-[5/7] w-full cursor-pointer touch-manipulation rounded-[1.25rem]"
         onClick={() => {
           tap();
+          if (!isFlipped && !flippedOnce) {
+            setFlippedOnce(true);
+            track("Kort vendt", { kort: question.id, kategori: question.categoryId });
+          }
           onFlip();
         }}
         onKeyDown={handleKeyDown}
@@ -114,6 +120,7 @@ export const QuestionCard = memo(function QuestionCard({
             path={sharePath ?? (question.categoryId === "custom" ? undefined : `/spil/${question.categoryId}/?question=${question.id}`)}
           />
         </span>
+        <ReportCard questionId={question.id} />
         <button
           type="button"
           onClick={() => {

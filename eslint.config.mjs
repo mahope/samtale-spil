@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Capacitor projects and the web export copied into them
     "android/**",
     "ios/**",
+    "worker/**",
   ]),
 ]);
 
