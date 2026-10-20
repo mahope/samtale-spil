@@ -4,12 +4,13 @@ import { OG_BASE } from "@/config/site";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { groupedCategories } from "@/data/deckGroups";
+import { getTotalQuestionCount } from "@/data/categories";
 import { Generator } from "./Generator";
 
 export const metadata: Metadata = {
   title: "Spørgsmålsgenerator: find et spørgsmål til samtalen",
   description:
-    "Vælg hvem I er sammen med, og hvor dybt I vil gå, og få et nyt samtalespørgsmål ved hvert klik. Over 2.500 spørgsmål til par, familie, venner, skole og spejder.",
+    `Vælg hvem I er sammen med, og hvor dybt I vil gå, og få et nyt samtalespørgsmål ved hvert klik. ${getTotalQuestionCount().toLocaleString("da-DK")} spørgsmål til par, familie, venner, skole og spejder.`,
   alternates: { canonical: "/generator/" },
   openGraph: { ...OG_BASE, url: "/generator/" },
 };
@@ -29,7 +30,7 @@ export default function GeneratorPage() {
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-blaek-2">
           Mangler I noget at snakke om? Vælg hvem I er sammen med, og hvor dybt I har lyst til at gå, og tryk på knappen.
-          Der kommer et nyt spørgsmål hver gang, fra lette ice-breakers til de spørgsmål, man husker bagefter.
+          Der kommer et nyt spørgsmål hver gang, fra lette isbrydere til de spørgsmål, man husker bagefter.
         </p>
 
         <Generator start={udvalg[0].q} />

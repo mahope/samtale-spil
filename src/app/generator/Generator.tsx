@@ -81,7 +81,7 @@ export function Generator({ start }: { start: Question }) {
           Nyt spørgsmål
         </button>
         <p className="text-sm text-blaek-2" aria-live="polite">
-          {pool.length === 0 ? "Ingen kort passer til valget. Prøv en anden dybde." : `${pool.length.toLocaleString("da-DK")} kort passer til valget.`}
+          {pool.length === 0 ? "Ingen kort passer til valget. Prøv en anden dybde, eller fjern et filter." : `${pool.length.toLocaleString("da-DK")} kort passer til valget.`}
         </p>
       </form>
 

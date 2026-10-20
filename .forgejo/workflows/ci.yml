@@ -60,6 +60,7 @@ jobs:
             [ "$n" -ge 7 ] || { echo "/$p/ has only $n cards in the HTML"; exit 1; }
             grep -q "rel=\"canonical\" href=\"https://snakkespil.dk/$p/\"" "out/$p/index.html"
             grep -q "<loc>https://snakkespil.dk/$p/</loc>" out/sitemap.xml
+            if grep -q 'content="noindex' "out/$p/index.html"; then echo "/$p/ is noindex"; exit 1; fi
           done
           # og:image must point at a file nginx serves as image/png (no trailing slash)
           og=$(grep -o '<meta property="og:image" content="[^"]*"' out/spoergsmaal/parforhold/index.html | sed -E 's#.*content="https://snakkespil.dk([^"?]*).*#\1#')

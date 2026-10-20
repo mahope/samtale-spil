@@ -12,11 +12,10 @@ import { reminderDates, type Reminder } from "@/lib/reminder";
 const REMINDER_IDS = Array.from({ length: 14 }, (_, i) => 9100 + i);
 
 /**
- * "Dagens spørgsmål": schedules the next 14 days locally, one light question per
- * day at the chosen hour. Re-run on every app start so the window keeps rolling.
+ * "Dagens spørgsmål": schedules the next 14 reminders locally, a day or a week apart at the
+ * chosen hour (reminderDates). Re-run on every app start so the window keeps rolling.
  * No push server is involved.
  */
-/** Schedules the next 14 reminders, a day or a week apart, at the times from reminderDates. */
 export async function scheduleDailyQuestion(
   reminder: Pick<Reminder, "hour" | "frequency" | "weekday">,
   { ask = true }: { ask?: boolean } = {}

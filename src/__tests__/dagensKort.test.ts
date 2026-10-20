@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { dagensKort, dagensKortForDato, danishDateKey, tidligereDatoer, DAILY_DECKS } from "@/lib/dagensKort";
+import { dagensKort, dagensKortForDato, danishDateKey, tidligereDatoer, vaelgForDato, DAILY_DECKS } from "@/lib/dagensKort";
 import { categories } from "@/data/categories";
+import type { Category, Question } from "@/types";
 
 describe("dagens kort", () => {
   it("uses the Danish date, whatever the clock's time zone", () => {
@@ -25,8 +26,22 @@ describe("dagens kort", () => {
     }
   });
 
-  it("lists the previous days newest first", () => {
-    expect(tidligereDatoer(new Date("2026-03-10T12:00:00Z"), 3)).toEqual(["2026-03-09", "2026-03-08", "2026-03-07"]);
+  it("barely moves when a card is added, so an older app still agrees with the website", () => {
+    const deck = { id: "x", name: "X" } as Category;
+    const make = (n: number) =>
+      Array.from({ length: n }, (_, i) => ({ q: { id: `x-${i}`, categoryId: "x", text: "", depth: "let" } as Question, c: deck }));
+    const before = make(500);
+    const after = make(501);
+    const days = tidligereDatoer("2027-01-01", 365);
+    const changed = days.filter((d) => vaelgForDato(d, before).q.id !== vaelgForDato(d, after).q.id).length;
+    // A modulo pick would change almost every day; here only the days the new card wins
+    expect(changed).toBeLessThan(10);
+  });
+
+  it("lists the previous days newest first, also across daylight saving changes", () => {
+    expect(tidligereDatoer("2026-03-10", 3)).toEqual(["2026-03-09", "2026-03-08", "2026-03-07"]);
+    expect(tidligereDatoer("2026-10-26", 2)).toEqual(["2026-10-25", "2026-10-24"]);
+    expect(tidligereDatoer("2026-03-30", 2)).toEqual(["2026-03-29", "2026-03-28"]);
   });
 
   it("names decks that exist", () => {
