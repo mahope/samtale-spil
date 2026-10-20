@@ -16,7 +16,7 @@ export const curatedPages2: CuratedPage[] = [
     "sections": [
       {
         "heading": "Sådan rammer du timingen",
-        "text": "Stil ét spørgsmål ad gangen, og svar gerne selv på det, så det føles som en snak og ikke et interview. Får du et kort svar, så spørg videre om noget fra svaret i stedet for at skifte emne. Og lad samtalen hvile, når den går i stå: et godt spørgsmål virker også i morgen."
+        "text": "Stil ét spørgsmål ad gangen, og svar gerne selv på det, så det føles som en snak og ikke et interview. Får du et kort svar, så spørg videre om noget fra svaret i stedet for at skifte emne. Og lad samtalen hvile, når den går i stå: et godt spørgsmål virker også i morgen. Svarer den anden kort eller slet ikke, så lad det ligge."
       },
       {
         "heading": "Spørgsmål til sms og chat",
@@ -33,20 +33,20 @@ export const curatedPages2: CuratedPage[] = [
           "Hvilken sang har du hørt flest gange i denne uge?",
           "Hvad fik du til aftensmad, og var det godt?",
           "Hvilken serie skal jeg se næste gang, hvis du må bestemme?",
-          "Hvad skal du lave i weekenden?",
+          "Hvad har du glædet dig over i denne uge?",
           "Hvor skal du hen på ferie eller tur næste gang?",
-          "Hvilket billede på din telefon gør dig glad, hver gang du ser det?",
+          "Hvilken lille ting gør altid din dag bedre?",
           "Hvilken podcast ville du anbefale til en lang gåtur?",
           "Hvilken bog eller tegneserie elskede du som barn?",
           "Hvilken by ville du rejse til i morgen, hvis billetten var betalt?",
           "Hvad har du grinet af på nettet for nylig?",
           "Hvad er din yndlingsmorgenmad?",
-          "Sover du med vinduet åbent eller lukket?",
+          "Er du morgenmenneske eller aftenmenneske?",
           "Hvilken lille ting har du altid i lommen eller tasken?",
           "Hvilket vejr er dit yndlingsvejr?",
           "Hvilken sang ville du sætte på, hvis du styrede musikken til en fest?",
-          "Hvad hører du helst, når du laver mad?",
-          "Hvad drikker du helst, når du skal hygge dig?",
+          "Hvilken ret kan du lave, så andre bliver imponerede?",
+          "Hvad er din bedste måde at slappe af på efter en lang dag?",
           "Hvilket ord eller udtryk siger du alt for tit?",
           "Hvilken film kan du citere næsten hele?"
         ]
@@ -57,7 +57,7 @@ export const curatedPages2: CuratedPage[] = [
         "questionIds": [
           "date-101",
           "date-104",
-          "date-105",
+          "date-12",
           "date-106",
           "date-107",
           "date-110",
@@ -71,7 +71,7 @@ export const curatedPages2: CuratedPage[] = [
         "items": [
           "Hvad laver du typisk på en helt almindelig tirsdag?",
           "Hvordan ser din vennegruppe ud, og hvem er den, der samler jer?",
-          "Hvilket sted i byen går du hen, når du vil have en god kop kaffe?",
+          "Hvilket sted har du været, som du stadig tænker på?",
           "Hvad var det sidste, du blev rigtig glad for at høre?",
           "Hvad laver du, når du ikke arbejder eller studerer?",
           "Hvad er det bedste, du har oplevet i år indtil nu?",
@@ -126,7 +126,7 @@ export const curatedPages2: CuratedPage[] = [
           "Hvilken fiktiv figur ville du helst have som nabo?",
           "Hvis du fik en ret opkaldt efter dig, hvad skulle der så være i den?",
           "Hvilken mode fra din barndom ville du ønske kom tilbage?",
-          "Hvad er den værste sang at få på hjernen?",
+          "Hvad er det sjoveste, du har lært på YouTube eller af en ven?",
           "Hvilken overflødig ting ville du købe, hvis ingen så det?"
         ]
       }
@@ -204,7 +204,7 @@ export const curatedPages2: CuratedPage[] = [
       },
       {
         "heading": "Trin 2: gæt den andens svar",
-        "text": "Den ene gætter, den anden svarer. Det er fint at gætte forkert, det er der, I lærer noget nyt.",
+        "text": "Den ene gætter, den anden svarer. Det er fint at gætte forkert. Det er der, I lærer noget nyt.",
         "questionIds": [
           "kend-7",
           "kend-9",
@@ -376,7 +376,7 @@ export const curatedPages2: CuratedPage[] = [
         "a": "Nej. Spørgsmålene handler om nærhed, minder og hverdag. Spillet har et særskilt sæt kun for voksne, som kræver, at man bekræfter at være fyldt 18."
       },
       {
-        "q": "Hvordan er det forskelligt fra date night?",
+        "q": "Hvad er forskellen på valentinsdag og date night?",
         "a": "Siden om date night er en plan til en hvilken som helst aften med et gættespil i midten. Her handler spørgsmålene mere om jeres begyndelse og om at sige tak."
       }
     ],
