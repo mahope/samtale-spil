@@ -15,9 +15,10 @@ const REMINDER_IDS = Array.from({ length: 14 }, (_, i) => 9100 + i);
  * day at the chosen hour. Re-run on every app start so the window keeps rolling.
  * No push server is involved.
  */
-export async function scheduleDailyQuestion(hour: number): Promise<boolean> {
+export async function scheduleDailyQuestion(hour: number, { ask = true } = {}): Promise<boolean> {
   if (!isNative()) return false;
-  const perm = await LocalNotifications.requestPermissions();
+  // At launch only check; the system dialog is shown when the user turns the reminder on
+  const perm = ask ? await LocalNotifications.requestPermissions() : await LocalNotifications.checkPermissions();
   if (perm.display !== "granted") return false;
   await LocalNotifications.cancel({ notifications: REMINDER_IDS.map((id) => ({ id })) });
   const pool = categories

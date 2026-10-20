@@ -3,7 +3,6 @@
 import { useState, useSyncExternalStore } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { isNative } from "@/lib/platform";
-import { scheduleDailyQuestion, cancelDailyQuestion } from "@/lib/native";
 import { REMINDER_KEY, DEFAULT_REMINDER, type Reminder } from "@/lib/reminder";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { track } from "@/utils/track";
@@ -17,12 +16,20 @@ export function ReminderSettings() {
 
   const apply = async (next: Reminder) => {
     setReminder(next);
-    if (!next.enabled) {
-      await cancelDailyQuestion();
-      setMessage("Påmindelsen er slået fra.");
+    let ok = false;
+    try {
+      const { scheduleDailyQuestion, cancelDailyQuestion } = await import("@/lib/native");
+      if (!next.enabled) {
+        await cancelDailyQuestion();
+        setMessage("Påmindelsen er slået fra.");
+        return;
+      }
+      ok = await scheduleDailyQuestion(next.hour);
+    } catch {
+      setReminder({ ...next, enabled: false });
+      setMessage("Påmindelsen kunne ikke sættes op. Prøv igen om lidt.");
       return;
     }
-    const ok = await scheduleDailyQuestion(next.hour);
     if (ok) {
       setMessage(`Du får dagens spørgsmål kl. ${next.hour}.`);
       track("Påmindelse slået til", { time: next.hour });

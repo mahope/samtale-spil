@@ -24,7 +24,8 @@ const config: CapacitorConfig = {
     StatusBar: {
       style: "DARK",
       backgroundColor: "#1d4a38",
-      overlaysWebView: true,
+      // A fixed felt-green strip: readable on both the felt and the paper pages
+      overlaysWebView: false,
     },
     LocalNotifications: {
       smallIcon: "ic_stat_snakkespil",

@@ -85,9 +85,10 @@ const themeInitScript = `
 `;
 
 // Plausible CE (analytics.holstjensen.eu): cookieless, self-hosted in the EU.
-// The pa-<id>.js script only sends events once plausible.init() has run.
+// The pa-<id>.js script only sends events once plausible.init() has run. Inside the
+// apps the page host is localhost, which Plausible skips unless captureOnLocalhost is set.
 const plausibleInitScript =
-  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()";
+  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init(window.Capacitor?{captureOnLocalhost:true}:undefined)";
 
 export default function RootLayout({
   children,

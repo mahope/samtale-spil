@@ -24,7 +24,13 @@ interface Props {
   categoryId: string;
 }
 
+// A new ?question (e.g. tapping today's question while this deck is open) starts a fresh game
 export default function CategoryPlayClient({ categoryId }: Props) {
+  const question = useSearchParams().get("question") ?? "";
+  return <CategoryPlay key={question} categoryId={categoryId} />;
+}
+
+function CategoryPlay({ categoryId }: Props) {
   const category = getCategory(categoryId);
   const searchParams = useSearchParams();
   const router = useRouter();

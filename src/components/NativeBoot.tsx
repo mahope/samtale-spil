@@ -24,6 +24,9 @@ export function NativeBoot() {
         import("@capacitor/local-notifications"),
       ]);
 
+      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
+      StatusBar.setBackgroundColor({ color: "#1d4a38" }).catch(() => {});
+      // Style.Dark = light text, for the dark green strip
       StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
       SplashScreen.hide().catch(() => {});
 
@@ -51,7 +54,7 @@ export function NativeBoot() {
       const reminder = readReminder();
       if (reminder.enabled) {
         const { scheduleDailyQuestion } = await import("@/lib/native");
-        scheduleDailyQuestion(reminder.hour).catch(() => {});
+        scheduleDailyQuestion(reminder.hour, { ask: false }).catch(() => {});
       }
     })();
 
