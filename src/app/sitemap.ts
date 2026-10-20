@@ -3,6 +3,7 @@ import { categories } from "@/data/categories";
 import { categoryTexts } from "@/data/categoryTexts";
 import { curatedPages } from "@/data/curatedPages";
 import { legeSider } from "@/data/lege";
+import { guides } from "@/data/guides";
 import { SITE_URL } from "@/config/site";
 
 export const dynamic = "force-static";
@@ -34,6 +35,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.9,
+    })),
+    { url: `${SITE_URL}/guide/`, lastModified, changeFrequency: "monthly", priority: 0.7 },
+    ...guides.map((g) => ({
+      url: `${SITE_URL}/guide/${g.slug}/`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     { url: `${SITE_URL}/dagens-spoergsmaal/`, lastModified, changeFrequency: "daily", priority: 0.7 },
     { url: `${SITE_URL}/generator/`, lastModified, changeFrequency: "monthly", priority: 0.7 },

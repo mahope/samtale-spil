@@ -42,6 +42,7 @@ export function SiteFooter() {
             <ul className="mt-3 space-y-1.5 text-[0.95rem]">
               <li><Link href="/saadan-spiller-i/" className="text-blaek-2 hover:text-blaek hover:underline">Sådan spiller I</Link></li>
               <li><Link href="/lege/" className="text-blaek-2 hover:text-blaek hover:underline">Lege til festen</Link></li>
+              <li><Link href="/guide/" className="text-blaek-2 hover:text-blaek hover:underline">Guides til bedre samtaler</Link></li>
               <li><Link href="/dagens-spoergsmaal/" className="text-blaek-2 hover:text-blaek hover:underline">Dagens spørgsmål</Link></li>
               <li><Link href="/generator/" className="text-blaek-2 hover:text-blaek hover:underline">Spørgsmålsgenerator</Link></li>
               <li><Link href="/om/" className="text-blaek-2 hover:text-blaek hover:underline">Om spillet</Link></li>
