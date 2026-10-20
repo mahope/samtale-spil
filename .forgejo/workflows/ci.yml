@@ -41,7 +41,11 @@ jobs:
 
       - name: Verify nginx config
         run: |
-          docker run --rm \
-            -v "$PWD/deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
-            -v "$PWD/deploy/security-headers.conf:/etc/nginx/snippets/security-headers.conf:ro" \
-            nginx:1.31-alpine nginx -t
+          set -euo pipefail
+          S=""; command -v sudo >/dev/null && S="sudo"
+          $S apt-get update -qq && $S apt-get install -y -qq nginx-light >/dev/null
+          $S mkdir -p /etc/nginx/snippets
+          $S cp deploy/security-headers.conf /etc/nginx/snippets/security-headers.conf
+          $S rm -f /etc/nginx/sites-enabled/default
+          $S cp deploy/nginx.conf /etc/nginx/conf.d/default.conf
+          $S nginx -t
