@@ -242,6 +242,7 @@ export default function AdultPlayClient() {
         onReset={handleResetProgress}
         onNext={handleNextQuestion}
         isTransitioning={isTransitioning}
+        hint="I må altid sige pas til et kort. Det gælder også udfordringerne."
       >
         <AnimatePresence mode="wait">
           {currentQuestion && (
