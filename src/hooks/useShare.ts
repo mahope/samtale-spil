@@ -2,62 +2,35 @@
 
 import { useCallback, useState } from "react";
 import { TIMING } from "@/constants";
+import { SITE_URL, SITE_NAME } from "@/config/site";
+import { shareText } from "@/lib/platform";
+import { track } from "@/utils/track";
+
+/** Public link for the current screen; inside the app the page URL is capacitor://localhost. */
+function publicUrl() {
+  if (typeof window === "undefined") return `${SITE_URL}/`;
+  return `${SITE_URL}${window.location.pathname}`;
+}
 
 export function useShare() {
   const [copied, setCopied] = useState(false);
 
-  const share = useCallback(async (text: string, title?: string) => {
-    // Try native Web Share API first (mobile)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: title || "Samtalekort",
-          text: text,
-          url: window.location.href,
-        });
-        return { success: true, method: "share" as const };
-      } catch (err) {
-        // User cancelled or not supported, fall through to clipboard
-        if ((err as Error).name === "AbortError") {
-          return { success: false, method: "cancelled" as const };
-        }
-      }
-    }
-
-    // Fallback to clipboard
-    try {
-      await navigator.clipboard.writeText(text);
+  const share = useCallback(async (text: string) => {
+    const result = await shareText(text, publicUrl());
+    if (result === "kopieret") {
       setCopied(true);
       setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK);
-      return { success: true, method: "clipboard" as const };
-    } catch {
-      // Last resort: select and copy
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-999999px";
-      document.body.appendChild(textArea);
-      textArea.select();
-      try {
-        document.execCommand("copy");
-        setCopied(true);
-        setTimeout(() => setCopied(false), TIMING.COPY_FEEDBACK);
-        return { success: true, method: "clipboard" as const };
-      } catch {
-        return { success: false, method: "failed" as const };
-      } finally {
-        document.body.removeChild(textArea);
-      }
     }
+    if (result !== "afbrudt") track("Del", { måde: result });
+    return {
+      success: result !== "afbrudt",
+      method: result === "delt" ? ("share" as const) : result === "kopieret" ? ("clipboard" as const) : ("cancelled" as const),
+    };
   }, []);
 
   const shareQuestion = useCallback(
-    async (questionText: string, categoryName?: string) => {
-      const shareText = categoryName
-        ? `${categoryName}: "${questionText}" - Samtalekort`
-        : `"${questionText}" - Samtalekort`;
-      return share(shareText, "Samtalekort spørgsmål");
-    },
+    async (questionText: string, categoryName?: string) =>
+      share(categoryName ? `»${questionText}« (${categoryName}, ${SITE_NAME})` : `»${questionText}« (${SITE_NAME})`),
     [share]
   );
 

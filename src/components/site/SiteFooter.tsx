@@ -44,6 +44,7 @@ export function SiteFooter() {
               <li><Link href="/privatliv/" className="text-blaek-2 hover:text-blaek hover:underline">Privatliv</Link></li>
               <li><Link href="/mine-spoergsmaal/" className="text-blaek-2 hover:text-blaek hover:underline">Dine egne spørgsmål</Link></li>
               <li><Link href="/statistik/" className="text-blaek-2 hover:text-blaek hover:underline">Din statistik</Link></li>
+              <li><Link href="/indstillinger/" className="text-blaek-2 hover:text-blaek hover:underline">Indstillinger</Link></li>
             </ul>
           </div>
         </div>
