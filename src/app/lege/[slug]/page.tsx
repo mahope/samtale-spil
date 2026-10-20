@@ -3,6 +3,8 @@ import { CARD_TYPE_LABEL } from "@/data/cardTypes";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { legeSider, legeDeck } from "@/data/lege";
+import { categories } from "@/data/categories";
+import { curatedPages } from "@/data/curatedPages";
 import { getDeck } from "@/data/decks";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -144,7 +146,7 @@ export default async function LegePage({ params }: Props) {
             <h2 className="text-2xl font-bold">Mere til festen</h2>
             <ul className="mt-4 flex flex-wrap gap-2">
               {[...legeSider.filter((s) => s.slug !== slug).map((s) => ({ href: `/lege/${s.slug}/`, label: s.h1.split(":")[0] })),
-                ...side.relaterede.map((href) => ({ href, label: RELATED_LABEL[href] ?? href }))].map((l) => (
+                ...side.relaterede.map((href) => ({ href, label: relatedLabel(href) }))].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="inline-flex min-h-11 items-center rounded-full bg-flade px-4 font-semibold ring-1 ring-streg hover:bg-flade-2">
                     {l.label}
@@ -159,6 +161,19 @@ export default async function LegePage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </>
   );
+}
+
+/** Link text for a related page: hand-picked names first, then the page's own name from the data */
+function relatedLabel(href: string): string {
+  if (RELATED_LABEL[href]) return RELATED_LABEL[href];
+  const [, section, slug] = href.split("/");
+  if (section === "lege") return legeSider.find((s) => s.slug === slug)?.h1.split(":")[0] ?? href;
+  if (section === "spoergsmaal") {
+    const deck = categories.find((c) => c.id === slug);
+    if (deck) return `Spørgsmål: ${deck.name}`;
+    return curatedPages.find((p) => p.slug === slug)?.h1.split(":")[0] ?? href;
+  }
+  return href;
 }
 
 const RELATED_LABEL: Record<string, string> = {
