@@ -113,15 +113,15 @@ export const guides: Guide[] =
       {
         "h2": "Hvad er kærlighedssprog?",
         "tekst": [
-          "Begrebet kommer fra den amerikanske præst Gary Chapman, som i 1992 udgav en bog om fem måder at udtrykke kærlighed på: anerkendende ord, tid sammen, gaver, praktisk hjælp og berøring. Hans idé er, at hver af os har ét foretrukket sprog, og at forholdet bliver bedre, når partneren lærer at tale det.",
-          "Bogen er solgt i millioner af eksemplarer, og mange kender ordet fra spørgeskemaer på nettet. Men bogen bygger på forfatterens egne erfaringer, ikke på systematisk forskning."
+          "Begrebet kommer fra amerikaneren Gary Chapman, som i 1992 udgav en bog om fem måder at udtrykke kærlighed på: anerkendende ord, tid sammen, gaver, praktisk hjælp og berøring. Hans idé er, at hver af os har ét foretrukket sprog, og at forholdet bliver bedre, når partneren lærer at tale det.",
+          "Mange kender ordet fra spørgeskemaer på nettet. Men bogen bygger på forfatterens egne erfaringer, ikke på systematisk forskning."
         ]
       },
       {
         "h2": "Hvad siger forskningen?",
         "tekst": [
           "Psykologerne Impett, Park og Muise gennemgik i 2024 den forskning, der findes om kærlighedssprog. Den er sparsom, og samlet giver den ikke stærk støtte til bogens tre grundtanker: at hver person har ét foretrukket sprog, at der netop er fem, og at par er mere tilfredse, når de taler hinandens sprog.",
-          "Enkeltstudierne peger i forskellige retninger. Et studie med 67 par fandt kun begrænset støtte til, at det betyder noget for tilfredsheden at have samme sprog (Bunt & Hazelwood 2017). Et andet med 100 par fandt, at de, hvis partner viste kærlighed på den måde, de selv foretrak, var mere tilfredse (Mostova m.fl. 2022). Billedet er altså blandet, og der er ikke grundlag for at bruge de fem sprog som en fast typeinddeling."
+          "Enkeltstudierne peger i forskellige retninger. Et studie med 67 par fandt kun begrænset støtte til, at det at have samme sprog hang sammen med tilfredsheden (Bunt & Hazelwood 2017). Et andet med 100 par fandt, at de, hvis partner viste kærlighed på den måde, de selv foretrak, var mere tilfredse (Mostova m.fl. 2022). Billedet er altså blandet, og der er ikke grundlag for at bruge de fem sprog som en fast typeinddeling."
         ]
       },
       {
@@ -197,9 +197,9 @@ export const guides: Guide[] =
   {
     "slug": "love-maps",
     "seoTitle": "Love maps: spørgsmål der holder jer opdateret",
-    "metaDescription": "Love maps er jeres billede af hinandens liv lige nu. Her er 20 spørgsmål, der holder jer opdateret, og hvad forskningen siger om de fire ryttere.",
+    "metaDescription": "Love maps er jeres billede af hinandens liv lige nu. Her er spørgsmål, der holder jer opdateret, og hvad forskningen siger om de fire ryttere.",
     "h1": "Love maps: spørgsmål der holder jer opdateret på hinanden",
-    "intro": "Et love map er det billede, du har af din partners liv lige nu: venner, bekymringer, drømme og hverdag. Billedet bliver hurtigt forældet, fordi vi forandrer os, også når vi bor sammen. Her er 20 spørgsmål, der kan hjælpe jer med at holde det opdateret.",
+    "intro": "Et love map er det billede, du har af din partners liv lige nu: venner, bekymringer, drømme og hverdag. Billedet bliver hurtigt forældet, fordi vi forandrer os, også når vi bor sammen. Spørgsmålene nedenfor kan hjælpe jer med at holde det opdateret.",
     "afsnit": [
       {
         "h2": "Hvad er et love map?",
@@ -211,8 +211,8 @@ export const guides: Guide[] =
       {
         "h2": "De fire ryttere, og hvad man ikke ved",
         "tekst": [
-          "Gottman er mest kendt for at forudsige skilsmisser ud fra, hvordan par taler sammen i en konflikt. Herfra kommer de fire ryttere: kritik, foragt, forsvar og at lukke af. I hans studier hang et mønster med mere negativitet end positivitet i konfliktsamtaler sammen med senere brud (Gottman & Levenson 1992).",
-          "De høje træfsikkerheder, der ofte citeres, skal dog tages med forbehold. Heyman og Slep viste i 2001, at forudsigelser, der ikke er afprøvet på en ny gruppe par, kan overvurdere træfsikkerheden kraftigt. Selve love map-begrebet er en model fra Gottmans bøger og kurser, og vi har ikke fundet en uafhængig undersøgelse, der tester det for sig."
+          "Gottman er mest kendt for studier, der forsøgte at forudsige skilsmisser ud fra, hvordan par taler sammen i en konflikt. Herfra kommer de fire ryttere: kritik, foragt, forsvar og at lukke af. I hans studier hang et mønster med mere negativitet end positivitet i konfliktsamtaler sammen med senere brud (Gottman & Levenson 1992).",
+          "De høje tal for træfsikkerhed, der ofte citeres, skal dog tages med forbehold. Heyman og Slep viste i 2001, at forudsigelser, der ikke er afprøvet på en ny gruppe par, kan overvurdere træfsikkerheden kraftigt. Selve love map-begrebet er en model fra Gottmans bøger og kurser, og vi har ikke fundet en uafhængig undersøgelse, der tester det for sig."
         ]
       },
       {
@@ -231,7 +231,7 @@ export const guides: Guide[] =
         "h2": "Hold billedet ved lige",
         "tekst": [
           "Et love map bliver aldrig færdigt. Tag nogle af spørgsmålene igen om et halvt år og se, hvad der har ændret sig. Det er tit der, de bedste samtaler opstår.",
-          "Vil I have flere spørgsmål i samme stil, har Gottman Institute en gratis app med kortbunker, blandt andet en om love maps. Hos Snakkespil finder I lignende spørgsmål i bunken Kend din partner."
+          "Hos Snakkespil finder I lignende spørgsmål i bunken Kend din partner."
         ]
       }
     ],
@@ -298,7 +298,7 @@ export const guides: Guide[] =
       {
         "h2": "Tag godt imod de gode nyheder",
         "tekst": [
-          "Hvordan I reagerer, når den anden fortæller noget godt, betyder mere, end man skulle tro. I et studie med 79 kæresterpar hang reaktionen på gode nyheder tættere sammen med forholdets trivsel end reaktionen på dårlige (Gable m.fl. 2006).",
+          "Hvordan I reagerer, når den anden fortæller noget godt, hænger sammen med forholdets trivsel. I et studie med 79 kæresterpar hang reaktionen på gode nyheder tættere sammen med forholdets trivsel end reaktionen på dårlige (Gable m.fl. 2006).",
           "Den gode reaktion er nysgerrig og levende: Du spørger ind, glæder dig og lader nyheden fylde. Den mindre gode er et fraværende \"fedt\" eller et hurtigt skift over til, hvad der kunne gå galt.",
           "Øvelse: Hver aften i en uge fortæller I hinanden én god ting fra dagen, og den anden stiller to spørgsmål til den, før I taler om andet."
         ]
@@ -326,7 +326,7 @@ export const guides: Guide[] =
         "h2": "Hvornår skal I søge hjælp?",
         "tekst": [
           "Øvelserne her er til par, der har det nogenlunde godt og gerne vil tale bedre sammen. De er ikke nok, hvis jeres samtaler ofte ender i skænderier, I ikke kan finde ud af igen, eller hvis den samme konflikt bliver ved med at gå i ring.",
-          "Søg hjælp, hvis en af jer føler sig utryg, bange eller presset, hvis der er vold, trusler eller kontrol i forholdet, eller hvis en af jer har det psykisk dårligt over længere tid. Din egen læge kan henvise videre, og mange kommuner har gratis og anonym familierådgivning. Er nogen i akut fare, så ring 112."
+          "Er der vold, trusler eller kontrol i forholdet, så er øvelserne her ikke det rigtige sted at starte. Ring til Lev Uden Vold på 1888, hele døgnet. Føler en af jer sig utryg eller presset, eller har en af jer det psykisk dårligt over længere tid, kan jeres egen læge henvise videre, og mange kommuner har gratis og anonym familierådgivning. Er nogen i akut fare, så ring 112."
         ]
       }
     ],
