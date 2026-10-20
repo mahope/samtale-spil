@@ -339,7 +339,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "jha-51",
-        "text": "Jeg har aldrig glemt en fødselsdag, jeg havde lovet at huske.",
+        "text": "Jeg har aldrig bagt en kage helt fra bunden.",
         "type": "jeg-har-aldrig"
       },
       {
