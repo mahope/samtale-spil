@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
+import Link from "next/link";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
@@ -364,6 +365,15 @@ function CategoryPlay({ categoryId }: Props) {
             onTimerSoundToggle={toggleTimerSound}
             onTimerVibrationToggle={toggleTimerVibration}
           />
+
+          {category.id === "kend-din-partner" && (
+            <Link
+              href="/spil/gaet/"
+              className="mb-3 inline-flex min-h-11 items-center rounded-full bg-white/10 px-4 font-semibold text-white ring-1 ring-white/30 hover:bg-white/20"
+            >
+              Spil med skjulte svar og point
+            </Link>
+          )}
 
           {/* How far into the pile */}
           <div className="w-full max-w-[23rem]" role="region" aria-label="Fremskridt">

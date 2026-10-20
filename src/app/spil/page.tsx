@@ -42,6 +42,12 @@ const modes = [
     text: "I skiftes til at trække og svare. Holder styr på, hvis tur det er.",
   },
   {
+    href: "/spil/gaet/",
+    deck: "kend-din-partner",
+    title: "Gæt svaret",
+    text: "Én svarer i hemmelighed, og den næste gætter. Med point, hvis I vil.",
+  },
+  {
     href: "/mine-spoergsmaal/",
     deck: "egne",
     title: "Dine egne spørgsmål",
