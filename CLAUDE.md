@@ -24,6 +24,12 @@ Byg aldrig lokalt. Rediger og commit lokalt; byg og test på agent-worker (Tails
 - Lockfil: generér den på Linux (`npm install --package-lock-only` på agent-worker), ellers mangler Linux-optionals.
 - Ikoner: `node scripts/generate-icons.mjs` på agent-worker, kopiér PNG/ICO tilbage.
 
+## Internationale sites (#30)
+
+- `SITE_LOCALE` (build-argument, standard `da`) vælger site: `da` er snakkespil.dk, `en` er Goodtalk på goodtalkcards.com. Andre værdier fejler buildet.
+- Internationale sites bygges kun af rutefilerne `src/app/**/*.intl.tsx` (`pageExtensions`), så den danske site er uændret. Sprogbestemte tekster og kort kommer i `src/locales/<sprog>/` med samme kort-id'er som dansk.
+- Goodtalk er `noindex`, indtil den er klar; CI bygger den engelske variant på hver PR.
+
 ## Regler for koden
 
 - Spørgsmåls-id'er må aldrig ændres eller genbruges: favoritter og fremskridt i localStorage peger på dem. Nye spørgsmål får nye id'er.
