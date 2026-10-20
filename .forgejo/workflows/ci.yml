@@ -54,6 +54,13 @@ jobs:
             n=$(grep -o '<li class="flex gap-4' "$f" | wc -l)
             [ "$n" -ge 20 ] || { echo "$f lists only $n cards"; exit 1; }
           done
+          # daily question and generator carry their cards in the HTML
+          for p in dagens-spoergsmaal generator; do
+            n=$(grep -o 'data-kort="true"' "out/$p/index.html" | wc -l)
+            [ "$n" -ge 7 ] || { echo "/$p/ has only $n cards in the HTML"; exit 1; }
+            grep -q "rel=\"canonical\" href=\"https://snakkespil.dk/$p/\"" "out/$p/index.html"
+            grep -q "<loc>https://snakkespil.dk/$p/</loc>" out/sitemap.xml
+          done
           # og:image must point at a file nginx serves as image/png (no trailing slash)
           og=$(grep -o '<meta property="og:image" content="[^"]*"' out/spoergsmaal/parforhold/index.html | sed -E 's#.*content="https://snakkespil.dk([^"?]*).*#\1#')
           echo "og:image -> $og"

@@ -5,7 +5,7 @@
  * on demand (await import("@/lib/native")) rather than from shared components.
  */
 import { LocalNotifications } from "@capacitor/local-notifications";
-import { categories } from "@/data/categories";
+import { dagensKort } from "@/lib/dagensKort";
 import { isNative } from "@/lib/platform";
 import { reminderDates, type Reminder } from "@/lib/reminder";
 
@@ -26,14 +26,12 @@ export async function scheduleDailyQuestion(
   const perm = ask ? await LocalNotifications.requestPermissions() : await LocalNotifications.checkPermissions();
   if (perm.display !== "granted") return false;
   await LocalNotifications.cancel({ notifications: REMINDER_IDS.map((id) => ({ id })) });
-  const pool = categories
-    .filter((c) => c.id !== "intimitet")
-    .flatMap((c) => c.questions.filter((q) => q.depth !== "dyb").map((q) => ({ q, c })));
   const dates = reminderDates(new Date(), reminder, REMINDER_IDS.length);
   await LocalNotifications.schedule({
     notifications: REMINDER_IDS.map((id, i) => {
       const at = dates[i];
-      const { q, c } = pool[(at.getFullYear() * 400 + at.getMonth() * 31 + at.getDate()) % pool.length];
+      // The same card as /dagens-spoergsmaal/ shows that day
+      const { q, c } = dagensKort(at);
       return {
         id,
         title: reminder.frequency === "uge" ? "Ugens kort" : "Dagens spørgsmål",
