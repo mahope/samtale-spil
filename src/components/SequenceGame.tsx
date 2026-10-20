@@ -69,7 +69,11 @@ export function SequenceGame({
   const done = index >= steps.length;
   const card = cards[index];
 
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const next = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => setIsTransitioning(false), 450);
     if (index === 0 && round === 0) track("Spil startet", { tilstand: mode });
     if (index + 1 >= steps.length) track("Spil gennemført", { tilstand: mode });
     setIsFlipped(false);
@@ -87,7 +91,7 @@ export function SequenceGame({
     return (
       <div className="filt flex min-h-dvh items-center justify-center px-6">
         <main id="main-content" className="max-w-sm text-center">
-          <h1 className="text-4xl font-extrabold" style={{ fontStretch: "88%" }}>
+          <h1 ref={(el) => el?.focus()} tabIndex={-1} className="text-4xl font-extrabold outline-none" style={{ fontStretch: "88%" }}>
             {doneTitle}
           </h1>
           <p className="mt-4 text-lg text-white/85">{doneText}</p>
@@ -113,6 +117,7 @@ export function SequenceGame({
       onReset={restart}
       aboveProgress={<p className="mb-2 text-center text-sm font-semibold text-white/85">{steps[index].label}</p>}
       onNext={next}
+      isTransitioning={isTransitioning}
       nextLabel={index + 1 >= steps.length ? "Afslut" : "Næste kort"}
       hint="Svar begge to, og spørg gerne videre"
     >
