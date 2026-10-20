@@ -6,9 +6,10 @@ Live at **https://snakkespil.dk**.
 
 ## What it is
 
-- 1,000+ questions in 16 decks plus an 18+ deck, each marked light, medium or deep
-- Play screen per deck, "shuffle all", pass-the-phone mode for groups and your own question sets
-- Server-rendered question pages under `/spoergsmaal/<deck>/` for search
+- Over 2,000 cards in 23 decks plus an 18+ deck, each marked light, medium or deep (counts are derived from `src/data/`)
+- Play screen per deck, "shuffle all", pass-the-phone, Trappen (light to deep), Aftensmad, "Spørg videre" follow-ups and your own question sets
+- Server-rendered question pages under `/spoergsmaal/<deck>/` and party/season games under `/lege/` for search
+- "Rapportér" on every card and a public stats page (`/statistik/samlet/`), served by the Cloudflare Worker in `worker/`
 - No accounts and no cookies: favourites, progress and custom questions live in `localStorage`
 - Cookieless analytics with self-hosted Plausible (`src/utils/track.ts`)
 - Installable PWA and native iOS/Android apps (Capacitor) built from the same export
@@ -57,6 +58,14 @@ CI (`.forgejo/workflows/ci.yml`) runs typecheck, lint, tests, build, checks the 
 Every push to `master` triggers a Dokploy deploy through a Forgejo webhook. Dokploy builds the Dockerfile and serves the export on port 3000 behind Traefik and Cloudflare.
 
 After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, `/spoergsmaal/parforhold/`, a missing path (should be 404) and the response headers.
+
+## API worker
+
+`worker/` is a Cloudflare Worker on `snakkespil.dk/api/*`: `POST /api/flag` mails reports to the owner via Resend (Turnstile, honeypot, rate limit, known card ids only) and `GET /api/stats` serves cached Plausible totals. `scripts/export-cards.ts` generates the card list it validates against. Deploy with wrangler from agent-worker; secrets live in Bitwarden and as worker secrets.
+
+## Research
+
+`docs/forskning.md` (relationship and conversation research behind decks, game modes and guidance) and `docs/butik-og-seo.md` (store-bought conversation games and SEO page plan).
 
 ## Native apps
 
