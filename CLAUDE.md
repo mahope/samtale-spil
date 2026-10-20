@@ -32,7 +32,7 @@ Byg aldrig lokalt. Rediger og commit lokalt; byg og test på agent-worker (Tails
 - Spilskærme (`/spil/...`, favoritter, statistik, egne spørgsmål, send rundt) er `noindex` via `appScreenMetadata`. Indhold til søgning hører under `/spoergsmaal/`.
 - Canonical sættes pr. side, aldrig i et layout (Next arver `alternates` til alle børn).
 - Antal spørgsmål i tekster afledes af data (`src/config/site.ts`), aldrig hardkodet.
-- Dansk UI-tekst: ingen anglicismer, ingen pointtal eller emoji-pynt i UI, ingen "→" i knapper.
+- Dansk UI-tekst: ingen anglicismer, ingen pointtal eller emoji-pynt i UI (undtagen gættetilstandens point i /spil/gaet/, som spillerne selv slår til), ingen "→" i knapper.
 
 ## Kommandoer
 
