@@ -46,7 +46,14 @@ jobs:
           packages: "platform-tools platforms;android-36 build-tools;36.0.0"
 
       - run: npm ci
-      - run: npm run build
+      - name: Build without the 18+ deck
+        env:
+          APP_BUILD: "1"
+        run: |
+          set -euo pipefail
+          npm run build
+          # The adult cards must not be anywhere in the app bundle (issue #54)
+          if grep -rqF "et helt upassende sted" out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
       - run: npx cap sync android
 
       - name: Upload key

@@ -23,7 +23,7 @@ export function GroupedDecks({ headingLevel = "h2" }: { headingLevel?: "h2" | "h
                 href={`/spil/${c.id}/`}
               />
             ))}
-            {g.withAdult && (
+            {g.withAdult && adultQuestions.length > 0 && (
               <DeckTile
                 categoryId="voksne"
                 name="Kun for voksne"
