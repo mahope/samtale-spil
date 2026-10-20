@@ -7,6 +7,7 @@ import { foraeldreTexts } from "@/data/questions/foraeldre";
 import { uddannelseTexts } from "@/data/questions/uddannelse";
 import { skoleTexts } from "@/data/questions/skole";
 import { spejderTexts } from "@/data/questions/spejder";
+import { foelelserTexts } from "@/data/questions/foelelser";
 
 export interface CategoryText {
   seoTitle: string;
@@ -210,4 +211,5 @@ export const categoryTexts: Record<string, CategoryText> = {
   ...uddannelseTexts,
   ...skoleTexts,
   ...spejderTexts,
+  ...foelelserTexts,
 };

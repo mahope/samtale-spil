@@ -21,7 +21,7 @@ export const deckGroups: DeckGroup[] = [
   {
     id: "familie",
     title: "Familien",
-    decks: ["familie", "boern", "familiehistorier", "nye-foraeldre", "foraeldre-igen", "barndom", "hoejtider"],
+    decks: ["familie", "boern", "foelelseskort", "familiehistorier", "nye-foraeldre", "foraeldre-igen", "barndom", "hoejtider"],
   },
   { id: "venner", title: "Venner, fest og arbejde", decks: ["venner", "sjove", "dilemmaer", "kollegaer"] },
   {

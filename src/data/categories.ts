@@ -5,6 +5,7 @@ import { foraeldreCategories, foersteDateExtra } from "@/data/questions/foraeldr
 import { uddannelseCategories } from "@/data/questions/uddannelse";
 import { skoleCategories } from "@/data/questions/skole";
 import { spejderCategories } from "@/data/questions/spejder";
+import { foelelserCategory } from "@/data/questions/foelelser";
 
 export const categories: Category[] = [
   {
@@ -1558,6 +1559,7 @@ export const categories: Category[] = [
   ...uddannelseCategories,
   ...skoleCategories,
   ...spejderCategories,
+  foelelserCategory,
 ];
 
 export function getCategory(id: string): Category | undefined {

@@ -43,6 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),
+    { url: `${SITE_URL}/print/`, lastModified, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/dagens-spoergsmaal/`, lastModified, changeFrequency: "daily", priority: 0.7 },
     { url: `${SITE_URL}/generator/`, lastModified, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/saadan-spiller-i/`, lastModified, changeFrequency: "yearly", priority: 0.5 },

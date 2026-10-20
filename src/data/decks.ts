@@ -42,6 +42,7 @@ export const decks: Record<string, Deck> = {
   "nyt-og-ukendt": { bg: "#8b3fa0", ink: LIGHT, pattern: "zigzag", mark: "N" },
   "svaere-samtaler": { bg: "#465a63", ink: LIGHT, pattern: "buer", mark: "Sv" },
   familiehistorier: { bg: "#c8743a", ink: DARK, pattern: "ruder", mark: "Fh" },
+  foelelseskort: { bg: "#7fb2e5", ink: DARK, pattern: "buer", mark: "Fø" },
   "nye-foraeldre": { bg: "#f0a3b1", ink: DARK, pattern: "buer", mark: "Nf" },
   "foraeldre-igen": { bg: "#b04f36", ink: LIGHT, pattern: "prikker", mark: "F2" },
   studieliv: { bg: "#2c6a9a", ink: LIGHT, pattern: "striber", mark: "St" },
