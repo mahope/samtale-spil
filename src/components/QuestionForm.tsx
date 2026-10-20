@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { CATEGORY_TAGS } from "@/hooks/useCustomQuestions";
 import { DepthSelector } from "@/components/DepthBadge";
 import { TIMING } from "@/constants";

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { LoadingSpinner, LoadingDots } from "./LoadingSpinner";
 
 // Lazy load heavy components that are not needed immediately

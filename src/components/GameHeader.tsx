@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import type { Category } from "@/types";

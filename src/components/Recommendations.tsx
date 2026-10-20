@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { useRecommendations } from "@/hooks/useRecommendations";
 import type { Recommendation } from "@/hooks/useRecommendations";

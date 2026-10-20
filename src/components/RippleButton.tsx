@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence, HTMLMotionProps } from "framer-motion";
+import { motion, AnimatePresence, HTMLMotionProps } from "motion/react";
 import { useState, useCallback, ReactNode } from "react";
 
 interface RippleProps {

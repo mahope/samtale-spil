@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useEffect, useState, useCallback, useLayoutEffect } from "react";
 
 type Theme = "light" | "dark" | "system";

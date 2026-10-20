@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import type { GameRoom, Player, ReactionPayload } from "@/types/multiplayer";
 import { SPEED_ROUND_CONFIG } from "@/types/multiplayer";
 import { getCategory, getRandomQuestion } from "@/data/categories";

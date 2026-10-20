@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, type ReactNode } from "react";
-import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
+import { motion, useReducedMotion, AnimatePresence } from "motion/react";
 import { useUnifiedGestures, type SwipeHandlers, type SwipeConfig } from "@/hooks/useGestures";
 
 interface SwipeIndicatorProps {

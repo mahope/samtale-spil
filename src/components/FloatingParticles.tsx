@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "motion/react";
 import { useMemo, useEffect, useState } from "react";
 
 // Seeded random for deterministic particle generation

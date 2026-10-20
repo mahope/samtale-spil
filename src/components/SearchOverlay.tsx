@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { categories } from "@/data/categories";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";

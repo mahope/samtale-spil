@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { REACTION_EMOJIS } from "@/types/multiplayer";
 
 interface ReactionPickerProps {
