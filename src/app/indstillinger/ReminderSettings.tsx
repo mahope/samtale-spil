@@ -24,15 +24,19 @@ export function ReminderSettings() {
         setMessage("Påmindelsen er slået fra.");
         return;
       }
-      ok = await scheduleDailyQuestion(next.hour);
+      ok = await scheduleDailyQuestion(next.hour, { frequency: next.frequency });
     } catch {
       setReminder({ ...next, enabled: false });
       setMessage("Påmindelsen kunne ikke sættes op. Prøv igen om lidt.");
       return;
     }
     if (ok) {
-      setMessage(`Du får dagens spørgsmål kl. ${next.hour}.`);
-      track("Påmindelse slået til", { time: next.hour });
+      setMessage(
+        next.frequency === "uge"
+          ? `Du får ugens kort hver ${new Date().toLocaleDateString("da-DK", { weekday: "long" })} kl. ${next.hour}.`
+          : `Du får dagens spørgsmål kl. ${next.hour}.`
+      );
+      track("Påmindelse slået til", { time: next.hour, rytme: next.frequency });
     } else {
       setReminder({ ...next, enabled: false });
       setMessage("Telefonen tillader ikke notifikationer fra Snakkespil. Slå dem til under Indstillinger på telefonen.");
@@ -46,8 +50,8 @@ export function ReminderSettings() {
         {native ? (
           <>
             <p className="mt-2 text-blaek-2">
-              Få et nyt spørgsmål på telefonen hver dag. Påmindelsen planlægges på telefonen og sendes ikke gennem nogen
-              server.
+              Få et nyt spørgsmål på telefonen hver dag, eller ét kort om ugen. Et par kort jævnligt giver mere end en lang
+              aften en gang om året. Påmindelsen planlægges på telefonen og sendes ikke gennem nogen server.
             </p>
             <label className="mt-5 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-flade px-4 ring-1 ring-streg">
               <span className="font-semibold">Send mig dagens spørgsmål</span>
@@ -57,6 +61,18 @@ export function ReminderSettings() {
                 checked={reminder.enabled}
                 onChange={(e) => apply({ ...reminder, enabled: e.target.checked })}
               />
+            </label>
+            <label className="mt-3 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-flade px-4 ring-1 ring-streg">
+              <span className="font-semibold">Hvor tit</span>
+              <select
+                className="min-h-10 rounded-lg bg-flade-2 px-3 font-semibold"
+                value={reminder.frequency}
+                onChange={(e) => apply({ ...reminder, frequency: e.target.value === "uge" ? "uge" : "dag" })}
+                disabled={!reminder.enabled}
+              >
+                <option value="dag">Hver dag</option>
+                <option value="uge">En gang om ugen</option>
+              </select>
             </label>
             <label className="mt-3 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-flade px-4 ring-1 ring-streg">
               <span className="font-semibold">Klokken</span>
