@@ -23,6 +23,7 @@ export const CARD_TYPE_HINT: Record<Exclude<CardType, "spoergsmaal">, string> = 
 export const FAMILY_FRIENDLY_DECKS = new Set([
   "familie",
   "boern",
+  "foelelseskort",
   "familiehistorier",
   "barndom",
   "hoejtider",

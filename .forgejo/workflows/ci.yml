@@ -70,6 +70,14 @@ jobs:
             [ "$n" -ge 12 ] || { echo "$f has only $n questions"; exit 1; }
             if grep -qiE '<title>[^<]*(test|terapi)' "$f"; then echo "$f: title contains test/terapi"; exit 1; fi
           done
+          # print-yourself PDFs: one per deck, real PDFs, small enough to download
+          n=$(ls out/print/*.pdf | wc -l)
+          [ "$n" -ge 40 ] || { echo "only $n print PDFs"; exit 1; }
+          for f in out/print/*.pdf; do
+            head -c 5 "$f" | grep -q '%PDF-' || { echo "$f is not a PDF"; exit 1; }
+            [ "$(stat -c %s "$f")" -lt 2000000 ] || { echo "$f is over 2 MB"; exit 1; }
+            grep -q "href=\"/print/$(basename "$f")\"" out/print/index.html || { echo "$f is not linked from /print/"; exit 1; }
+          done
           # og:image must point at a file nginx serves as image/png (no trailing slash)
           og=$(grep -o '<meta property="og:image" content="[^"]*"' out/spoergsmaal/parforhold/index.html | sed -E 's#.*content="https://snakkespil.dk([^"?]*).*#\1#')
           echo "og:image -> $og"
