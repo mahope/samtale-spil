@@ -97,7 +97,8 @@ jobs:
           rm -rf out
           SITE_LOCALE=en npm run build >/dev/null
           grep -q '<html lang="en"' out/index.html || { echo "English build is not lang=en"; exit 1; }
-          grep -q 'content="noindex' out/index.html || { echo "English site must be noindex until launch"; exit 1; }
+          if grep -q 'content="noindex' out/index.html; then echo "the English home page must be indexable"; exit 1; fi
+          grep -qi 'hreflang="da"' out/questions/questions-for-couples/index.html || { echo "missing hreflang to the Danish deck"; exit 1; }
           test ! -e out/spil && test ! -e out/spoergsmaal || { echo "Danish routes leaked into the English build"; exit 1; }
           grep -q "<loc>https://goodtalkcards.com/questions/" out/sitemap.xml || { echo "English sitemap missing deck pages"; exit 1; }
           for f in out/questions/*/index.html; do
