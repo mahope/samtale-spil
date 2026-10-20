@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { categories } from "@/data/categories";
 import { categoryTexts } from "@/data/categoryTexts";
 import { curatedPages } from "@/data/curatedPages";
+import { legeSider } from "@/data/lege";
 import { SITE_URL } from "@/config/site";
 
 export const dynamic = "force-static";
@@ -23,6 +24,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       })),
     ...curatedPages.map((p) => ({
       url: `${SITE_URL}/spoergsmaal/${p.slug}/`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    })),
+    { url: `${SITE_URL}/lege/`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    ...legeSider.map((s) => ({
+      url: `${SITE_URL}/lege/${s.slug}/`,
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.9,

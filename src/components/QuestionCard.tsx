@@ -18,6 +18,8 @@ interface QuestionCardProps {
   onFlip: () => void;
   isFavorite: boolean;
   onToggleFavorite: () => void;
+  /** Public path for sharing; defaults to the card in its deck */
+  sharePath?: string;
 }
 
 /**
@@ -30,6 +32,7 @@ export const QuestionCard = memo(function QuestionCard({
   onFlip,
   isFavorite,
   onToggleFavorite,
+  sharePath,
 }: QuestionCardProps) {
   const prefersReducedMotion = useReducedMotion();
   const deck = getDeck(question.categoryId);
@@ -108,7 +111,7 @@ export const QuestionCard = memo(function QuestionCard({
           <ShareButton
             text={question.text}
             categoryName={categoryName}
-            path={question.categoryId === "custom" ? undefined : `/spil/${question.categoryId}/?question=${question.id}`}
+            path={sharePath ?? (question.categoryId === "custom" ? undefined : `/spil/${question.categoryId}/?question=${question.id}`)}
           />
         </span>
         <button

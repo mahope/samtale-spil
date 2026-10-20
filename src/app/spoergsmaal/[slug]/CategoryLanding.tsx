@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { categories, getCategory } from "@/data/categories";
 import { categoryTexts } from "@/data/categoryTexts";
+import { legeSider } from "@/data/lege";
 import { getDeck } from "@/data/decks";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -129,6 +130,18 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
         <section className="mx-auto mt-20 max-w-6xl px-4 sm:px-6" aria-labelledby="andre">
           <h2 id="andre" className="text-2xl font-bold">Andre spørgsmål</h2>
           <ul className="mt-4 flex flex-wrap gap-2">
+            {legeSider
+              .filter((l) => l.relaterede.includes(`/spoergsmaal/${category.id}/`))
+              .map((l) => (
+                <li key={l.slug}>
+                  <Link
+                    href={`/lege/${l.slug}/`}
+                    className="inline-flex min-h-11 items-center rounded-full bg-kridt px-4 font-semibold text-kridt-blaek"
+                  >
+                    {l.h1.split(":")[0]}
+                  </Link>
+                </li>
+              ))}
             {related.map((c) => {
               const d = getDeck(c.id);
               return (
