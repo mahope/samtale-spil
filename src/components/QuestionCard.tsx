@@ -139,6 +139,7 @@ export const QuestionCard = memo(function QuestionCard({
             <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
           </span>
         )}
+        {type !== "joker" && (
         <span className="rounded-full bg-white text-[#15201b] shadow-kort">
           <ShareButton
             text={question.text}
@@ -146,6 +147,7 @@ export const QuestionCard = memo(function QuestionCard({
             path={sharePath ?? (question.categoryId === "custom" ? undefined : `/spil/${question.categoryId}/?question=${question.id}`)}
           />
         </span>
+        )}
         {question.categoryId !== "custom" && type !== "joker" && <ReportCard questionId={question.id} />}
         {type === "peg" ? (
           <button

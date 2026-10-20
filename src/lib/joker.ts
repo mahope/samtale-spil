@@ -15,6 +15,11 @@ const JOKER_TEXTS = [
  */
 export function jokerAt(turn: number, categoryId: string, enabled: boolean): Question | null {
   if (!enabled || (turn + 1) % 10 !== 0) return null;
-  const n = Math.floor(turn / 10) % JOKER_TEXTS.length;
-  return { id: `joker-${n + 1}`, categoryId, text: JOKER_TEXTS[n], depth: "let", type: "joker" };
+  return jokerCard(Math.floor(turn / 10), categoryId);
+}
+
+/** The n-th joker (0-based), cycling through the texts */
+export function jokerCard(n: number, categoryId: string): Question {
+  const i = n % JOKER_TEXTS.length;
+  return { id: `joker-${i + 1}`, categoryId, text: JOKER_TEXTS[i], depth: "let", type: "joker" };
 }

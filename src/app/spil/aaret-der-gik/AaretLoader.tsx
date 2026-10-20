@@ -10,14 +10,15 @@ const SequenceGame = dynamic(() => import("@/components/SequenceGame").then((m) 
 });
 
 // Four rounds of three cards: look back, guess, look ahead, guess (issue #41)
-const round = (label: string, from: SequenceStep["from"]): SequenceStep[] =>
-  [1, 2, 3].map((n) => ({ depth: "let", label: `${label}, kort ${n} af 3`, from }));
+const GUESS = "Den, der læser kortet op, er »mig«. De andre gætter først, og så kommer det rigtige svar.";
+const round = (label: string, from: SequenceStep["from"], hint?: string): SequenceStep[] =>
+  [1, 2, 3].map((n) => ({ depth: "let", label: `${label}, kort ${n} af 3`, from, hint }));
 
 const STEPS: SequenceStep[] = [
   ...round("Runde 1 af 4: året der gik", AAR_TILBAGEBLIK),
-  ...round("Runde 2 af 4: gæt hinandens svar", AAR_GAET_TILBAGE),
+  ...round("Runde 2 af 4: gæt hinandens svar", AAR_GAET_TILBAGE, GUESS),
   ...round("Runde 3 af 4: året der kommer", AAR_FREMTID),
-  ...round("Runde 4 af 4: gæt igen", AAR_GAET_FREM),
+  ...round("Runde 4 af 4: gæt igen", AAR_GAET_FREM, GUESS),
 ];
 
 export function AaretLoader() {
@@ -28,8 +29,9 @@ export function AaretLoader() {
       deckId="aaret"
       decks={[]}
       steps={STEPS}
-      doneTitle="Godt nytår"
-      doneText="Skriv gerne et par af svarene ned, og tag dem frem igen næste år."
+      doneTitle="Tak for snakken"
+      doneText="Skriv gerne et par af svarene ned, og tag dem frem igen om et år."
+      sharePath="/spil/aaret-der-gik/"
     />
   );
 }

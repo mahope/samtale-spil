@@ -18,6 +18,8 @@ export interface SequenceStep {
   label: string;
   /** Draw from these cards instead of the decks (depth is then ignored) */
   from?: Question[];
+  /** Replaces the default hint under the card */
+  hint?: string;
 }
 
 // Every run ends on a light or grateful card (docs/forskning.md 2.5)
@@ -48,6 +50,7 @@ export function SequenceGame({
   steps,
   doneTitle,
   doneText,
+  sharePath,
 }: {
   /** For tracking, e.g. "trappen" */
   mode: string;
@@ -59,6 +62,8 @@ export function SequenceGame({
   steps: SequenceStep[];
   doneTitle: string;
   doneText: string;
+  /** Public page to share cards from, when they do not belong to a deck */
+  sharePath?: string;
 }) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [jokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
@@ -130,11 +135,11 @@ export function SequenceGame({
       answered={index}
       total={allSteps.length}
       onReset={restart}
-      aboveProgress={<p className="mb-2 text-center text-sm font-semibold text-white/85">{allSteps[index].label}</p>}
+      aboveProgress={<p className="mb-2 text-center text-sm font-semibold text-white/85">{card.type === "joker" ? "Joker" : allSteps[index].label}</p>}
       onNext={next}
       isTransitioning={isTransitioning}
       nextLabel={index + 1 >= allSteps.length ? "Afslut" : "Næste kort"}
-      hint="Svar begge to, og spørg gerne videre"
+      hint={allSteps[index].hint ?? "Svar begge to, og spørg gerne videre"}
     >
       <AnimatePresence mode="wait">
         <motion.div key={`${round}-${card.id}`} {...dealMotion} className="w-full">
@@ -145,6 +150,7 @@ export function SequenceGame({
             onFlip={() => setIsFlipped((f) => !f)}
             isFavorite={isFavorite(card.id)}
             onToggleFavorite={() => toggleFavorite(card)}
+            sharePath={getCategory(card.categoryId) ? undefined : sharePath}
           />
         </motion.div>
       </AnimatePresence>
