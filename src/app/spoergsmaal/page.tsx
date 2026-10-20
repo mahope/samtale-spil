@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { OG_BASE, QUESTION_COUNT } from "@/config/site";
 import Link from "next/link";
-import { categories } from "@/data/categories";
+import { groupedCategories } from "@/data/deckGroups";
 import { categoryTexts } from "@/data/categoryTexts";
 import { curatedPages } from "@/data/curatedPages";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 };
 
 export default function QuestionIndexPage() {
-  const listed = categories.filter((c) => categoryTexts[c.id]);
   return (
     <>
       <SiteHeader />
@@ -41,19 +40,30 @@ export default function QuestionIndexPage() {
           ))}
         </ul>
         <h2 className="mt-14 text-2xl font-bold sm:text-3xl">Efter emne</h2>
-        <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {listed.map((c) => (
-            <li key={c.id}>
-              <Link href={`/spoergsmaal/${c.id}/`} className="group flex h-full gap-4 rounded-2xl bg-flade p-4 ring-1 ring-streg hover:bg-flade-2">
-                <DeckBack categoryId={c.id} className="h-20 w-14 shrink-0 rounded-lg" />
-                <span>
-                  <span className="block text-lg font-bold group-hover:underline">{categoryTexts[c.id].seoTitle.split(/[:?]/)[0]}</span>
-                  <span className="mt-1 block text-[0.95rem] leading-snug text-blaek-2">{c.description}</span>
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {groupedCategories().map((g) => {
+          const listed = g.categories.filter((c) => categoryTexts[c.id]);
+          if (listed.length === 0) return null;
+          return (
+            <section key={g.id} aria-labelledby={`emne-${g.id}`}>
+              <h3 id={`emne-${g.id}`} className="mt-8 text-xl font-bold">
+                {g.title}
+              </h3>
+              <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {listed.map((c) => (
+                  <li key={c.id}>
+                    <Link href={`/spoergsmaal/${c.id}/`} className="group flex h-full gap-4 rounded-2xl bg-flade p-4 ring-1 ring-streg hover:bg-flade-2">
+                      <DeckBack categoryId={c.id} className="h-20 w-14 shrink-0 rounded-lg" />
+                      <span>
+                        <span className="block text-lg font-bold group-hover:underline">{categoryTexts[c.id].seoTitle.split(/[:?]/)[0]}</span>
+                        <span className="mt-1 block text-[0.95rem] leading-snug text-blaek-2">{c.description}</span>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })}
       </main>
       <SiteFooter />
     </>

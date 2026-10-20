@@ -1,6 +1,10 @@
 import { Category, Question } from "@/types";
 import { dilemmaCategory } from "@/data/questions/dilemmaer";
 import { researchCategories } from "@/data/questions/forskning";
+import { foraeldreCategories, foersteDateExtra } from "@/data/questions/foraeldre";
+import { uddannelseCategories } from "@/data/questions/uddannelse";
+import { skoleCategories } from "@/data/questions/skole";
+import { spejderCategories } from "@/data/questions/spejder";
 
 export const categories: Category[] = [
   {
@@ -1109,6 +1113,7 @@ export const categories: Category[] = [
       { id: "date-98", categoryId: "foerste-date", text: "Hvad er vigtigt for dig i et forhold?", depth: "dyb" },
       { id: "date-99", categoryId: "foerste-date", text: "Hvad har du ændret i dit liv, som du er glad for?", depth: "dyb" },
       { id: "date-100", categoryId: "foerste-date", text: "Hvad håber du, de næste år bringer?", depth: "dyb" },
+      ...foersteDateExtra,
     ],
   },
   {
@@ -1549,6 +1554,10 @@ export const categories: Category[] = [
   },
   dilemmaCategory,
   ...researchCategories,
+  ...foraeldreCategories,
+  ...uddannelseCategories,
+  ...skoleCategories,
+  ...spejderCategories,
 ];
 
 export function getCategory(id: string): Category | undefined {
