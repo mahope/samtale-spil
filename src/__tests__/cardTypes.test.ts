@@ -51,6 +51,12 @@ describe("deck flags", () => {
     for (const s of legeSider) for (const k of s.kort) expect(ALCOHOL.test(k.text), `${k.id}: ${k.text}`).toBe(false);
   });
 
+  it("keeps the party games free of drinking words, even negated", () => {
+    // Issue #43: "shot", "drik" and "tår" must not appear on the /lege/ cards at all
+    const PARTY = word("shots?|drik\\p{L}*|tår");
+    for (const s of legeSider) for (const k of s.kort) expect(PARTY.test(k.text), `${k.id}: ${k.text}`).toBe(false);
+  });
+
   it("keeps family-friendly and work-safe decks free of sex and nudity", () => {
     for (const q of allCards) {
       if (FAMILY_FRIENDLY_DECKS.has(q.categoryId) || WORK_SAFE_DECKS.has(q.categoryId)) {

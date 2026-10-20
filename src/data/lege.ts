@@ -30,7 +30,10 @@ export interface LegeSide {
   relaterede: string[];
 }
 
-export { legeSider } from "./lege-indhold";
+import { legeSider as legeSider1 } from "./lege-indhold";
+import { legeSider2 } from "./lege-indhold2";
+
+export const legeSider: LegeSide[] = [...legeSider1, ...legeSider2];
 
 /** Which deck's colours each page plays on */
 const DECK_BY_PAGE: Record<string, string> = {
@@ -38,6 +41,11 @@ const DECK_BY_PAGE: Record<string, string> = {
   "julefrokost-lege": "kollegaer",
   nytaarslege: "droemme",
   "selskabslege-ved-bordet": "sjove",
+  "jeg-har-aldrig": "venner",
+  "hvem-er-mest-tilboejelig-til": "sjove",
+  "sandhed-eller-konsekvens": "familie",
+  "sjove-udfordringer": "dilemmaer",
+  bryllupslege: "parforhold",
 };
 
 export function legeDeck(slug: string): string {
