@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
 import { notFound } from "next/navigation";
 import type { Question } from "@/types";
-import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter, useQuestionHistory } from "@/hooks/useLocalStorage";
+import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter, useQuestionHistory, useLocalStorage } from "@/hooks/useLocalStorage";
 import { useSound } from "@/hooks/useSound";
 import { useStreak } from "@/hooks/useStreak";
 import { useKeyboardShortcuts, KeyboardShortcutHints } from "@/hooks/useKeyboardShortcuts";
@@ -21,6 +21,7 @@ import { getDeck } from "@/data/decks";
 import { track } from "@/utils/track";
 import { tap } from "@/lib/platform";
 import { HardTalkFrame } from "@/components/HardTalkFrame";
+import { JOKER_KEY, jokerCard } from "@/lib/joker";
 
 interface Props {
   categoryId: string;
@@ -53,6 +54,9 @@ function CategoryPlay({ categoryId }: Props) {
   } = useTimerSettings();
   const { filter: difficultyFilter, setFilter: setDifficultyFilter, isLoaded: filterLoaded } = useDifficultyFilter();
   const { addToHistory } = useQuestionHistory();
+  const [jokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
+  const [cardsThisSession, setCardsThisSession] = useState(0);
+  const [joker, setJoker] = useState<Question | null>(null);
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
   const { recordActivity, currentStreak, isAtRisk } = useStreak();
   
@@ -423,7 +427,25 @@ function CategoryPlay({ categoryId }: Props) {
           {/* The card */}
           <div className="flex w-full flex-1 items-center justify-center py-6">
             <AnimatePresence mode="wait">
-              {currentQuestion && (
+              {joker ? (
+                <motion.div
+                  key={joker.id + cardsThisSession}
+                  initial={{ opacity: 0, x: 70, rotate: 6 }}
+                  animate={{ opacity: 1, x: 0, rotate: 0 }}
+                  exit={{ opacity: 0, x: -90, rotate: -8 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 28 }}
+                  className="w-full"
+                >
+                  <QuestionCard
+                    question={joker}
+                    categoryName="Joker"
+                    isFlipped={isFlipped}
+                    onFlip={handleFlip}
+                    isFavorite={false}
+                    onToggleFavorite={() => {}}
+                  />
+                </motion.div>
+              ) : currentQuestion && (
                 <motion.div
                   key={currentQuestion.id}
                   initial={{ opacity: 0, x: 70, rotate: 6 }}
@@ -450,7 +472,15 @@ function CategoryPlay({ categoryId }: Props) {
               type="button"
               onClick={() => {
                 tap("fast");
+                if (joker) {
+                  setJoker(null);
+                  setIsFlipped(false);
+                  return;
+                }
                 handleNextQuestion();
+                const n = cardsThisSession + 1;
+                setCardsThisSession(n);
+                if ((jokerOn ?? true) && n % 9 === 0) setJoker(jokerCard(n / 9 - 1, categoryId));
               }}
               disabled={isTransitioning}
               className="min-h-14 w-full touch-manipulation select-none rounded-full bg-kridt px-6 text-lg font-bold text-kridt-blaek shadow-[0_3px_0_rgb(0_0_0/0.3)] transition-transform active:translate-y-0.5 disabled:opacity-60"

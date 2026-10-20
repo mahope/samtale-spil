@@ -12,6 +12,7 @@ import { DeckBack } from "@/components/deck/DeckParts";
 import { track } from "@/utils/track";
 import type { Question } from "@/types";
 import { tap } from "@/lib/platform";
+import { JOKER_KEY, jokerAt } from "@/lib/joker";
 
 const PLAYERS_KEY = "samtale-spil-pass-players";
 const MIX = "blandet";
@@ -44,6 +45,7 @@ export function PassThePhone() {
   const [turn, setTurn] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const [jokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
 
   const players = savedPlayers.length >= 2 ? savedPlayers : ["", ""];
   const named = players.map((p) => p.trim()).filter(Boolean);
@@ -172,7 +174,8 @@ export function PassThePhone() {
     );
   }
 
-  const question = pile[turn % pile.length];
+  const drawn = pile[turn % pile.length];
+  const question = jokerAt(turn, drawn.categoryId, jokerOn ?? true) ?? drawn;
   const current = named[turn % named.length];
   const upNext = named[(turn + 1) % named.length];
 

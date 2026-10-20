@@ -6,6 +6,7 @@ import { isNative } from "@/lib/platform";
 import { REMINDER_KEY, DEFAULT_REMINDER, normalizeReminder, type Reminder } from "@/lib/reminder";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { track } from "@/utils/track";
+import { JOKER_KEY } from "@/lib/joker";
 
 const HOURS = [7, 8, 12, 16, 17, 18, 19, 20, 21];
 const WEEKDAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
@@ -16,6 +17,7 @@ export function ReminderSettings() {
   const reminder = normalizeReminder(stored);
   const native = useSyncExternalStore(() => () => {}, isNative, () => false);
   const [message, setMessage] = useState("");
+  const [jokerOn, setJokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
 
   const apply = async (next: Reminder) => {
     setReminder(next);
@@ -108,6 +110,22 @@ export function ReminderSettings() {
             Påmindelsen om dagens spørgsmål findes i appen til iPhone og Android.
           </p>
         )}
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-bold">Spillet</h2>
+        <label className="mt-4 flex min-h-12 items-center justify-between gap-4 rounded-xl bg-flade px-4 ring-1 ring-streg">
+          <span>
+            <span className="block font-semibold">Jokerkort</span>
+            <span className="text-sm text-blaek-2">Ca. hvert tiende kort er en joker, fx »stil dit eget spørgsmål«.</span>
+          </span>
+          <input
+            type="checkbox"
+            checked={jokerOn ?? true}
+            onChange={(e) => setJokerOn(e.target.checked)}
+            className="h-6 w-6 shrink-0 accent-[var(--bord)]"
+          />
+        </label>
       </section>
 
       <section>

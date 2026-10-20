@@ -187,5 +187,6 @@ const RELATED_LABEL: Record<string, string> = {
   "/spoergsmaal/icebreakers/": "Icebreakers",
   "/spil/aftensmad/": "Aftensmad-spillet",
   "/spil/trappen/": "Trappen",
+  "/spil/aaret-der-gik/": "Året der gik",
   "/multiplayer/": "Send telefonen rundt",
 };

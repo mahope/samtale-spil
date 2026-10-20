@@ -53,6 +53,8 @@ export const decks: Record<string, Deck> = {
   spejder: { bg: "#3d6a2b", ink: LIGHT, pattern: "zigzag", mark: "Sp" },
   gilwell: { bg: "#6b5a2e", ink: LIGHT, pattern: "tern", mark: "Gw" },
   voksne: { bg: "#1d1820", ink: LIGHT, pattern: "ruder", mark: "18" },
+  /** "Året der gik" (src/data/aaretDerGik.ts) */
+  aaret: { bg: "#5c3b8f", ink: LIGHT, pattern: "prikker", mark: "År" },
   /** Mixed deck for "Bland alle" */
   blandet: { bg: "#1d4a38", ink: LIGHT, pattern: "tern", mark: "A" },
   /** The player's own questions */

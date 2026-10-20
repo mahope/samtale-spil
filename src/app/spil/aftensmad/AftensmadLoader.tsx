@@ -24,7 +24,7 @@ export function AftensmadLoader() {
       decks={["familie", "boern", "barndom"]}
       steps={STEPS}
       doneTitle="Tak for snakken"
-      doneText="Tre kort er nok til en god snak ved bordet. Spørg gerne, hvem der vil vælge spørgsmålene i morgen."
+      doneText="Et par kort er nok til en god snak ved bordet. Spørg gerne, hvem der vil vælge spørgsmålene i morgen."
     />
   );
 }
