@@ -178,6 +178,11 @@ export default function Home() {
               </li>
             ))}
           </ol>
+          <p className="mt-8">
+            <Link href="/saadan-spiller-i/" className="font-semibold underline underline-offset-4">
+              Flere råd, og hvad I gør når en snak bliver svær
+            </Link>
+          </p>
         </section>
 
         <section className="mx-auto mt-20 max-w-3xl px-4 sm:px-6" aria-labelledby="faq-overskrift">
