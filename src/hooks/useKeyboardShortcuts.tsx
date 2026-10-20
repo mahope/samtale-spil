@@ -46,8 +46,9 @@ export function useKeyboardShortcuts({
       // Already handled by the focused card, a button or an open menu
       if (event.defaultPrevented) return;
 
-      // Don't trigger shortcuts when typing in inputs
+      // Don't trigger shortcuts when typing in inputs or inside a dialog
       const target = event.target as HTMLElement;
+      if (target.closest?.("dialog")) return;
       if (
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
