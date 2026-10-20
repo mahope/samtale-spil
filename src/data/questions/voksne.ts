@@ -106,7 +106,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-16",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvornår har du lyst til mig, uden at jeg opdager det?",
+    text: "Hvilken lille ting gør jeg i hverdagen, som du synes er sexet, selvom jeg ikke selv tænker over det?",
     depth: "medium",
   },
   {
@@ -242,7 +242,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-38",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvad skal jeg gøre for at få dig til at rødme foran andre?",
+    text: "Hvad skal jeg gøre for at få dig til at rødme, uden at andre opdager hvorfor?",
     depth: "let",
   },
   {
@@ -416,7 +416,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-67",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvad siger du til at blive bundet med et silketørklæde?",
+    text: "Hvad siger du til at prøve et silketørklæde som bind for øjnene?",
     depth: "medium",
   },
   {
@@ -440,13 +440,13 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-71",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvad er det frækkeste, du har tænkt på, mens vi var sammen med andre?",
+    text: "Hvad er det frækkeste, du har tænkt om os to, mens vi sad til middag med andre?",
     depth: "medium",
   },
   {
     id: "adult-72",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvor vil du helst kysses, når vi er alene?",
+    text: "Hvilket sted på din krop bliver for sjældent kysset?",
     depth: "medium",
   },
   {
@@ -476,7 +476,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-77",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvordan vil du helst vækkes en lørdag morgen, hvis jeg har lyst til dig?",
+    text: "Hvordan vil du helst starte en lørdag morgen, hvis vi begge vågner med lyst?",
     depth: "medium",
   },
   {
@@ -530,7 +530,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-86",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvilket ønske har du holdt for dig selv, fordi du var nervøs for, hvad jeg ville sige?",
+    text: "Hvad har du opdaget, at du kan lide, efter vi blev kærester?",
     depth: "medium",
   },
   {
@@ -554,7 +554,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-90",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvad ville du gøre, hvis jeg sagde: »I aften bestemmer du alt«?",
+    text: "Hvad ville du gøre, hvis jeg sagde: »I aften bestemmer du, inden for det vi begge har det godt med«?",
     depth: "medium",
   },
   {
@@ -596,7 +596,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-97",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvad er dit største ønske for vores sexliv det næste år?",
+    text: "Hvad skal vi blive ved med at gøre, fordi det virker hver gang?",
     depth: "dyb",
   },
   {
@@ -614,13 +614,13 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-100",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvilken fantasi vil du gerne tale om, men ikke nødvendigvis gøre?",
+    text: "Hvilken scene fra en film har du lyst til at genopføre med mig?",
     depth: "dyb",
   },
   {
     id: "adult-101",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Hvornår har du sagt ja, selvom du egentlig ikke havde lyst, og hvad kan vi gøre anderledes?",
+    text: "Hvornår har du været i tvivl om, om du havde lyst, og hvad kan jeg gøre, så det er lettere at sige fra?",
     depth: "dyb",
   },
   {
@@ -680,7 +680,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-111",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Tag én ting af mig, langsomt. Du vælger hvad.",
+    text: "Tag ét stykke tøj af mig, langsomt. Du vælger hvilket.",
     depth: "dyb",
   },
   {
@@ -692,7 +692,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-113",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Læg mine hænder der, hvor du helst vil røres lige nu.",
+    text: "Tag min hånd, og læg den dér, hvor du helst vil røres lige nu.",
     depth: "dyb",
   },
   {
@@ -734,7 +734,7 @@ export const adultQuestions: Question[] = [
   {
     id: "adult-120",
     categoryId: ADULT_CATEGORY_ID,
-    text: "Vælg en regel for resten af aftenen, som jeg skal følge.",
+    text: "Vælg en regel for resten af aftenen, som jeg skal følge. Jeg må sige pas, hvis den ikke er mig.",
     depth: "dyb",
   },
   {
