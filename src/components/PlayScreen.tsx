@@ -85,7 +85,7 @@ export function PlayScreen({
           </div>
           <div className="mt-2 flex items-center justify-between text-sm text-white/75">
             <span aria-live="polite" className="tabular-nums">
-              {answered.toLocaleString("da-DK")} af {total.toLocaleString("da-DK")} kort
+              {Math.min(answered, total).toLocaleString("da-DK")} af {total.toLocaleString("da-DK")} kort
             </span>
             <button
               type="button"

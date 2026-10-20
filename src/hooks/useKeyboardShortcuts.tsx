@@ -43,6 +43,9 @@ export function useKeyboardShortcuts({
 }: KeyboardShortcutConfig) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
+      // Already handled by the focused card, a button or an open menu
+      if (event.defaultPrevented) return;
+
       // Don't trigger shortcuts when typing in inputs
       const target = event.target as HTMLElement;
       if (

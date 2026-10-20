@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_BASE, SITE_URL, SITE_NAME, QUESTION_COUNT, CATEGORY_COUNT } from "@/config/site";
 import Link from "next/link";
 import { categories } from "@/data/categories";
 import { adultQuestions } from "@/data/questions/voksne";
@@ -6,11 +7,10 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CardDraw, type DrawCard } from "@/components/home/CardDraw";
 import { DeckTile } from "@/components/deck/DeckParts";
-import { SITE_URL, SITE_NAME, QUESTION_COUNT, CATEGORY_COUNT } from "@/config/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
-  openGraph: {
+  openGraph: { ...OG_BASE,
     url: "/",
     title: "Gratis samtalekort og samtalespil på dansk",
   },

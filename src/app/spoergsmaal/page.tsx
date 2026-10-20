@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_BASE, QUESTION_COUNT } from "@/config/site";
 import Link from "next/link";
 import { categories } from "@/data/categories";
 import { categoryTexts } from "@/data/categoryTexts";
@@ -6,14 +7,13 @@ import { curatedPages } from "@/data/curatedPages";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack } from "@/components/deck/DeckParts";
-import { QUESTION_COUNT } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Samtalespørgsmål til par, familie og venner",
   description:
     "Alle spørgsmålene fra Snakkespil samlet efter emne: til kæresten, familien, vennerne, børnene, kollegerne og første date. Gratis at læse og spille.",
   alternates: { canonical: "/spoergsmaal/" },
-  openGraph: { url: "/spoergsmaal/" },
+  openGraph: { ...OG_BASE, url: "/spoergsmaal/" },
 };
 
 export default function QuestionIndexPage() {

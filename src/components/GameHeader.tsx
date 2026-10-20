@@ -54,6 +54,10 @@ export function GameHeader({
 }: GameHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const menuOpenRef = useRef(false);
+  useEffect(() => {
+    menuOpenRef.current = isMenuOpen;
+  }, [isMenuOpen]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -69,7 +73,11 @@ export function GameHeader({
   // Close menu on escape
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") setIsMenuOpen(false);
+      if (event.key === "Escape" && menuOpenRef.current) {
+        // closing the menu must not also leave the game (useKeyboardShortcuts)
+        event.preventDefault();
+        setIsMenuOpen(false);
+      }
     }
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);

@@ -184,7 +184,7 @@ export function PassThePhone() {
             style={{ fontStretch: "88%" }}
             aria-live="polite"
           >
-            {current}s tur
+            {/[sxz]$/i.test(current) ? `${current}'` : `${current}s`} tur
           </motion.h1>
         </AnimatePresence>
 

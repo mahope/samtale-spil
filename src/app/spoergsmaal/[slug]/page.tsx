@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_BASE } from "@/config/site";
 import { notFound } from "next/navigation";
 import { categories } from "@/data/categories";
 import { categoryTexts } from "@/data/categoryTexts";
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { url, title, description },
+    openGraph: { ...OG_BASE, url, title, description },
   };
 }
 

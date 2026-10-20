@@ -33,6 +33,7 @@ export const QuestionCard = memo(function QuestionCard({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (e.target !== e.currentTarget) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         onFlip();
@@ -82,15 +83,23 @@ export const QuestionCard = memo(function QuestionCard({
             categoryName={categoryName}
             question={question}
             className="h-full"
-            footer={
-              <div className="-mb-1 -ml-2 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
-                <ShareButton text={question.text} categoryName={categoryName} />
-              </div>
-            }
           />
         </div>
       </motion.div>
+
+      {/* Outside the card: a role=button may not contain other controls */}
+      <div
+        className={`mt-3 flex justify-center gap-2 transition-opacity ${isFlipped ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        aria-hidden={!isFlipped}
+        inert={!isFlipped}
+      >
+        <span className="rounded-full bg-white text-[#15201b] shadow-kort">
+          <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
+        </span>
+        <span className="rounded-full bg-white text-[#15201b] shadow-kort">
+          <ShareButton text={question.text} categoryName={categoryName} />
+        </span>
+      </div>
     </div>
   );
 });

@@ -373,7 +373,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
             </div>
             <div className="mt-2 flex items-center justify-between text-sm text-white/75">
               <span aria-live="polite" className="tabular-nums">
-                {answeredCount.toLocaleString("da-DK")} af {activeQuestionCount.toLocaleString("da-DK")} kort
+                {Math.min(answeredCount, activeQuestionCount).toLocaleString("da-DK")} af {activeQuestionCount.toLocaleString("da-DK")} kort
               </span>
               <button
                 type="button"

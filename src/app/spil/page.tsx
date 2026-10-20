@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { OG_BASE } from "@/config/site";
 import Link from "next/link";
-import { categories } from "@/data/categories";
 import { adultQuestions } from "@/data/questions/voksne";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack, DeckTile } from "@/components/deck/DeckParts";
-import { QUESTION_COUNT } from "@/config/site";
+import { categories, getTotalQuestionCount } from "@/data/categories";
 import { ChooserTools } from "./ChooserTools";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description:
     "Vælg mellem samtalekort til par, familie, venner, børn, kollegaer og første date. Eller bland alle kortene og se, hvad der kommer.",
   alternates: { canonical: "/spil/" },
-  openGraph: { url: "/spil/" },
+  openGraph: { ...OG_BASE, url: "/spil/" },
 };
 
 const modes = [
@@ -21,7 +21,7 @@ const modes = [
     href: "/spil/shuffle-all/",
     deck: "blandet",
     title: "Bland alle kort",
-    text: `Alle ${QUESTION_COUNT.toLocaleString("da-DK")} spørgsmål i én bunke.`,
+    text: `Alle ${getTotalQuestionCount().toLocaleString("da-DK")} spørgsmål i én bunke.`,
   },
   {
     href: "/multiplayer/",

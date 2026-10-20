@@ -1,5 +1,5 @@
-import { PassThePhone } from "./PassThePhone";
+import { PassThePhoneLoader } from "./PassThePhoneLoader";
 
 export default function MultiplayerPage() {
-  return <PassThePhone />;
+  return <PassThePhoneLoader />;
 }

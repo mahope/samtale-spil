@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
+import { OG_BASE, QUESTION_COUNT, CATEGORY_COUNT } from "@/config/site";
 import Link from "next/link";
 import { TextPage } from "@/components/site/TextPage";
-import { QUESTION_COUNT, CATEGORY_COUNT } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Om Snakkespil",
   description: "Snakkespil er gratis samtalekort på dansk til par, familier og venner. Her kan du læse, hvorfor spillet findes, og hvem der laver det.",
   alternates: { canonical: "/om/" },
-  openGraph: { url: "/om/" },
+  openGraph: { ...OG_BASE, url: "/om/" },
 };
 
 export default function AboutPage() {
