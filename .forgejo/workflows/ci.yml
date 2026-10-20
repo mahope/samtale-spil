@@ -83,6 +83,12 @@ jobs:
           echo "og:image -> $og"
           case "$og" in */opengraph-image) test -f "out$og" ;; *) echo "unexpected og:image path"; exit 1 ;; esac
 
+      - name: Danish pages link their English version
+        run: |
+          set -euo pipefail
+          grep -qi 'hreflang="en"' out/index.html || { echo "Danish home page has no hreflang=en"; exit 1; }
+          grep -qi 'hreflang="en"' out/spoergsmaal/parforhold/index.html || { echo "Danish deck page has no hreflang=en"; exit 1; }
+
       - name: App build leaves out the 18+ deck
         run: |
           set -euo pipefail
@@ -99,6 +105,7 @@ jobs:
           grep -q '<html lang="en"' out/index.html || { echo "English build is not lang=en"; exit 1; }
           if grep -q 'content="noindex' out/index.html; then echo "the English home page must be indexable"; exit 1; fi
           grep -qi 'hreflang="da"' out/questions/questions-for-couples/index.html || { echo "missing hreflang to the Danish deck"; exit 1; }
+          grep -qi 'hreflang="da"' out/index.html || { echo "missing hreflang to the Danish home page"; exit 1; }
           test ! -e out/spil && test ! -e out/spoergsmaal || { echo "Danish routes leaked into the English build"; exit 1; }
           grep -q "<loc>https://goodtalkcards.com/questions/" out/sitemap.xml || { echo "English sitemap missing deck pages"; exit 1; }
           for f in out/questions/*/index.html; do
