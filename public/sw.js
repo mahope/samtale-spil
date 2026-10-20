@@ -1,15 +1,15 @@
 /// <reference lib="webworker" />
 
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v4";
 const STATIC_CACHE = `samtalekort-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `samtalekort-runtime-${CACHE_VERSION}`;
 
 // Static assets to precache
 const STATIC_ASSETS = [
   "/",
-  "/spil",
-  "/favoritter",
-  "/statistik",
+  "/spil/",
+  "/favoritter/",
+  "/statistik/",
   "/manifest.json",
   "/icons/icon.svg",
 ];
@@ -93,9 +93,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Strategy: Stale While Revalidate for navigation/HTML
+  // Strategy: Network First for navigation/HTML, so a deploy never serves
+  // stale HTML that points at chunk hashes which no longer exist
   if (isNavigationRequest(event.request)) {
-    event.respondWith(staleWhileRevalidate(event.request, STATIC_CACHE));
+    event.respondWith(networkFirst(event.request, STATIC_CACHE));
     return;
   }
 
@@ -124,24 +125,6 @@ async function cacheFirst(request, cacheName) {
       statusText: "Service Unavailable" 
     });
   }
-}
-
-// Stale While Revalidate - returns cached version immediately, updates in background
-async function staleWhileRevalidate(request, cacheName) {
-  const cache = await caches.open(cacheName);
-  const cached = await cache.match(request);
-
-  const networkPromise = fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        cache.put(request, response.clone());
-      }
-      return response;
-    })
-    .catch(() => null);
-
-  // Return cached immediately if available, otherwise wait for network
-  return cached || networkPromise || new Response("Offline", { status: 503 });
 }
 
 // Network First Strategy - great for dynamic content

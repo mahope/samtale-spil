@@ -2,13 +2,14 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
+import { SITE_URL, CATEGORY_COUNT, QUESTION_COUNT_LABEL } from "@/config/site";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const siteUrl = "https://mahope.github.io/samtale-spil";
+const siteUrl = SITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     default: "Samtalekort - Dybe samtaler med dem du holder af",
     template: "%s | Samtalekort",
   },
-  description: "Et gratis online samtalespil der skaber meningsfulde samtaler mellem par, familier og venner. 350+ spørgsmål i 7 kategorier. Perfekt til date night, familiehygge eller venneaftener.",
+  description: `Et gratis online samtalespil der skaber meningsfulde samtaler mellem par, familier og venner. ${QUESTION_COUNT_LABEL} spørgsmål i ${CATEGORY_COUNT} kategorier. Perfekt til date night, familiehygge eller venneaftener.`,
   keywords: [
     "samtalespil",
     "samtalekort",
@@ -31,10 +32,10 @@ export const metadata: Metadata = {
     "gratis samtalespil",
     "dansk samtalespil",
   ],
-  authors: [{ name: "mahope", url: "https://mahope.dk" }],
-  creator: "mahope",
-  publisher: "mahope",
-  manifest: "/samtale-spil/manifest.json",
+  authors: [{ name: "Mahope", url: "https://mahoje.dk" }],
+  creator: "Mahope",
+  publisher: "Mahope",
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Samtalekort - Dybe samtaler med dem du holder af",
-    description: "350+ spørgsmål der skaber meningsfulde samtaler mellem par, familier og venner. Gratis online samtalespil.",
+    description: `${QUESTION_COUNT_LABEL} spørgsmål der skaber meningsfulde samtaler mellem par, familier og venner. Gratis online samtalespil.`,
     url: siteUrl,
     siteName: "Samtalekort",
     locale: "da_DK",
@@ -63,7 +64,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Samtalekort - Dybe samtaler med dem du holder af",
-    description: "350+ spørgsmål der skaber meningsfulde samtaler. Gratis online samtalespil.",
+    description: `${QUESTION_COUNT_LABEL} spørgsmål der skaber meningsfulde samtaler. Gratis online samtalespil.`,
     images: [`${siteUrl}/og-image.svg`],
   },
   robots: {
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: siteUrl,
+    canonical: "/",
   },
   category: "games",
 };
@@ -90,8 +91,7 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  viewportFit: "cover",
 };
 
 // JSON-LD Structured Data for WebApplication
@@ -100,7 +100,7 @@ const jsonLd = {
   "@type": "WebApplication",
   name: "Samtalekort",
   description:
-    "Et gratis online samtalespil der skaber meningsfulde samtaler mellem par, familier og venner. 350+ spørgsmål i 7 kategorier.",
+    `Et gratis online samtalespil der skaber meningsfulde samtaler mellem par, familier og venner. ${QUESTION_COUNT_LABEL} spørgsmål i ${CATEGORY_COUNT} kategorier.`,
   url: siteUrl,
   applicationCategory: "GameApplication",
   operatingSystem: "Web Browser",
@@ -111,19 +111,12 @@ const jsonLd = {
   },
   author: {
     "@type": "Organization",
-    name: "mahope",
-    url: "https://mahope.dk",
+    name: "Mahope",
+    url: "https://mahoje.dk",
   },
   inLanguage: "da",
   browserRequirements: "Requires JavaScript. Requires HTML5.",
   softwareVersion: "1.0.0",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "5",
-    ratingCount: "1",
-    bestRating: "5",
-    worstRating: "1",
-  },
 };
 
 // Inline script to set theme before hydration (prevents flash)
@@ -155,8 +148,8 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src="https://analytics.holstjensen.eu/js/pa-yk0peyirQvnSBppLjWJYB.js" />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
-        <link rel="icon" href="/samtale-spil/icons/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/samtale-spil/icons/icon.svg" />
+        <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icons/icon.svg" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <script
           type="application/ld+json"

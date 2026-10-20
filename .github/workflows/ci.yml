@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Lint
+        run: npm run lint
+      - name: Tests
+        run: npm run test:run
+      - name: Build
+        run: npm run build
+
+      - name: Verify static export
+        run: |
+          set -euo pipefail
+          for f in index.html 404.html spil/index.html spil/parforhold/index.html sitemap.xml robots.txt manifest.json; do
+            test -f "out/$f" || { echo "missing out/$f"; exit 1; }
+          done
+          if grep -rl "github.io" out --include=*.html --include=*.xml --include=*.txt; then
+            echo "old github.io URLs in export"; exit 1
+          fi
+
+      - name: Verify nginx config
+        run: |
+          docker run --rm \
+            -v "$PWD/deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+            -v "$PWD/deploy/security-headers.conf:/etc/nginx/snippets/security-headers.conf:ro" \
+            nginx:1.31-alpine nginx -t

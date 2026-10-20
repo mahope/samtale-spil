@@ -7,6 +7,7 @@ import { useFavorites, useProgress } from "./useLocalStorage";
 import { addRoundRectPolyfill } from "@/utils/canvasPolyfill";
 import { useAchievements } from "./useAchievements";
 import { logger } from "@/utils/logger";
+import { SITE_URL } from "@/config/site";
 
 export interface ShareStats {
   totalQuestions: number;
@@ -122,7 +123,7 @@ ${achievements}
 ${stats.favoriteCategory ? `• Favorit: ${stats.favoriteCategory}` : ""}
 
 Vil du også prøve dybere samtaler? 💭
-https://mahope.github.io/samtale-spil/
+${SITE_URL}/
 
 #Samtalekort #DybereForhold #Samtale`;
 
@@ -131,7 +132,7 @@ https://mahope.github.io/samtale-spil/
         await navigator.share({
           title: "Mine Samtalekort-statistikker",
           text: shareText,
-          url: "https://mahope.github.io/samtale-spil/",
+          url: `${SITE_URL}/`,
         });
         return { success: true, method: "native" as const };
       } else {
@@ -160,7 +161,7 @@ ${completionPercentage === 100
   : `${totalCount - answeredCount} spørgsmål tilbage til at fuldføre kategorien.`
 }
 
-Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
+Prøv selv: ${SITE_URL}/spil/${category.id}/
 
 #Samtalekort #${category.name} #DybereForhold`;
 
@@ -169,7 +170,7 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
         await navigator.share({
           title: `${category.name} - Samtalekort`,
           text: shareText,
-          url: `https://mahope.github.io/samtale-spil/spil/${category.id}`,
+          url: `${SITE_URL}/spil/${category.id}/`,
         });
         return { success: true, method: "native" as const };
       } else {
@@ -315,7 +316,7 @@ Prøv selv: https://mahope.github.io/samtale-spil/spil/${category.id}
       // Add URL
       ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
       ctx.font = "18px system-ui, -apple-system, sans-serif";
-      ctx.fillText("mahope.github.io/samtale-spil", canvas.width / 2, 480);
+      ctx.fillText("snakkespil.dk", canvas.width / 2, 480);
 
       // Add decorative elements
       ctx.fillStyle = "rgba(255, 255, 255, 0.1)";

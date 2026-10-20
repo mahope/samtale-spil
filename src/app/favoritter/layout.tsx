@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-const siteUrl = "https://mahope.github.io/samtale-spil";
+import { SITE_URL as siteUrl } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Mine favoritter - Samtalekort",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: "Mine favoritter - Samtalekort",
     description:
       "Dine gemte yndlingsspørgsmål fra Samtalekort samlet ét sted.",
-    url: `${siteUrl}/favoritter`,
+    url: `${siteUrl}/favoritter/`,
     type: "website",
   },
   twitter: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: "Dine gemte yndlingsspørgsmål fra Samtalekort.",
   },
   alternates: {
-    canonical: `${siteUrl}/favoritter`,
+    canonical: `${siteUrl}/favoritter/`,
   },
 };
 

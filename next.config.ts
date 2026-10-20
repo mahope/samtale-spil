@@ -6,16 +6,14 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const isProd = process.env.NODE_ENV === 'production';
-const isGitHubPages = process.env.GITHUB_PAGES === 'true';
 
 const nextConfig: NextConfig = {
   output: 'export',
   images: {
     unoptimized: true
   },
-  // For GitHub Pages deployment
-  basePath: isGitHubPages ? '/samtale-spil' : '',
-  assetPrefix: isGitHubPages ? '/samtale-spil/' : '',
+  // Every route exports as <route>/index.html, so nginx serves it without rewrites
+  trailingSlash: true,
   
   // Performance optimizations
   experimental: {
