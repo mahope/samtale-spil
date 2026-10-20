@@ -19,6 +19,7 @@ import { TIMING } from "@/constants";
 import { getDeck } from "@/data/decks";
 import { track } from "@/utils/track";
 import { tap } from "@/lib/platform";
+import { HardTalkFrame } from "@/components/HardTalkFrame";
 
 interface Props {
   categoryId: string;
@@ -27,6 +28,8 @@ interface Props {
 // A new ?question (e.g. tapping today's question while this deck is open) starts a fresh game
 export default function CategoryPlayClient({ categoryId }: Props) {
   const question = useSearchParams().get("question") ?? "";
+  const [framed, setFramed] = useState(categoryId !== "svaere-samtaler");
+  if (!framed) return <HardTalkFrame onStart={() => setFramed(true)} />;
   return <CategoryPlay key={question} categoryId={categoryId} />;
 }
 

@@ -36,6 +36,12 @@ export const decks: Record<string, Deck> = {
   hoejtider: { bg: "#a3271e", ink: LIGHT, pattern: "tern", mark: "H" },
   selvindsigt: { bg: "#a9bfad", ink: DARK, pattern: "buer", mark: "Se" },
   dilemmaer: { bg: "#13777a", ink: LIGHT, pattern: "zigzag", mark: "?" },
+  tak: { bg: "#e8b33c", ink: DARK, pattern: "prikker", mark: "T" },
+  "kend-din-partner": { bg: "#3a5fa8", ink: LIGHT, pattern: "tern", mark: "Kp" },
+  "gode-nyheder": { bg: "#5aa84a", ink: DARK, pattern: "striber", mark: "G" },
+  "nyt-og-ukendt": { bg: "#8b3fa0", ink: LIGHT, pattern: "zigzag", mark: "N" },
+  "svaere-samtaler": { bg: "#465a63", ink: LIGHT, pattern: "buer", mark: "Sv" },
+  familiehistorier: { bg: "#c8743a", ink: DARK, pattern: "ruder", mark: "Fh" },
   voksne: { bg: "#1d1820", ink: LIGHT, pattern: "ruder", mark: "18" },
   /** Mixed deck for "Bland alle" */
   blandet: { bg: "#1d4a38", ink: LIGHT, pattern: "tern", mark: "A" },

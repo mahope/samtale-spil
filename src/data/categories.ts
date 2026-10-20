@@ -1,5 +1,6 @@
 import { Category, Question } from "@/types";
 import { dilemmaCategory } from "@/data/questions/dilemmaer";
+import { researchCategories } from "@/data/questions/forskning";
 
 export const categories: Category[] = [
   {
@@ -1547,6 +1548,7 @@ export const categories: Category[] = [
     ],
   },
   dilemmaCategory,
+  ...researchCategories,
 ];
 
 export function getCategory(id: string): Category | undefined {

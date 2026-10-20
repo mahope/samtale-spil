@@ -9,6 +9,8 @@ export interface CategoryText {
   intro: string;
   passerTil: string;
   tips: string[];
+  /** Why the deck exists, with author and year (docs/forskning.md) */
+  forskning?: string;
 }
 
 export const categoryTexts: Record<string, CategoryText> = {
@@ -130,5 +132,53 @@ export const categoryTexts: Record<string, CategoryText> = {
     intro: "Et dilemma er den hurtigste vej ind i en god diskussion. Der er ingen rigtige svar, men begrundelserne siger meget om, hvem man er. Nogle er fjollede, andre kræver, at man tænker sig om.",
     passerTil: "Alle aldre. Spørgsmålene til børn er markeret som lette.",
     tips: ["Alle skal vælge, og man må ikke sige »begge«.", "Spørg hvorfor. Det er der, snakken begynder.", "Lad den, der svarer sidst, vælge næste kort."],
+  },
+  "tak": {
+    seoTitle: "Taknemmelighed: 70 spørgsmål om at sige tak",
+    metaDescription: "70 spørgsmål om taknemmelighed til par, familier og venner. Sig tak for de små ting, og hør hvad de andre sætter pris på ved jer.",
+    intro: "Det er let at tage de nære for givet. Kortene her handler om de ting, folk gør for hinanden, og om de mennesker, der har gjort en forskel. Et tak, der bliver sagt højt, glæder ofte mere, end man tror.",
+    passerTil: "Par, familier og venner, og en god afslutning på en lang snak.",
+    tips: ["Sig tak direkte til den, det handler om, hvis vedkommende sidder ved bordet.", "Vær konkret: sig hvad personen gjorde, og hvad det betød.", "Tag et Tak-kort til sidst, når I har talt om noget svært."],
+    forskning: "Taknemmelighed i hverdagen hænger sammen med tættere forhold (Algoe m.fl. 2010), og vi undervurderer, hvor glad modtageren af et tak bliver (Kumar og Epley 2018).",
+  },
+  "kend-din-partner": {
+    seoTitle: "Kend din partner: 70 spørgsmål at gætte på",
+    metaDescription: "70 spørgsmål til par, hvor den ene gætter den andens svar. Et let spil, der holder jeres billede af hinanden opdateret.",
+    intro: "Man tror, man kender hinanden, indtil man skal gætte. Her gætter den ene, hvad den anden vil svare, og bagefter fortæller den anden, hvordan det egentlig er. Det giver grin, overraskelser og nye ting at spørge ind til.",
+    passerTil: "Par, uanset om I har været sammen i et år eller i årtier. Virker også mellem gode venner og søskende.",
+    tips: ["Gæt først, så svar, så ét opfølgende spørgsmål.", "Det er fint at gætte forkert. Det er der, I lærer noget nyt.", "Byt roller efter hvert kort."],
+    forskning: "Inspireret af parterapeuters øvelser med at kende hinandens indre verden (Gottman) og af forskning i, at det at spørge ind gør os mere vellidte (Huang m.fl. 2017).",
+  },
+  "gode-nyheder": {
+    seoTitle: "Gode nyheder: 70 spørgsmål om det, der går godt",
+    metaDescription: "70 spørgsmål der får jer til at fortælle om det, der går godt, og glæde jer over hinandens sejre, små som store.",
+    intro: "Vi er ofte gode til at trøste, men glemmer at fejre. Kortene her inviterer til at fortælle om det, der gik godt, og giver den anden en chance for at spørge ind og glæde sig med.",
+    passerTil: "Par, familier og venner, også en hurtig runde ved aftensmaden.",
+    tips: ["Lytteren stiller to opfølgende spørgsmål, fx »Hvordan føltes det?« og »Hvad betyder det for dig?«.", "Gentag den gode nyhed med dine egne ord, før du fortæller din egen.", "Ingen nyhed er for lille. Det er ofte de små, der fylder mest."],
+    forskning: "Hvordan et par reagerer på hinandens gode nyheder, hænger stærkere sammen med forholdets trivsel end reaktionen på dårlige nyheder (Gable m.fl. 2004 og 2006).",
+  },
+  "nyt-og-ukendt": {
+    seoTitle: "Nyt og ukendt: 70 spørgsmål om eventyr sammen",
+    metaDescription: "70 spørgsmål om ting, I aldrig har prøvet sammen, fra en ny ret på en tirsdag til den store rejse. Til par og venner, der vil bryde vanen.",
+    intro: "Efter nogle år kender man vejen, menuen og hinandens vittigheder. Kortene her handler om det, I endnu ikke har prøvet, og om at gøre hverdagen lidt mindre forudsigelig.",
+    passerTil: "Par i lange forhold og venner, der vil finde på noget nyt.",
+    tips: ["Vælg ét forslag fra aftenen, og sæt en dato på.", "Små eventyr tæller: en ny gade, en ny ret, en ny bus.", "Spørg, hvordan det føltes at være nybegynder, når I har prøvet det."],
+    forskning: "Nye og spændende fælles aktiviteter hænger sammen med højere tilfredshed i lange forhold (Aron m.fl. 2000), og følelsen af at vokse sammen hænger sammen med mere lyst (Muise m.fl. 2019).",
+  },
+  "svaere-samtaler": {
+    seoTitle: "Svære samtaler: 70 spørgsmål med en fast ramme",
+    metaDescription: "70 spørgsmål til par, der vil kunne tale om det svære uden at ende i skænderi. Med en fast ramme, pauser og jeg-sprog.",
+    intro: "Nogle snakke er svære at tage, men værre at lade være med. Kortene her hjælper jer med at tale om det vigtige på en måde, hvor begge bliver hørt. Tag højst tre kort ad gangen, og start og slut med noget godt.",
+    passerTil: "Voksne par og nære venner. Ikke børn og ikke kollegaer.",
+    tips: ["Aftal tid og emne på forhånd, og start og slut med et kort fra Tak.", "Sig »jeg føler« og »jeg har brug for« i stedet for »du gør altid«.", "Stop, hvis en af jer bliver overvældet. I kan altid tage resten en anden dag."],
+    forskning: "Bygget på forskning i blød opstart og lytning i parforhold (Gottman m.fl. 1998; Reis og Shaver 1988) og på advarslen mod at gruble i ring over de samme problemer (Rose 2002). Det er et samtalespil, ikke terapi.",
+  },
+  "familiehistorier": {
+    seoTitle: "Familiehistorier: 70 spørgsmål til hele familien",
+    metaDescription: "70 spørgsmål om familiens historie til spisebordet og familiefesten. Lad børnene interviewe forældre og bedsteforældre.",
+    intro: "Hvordan mødtes mormor og morfar? Hvad legede far med som barn? Kortene her får historierne frem, før de bliver glemt. Lad gerne de yngste stille spørgsmålene og de ældste svare.",
+    passerTil: "Familier med børn fra cirka 8 år, generationsmøder, højtider og fødselsdage.",
+    tips: ["Lad et barn trække kortet og interviewe den ældste ved bordet.", "Spørg videre: »Hvordan så det ud?« og »Hvad sagde de så?«.", "Skriv de bedste historier ned, eller optag dem på telefonen."],
+    forskning: "Børn, der kender deres families historier, har det i gennemsnit bedre, og fortællinger, hvor de voksne spørger ind, styrker samtalen (Fivush og kolleger; Fivush, Haden og Reese 2006).",
   },
 };
