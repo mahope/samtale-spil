@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
-import { getDeck } from "@/data/decks";
+import { getDeck, markColorOnWhite } from "@/data/decks";
 
 /**
  * Print-yourself cards (issue #45): A4, 8 cards per sheet with cut lines, the back
@@ -70,8 +70,8 @@ export async function buildPrintPdf(opts: { deckId: string; title: string; cards
   const deck = getDeck(opts.deckId);
   const bg = hex(deck.bg);
   const ink = hex(deck.ink);
-  // The deck colour is used for the small mark on the white face only if it reads on white
-  const mark = deck.ink === "#ffffff" ? bg : INK;
+  // Same rule as the card face on the site: deck colour where it reads on white
+  const mark = hex(markColorOnWhite(deck));
 
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
@@ -125,9 +125,18 @@ export async function buildPrintPdf(opts: { deckId: string; title: string; cards
 
     // Back: the deck, mirrored so it lines up with the front when printed on both sides
     const back = doc.addPage([A4.w, A4.h]);
+    // One colour field over the used rows plus 2 mm bleed, so a slightly shifted duplex print leaves no white edge
+    const rows = Math.ceil(sheet.length / COLS);
+    const bleed = 2 * MM;
+    back.drawRectangle({
+      x: MARGIN.x - bleed,
+      y: A4.h - MARGIN.y - rows * CARD.h - bleed,
+      width: COLS * CARD.w + 2 * bleed,
+      height: rows * CARD.h + 2 * bleed,
+      color: bg,
+    });
     sheet.forEach((_, i) => {
       const { x, y } = slot(i, true);
-      back.drawRectangle({ x, y: y - CARD.h, width: CARD.w, height: CARD.h, color: bg });
       const markSize = 34;
       back.drawText(deck.mark, {
         x: x + CARD.w / 2 - heavy.widthOfTextAtSize(deck.mark, markSize) / 2,

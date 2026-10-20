@@ -26,10 +26,10 @@ const FEELINGS: [string, string, "let" | "medium"][] = [
   ["Spændt", "Hvad glæder du dig til lige nu? Hvordan føles det i kroppen at være spændt?", "let"],
   ["Irriteret", "Hvad kan irritere dig? Hvordan kan man sige det pænt, når noget irriterer?", "medium"],
   ["Rolig", "Hvor er du helt rolig? Hvad gør du for at falde til ro?", "let"],
-  ["Savn", "Hvem eller hvad savner du? Hvad gør du, når du savner nogen?", "medium"],
+  ["Savn", "Hvordan kan det føles at savne nogen? Hvad kan man gøre, når man savner nogen?", "medium"],
   ["Lettet", "Hvornår har du været lettet over, at noget gik godt? Hvad var du bekymret for før?", "let"],
   ["Frustreret", "Hvad er svært for dig at lære? Hvad gør du, når noget ikke lykkes i første forsøg?", "medium"],
-  ["Håb", "Hvad håber du på? Hvad kan du selv gøre for, at det sker?", "let"],
+  ["Håb", "Hvad håber du på? Hvem kunne hjælpe med det?", "let"],
 ];
 
 export const foelelserCategory: Category = {
