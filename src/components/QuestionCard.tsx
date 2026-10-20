@@ -7,6 +7,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { CardFace, DeckBack } from "@/components/deck/DeckParts";
 import { getDeck } from "@/data/decks";
+import { tap } from "@/lib/platform";
 
 interface QuestionCardProps {
   question: Question;
@@ -36,6 +37,7 @@ export const QuestionCard = memo(function QuestionCard({
       if (e.target !== e.currentTarget) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
+        tap();
         onFlip();
       }
     },
@@ -46,7 +48,10 @@ export const QuestionCard = memo(function QuestionCard({
     <div className="perspective-1000 mx-auto w-full max-w-[21rem] sm:max-w-[23rem]">
       <motion.div
         className="relative aspect-[5/7] w-full cursor-pointer touch-manipulation rounded-[1.25rem]"
-        onClick={onFlip}
+        onClick={() => {
+          tap();
+          onFlip();
+        }}
         onKeyDown={handleKeyDown}
         role="button"
         tabIndex={0}

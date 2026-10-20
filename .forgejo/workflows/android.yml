@@ -1,0 +1,84 @@
+name: Android
+
+# Builds the Android app from the same static export as the website.
+# On master and manual runs it signs with the upload key from the repo secrets,
+# producing an .aab for Google Play and an .apk for testing on a phone.
+on:
+  push:
+    branches: [master]
+    paths:
+      - "android/**"
+      - "src/**"
+      - "public/**"
+      - "capacitor.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".forgejo/workflows/android.yml"
+  pull_request:
+    paths:
+      - "android/**"
+      - "capacitor.config.ts"
+      - "package.json"
+      - ".forgejo/workflows/android.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: android-actions/setup-android@v3
+
+      - run: npm ci
+      - run: npm run build
+      - run: npx cap sync android
+
+      - name: Upload key
+        if: github.event_name != 'pull_request'
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+
+      - name: Gradle build
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -n "${ANDROID_KEYSTORE_PATH:-}" ]; then
+            bash ./gradlew --no-daemon bundleRelease assembleRelease
+          else
+            bash ./gradlew --no-daemon assembleDebug
+          fi
+          find app/build/outputs -name "*.aab" -o -name "*.apk" | xargs ls -la
+
+      - name: Remove key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.jks"
+
+      - uses: https://code.forgejo.org/forgejo/upload-artifact@v4
+        with:
+          name: snakkespil-android-${{ github.run_number }}
+          path: |
+            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error

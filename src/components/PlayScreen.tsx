@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { DeckBack } from "@/components/deck/DeckParts";
 import { getDeck } from "@/data/decks";
+import { tap } from "@/lib/platform";
 
 interface PlayScreenProps {
   /** Deck id from src/data/decks.ts, used for the header swatch and progress colour */
@@ -104,7 +105,10 @@ export function PlayScreen({
         <div className="w-full max-w-[23rem] pb-6">
           <button
             type="button"
-            onClick={onNext}
+            onClick={() => {
+              tap("fast");
+              onNext();
+            }}
             disabled={isTransitioning}
             className="min-h-14 w-full touch-manipulation select-none rounded-full bg-kridt px-6 text-lg font-bold text-kridt-blaek shadow-[0_3px_0_rgb(0_0_0/0.3)] transition-transform active:translate-y-0.5 disabled:opacity-60"
             aria-busy={isTransitioning}

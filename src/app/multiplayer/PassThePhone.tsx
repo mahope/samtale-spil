@@ -10,6 +10,7 @@ import { QuestionCard } from "@/components/QuestionCard";
 import { DeckBack } from "@/components/deck/DeckParts";
 import { track } from "@/utils/track";
 import type { Question } from "@/types";
+import { tap } from "@/lib/platform";
 
 const PLAYERS_KEY = "samtale-spil-pass-players";
 const MIX = "blandet";
@@ -213,7 +214,10 @@ export function PassThePhone() {
         <div className="w-full max-w-[23rem] pb-6">
           <button
             type="button"
-            onClick={next}
+            onClick={() => {
+              tap("fast");
+              next();
+            }}
             className="min-h-14 w-full rounded-full bg-kridt px-6 text-lg font-bold text-kridt-blaek shadow-[0_3px_0_rgb(0_0_0/0.3)] active:translate-y-0.5"
           >
             Giv telefonen til {upNext}

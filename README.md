@@ -11,7 +11,7 @@ Live at **https://snakkespil.dk**.
 - Server-rendered question pages under `/spoergsmaal/<deck>/` for search
 - No accounts and no cookies: favourites, progress and custom questions live in `localStorage`
 - Cookieless analytics with self-hosted Plausible (`src/utils/track.ts`)
-- Installable PWA; native iOS/Android builds are planned with Capacitor (issue #20)
+- Installable PWA and native iOS/Android apps (Capacitor) built from the same export
 
 ## Stack
 
@@ -57,6 +57,14 @@ CI (`.forgejo/workflows/ci.yml`) runs typecheck, lint, tests, build, checks the 
 Every push to `master` triggers a Dokploy deploy through a Forgejo webhook. Dokploy builds the Dockerfile and serves the export on port 3000 behind Traefik and Cloudflare.
 
 After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, `/spoergsmaal/parforhold/`, a missing path (should be 404) and the response headers.
+
+## Native apps
+
+`capacitor.config.ts` wraps `out/` as `dk.snakkespil.app`. Native-only code lives in `src/lib/platform.ts` (haptics, share sheet; no-ops on the web), `src/lib/native.ts` ("Dagens spørgsmål" local notifications, loaded on demand) and `src/components/NativeBoot.tsx` (status bar, splash, Android back button, notification taps, deep-reload guard). The service worker is disabled inside the apps.
+
+- `android/`: signed `.aab`/`.apk` from `.forgejo/workflows/android.yml` (upload key in repo secrets and in Bitwarden, "Snakkespil: Android upload-keystore"). Google Play App Signing holds the app key.
+- `ios/`: Swift Package Manager project; `.forgejo/workflows/ios.yml` compiles it unsigned on the Mac runner. Signing and TestFlight need the Apple team's certificates.
+- After changing web code for the apps: `npm run cap:sync`. Icons and splash screens: `npm run cap:assets`.
 
 ## Licence
 
