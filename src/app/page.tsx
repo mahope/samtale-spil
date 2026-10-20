@@ -6,9 +6,10 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CardDraw, type DrawCard } from "@/components/home/CardDraw";
 import { GroupedDecks } from "@/components/deck/GroupedDecks";
+import { homeLanguages } from "@/locales/alternates";
 
 export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", languages: homeLanguages },
   openGraph: { ...OG_BASE,
     url: "/",
     title: "Gratis samtalekort og samtalespil på dansk",

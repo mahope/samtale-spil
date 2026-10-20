@@ -9,4 +9,6 @@ export const site = {
   /** Favourites page exists (/favoritter/) */
   favorites: true,
   ogTagline: "Gratis samtalekort på snakkespil.dk",
+  /** Plausible CE tracker for this site (analytics.holstjensen.eu) */
+  plausibleScript: "https://analytics.holstjensen.eu/js/pa-yk0peyirQvnSBppLjWJYB.js",
 };

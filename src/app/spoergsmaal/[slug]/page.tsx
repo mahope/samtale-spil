@@ -6,6 +6,7 @@ import { categoryTexts } from "@/data/categoryTexts";
 import { curatedPages } from "@/data/curatedPages";
 import { CategoryLanding } from "./CategoryLanding";
 import { CuratedLanding } from "./CuratedLanding";
+import { deckLanguages } from "@/locales/alternates";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, languages: text ? deckLanguages(slug) : undefined },
     openGraph: { ...OG_BASE, url, title, description },
   };
 }

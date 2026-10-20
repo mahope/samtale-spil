@@ -9,4 +9,5 @@ export const site: typeof da = {
   report: false,
   favorites: false,
   ogTagline: "Free conversation cards at goodtalkcards.com",
+  plausibleScript: "https://analytics.holstjensen.eu/js/pa-ddNmoGtRKcppQoHKWvCnL.js",
 };

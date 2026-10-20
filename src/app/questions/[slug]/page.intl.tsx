@@ -7,6 +7,7 @@ import { getDeck } from "@/data/decks";
 import { DeckBack, DepthPips } from "@/components/deck/DeckParts";
 import { IntlHeader, IntlFooter } from "@/intl/Chrome";
 import { intlDecks, intlDeckBySlug } from "@/intl/data";
+import { deckLanguages } from "@/locales/alternates";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: deck.seoTitle,
     description: deck.metaDescription,
-    alternates: { canonical: url },
+    alternates: { canonical: url, languages: deckLanguages(deck.id) },
     openGraph: { ...OG_BASE, url, title: deck.seoTitle, description: deck.metaDescription },
   };
 }

@@ -6,11 +6,12 @@ import { ui } from "@/locale/ui";
 import { DeckTile } from "@/components/deck/DeckParts";
 import { IntlHeader, IntlFooter } from "@/intl/Chrome";
 import { intlGroups, intlDecks, INTL_CARD_COUNT } from "@/intl/data";
+import { homeLanguages } from "@/locales/alternates";
 
 export const metadata: Metadata = {
   title: { absolute: `Free Conversation Cards for Couples, Families and Friends | ${site.name}` },
   description: `${INTL_CARD_COUNT.toLocaleString("en-US")} free conversation questions in ${intlDecks.length} decks: for couples, first dates, families, kids and friends. Play in your browser, no sign-up.`,
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", languages: homeLanguages },
   openGraph: { ...OG_BASE, url: "/" },
 };
 
