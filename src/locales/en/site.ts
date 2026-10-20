@@ -6,4 +6,7 @@ export const site: typeof da = {
   name: "Goodtalk",
   lang: "en",
   ogLocale: "en_US",
+  report: false,
+  favorites: false,
+  ogTagline: "Free conversation cards at goodtalkcards.com",
 };

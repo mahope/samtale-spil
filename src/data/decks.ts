@@ -2,6 +2,7 @@
  * Visual identity of each deck (category). The single source for deck colours:
  * UI, OG images and app icons all read from here.
  */
+import { deckMarks } from "@/locale/marks";
 
 export type DeckPattern = "prikker" | "striber" | "tern" | "zigzag" | "buer" | "ruder";
 
@@ -65,7 +66,10 @@ export const decks: Record<string, Deck> = {
 const FALLBACK: Deck = { bg: "#1d4a38", ink: LIGHT, pattern: "tern", mark: "?" };
 
 export function getDeck(categoryId: string): Deck {
-  return decks[categoryId] ?? FALLBACK;
+  const deck = decks[categoryId] ?? FALLBACK;
+  // International sites use their own letters on the card backs (src/locales/<locale>/marks.ts)
+  const mark = deckMarks[categoryId];
+  return mark ? { ...deck, mark } : deck;
 }
 
 /** Relative luminance per WCAG 2.x */

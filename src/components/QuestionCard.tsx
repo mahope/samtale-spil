@@ -13,6 +13,7 @@ import { track } from "@/utils/track";
 import { ReportCard } from "@/components/ReportCard";
 import { CARD_TYPE_HINT, CARD_TYPE_LABEL } from "@/data/cardTypes";
 import { ui } from "@/locale/ui";
+import { site } from "@/locale/site";
 
 interface QuestionCardProps {
   question: Question;
@@ -135,7 +136,7 @@ export const QuestionCard = memo(function QuestionCard({
         aria-hidden={!isFlipped}
         inert={!isFlipped}
       >
-        {type !== "joker" && (
+        {type !== "joker" && site.favorites && (
           <span className="rounded-full bg-white text-[#15201b] shadow-kort">
             <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
           </span>
@@ -145,11 +146,11 @@ export const QuestionCard = memo(function QuestionCard({
           <ShareButton
             text={question.text}
             categoryName={categoryName}
-            path={sharePath ?? (question.categoryId === "custom" ? undefined : `/spil/${question.categoryId}/?question=${question.id}`)}
+            path={sharePath ?? (question.categoryId === "custom" ? undefined : ui.play.cardPath(question.categoryId, question.id))}
           />
         </span>
         )}
-        {question.categoryId !== "custom" && type !== "joker" && <ReportCard questionId={question.id} />}
+        {site.report && question.categoryId !== "custom" && type !== "joker" && <ReportCard questionId={question.id} />}
         {type === "peg" ? (
           <button
             type="button"

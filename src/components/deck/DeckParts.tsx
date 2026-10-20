@@ -34,7 +34,7 @@ const DEPTH_LABEL = ui.depth;
 export function DepthPips({ depth, color }: { depth: Question["depth"]; color: string }) {
   const level = DEPTH_LEVEL[depth];
   return (
-    <span className="inline-flex items-center gap-1" title={`Dybde: ${DEPTH_LABEL[depth].toLowerCase()}`}>
+    <span className="inline-flex items-center gap-1" title={`${ui.depthPrefix}: ${DEPTH_LABEL[depth].toLowerCase()}`}>
       {[1, 2, 3].map((i) => (
         <span
           key={i}
@@ -42,7 +42,7 @@ export function DepthPips({ depth, color }: { depth: Question["depth"]; color: s
           style={i <= level ? { background: color } : { boxShadow: `inset 0 0 0 1.5px ${color}`, opacity: 0.45 }}
         />
       ))}
-      <span className="sr-only">Dybde: {DEPTH_LABEL[depth].toLowerCase()}</span>
+      <span className="sr-only">{`${ui.depthPrefix}: ${DEPTH_LABEL[depth].toLowerCase()}`}</span>
     </span>
   );
 }
@@ -127,6 +127,7 @@ export function DeckTile({
   count,
   href,
   familievenlig,
+  headingLevel = "h3",
 }: {
   categoryId: string;
   name: string;
@@ -135,7 +136,9 @@ export function DeckTile({
   href: string;
   /** Marks the tile for the "Kun familievenlige" filter on /spil/ */
   familievenlig?: boolean;
+  headingLevel?: "h3" | "h4";
 }) {
+  const Heading = headingLevel;
   const deck = getDeck(categoryId);
   return (
     <Link
@@ -146,11 +149,11 @@ export function DeckTile({
       <DeckBack categoryId={categoryId} className="relative flex h-24 items-end justify-between px-4 pb-3">
         <span className="font-display text-3xl font-extrabold leading-none">{deck.mark}</span>
         <span className="rounded-full bg-black/15 px-2.5 py-1 text-xs font-bold tabular-nums" style={{ color: deck.ink }}>
-          {count} kort
+          {ui.deck.cards(count)}
         </span>
       </DeckBack>
       <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
-        <h3 className="text-lg font-bold leading-snug group-hover:underline">{name}</h3>
+        <Heading className="text-lg font-bold leading-snug group-hover:underline">{name}</Heading>
         <p className="mt-1 text-[0.95rem] leading-snug text-blaek-2">{description}</p>
       </div>
     </Link>

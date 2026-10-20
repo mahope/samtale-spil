@@ -14,6 +14,7 @@ export const ui = {
     countdownSteps: ["3", "2", "1", "Peg nu!"],
   },
   depth: { let: "Let", medium: "Medium", dyb: "Dyb" },
+  depthPrefix: "Dybde",
   cardType: {
     label: { opgave: "Opgave", peg: "Peg", "jeg-har-aldrig": "Jeg har aldrig", joker: "Joker" },
     hint: {
@@ -30,13 +31,27 @@ export const ui = {
     progress: (answered: string, total: string) => `${answered} af ${total} kort`,
     progressLabel: (answered: number, total: number) => `${answered} af ${total} kort spillet`,
     loading: "Blander kortene",
+    progressRegion: "Fremskridt",
+    reshuffle: "Bland forfra",
     backHref: "/spil/",
+    /** Where a single card can be opened, for sharing */
+    cardPath: (deckId: string, cardId: string) => `/spil/${deckId}/?question=${cardId}`,
   },
+  deck: { cards: (n: number) => `${n} kort` },
+  groups: {
+    par: "Til jer to",
+    familie: "Familien",
+    venner: "Venner, fest og arbejde",
+    skole: "Skole og uddannelse",
+    spejder: "Spejder",
+    dybt: "Dybe snakke og dig selv",
+  } as Record<string, string>,
   favorite: { add: "Tilføj til favoritter", remove: "Fjern fra favoritter" },
   share: {
     question: "Del spørgsmål",
     copy: "Kopiér spørgsmål til udklipsholder",
     category: "Del kategori-fremskridt",
     copied: "Kopieret",
+    dialogTitle: "Del spørgsmålet",
   },
 };
