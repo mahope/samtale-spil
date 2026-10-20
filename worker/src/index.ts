@@ -25,8 +25,10 @@ interface RateLimit {
   limit(options: { key: string }): Promise<{ success: boolean }>;
 }
 
-type Card = { t: string; c: string };
+type Card = { t: string; c: string; d: string; a?: 1 };
 const CARDS = cards as Record<string, Card>;
+const DECK_IDS = new Set(Object.values(CARDS).map((c) => c.d));
+const cardFor = (id: string): Card | undefined => (Object.hasOwn(CARDS, id) ? CARDS[id] : undefined);
 
 const REASONS: Record<string, string> = {
   stavefejl: "Stavefejl eller sprog",
@@ -41,8 +43,10 @@ const ALLOWED_ORIGINS = new Set([
   "https://snakkespil.dk",
   "capacitor://localhost", // iOS app
   "https://localhost", // Android app
-  "http://localhost",
 ]);
+
+// Hostnames Turnstile may report for a solved challenge: the site and the apps
+const TURNSTILE_HOSTS = new Set(["snakkespil.dk", "localhost"]);
 
 function cors(request: Request): Record<string, string> {
   const origin = request.headers.get("Origin") ?? "";
@@ -69,7 +73,7 @@ async function verifyTurnstile(token: string, ip: string, secret: string) {
   if (ip) form.append("remoteip", ip);
   const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
   const data = (await res.json()) as { success: boolean; hostname?: string };
-  return data.success === true;
+  return data.success === true && TURNSTILE_HOSTS.has(data.hostname ?? "");
 }
 
 async function handleFlag(request: Request, env: Env): Promise<Response> {
@@ -77,6 +81,7 @@ async function handleFlag(request: Request, env: Env): Promise<Response> {
   const { success: underLimit } = await env.FLAG_LIMIT.limit({ key: ip || "ukendt" });
   if (!underLimit) return json(request, 429, { fejl: "For mange rapporter lige nu. Prøv igen om lidt." });
 
+  if (Number(request.headers.get("Content-Length") ?? 0) > 4000) return json(request, 413, { fejl: "For stor besked." });
   let body: Record<string, unknown>;
   try {
     const raw = await request.text();
@@ -93,11 +98,11 @@ async function handleFlag(request: Request, env: Env): Promise<Response> {
   const reason = typeof body.aarsag === "string" ? body.aarsag : "";
   const comment = typeof body.kommentar === "string" ? body.kommentar.trim() : "";
   const token = typeof body.token === "string" ? body.token : "";
-  const card = CARDS[id];
+  const card = cardFor(id);
 
   if (!card || !REASONS[reason]) return json(request, 400, { fejl: "Ukendt kort eller årsag." });
   if (comment.length > 300) return json(request, 400, { fejl: "Kommentaren må højst være 300 tegn." });
-  if (/https?:\/\/|www\.|\.[a-z]{2,}\//i.test(comment)) return json(request, 400, { fejl: "Kommentaren må ikke indeholde links." });
+  if (/https?:\/\/|www\.|\b[a-z0-9-]+\.(dk|com|net|org|io|ru|xyz|info|biz|top|site|online|shop|app|me|co|eu|de|se|no|uk)\b/i.test(comment)) return json(request, 400, { fejl: "Kommentaren må ikke indeholde links." });
   if (!token || !(await verifyTurnstile(token, ip, env.TURNSTILE_SECRET))) {
     return json(request, 403, { fejl: "Vi kunne ikke bekræfte, at du er et menneske. Prøv igen." });
   }
@@ -148,13 +153,13 @@ async function handleStats(request: Request, env: Env, ctx: ExecutionContext): P
   const today = new Date();
   const range = [day(new Date(today.getTime() - 29 * 86_400_000)), day(today)];
   const goal = (name: string) => [["is", "event:goal", [name]]];
-  const [totals, perDeck, topCards, perDay] = await Promise.all([
+  const [totals, perDeck, topCards, perDay, flipped] = await Promise.all([
     plausible(env, { metrics: ["visitors", "pageviews"], date_range: range }),
     plausible(env, { metrics: ["events"], date_range: range, filters: goal("Spil startet"), dimensions: ["event:props:kategori"] }),
-    plausible(env, { metrics: ["events"], date_range: range, filters: goal("Kort vendt"), dimensions: ["event:props:kort"], pagination: { limit: 15 } }),
+    plausible(env, { metrics: ["events"], date_range: range, filters: goal("Kort vendt"), dimensions: ["event:props:kort"], pagination: { limit: 40 } }),
     plausible(env, { metrics: ["events"], date_range: range, filters: goal("Spil startet"), dimensions: ["time:day"] }),
+    plausible(env, { metrics: ["events"], date_range: range, filters: goal("Kort vendt") }),
   ]);
-  const flipped = await plausible(env, { metrics: ["events"], date_range: range, filters: goal("Kort vendt") });
 
   const body = {
     periode: "30 dage",
@@ -163,13 +168,15 @@ async function handleStats(request: Request, env: Env, ctx: ExecutionContext): P
     sidevisninger: totals[0]?.metrics[1] ?? 0,
     spilStartet: perDeck.reduce((s, r) => s + r.metrics[0], 0),
     kortVendt: flipped[0]?.metrics[0] ?? 0,
+    // Event props can be sent by anyone, so only known decks and cards are shown
     bunker: perDeck
-      .filter((r) => r.dimensions[0] && r.dimensions[0] !== "(none)")
+      .filter((r) => DECK_IDS.has(r.dimensions[0]) && r.dimensions[0] !== "voksne")
       .map((r) => ({ id: r.dimensions[0], spil: r.metrics[0] }))
       .sort((a, b) => b.spil - a.spil),
     kort: topCards
-      .filter((r) => CARDS[r.dimensions[0]])
-      .map((r) => ({ id: r.dimensions[0], tekst: CARDS[r.dimensions[0]].t, bunke: CARDS[r.dimensions[0]].c, vendt: r.metrics[0] })),
+      .filter((r) => cardFor(r.dimensions[0]) && !cardFor(r.dimensions[0])!.a)
+      .slice(0, 15)
+      .map((r) => ({ id: r.dimensions[0], tekst: cardFor(r.dimensions[0])!.t, bunke: cardFor(r.dimensions[0])!.c, vendt: r.metrics[0] })),
     perDag: perDay.map((r) => ({ dato: r.dimensions[0], spil: r.metrics[0] })),
   };
 
@@ -188,7 +195,16 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors(request) });
     try {
       if (url.pathname === "/api/flag" && request.method === "POST") return await handleFlag(request, env);
-      if (url.pathname === "/api/stats" && request.method === "GET") return await handleStats(request, env, ctx);
+      if (url.pathname === "/api/stats" && request.method === "GET") {
+        try {
+          return await handleStats(request, env, ctx);
+        } catch {
+          // cache the failure for a minute, so an outage upstream does not multiply calls
+          const r = json(request, 503, { fejl: "Tallene kunne ikke hentes lige nu." }, { "Cache-Control": "public, max-age=60" });
+          ctx.waitUntil(caches.default.put(new Request("https://snakkespil.dk/api/stats?v=1"), r.clone()));
+          return r;
+        }
+      }
     } catch {
       return json(request, 500, { fejl: "Noget gik galt. Prøv igen senere." });
     }

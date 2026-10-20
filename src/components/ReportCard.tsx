@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { API_BASE, TURNSTILE_SITEKEY } from "@/config/api";
 import { track } from "@/utils/track";
 
 type TurnstileApi = {
   render: (el: HTMLElement, opts: Record<string, unknown>) => string;
   remove: (id: string) => void;
+  reset: (id: string) => void;
 };
 
 const REASONS = [
@@ -51,17 +53,18 @@ export function ReportCard({ questionId }: { questionId: string }) {
   const [message, setMessage] = useState("");
   const widgetRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const titleId = useId();
 
   useEffect(() => {
     if (!open) return;
     dialogRef.current?.showModal();
-    let widgetId: string | null = null;
     let cancelled = false;
     loadTurnstile()
       .then((t) => {
         if (cancelled || !widgetRef.current) return;
-        widgetId = t.render(widgetRef.current, {
+        widgetIdRef.current = t.render(widgetRef.current, {
           sitekey: TURNSTILE_SITEKEY,
           language: "da",
           callback: (tok: string) => setToken(tok),
@@ -72,11 +75,20 @@ export function ReportCard({ questionId }: { questionId: string }) {
     return () => {
       cancelled = true;
       const t = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
-      if (widgetId && t) t.remove(widgetId);
+      if (widgetIdRef.current && t) t.remove(widgetIdRef.current);
+      widgetIdRef.current = null;
     };
   }, [open]);
 
+  // A token is single-use: after a failed send, solve a new challenge
+  const resetChallenge = () => {
+    setToken("");
+    const t = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+    if (widgetIdRef.current && t) t.reset(widgetIdRef.current);
+  };
+
   const close = () => {
+    abortRef.current?.abort();
     dialogRef.current?.close();
     setOpen(false);
     setStatus("idle");
@@ -90,8 +102,11 @@ export function ReportCard({ questionId }: { questionId: string }) {
     e.preventDefault();
     if (!reason || !token) return;
     setStatus("sending");
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       const res = await fetch(`${API_BASE}/flag`, {
+        signal: controller.signal,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: questionId, aarsag: reason, kommentar: comment, token, website: honeypot }),
@@ -103,10 +118,13 @@ export function ReportCard({ questionId }: { questionId: string }) {
       } else {
         setStatus("error");
         setMessage(data.fejl ?? "Rapporten kunne ikke sendes.");
+        resetChallenge();
       }
     } catch {
+      if (controller.signal.aborted) return;
       setStatus("error");
       setMessage("Rapporten kunne ikke sendes. Tjek forbindelsen.");
+      resetChallenge();
     }
   };
 
@@ -124,7 +142,8 @@ export function ReportCard({ questionId }: { questionId: string }) {
         </svg>
       </button>
 
-      {open && (
+      {open &&
+        createPortal(
         <dialog
           ref={dialogRef}
           onClose={close}
@@ -190,7 +209,8 @@ export function ReportCard({ questionId }: { questionId: string }) {
               </div>
             </form>
           )}
-        </dialog>
+        </dialog>,
+        document.body
       )}
     </>
   );

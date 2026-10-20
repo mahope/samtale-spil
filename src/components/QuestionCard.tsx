@@ -120,7 +120,7 @@ export const QuestionCard = memo(function QuestionCard({
             path={sharePath ?? (question.categoryId === "custom" ? undefined : `/spil/${question.categoryId}/?question=${question.id}`)}
           />
         </span>
-        <ReportCard questionId={question.id} />
+        {question.categoryId !== "custom" && <ReportCard questionId={question.id} />}
         <button
           type="button"
           onClick={() => {

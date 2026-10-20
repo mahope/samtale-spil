@@ -37,9 +37,10 @@ export default function PrivacyPage() {
       <h2>Når du rapporterer et kort</h2>
       <p>
         Rapportér-knappen sender kortets nummer, den årsag du vælger, og din kommentar, hvis du skriver en, til os som en
-        mail. Vi får ikke dit navn, din mail eller din IP-adresse i mailen. For at holde spam ude bruger formularen
-        Cloudflare Turnstile, som tjekker, at du er et menneske. Den hentes først, når du åbner formularen, og sætter ikke
-        sporings-cookies.
+        mail. Vi får ikke dit navn, din mail eller din IP-adresse i mailen. Mailen sendes gennem mailtjenesten Resend.
+        For at holde spam ude bruger formularen Cloudflare Turnstile, som tjekker, at du er et menneske. Den hentes først,
+        når du åbner formularen, og sætter ikke sporings-cookies. Din IP-adresse bruges kortvarigt af Cloudflare til
+        tjekket og til at begrænse, hvor mange rapporter der kan sendes fra samme adresse. Den gemmes ikke af os.
       </p>
 
       <h2>Appen</h2>
