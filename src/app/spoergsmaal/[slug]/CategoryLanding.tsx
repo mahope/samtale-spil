@@ -116,6 +116,24 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
               </div>
             );
           })}
+          {text.ekstraAfsnit && (
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold sm:text-3xl">{text.ekstraAfsnit.heading}</h2>
+              <p className="mt-1 text-blaek-2">{text.ekstraAfsnit.text}</p>
+              <ol className="mt-5 list-decimal divide-y divide-streg border-y border-streg pl-10">
+                {text.ekstraAfsnit.items.map((item) => (
+                  <li key={item} className="py-3.5 text-[1.0625rem] leading-snug">
+                    {item}
+                  </li>
+                ))}
+              </ol>
+              {category.id === "kend-din-partner" && (
+                <p className="mt-4">
+                  Vil I spille med skjulte svar og point? Prøv <Link href="/spil/gaet/" className="underline">Gæt svaret</Link>.
+                </p>
+              )}
+            </div>
+          )}
           <div className="mt-10">
             <Link
               href={`/spil/${category.id}/`}

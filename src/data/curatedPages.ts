@@ -2,6 +2,7 @@
  * Curated landing pages under /spoergsmaal/<slug>/ (issue #11). Questions are
  * referenced by id from the decks, so the text lives in one place.
  */
+import { curatedPages2 } from "./curatedPages2";
 
 export interface CuratedPage {
   slug: string;
@@ -14,7 +15,7 @@ export interface CuratedPage {
   playDeck?: string;
 }
 
-export const curatedPages: CuratedPage[] = [
+const basePages: CuratedPage[] = [
   {
     "slug": "kaeresten",
     "seoTitle": "Spørgsmål til kæresten: 102 gode, sjove og dybe",
@@ -678,3 +679,5 @@ export const curatedPages: CuratedPage[] = [
     "playDeck": "dybe"
   },
 ];
+
+export const curatedPages: CuratedPage[] = [...basePages, ...curatedPages2];

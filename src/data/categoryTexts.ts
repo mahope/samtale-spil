@@ -16,6 +16,8 @@ export interface CategoryText {
   tips: string[];
   /** Why the deck exists, with author and year (docs/forskning.md) */
   forskning?: string;
+  /** An extra list on the landing page, e.g. a quick quiz */
+  ekstraAfsnit?: { heading: string; text: string; items: string[] };
 }
 
 export const categoryTexts: Record<string, CategoryText> = {
@@ -91,15 +93,15 @@ export const categoryTexts: Record<string, CategoryText> = {
   },
   "venner": {
     seoTitle: "Spørgsmål til venner: 100 kort til vennegruppen",
-    metaDescription: "100 spørgsmål til venner, fra sjove til ærlige. Til middagen, festen, sommerhuset eller den lange køretur.",
-    intro: "Selv gamle venner har ting, de aldrig har spurgt hinanden om. Spørgsmålene her blander de fælles grin med de samtaler, der gør et venskab stærkere.",
+    metaDescription: "100 gode spørgsmål til venner og veninder, fra sjove til dybe. Til middagen, festen, sommerhuset eller den lange køretur, når I vil mere end småsnak.",
+    intro: "Selv gamle venner har ting, de aldrig har spurgt hinanden om. Spørgsmålene her blander de fælles grin med de samtaler, der gør et venskab stærkere. Der er både sjove og dybe spørgsmål til veninder, vennegruppen og den gamle ven, du ikke har set længe.",
     passerTil: "Vennegrupper, gamle venner og nye venskaber, der skal have fart på.",
     tips: ["Start med de lette kort, og skru op, når stemningen er der.", "Lad kortet gå rundt, så alle får svaret.", "Gem et par af de dybe til slutningen af aftenen."],
   },
   "foerste-date": {
     seoTitle: "Spørgsmål til første date: 130 kort der bryder isen",
-    metaDescription: "130 spørgsmål til første date, der hverken er pinlige eller for personlige. Lær hinanden at kende, og undgå de akavede pauser.",
-    intro: "Første date går lettere, når man har noget at tale om. Spørgsmålene her er nysgerrige, lette og ærlige, så I hurtigt kommer forbi vejret og jobbet og videre til det, der er interessant.",
+    metaDescription: "130 gode spørgsmål til første date, der hverken er pinlige eller for personlige. Til første og anden date, og uden de akavede pauser.",
+    intro: "Første date går lettere, når man har et par gode spørgsmål at tale ud fra. Spørgsmålene her er nysgerrige, lette og ærlige, så I hurtigt kommer forbi vejret og jobbet og videre til det, der er interessant.",
     passerTil: "Første og anden date, og alle der vil lære et nyt menneske at kende.",
     tips: ["Hold dig til de lette kort i starten.", "Svar også selv, så det ikke bliver en jobsamtale.", "Følg op på det, der gør den anden glad at tale om."],
   },
@@ -112,15 +114,15 @@ export const categoryTexts: Record<string, CategoryText> = {
   },
   "kollegaer": {
     seoTitle: "Spørgsmål til kolleger: 100 kort til teambuilding",
-    metaDescription: "100 spørgsmål til kolleger og teams. Gode til teamdage, møder og fredagsbaren, uden at det bliver for privat.",
-    intro: "Et team, der kender hinanden, arbejder bedre sammen. Spørgsmålene her er egnede til arbejdspladsen og spænder fra sjove opvarmere til gode samtaler om arbejdsglæde og samarbejde.",
+    metaDescription: "100 spørgsmål til kolleger og teams. Gode som teambuilding-øvelse, opvarmning til mødet eller snak i fredagsbaren, uden at det bliver for privat.",
+    intro: "Et team, der kender hinanden, arbejder bedre sammen. Spørgsmålene her er egnede til arbejdspladsen og spænder fra sjove opvarmere til gode samtaler om arbejdsglæde og samarbejde. Brug dem som en kort øvelse på teamdagen eller som opvarmning, før mødet går i gang.",
     passerTil: "Teams, afdelinger, nye kolleger og ledere, der vil bryde isen.",
     tips: ["Brug ét kort som opvarmning på teammødet.", "Lad alle sige pas uden forklaring.", "Spørg lederen først, så alle kan se, det er trygt."],
   },
   "hoejtider": {
     seoTitle: "Spørgsmål til jul og højtider: 100 samtalekort",
-    metaDescription: "100 spørgsmål til julebordet, nytårsaften, påske og fødselsdage. Skab gode samtaler, når familien er samlet.",
-    intro: "Når familien er samlet til jul, påske eller fødselsdag, kører samtalen tit i de samme spor. Kortene her handler om traditioner, minder og året der gik, og giver plads til både grin og eftertanke.",
+    metaDescription: "100 spørgsmål til julebordet, nytårsaften, påske og fødselsdage. Julespørgsmål og gode samtaler til de dage, hvor familien er samlet.",
+    intro: "Når familien er samlet til jul, påske eller fødselsdag, kører samtalen tit i de samme spor. Kortene her rummer spørgsmål om julen, traditioner, minder og året der gik, og giver plads til både grin og eftertanke.",
     passerTil: "Familier og venner, der fejrer noget sammen.",
     tips: ["Læg et kort ved hver tallerken.", "Brug de dybe kort til skåltalen.", "Lad de ældste fortælle om højtider fra deres barndom."],
   },
@@ -132,27 +134,45 @@ export const categoryTexts: Record<string, CategoryText> = {
     tips: ["Skriv svaret ned, før du tænker for meget over det.", "Tag ét spørgsmål om dagen.", "Vend tilbage til de samme spørgsmål om et halvt år."],
   },
   "dilemmaer": {
-    seoTitle: "Hvad vil du helst? 120 dilemmaer til bordet",
-    metaDescription: "120 dilemmaer uden rigtige svar. Til middagen, bilturen, børnene og fredagsbaren. Vælg, forklar dit valg, og hør hvad de andre siger.",
-    intro: "Et dilemma er den hurtigste vej ind i en god diskussion. Der er ingen rigtige svar, men begrundelserne siger meget om, hvem man er. Nogle er fjollede, andre kræver, at man tænker sig om.",
+    seoTitle: "Dilemmaer: 120 svære valg til middagen og bilturen",
+    metaDescription: "120 dilemmaer og enten-eller-spørgsmål uden rigtige svar. Til middagen, bilturen, børnene og fredagsbaren. Vælg, forklar dit valg, og hør de andres.",
+    intro: "Et dilemma er den hurtigste vej ind i en god diskussion. Her er dilemmaer og enten-eller-spørgsmål, hvor der ikke findes et rigtigt svar, men hvor begrundelsen siger meget om, hvem man er. Nogle er fjollede, andre kræver, at man tænker sig om.",
     passerTil: "Alle aldre. Spørgsmålene til børn er markeret som lette.",
     tips: ["Alle skal vælge, og man må ikke sige »begge«.", "Spørg hvorfor. Det er der, snakken begynder.", "Lad den, der svarer sidst, vælge næste kort."],
   },
   "tak": {
     seoTitle: "Taknemmelighed: 70 spørgsmål om at sige tak",
-    metaDescription: "70 spørgsmål om taknemmelighed til par, familier og venner. Sig tak for de små ting, og hør hvad de andre sætter pris på ved jer.",
-    intro: "Det er let at tage de nære for givet. Kortene her handler om de ting, folk gør for hinanden, og om de mennesker, der har gjort en forskel. Et tak, der bliver sagt højt, glæder ofte mere, end man tror.",
+    metaDescription: "70 spørgsmål om taknemmelighed til par, familier og venner. Sig tak for de små ting, også i parforholdet, og hør hvad de andre sætter pris på.",
+    intro: "Det er let at tage de nære for givet. Kortene her handler om de ting, folk gør for hinanden, og om de mennesker, der har gjort en forskel. Et tak, der bliver sagt højt, glæder ofte mere, end man tror. Taknemmelighed i parforholdet handler ofte om de små tak i hverdagen.",
     passerTil: "Par, familier og venner, og en god afslutning på en lang snak.",
     tips: ["Sig tak direkte til den, det handler om, hvis vedkommende sidder ved bordet.", "Vær konkret: sig hvad personen gjorde, og hvad det betød.", "Tag et Tak-kort til sidst, når I har talt om noget svært."],
     forskning: "Taknemmelighed i hverdagen hænger sammen med tættere forhold (Algoe m.fl. 2010), og vi undervurderer, hvor glad modtageren af et tak bliver (Kumar og Epley 2018).",
   },
   "kend-din-partner": {
     seoTitle: "Kend din partner: 70 spørgsmål at gætte på",
-    metaDescription: "70 spørgsmål til par, hvor den ene gætter den andens svar. Et let spil, der holder jeres billede af hinanden opdateret.",
-    intro: "Man tror, man kender hinanden, indtil man skal gætte. Her gætter den ene, hvad den anden vil svare, og bagefter fortæller den anden, hvordan det egentlig er. Det giver grin, overraskelser og nye ting at spørge ind til.",
+    metaDescription: "Hvor godt kender du din partner? 70 spørgsmål, hvor den ene gætter den andens svar. En let parquiz, der holder jeres billede af hinanden opdateret.",
+    intro: "Man tror, man kender hinanden, indtil den anden spørger: Hvor godt kender du mig egentlig? Her gætter den ene, hvad den anden vil svare, og bagefter fortæller den anden, hvordan det faktisk er. Det giver grin, overraskelser og nye ting at spørge ind til, og kortene kan også bruges som en hurtig parquiz.",
     passerTil: "Par, uanset om I har været sammen i et år eller i årtier. Virker også mellem gode venner og søskende.",
     tips: ["Gæt først, så svar, så ét opfølgende spørgsmål.", "Det er fint at gætte forkert. Det er der, I lærer noget nyt.", "Byt roller efter hvert kort."],
     forskning: "Inspireret af parterapeuters øvelser med at kende hinandens indre verden (Gottman) og af forskning i, at det at spørge ind gør os mere vellidte (Huang m.fl. 2017).",
+    ekstraAfsnit: {
+      heading: "Parquiz: hvor godt kender I hinanden?",
+      text: "Vil I hellere have en hurtig kærestequiz end et roligt gættespil, så tag spørgsmålene her. Den ene stiller spørgsmålet om sig selv, den anden gætter, og så bytter I. Hvert spørgsmål har ét svar, så det går stærkt, og det er lige så sjovt at gætte forkert som at ramme plet.",
+      items: [
+        "Hvad tager jeg altid med, når jeg skal ud at rejse?",
+        "Hvilket tøjstykke har jeg haft længst?",
+        "Hvad er det første, jeg ville redde, hvis det brændte?",
+        "Hvor gammel var jeg, da jeg lærte at cykle?",
+        "Hvad ville jeg bestille, hvis vi fik mad ud af huset i aften?",
+        "Hvilken farve ville jeg male stuen, hvis jeg bestemte alene?",
+        "Hvad siger jeg altid, når jeg er træt?",
+        "Hvilket navn ville jeg have valgt til mig selv, hvis jeg måtte vælge om?",
+        "Hvilket land har jeg mindst lyst til at rejse til?",
+        "Hvad hed min klasselærer i folkeskolen?",
+        "Hvilken ret bestilte jeg, første gang vi spiste ude sammen?",
+        "Hvilken skuffe derhjemme er mest min?",
+      ],
+    },
   },
   "gode-nyheder": {
     seoTitle: "Gode nyheder: 70 spørgsmål om det, der går godt",
