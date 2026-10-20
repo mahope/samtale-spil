@@ -69,6 +69,10 @@ After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, 
 
 `docs/forskning.md` (relationship and conversation research behind decks, game modes and guidance) and `docs/butik-og-seo.md` (store-bought conversation games and SEO page plan).
 
+## International sites
+
+`SITE_LOCALE=en npm run build` builds Goodtalk (goodtalkcards.com) from the `*.intl.tsx` route files only; the Danish site is unchanged. Unknown locales fail the build. See issue #30.
+
 ## Native apps
 
 `capacitor.config.ts` wraps `out/` as `dk.snakkespil.app`. Native-only code lives in `src/lib/platform.ts` (haptics, share sheet; no-ops on the web), `src/lib/native.ts` ("Dagens spørgsmål" local notifications, loaded on demand) and `src/components/NativeBoot.tsx` (status bar, splash, Android back button, notification taps, deep-reload guard). The service worker is disabled inside the apps.
