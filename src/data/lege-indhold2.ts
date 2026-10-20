@@ -339,7 +339,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "jha-51",
-        "text": "Jeg har aldrig fået en gave, jeg lod som om, jeg kunne lide.",
+        "text": "Jeg har aldrig glemt en fødselsdag, jeg havde lovet at huske.",
         "type": "jeg-har-aldrig"
       },
       {
@@ -529,7 +529,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "jha-89",
-        "text": "Jeg har aldrig vundet en quiz.",
+        "text": "Jeg har aldrig lært et instrument.",
         "type": "jeg-har-aldrig"
       },
       {
@@ -719,7 +719,7 @@ export const legeSider2: LegeSide[] = [
     "slug": "hvem-er-mest-tilboejelig-til",
     "seoTitle": "Hvem er mest tilbøjelig til? 100 spørgsmål uden alkohol",
     "metaDescription": "Hvem er mest tilbøjelig til? 100 venlige spørgsmål til en pegeleg uden alkohol. Peg på tre, og lad den med flest peg fortælle historien bag.",
-    "h1": "Hvem er mest tilbøjelig til? 100 spørgsmål til en pegeleg uden alkohol",
+    "h1": "Hvem er mest tilbøjelig til: 100 spørgsmål til en pegeleg uden alkohol",
     "intro": "I pegelegen læser én et spørgsmål op, og på tre peger alle på den, de tror, det passer bedst på. Spørgsmålene her er skrevet, så man bliver glad for at blive peget på, og ingen bliver hængt ud. Den, der får flest peg, fortæller historien bag, eller giver ordet videre.",
     "lege": [
       {
@@ -1126,7 +1126,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "mest-67",
-        "text": "Hvem er mest tilbøjelig til at blive den første på Mars?",
+        "text": "Hvem er mest tilbøjelig til at bygge sit eget hus?",
         "type": "peg"
       },
       {
@@ -1644,7 +1644,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "soc-49",
-        "text": "Hvad har du gjort, som du var sikker på, at ingen opdagede?",
+        "text": "Hvilken overraskelse har du holdt hemmelig, til den skulle bruges?",
         "type": "spoergsmaal"
       },
       {
@@ -2066,7 +2066,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "udf-12",
-        "text": "Vis det sidste billede, du tog med din telefon, og fortæl historien bag.",
+        "text": "Vis et billede fra din telefon, du selv vælger, og fortæl historien bag.",
         "type": "opgave"
       },
       {
@@ -2281,7 +2281,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "udf-55",
-        "text": "Spil en lille scene uden ord om din vej på arbejde i morges.",
+        "text": "Spil en lille scene uden ord om din tur hjemmefra i morges.",
         "type": "opgave"
       },
       {
@@ -2377,7 +2377,7 @@ export const legeSider2: LegeSide[] = [
           "Bordene svarer i fællesskab på en seddel.",
           "Rigtige svar fortælles med en lille historie fra en, der var der."
         ],
-        "variant": "Bed forlovere og familie om spørgsmål, så der kommer historier frem, brudeparret ikke selv ville fortælle."
+        "variant": "Bed forlovere og familie om spørgsmål, så der kommer søde historier frem, som brudeparret måske har glemt. Forloveren sorterer de pinlige fra."
       },
       {
         "navn": "Find fællesnævneren",
@@ -2471,7 +2471,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "bryl-5",
-        "text": "Fortæl om første gang, du mødte bruden eller gommen, på højst et minut.",
+        "text": "Fortæl om første gang, du mødte en af brudeparret, på højst et minut.",
         "type": "opgave"
       },
       {
@@ -2481,7 +2481,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "bryl-7",
-        "text": "Hvad var dit første indtryk af bruden eller gommen?",
+        "text": "Hvad var dit første indtryk af en af brudeparret?",
         "type": "spoergsmaal"
       },
       {
@@ -2621,7 +2621,7 @@ export const legeSider2: LegeSide[] = [
       },
       {
         "id": "bryl-35",
-        "text": "Beskriv brudeparret med tre ord, og lad bordet gætte, hvem af dem du tænker på.",
+        "text": "Beskriv en af brudeparret med tre ord, og lad bordet gætte hvem.",
         "type": "opgave"
       },
       {

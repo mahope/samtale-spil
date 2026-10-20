@@ -146,7 +146,8 @@ export default async function LegePage({ params }: Props) {
             <h2 className="text-2xl font-bold">Mere til festen</h2>
             <ul className="mt-4 flex flex-wrap gap-2">
               {[...legeSider.filter((s) => s.slug !== slug).map((s) => ({ href: `/lege/${s.slug}/`, label: s.h1.split(":")[0] })),
-                ...side.relaterede.map((href) => ({ href, label: relatedLabel(href) }))].map((l) => (
+                // the other /lege/ pages are listed already
+                ...side.relaterede.filter((href) => !href.startsWith("/lege/")).map((href) => ({ href, label: relatedLabel(href) }))].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="inline-flex min-h-11 items-center rounded-full bg-flade px-4 font-semibold ring-1 ring-streg hover:bg-flade-2">
                     {l.label}
