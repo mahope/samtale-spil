@@ -1,0 +1,25 @@
+name: iOS
+
+# Compile check for the iOS app on the Mac runner (mahope-mac). Unsigned simulator
+# build: signing and TestFlight upload need the Apple team's certificates (issue #20).
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm ci
+      - run: npm run build
+      - run: npx cap sync ios
+      - name: Xcode build (simulator, unsigned)
+        working-directory: ios/App
+        run: |
+          set -euo pipefail
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -20

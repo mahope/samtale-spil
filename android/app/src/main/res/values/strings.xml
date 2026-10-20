@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Snakkespil</string>
+    <string name="title_activity_main">Snakkespil</string>
+    <string name="package_name">dk.snakkespil.app</string>
+    <string name="custom_url_scheme">dk.snakkespil.app</string>
+</resources>

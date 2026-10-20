@@ -10,6 +10,8 @@ import { TIMING } from "@/constants";
 
 interface ShareButtonProps {
   text?: string;
+  /** Path of the card itself, e.g. /spil/venner/?question=ven-4 */
+  path?: string;
   categoryName?: string;
   category?: Category;
   type?: "question" | "category" | "progress";
@@ -18,6 +20,7 @@ interface ShareButtonProps {
 
 export function ShareButton({ 
   text, 
+  path,
   categoryName, 
   category, 
   type = "question", 
@@ -31,7 +34,7 @@ export function ShareButton({
     e.stopPropagation();
     
     if (type === "question" && text) {
-      await shareQuestion(text, categoryName);
+      await shareQuestion(text, categoryName, path);
     } else if (type === "category" && category) {
       try {
         const result = await shareCategoryCompletion(category);

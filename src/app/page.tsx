@@ -88,7 +88,7 @@ export default function Home() {
   return (
     <>
       <SiteHeader tone="filt" />
-      <main id="main-content">
+      <main id="main-content" data-route="forside">
         <section className="filt overflow-hidden">
           <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-8 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pb-24 md:pt-14">
             <div>

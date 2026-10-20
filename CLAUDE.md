@@ -10,6 +10,12 @@ Gratis danske samtalekort: https://snakkespil.dk. Mads' eget produkt uden kunder
 - **Analytics:** Plausible CE på analytics.holstjensen.eu, events via `src/utils/track.ts` (danske eventnavne; goals skal oprettes i Plausible).
 - **Gammel adresse:** mahope.github.io/samtale-spil er en redirect-stub til snakkespil.dk.
 
+## Apps (Capacitor)
+
+- `dk.snakkespil.app`, iOS og Android fra samme `out/`. Native kode kun i `src/lib/platform.ts`, `src/lib/native.ts` og `src/components/NativeBoot.tsx`; alt andet skal virke uændret på web.
+- Android bygges og signeres i `.forgejo/workflows/android.yml` (upload-nøgle i repo-secrets + Bitwarden). iOS kompileres i `ios.yml` på `mahope-mac`; signering/TestFlight kræver Mads' Apple-certifikater.
+- `android/` og `ios/` genereres/synkes på agent-worker (`npx cap sync`), ikke på PC'en.
+
 ## Arbejdsgang uden aftryk på PC'en
 
 Byg aldrig lokalt. Rediger og commit lokalt; byg og test på agent-worker (Tailscale) eller i CI:

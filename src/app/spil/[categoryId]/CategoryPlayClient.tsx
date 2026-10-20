@@ -18,12 +18,19 @@ import { QuestionCard } from "@/components/QuestionCard";
 import { TIMING } from "@/constants";
 import { getDeck } from "@/data/decks";
 import { track } from "@/utils/track";
+import { tap } from "@/lib/platform";
 
 interface Props {
   categoryId: string;
 }
 
+// A new ?question (e.g. tapping today's question while this deck is open) starts a fresh game
 export default function CategoryPlayClient({ categoryId }: Props) {
+  const question = useSearchParams().get("question") ?? "";
+  return <CategoryPlay key={question} categoryId={categoryId} />;
+}
+
+function CategoryPlay({ categoryId }: Props) {
   const category = getCategory(categoryId);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -428,7 +435,10 @@ export default function CategoryPlayClient({ categoryId }: Props) {
           <div className="w-full max-w-[23rem] pb-6">
             <button
               type="button"
-              onClick={handleNextQuestion}
+              onClick={() => {
+                tap("fast");
+                handleNextQuestion();
+              }}
               disabled={isTransitioning}
               className="min-h-14 w-full touch-manipulation select-none rounded-full bg-kridt px-6 text-lg font-bold text-kridt-blaek shadow-[0_3px_0_rgb(0_0_0/0.3)] transition-transform active:translate-y-0.5 disabled:opacity-60"
               aria-busy={isTransitioning}
