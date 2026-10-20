@@ -3,6 +3,7 @@ import { CARD_TYPE_HINT, CARD_TYPE_LABEL } from "@/data/cardTypes";
 import Link from "next/link";
 import { getDeck, markColorOnWhite, type Deck } from "@/data/decks";
 import type { Question } from "@/types";
+import { ui } from "@/locale/ui";
 
 export function deckStyle(deck: Deck): CSSProperties {
   return { "--deck-bg": deck.bg, "--deck-ink": deck.ink } as CSSProperties;
@@ -27,7 +28,7 @@ export function DeckBack({
 }
 
 const DEPTH_LEVEL = { let: 1, medium: 2, dyb: 3 } as const;
-const DEPTH_LABEL = { let: "Let", medium: "Medium", dyb: "Dyb" } as const;
+const DEPTH_LABEL = ui.depth;
 
 /** One to three pips, like the rank on a playing card */
 export function DepthPips({ depth, color }: { depth: Question["depth"]; color: string }) {

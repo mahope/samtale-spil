@@ -1,11 +1,13 @@
 import { categories } from "@/data/categories";
 import { adultQuestions } from "@/data/questions/voksne";
 
-export const SITE_URL = "https://snakkespil.dk";
-export const SITE_NAME = "Snakkespil";
+import { site } from "@/locale/site";
+
+export const SITE_URL = site.url;
+export const SITE_NAME = site.name;
 
 /** Next.js merges openGraph shallowly: pages that set openGraph spread this first. */
-export const OG_BASE = { siteName: SITE_NAME, locale: "da_DK", type: "website" as const };
+export const OG_BASE = { siteName: SITE_NAME, locale: site.ogLocale, type: "website" as const };
 
 /** Totals derived from the question data, so copy never drifts from reality. */
 export const CATEGORY_COUNT = categories.length;

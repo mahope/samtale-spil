@@ -20,6 +20,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@/locale': resolve(__dirname, './src/locales/da'),
       '@': resolve(__dirname, './src'),
     },
   },

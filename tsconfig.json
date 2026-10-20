@@ -23,6 +23,9 @@
       }
     ],
     "paths": {
+      "@/locale/*": [
+        "./src/locales/da/*"
+      ],
       "@/*": [
         "./src/*"
       ]

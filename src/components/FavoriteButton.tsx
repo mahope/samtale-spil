@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { ui } from "@/locale/ui";
 
 interface FavoriteButtonProps {
   isFavorite: boolean;
@@ -22,7 +23,7 @@ export function FavoriteButton({ isFavorite, onToggle }: FavoriteButtonProps) {
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       className="min-w-[44px] min-h-[44px] p-2.5 sm:p-2 rounded-full hover:bg-black/5 transition-colors touch-manipulation flex items-center justify-center"
-      aria-label={isFavorite ? "Fjern fra favoritter" : "Tilføj til favoritter"}
+      aria-label={isFavorite ? ui.favorite.remove : ui.favorite.add}
       aria-pressed={isFavorite}
     >
       <motion.svg
