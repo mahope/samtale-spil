@@ -54,7 +54,7 @@ export function NativeBoot() {
       const reminder = readReminder();
       if (reminder.enabled) {
         const { scheduleDailyQuestion } = await import("@/lib/native");
-        scheduleDailyQuestion(reminder.hour, { ask: false }).catch(() => {});
+        scheduleDailyQuestion(reminder, { ask: false }).catch(() => {});
       }
     })();
 

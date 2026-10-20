@@ -18,6 +18,18 @@ export const metadata: Metadata = {
 
 const modes = [
   {
+    href: "/spil/trappen/",
+    deck: "dybe",
+    title: "Trappen",
+    text: "Tolv kort fra let til dyb, som i Arons 36 spørgsmål.",
+  },
+  {
+    href: "/spil/aftensmad/",
+    deck: "familie",
+    title: "Aftensmad",
+    text: "Tre lette kort til familiebordet.",
+  },
+  {
     href: "/spil/shuffle-all/",
     deck: "blandet",
     title: "Bland alle kort",
@@ -75,7 +87,7 @@ export default function ChooserPage() {
         </div>
 
         <h2 className="mt-16 text-2xl font-bold sm:text-3xl">Andre måder at spille på</h2>
-        <ul className="mt-6 grid gap-3 md:grid-cols-3">
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {modes.map((m) => (
             <li key={m.href}>
               <Link href={m.href} className="group flex h-full items-center gap-4 rounded-2xl bg-flade p-4 ring-1 ring-streg hover:bg-flade-2">
