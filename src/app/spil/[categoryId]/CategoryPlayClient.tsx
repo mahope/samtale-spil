@@ -10,18 +10,14 @@ import { useFavorites, useProgress, useTimerSettings, useDifficultyFilter, useQu
 import { useSound } from "@/hooks/useSound";
 import { useStreak } from "@/hooks/useStreak";
 import { useKeyboardShortcuts, KeyboardShortcutHints } from "@/hooks/useKeyboardShortcuts";
-import { StreakCelebration } from "@/components/StreakDisplay";
-import { AchievementToast } from "@/components/AchievementToast";
-import { useAchievements } from "@/hooks/useAchievements";
-import { Confetti, CelebrationBurst, useConfetti, CelebrationOverlay } from "@/components/Confetti";
-import { QuestionCardSkeleton } from "@/components/SkeletonLoader";
-import { FloatingParticles } from "@/components/FloatingParticles";
+import { Confetti, useConfetti, CelebrationOverlay } from "@/components/Confetti";
 import { TimerDisplay } from "@/components/TimerDisplay";
 import { DifficultyFilterIndicator } from "@/components/DifficultyFilter";
-import { BadgeCelebrationWithConfetti } from "@/components/BadgeCelebration";
 import { GameHeader } from "@/components/GameHeader";
 import { QuestionCard } from "@/components/QuestionCard";
 import { TIMING } from "@/constants";
+import { getDeck } from "@/data/decks";
+import { track } from "@/utils/track";
 
 interface Props {
   categoryId: string;
@@ -47,7 +43,6 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const { filter: difficultyFilter, setFilter: setDifficultyFilter, isLoaded: filterLoaded } = useDifficultyFilter();
   const { addToHistory } = useQuestionHistory();
   const { isActive: confettiActive, trigger: triggerConfetti } = useConfetti();
-  const { pendingAchievement, dismissPendingAchievement } = useAchievements();
   const { recordActivity, currentStreak, isAtRisk } = useStreak();
   
   // Calculate filtered question count
@@ -164,10 +159,15 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     return () => cancelAnimationFrame(frameId);
   }, [handleCelebration]);
 
+  const hasTrackedStartRef = useRef(false);
   const handleFlip = useCallback(() => {
     playFlip();
+    if (!hasTrackedStartRef.current) {
+      hasTrackedStartRef.current = true;
+      track("Spil startet", { kategori: categoryId });
+    }
     setIsFlipped((prev) => !prev);
-  }, [playFlip]);
+  }, [playFlip, categoryId]);
 
   // Handle timer tick for last 5 seconds
   const handleTimerTick = useCallback((secondsLeft: number) => {
@@ -212,6 +212,7 @@ export default function CategoryPlayClient({ categoryId }: Props) {
       // Check if all filtered questions have been answered - trigger celebration!
       const isComplete = newAskedIds.length >= filteredQuestionCount;
       if (isComplete && newAskedIds.length > 0) {
+        track("Spil gennemført", { kategori: categoryId, dybde: difficultyFilter });
         triggerConfetti();
         setShowCelebration(true);
         setTimeout(() => setShowCelebration(false), TIMING.CELEBRATION_SHORT);
@@ -279,13 +280,16 @@ export default function CategoryPlayClient({ categoryId }: Props) {
   const handleToggleFavorite = useCallback(() => {
     if (!currentQuestion) return;
     playSuccess();
+    if (!isFavorite(currentQuestion.id)) {
+      track("Favorit gemt", { kategori: currentQuestion.categoryId, dybde: currentQuestion.depth });
+    }
     toggleFavorite({
       id: currentQuestion.id,
       categoryId: currentQuestion.categoryId,
       text: currentQuestion.text,
       depth: currentQuestion.depth,
     });
-  }, [currentQuestion, toggleFavorite, playSuccess]);
+  }, [currentQuestion, toggleFavorite, playSuccess, isFavorite]);
 
   // Handle going back to category list
   const handleBack = useCallback(() => {
@@ -305,32 +309,14 @@ export default function CategoryPlayClient({ categoryId }: Props) {
     notFound();
   }
 
-  // Show loading state while localStorage loads
+  const deck = getDeck(category.id);
+
+  // Show the empty table while localStorage loads
   if (!progressLoaded || !favoritesLoaded || !timerLoaded || !filterLoaded) {
     return (
-      <div 
-        className={`min-h-screen bg-gradient-to-br ${category.color} flex flex-col items-center justify-center px-6`}
-        role="status"
-        aria-live="polite"
-        aria-label="Indlæser spørgsmål"
-      >
-        <FloatingParticles count={10} />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full"
-        >
-          <QuestionCardSkeleton color={category.color} />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-6 text-white/80 text-sm"
-        >
-          Forbereder dine spørgsmål...
-        </motion.div>
-        <span className="sr-only">Indlæser...</span>
+      <div className="filt flex min-h-dvh items-center justify-center px-6" role="status" aria-live="polite">
+        <div className="aspect-[5/7] w-full max-w-sm animate-pulse rounded-[1.25rem] bg-white/10" />
+        <span className="sr-only">Blander kortene</span>
       </div>
     );
   }
@@ -340,216 +326,120 @@ export default function CategoryPlayClient({ categoryId }: Props) {
 
   return (
     <>
-      {/* Confetti celebration */}
       <Confetti isActive={confettiActive} />
-      
-      {/* Achievement toast */}
-      <AchievementToast 
-        achievement={pendingAchievement}
-        onDismiss={dismissPendingAchievement}
-      />
-      
-      {/* Streak celebration */}
-      <StreakCelebration />
-      
-      {/* Badge unlock celebration with confetti */}
-      <BadgeCelebrationWithConfetti />
-      
-      {/* Celebration overlay */}
+
       <CelebrationOverlay
         isVisible={showCelebration}
-        message="🎉 Kategori fuldført!"
-        subMessage={`Du har besvaret alle ${activeQuestionCount} ${difficultyFilter !== "alle" ? `${difficultyFilter} ` : ""}spørgsmål i ${category.name}!`}
+        message="Hele bunken er spillet"
+        subMessage={`I har været alle ${activeQuestionCount} ${difficultyFilter === "let" ? "lette " : difficultyFilter === "dyb" ? "dybe " : difficultyFilter === "medium" ? "medium-" : ""}kort i ${category.name} igennem. Bunken bliver blandet igen.`}
         onDismiss={handleDismissCelebration}
       />
-      
-      <div
-        className={`min-h-screen bg-gradient-to-br ${category.color} relative overflow-hidden`}
-      >
-        {/* Background decorations */}
-        <div className="absolute inset-0 overflow-hidden" aria-hidden="true" role="presentation">
-          <FloatingParticles count={12} opacity={0.08} />
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-          <motion.div
-            className="absolute top-1/4 left-1/4 w-40 h-40 bg-white/5 rounded-full blur-2xl"
-            animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
-            transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
+
+      <div className="filt min-h-dvh">
+        <main id="main-content" className="mx-auto flex min-h-dvh max-w-xl flex-col items-center px-4 pb-safe pt-safe sm:px-6">
+          <GameHeader
+            category={category}
+            currentStreak={currentStreak}
+            difficultyFilter={difficultyFilter}
+            onFilterChange={setDifficultyFilter}
+            filteredQuestionCount={filteredQuestionCount}
+            totalQuestionCount={totalQuestionCount}
+            timerEnabled={timerSettings.enabled}
+            timerDuration={timerSettings.duration}
+            timerSoundEnabled={timerSettings.soundEnabled}
+            timerVibrationEnabled={timerSettings.vibrationEnabled}
+            onTimerToggle={toggleTimer}
+            onTimerDurationChange={setTimerDuration}
+            onTimerSoundToggle={toggleTimerSound}
+            onTimerVibrationToggle={toggleTimerVibration}
           />
-        </div>
 
-      <main id="main-content" className="relative flex min-h-screen flex-col items-center px-4 sm:px-6 py-6 sm:py-8" role="main">
-        {/* Mobile-optimized header with overflow menu */}
-        <GameHeader
-          category={category}
-          currentStreak={currentStreak}
-          difficultyFilter={difficultyFilter}
-          onFilterChange={setDifficultyFilter}
-          filteredQuestionCount={filteredQuestionCount}
-          totalQuestionCount={totalQuestionCount}
-          timerEnabled={timerSettings.enabled}
-          timerDuration={timerSettings.duration}
-          timerSoundEnabled={timerSettings.soundEnabled}
-          timerVibrationEnabled={timerSettings.vibrationEnabled}
-          onTimerToggle={toggleTimer}
-          onTimerDurationChange={setTimerDuration}
-          onTimerSoundToggle={toggleTimerSound}
-          onTimerVibrationToggle={toggleTimerVibration}
-        />
+          {/* How far into the pile */}
+          <div className="w-full max-w-[23rem]" role="region" aria-label="Fremskridt">
+            {difficultyFilter !== "alle" && (
+              <div className="mb-2 flex justify-center">
+                <DifficultyFilterIndicator filter={difficultyFilter} questionCount={filteredQuestionCount} />
+              </div>
+            )}
+            <div
+              className="h-1.5 overflow-hidden rounded-full bg-white/15"
+              role="progressbar"
+              aria-valuenow={answeredCount}
+              aria-valuemin={0}
+              aria-valuemax={activeQuestionCount}
+              aria-label={`${answeredCount} af ${activeQuestionCount} kort spillet`}
+            >
+              <div className="h-full rounded-full transition-[width] duration-500" style={{ width: `${progress}%`, background: deck.bg === "#1d4a38" ? "#f4c04e" : deck.bg }} />
+            </div>
+            <div className="mt-2 flex items-center justify-between text-sm text-white/75">
+              <span aria-live="polite" className="tabular-nums">
+                {Math.min(answeredCount, activeQuestionCount).toLocaleString("da-DK")} af {activeQuestionCount.toLocaleString("da-DK")} kort
+              </span>
+              <button
+                type="button"
+                onClick={handleResetProgress}
+                className="min-h-11 rounded px-2 underline decoration-white/40 underline-offset-4 hover:text-white"
+              >
+                Bland forfra
+              </button>
+            </div>
+          </div>
 
-        {/* Progress bar */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          className="w-full max-w-md mb-8"
-          role="region"
-          aria-label="Fremskridt"
-        >
-          {/* Active filter indicator */}
-          {difficultyFilter !== "alle" && (
-            <div className="flex justify-center mb-2">
-              <DifficultyFilterIndicator 
-                filter={difficultyFilter} 
-                questionCount={filteredQuestionCount} 
+          {timerSettings.enabled && currentQuestion && (
+            <div className="mt-2">
+              <TimerDisplay
+                key={timerKey}
+                duration={timerSettings.duration}
+                isActive={timerSettings.enabled && !isTransitioning}
+                onTimeout={handleTimerTimeout}
+                onTick={handleTimerTick}
+                isPaused={!isFlipped}
               />
+              {!isFlipped && <p className="mt-2 text-center text-xs text-white/70">Uret starter, når kortet er vendt</p>}
             </div>
           )}
-          
-          <div 
-            className="h-2 bg-white/20 rounded-full overflow-hidden"
-            role="progressbar"
-            aria-valuenow={answeredCount}
-            aria-valuemin={0}
-            aria-valuemax={activeQuestionCount}
-            aria-label={`${answeredCount} af ${activeQuestionCount} spørgsmål besvaret`}
-          >
-            <motion.div
-              className="h-full bg-white/80 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            />
+
+          {/* The card */}
+          <div className="flex w-full flex-1 items-center justify-center py-6">
+            <AnimatePresence mode="wait">
+              {currentQuestion && (
+                <motion.div
+                  key={currentQuestion.id}
+                  initial={{ opacity: 0, x: 70, rotate: 6 }}
+                  animate={{ opacity: 1, x: 0, rotate: 0 }}
+                  exit={{ opacity: 0, x: -90, rotate: -8 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 28 }}
+                  className="w-full"
+                >
+                  <QuestionCard
+                    question={currentQuestion}
+                    categoryName={category.name}
+                    isFlipped={isFlipped}
+                    onFlip={handleFlip}
+                    isFavorite={isFavorite(currentQuestion.id)}
+                    onToggleFavorite={handleToggleFavorite}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <div className="flex justify-between mt-2 text-white/80 text-xs">
+
+          <div className="w-full max-w-[23rem] pb-6">
             <button
               type="button"
-              onClick={handleResetProgress}
-              className="hover:text-white transition-colors underline focus:ring-2 focus:ring-white/50 rounded px-1"
-              aria-label="Nulstil fremskridt for denne kategori"
+              onClick={handleNextQuestion}
+              disabled={isTransitioning}
+              className="min-h-14 w-full touch-manipulation select-none rounded-full bg-kridt px-6 text-lg font-bold text-kridt-blaek shadow-[0_3px_0_rgb(0_0_0/0.3)] transition-transform active:translate-y-0.5 disabled:opacity-60"
+              aria-busy={isTransitioning}
             >
-              Nulstil
+              Næste kort
             </button>
-            <span aria-live="polite">
-              {answeredCount} / {activeQuestionCount} spørgsmål
-              {difficultyFilter !== "alle" && ` (${difficultyFilter})`}
-            </span>
+            <p className="mt-3 text-center text-sm text-white/70 sm:hidden">Tryk på kortet for at vende det</p>
+            <div className="mt-3 hidden sm:block">
+              <KeyboardShortcutHints className="text-white/70" />
+            </div>
           </div>
-        </motion.div>
-
-        {/* Timer Display */}
-        {timerSettings.enabled && currentQuestion && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-4"
-          >
-            <TimerDisplay
-              key={timerKey}
-              duration={timerSettings.duration}
-              isActive={timerSettings.enabled && !isTransitioning}
-              onTimeout={handleTimerTimeout}
-              onTick={handleTimerTick}
-              isPaused={!isFlipped} // Pause timer until card is flipped
-            />
-            {!isFlipped && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-white/70 text-xs text-center mt-2"
-              >
-                Vend kortet for at starte timeren
-              </motion.p>
-            )}
-          </motion.div>
-        )}
-
-        {/* Question Card */}
-        <div className="flex-1 flex items-center justify-center w-full">
-          <AnimatePresence mode="wait">
-            {currentQuestion && (
-              <motion.div
-                key={currentQuestion.id}
-                initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: -50 }}
-                transition={{ duration: 0.4, type: "spring", stiffness: 150 }}
-                className="w-full"
-              >
-                <QuestionCard
-                  question={currentQuestion}
-                  categoryName={category.name}
-                  isFlipped={isFlipped}
-                  onFlip={handleFlip}
-                  isFavorite={isFavorite(currentQuestion.id)}
-                  onToggleFavorite={handleToggleFavorite}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Next question button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-6 sm:mt-8 w-full max-w-sm px-2 sm:px-0"
-        >
-          <motion.button
-            type="button"
-            onClick={handleNextQuestion}
-            disabled={isTransitioning}
-            whileHover={{ scale: 1.03, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            className="group w-full min-h-[56px] sm:min-h-[52px] px-6 sm:px-8 py-4 sm:py-4 bg-white dark:bg-slate-800 text-slate-800 dark:text-white rounded-2xl font-semibold text-base sm:text-lg shadow-lg hover:shadow-2xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 focus:ring-4 focus:ring-white/50 overflow-hidden relative touch-manipulation select-none active:scale-95"
-            aria-label="Gå til næste spørgsmål"
-            aria-busy={isTransitioning}
-          >
-            {/* Shine effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
-              aria-hidden="true"
-            />
-            <span className="relative">Næste spørgsmål</span>
-            <motion.svg
-              className="w-5 h-5 relative"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              aria-hidden="true"
-              animate={isTransitioning ? { x: [0, 5, 0] } : {}}
-              transition={{ duration: 0.3, repeat: isTransitioning ? Infinity : 0 }}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </motion.svg>
-          </motion.button>
-
-          {/* Mobile hint */}
-          <p className="text-center text-white/80 text-sm mt-4 sm:hidden">
-            Tryk på kortet for at vende det <span aria-hidden="true">•</span> <span aria-hidden="true">❤️</span> for at gemme
-          </p>
-          
-          {/* Desktop keyboard shortcuts hint */}
-          <div className="hidden sm:block mt-4">
-            <KeyboardShortcutHints className="text-white/70" />
-          </div>
-        </motion.div>
-      </main>
+        </main>
       </div>
     </>
   );

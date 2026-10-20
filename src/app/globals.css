@@ -3,29 +3,62 @@
 /* Override dark variant to use class instead of media query */
 @variant dark (&:where(.dark, .dark *));
 
+/*
+ * Snakkespil: "spillebordet". A green card table, white playing cards and a
+ * coloured box per deck (src/data/decks.ts). Tokens are named after the table.
+ */
 :root {
-  --background: #fefefe;
-  --foreground: #1a1a1a;
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --accent: #6366f1;
+  --papir: #f2f4f1;      /* page background */
+  --flade: #ffffff;      /* cards, panels */
+  --flade-2: #e8ece8;    /* quiet fills */
+  --blaek: #15201b;      /* text */
+  --blaek-2: #4b5a53;    /* secondary text (7.0:1 on papir) */
+  --streg: #d3dbd6;      /* borders */
+  --bord: #1d4a38;       /* the felt */
+  --bord-dyb: #143528;
+  --bord-lys: #2c6650;
+  --kridt: #f4c04e;      /* primary action on felt */
+  --kridt-blaek: #241a03;
+  --fokus: #1d63d8;
+  --skygge: 0 1px 2px rgb(21 32 27 / 0.12), 0 8px 24px -12px rgb(21 32 27 / 0.35);
+
+  /* legacy names still used by older components */
+  --background: var(--papir);
+  --foreground: var(--blaek);
+  --card: var(--flade);
+  --card-foreground: var(--blaek);
+  --muted: var(--flade-2);
+  --muted-foreground: var(--blaek-2);
+  --accent: var(--bord);
   --accent-foreground: #ffffff;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --card: #18181b;
-  --card-foreground: #fafafa;
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa;
-  --accent: #818cf8;
-  --accent-foreground: #0a0a0a;
+  --papir: #0e1a15;
+  --flade: #16251e;
+  --flade-2: #1f3229;
+  --blaek: #e8eeea;
+  --blaek-2: #a7b5ae;
+  --streg: #2b3f35;
+  --bord: #173c2e;
+  --bord-dyb: #0b2219;
+  --bord-lys: #24533f;
+  --fokus: #f4c04e;
+  --skygge: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -12px rgb(0 0 0 / 0.7);
 }
 
 @theme inline {
+  --color-papir: var(--papir);
+  --color-flade: var(--flade);
+  --color-flade-2: var(--flade-2);
+  --color-blaek: var(--blaek);
+  --color-blaek-2: var(--blaek-2);
+  --color-streg: var(--streg);
+  --color-bord: var(--bord);
+  --color-bord-dyb: var(--bord-dyb);
+  --color-bord-lys: var(--bord-lys);
+  --color-kridt: var(--kridt);
+  --color-kridt-blaek: var(--kridt-blaek);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -34,15 +67,123 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --shadow-kort: var(--skygge);
+}
+
+/*
+ * The older screens were built on Tailwind's slate/violet/rose. Rather than
+ * rewrite every one, those scales are remapped to the table palette:
+ * slate -> green-grey ink, violet/purple/indigo -> felt green, rose/pink -> deck red.
+ */
+@theme {
+  --color-slate-50: #f2f4f1;
+  --color-slate-100: #e8ece8;
+  --color-slate-200: #d3dbd6;
+  --color-slate-300: #b5c1ba;
+  --color-slate-400: #8a9992;
+  --color-slate-500: #66756e;
+  --color-slate-600: #4b5a53;
+  --color-slate-700: #35423c;
+  --color-slate-800: #22302a;
+  --color-slate-900: #16231d;
+  --color-slate-950: #0e1a15;
+
+  --color-violet-50: #eef5f1;
+  --color-violet-100: #d6e8de;
+  --color-violet-200: #afd1bf;
+  --color-violet-300: #80b39a;
+  --color-violet-400: #4f9174;
+  --color-violet-500: #2c6e53;
+  --color-violet-600: #1d5a43;
+  --color-violet-700: #1d4a38;
+  --color-violet-800: #163a2c;
+  --color-violet-900: #102b21;
+  --color-violet-950: #091a14;
+  --color-purple-50: #eef5f1;
+  --color-purple-100: #d6e8de;
+  --color-purple-200: #afd1bf;
+  --color-purple-300: #80b39a;
+  --color-purple-400: #4f9174;
+  --color-purple-500: #2c6e53;
+  --color-purple-600: #1d5a43;
+  --color-purple-700: #1d4a38;
+  --color-purple-800: #163a2c;
+  --color-purple-900: #102b21;
+  --color-purple-950: #091a14;
+  --color-indigo-50: #eef5f1;
+  --color-indigo-100: #d6e8de;
+  --color-indigo-200: #afd1bf;
+  --color-indigo-300: #80b39a;
+  --color-indigo-400: #4f9174;
+  --color-indigo-500: #2c6e53;
+  --color-indigo-600: #1d5a43;
+  --color-indigo-700: #1d4a38;
+  --color-indigo-800: #163a2c;
+  --color-indigo-900: #102b21;
+  --color-indigo-950: #091a14;
+
+  --color-rose-50: #fcf0f1;
+  --color-rose-100: #f8dde1;
+  --color-rose-200: #f0b9c2;
+  --color-rose-300: #e48a99;
+  --color-rose-400: #d85f73;
+  --color-rose-500: #c8384f;
+  --color-rose-600: #ad2b41;
+  --color-rose-700: #8e2236;
+  --color-rose-800: #6f1b2b;
+  --color-rose-900: #521421;
+  --color-rose-950: #330c14;
+  --color-pink-400: #d85f73;
+  --color-pink-500: #c8384f;
+  --color-pink-600: #ad2b41;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: var(--papir);
+  color: var(--blaek);
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* The felt: a fine woven texture so the table does not read as a flat fill */
+.filt {
+  background-color: var(--bord);
+  background-image:
+    radial-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    radial-gradient(rgb(0 0 0 / 0.08) 1px, transparent 1px);
+  background-size: 3px 3px, 5px 5px;
+  background-position: 0 0, 1px 2px;
+  color: #ffffff;
+}
+
+/* Deck back patterns, drawn in the deck's ink colour at low opacity */
+.monster {
+  --m: color-mix(in srgb, var(--deck-ink) 16%, transparent);
+  background-color: var(--deck-bg);
+  color: var(--deck-ink);
+}
+.monster-prikker { background-image: radial-gradient(var(--m) 2.5px, transparent 3px); background-size: 14px 14px; }
+.monster-striber { background-image: repeating-linear-gradient(135deg, var(--m) 0 4px, transparent 4px 12px); }
+.monster-tern { background-image: linear-gradient(45deg, var(--m) 25%, transparent 25% 75%, var(--m) 75%), linear-gradient(45deg, var(--m) 25%, transparent 25% 75%, var(--m) 75%); background-size: 16px 16px; background-position: 0 0, 8px 8px; }
+.monster-zigzag { background-image: linear-gradient(135deg, var(--m) 25%, transparent 25%), linear-gradient(225deg, var(--m) 25%, transparent 25%); background-size: 16px 16px; }
+.monster-buer { background-image: radial-gradient(circle at 50% 100%, transparent 6px, var(--m) 7px 9px, transparent 10px); background-size: 20px 12px; }
+.monster-ruder { background-image: linear-gradient(45deg, transparent 42%, var(--m) 42% 58%, transparent 58%), linear-gradient(-45deg, transparent 42%, var(--m) 42% 58%, transparent 58%); background-size: 18px 18px; }
 
 /* Smooth scrolling */
 html {
@@ -51,7 +192,7 @@ html {
 
 /* Better focus styles */
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--fokus);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -60,9 +201,8 @@ html {
 button:focus-visible,
 a:focus-visible,
 [role="button"]:focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--fokus);
   outline-offset: 3px;
-  box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.2);
 }
 
 /* Skip to content link */

@@ -2,6 +2,8 @@
 
 import { motion } from "motion/react";
 import { getCategory } from "@/data/categories";
+import { getDeck, markColorOnWhite } from "@/data/decks";
+import { DepthPips } from "@/components/deck/DeckParts";
 import type { HistoryEntry } from "@/hooks/useLocalStorage";
 
 export interface HistoryItemCardProps {
@@ -11,37 +13,11 @@ export interface HistoryItemCardProps {
   index: number;
 }
 
-/** Emoji indicators for question depth */
-const depthEmoji = {
-  let: "🟢",
-  medium: "🟡",
-  dyb: "🔴",
-} as const;
-
-/**
- * HistoryItemCard - Card displaying a question from history
- * 
- * Shows the question text, category, depth indicator, and timestamp.
- * 
- * @example
- * <HistoryItemCard
- *   entry={{
- *     id: "q1",
- *     categoryId: "parforhold",
- *     text: "Hvad er dit yndlingsminde med mig?",
- *     depth: "medium",
- *     answeredAt: Date.now()
- *   }}
- *   index={0}
- * />
- */
-export function HistoryItemCard({
-  entry,
-  index,
-}: HistoryItemCardProps) {
+/** A card from the history list: the question, its deck, depth and when it was played. */
+export function HistoryItemCard({ entry, index }: HistoryItemCardProps) {
   const category = getCategory(entry.categoryId);
-  const date = new Date(entry.answeredAt);
-  const formattedDate = date.toLocaleDateString("da-DK", {
+  const deck = getDeck(entry.categoryId === "custom" ? "egne" : entry.categoryId);
+  const formattedDate = new Date(entry.answeredAt).toLocaleDateString("da-DK", {
     day: "numeric",
     month: "short",
     hour: "2-digit",
@@ -53,30 +29,14 @@ export function HistoryItemCard({
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.05 * index }}
-      className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-100 dark:border-slate-700"
+      className="relative overflow-hidden rounded-xl bg-flade p-4 pl-5 ring-1 ring-streg"
     >
-      <div className="flex items-start gap-3">
-        {category && (
-          <span className="text-xl shrink-0" aria-hidden="true">
-            {category.emoji}
-          </span>
-        )}
-        <div className="flex-1 min-w-0">
-          <p className="text-slate-700 dark:text-slate-200 text-sm leading-relaxed line-clamp-2">
-            {entry.text}
-          </p>
-          <div className="flex items-center gap-2 mt-2 text-xs text-slate-400 dark:text-slate-500">
-            <span aria-label={`Dybde: ${entry.depth}`}>{depthEmoji[entry.depth]}</span>
-            <span>•</span>
-            <span>{formattedDate}</span>
-            {category && (
-              <>
-                <span>•</span>
-                <span>{category.name}</span>
-              </>
-            )}
-          </div>
-        </div>
+      <span className="absolute inset-y-0 left-0 w-1" style={{ background: deck.bg }} aria-hidden="true" />
+      <p className="line-clamp-2 leading-snug">{entry.text}</p>
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-blaek-2">
+        {category && <span>{category.name}</span>}
+        <DepthPips depth={entry.depth} color={markColorOnWhite(deck)} />
+        <span>{formattedDate}</span>
       </div>
     </motion.div>
   );

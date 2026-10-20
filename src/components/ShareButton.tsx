@@ -58,7 +58,7 @@ export function ShareButton({
       onClick={handleShare}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors relative focus:ring-2 focus:ring-violet-400 ${className}`}
+      className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-full hover:bg-black/5 transition-colors relative ${className}`}
       aria-label={ariaLabel}
     >
       <AnimatePresence mode="wait">
@@ -80,7 +80,7 @@ export function ShareButton({
         ) : (
           <motion.svg
             key="share"
-            className="w-6 h-6 text-slate-400 dark:text-slate-500"
+            className="w-6 h-6 text-[#4b5a53]"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

@@ -21,7 +21,7 @@ interface State {
 /**
  * Reusable error boundary component for catching errors in child components.
  * Can be used to wrap specific sections of the UI.
- * 
+ *
  * @example
  * ```tsx
  * <ErrorBoundary fallback={<p>Something went wrong</p>}>
@@ -82,27 +82,17 @@ function DefaultErrorFallback({ error, onReset }: DefaultErrorFallbackProps) {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="w-full p-4 sm:p-6 rounded-xl bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 border border-red-200 dark:border-red-800"
+      className="w-full rounded-xl bg-flade p-4 text-blaek ring-1 ring-streg sm:p-6"
       role="alert"
     >
       <div className="flex flex-col sm:flex-row items-start gap-3">
-        {/* Icon */}
-        <motion.span
-          initial={{ rotate: -10 }}
-          animate={{ rotate: [0, -5, 5, 0] }}
-          transition={{ duration: 0.5 }}
-          className="text-3xl"
-          aria-hidden="true"
-        >
-          ⚠️
-        </motion.span>
 
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-1">
-            Noget gik galt
+          <h3 className="mb-1 text-lg font-semibold">
+            Denne del kunne ikke vises
           </h3>
-          <p className="text-sm text-red-600 dark:text-red-300 mb-3">
-            Der opstod en fejl. Prøv at indlæse igen.
+          <p className="mb-3 text-sm text-blaek-2">
+            Der skete en fejl. Prøv igen, eller genindlæs siden.
           </p>
 
           {/* Error message in dev mode */}
@@ -118,7 +108,7 @@ function DefaultErrorFallback({ error, onReset }: DefaultErrorFallbackProps) {
             onClick={onReset}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-bord px-4 text-sm font-bold text-white dark:bg-kridt dark:text-kridt-blaek"
           >
             <svg
               className="w-4 h-4"
@@ -146,27 +136,26 @@ function DefaultErrorFallback({ error, onReset }: DefaultErrorFallbackProps) {
  * Inline error message component for smaller error displays.
  * Useful for form errors or minor failures.
  */
-export function InlineError({ 
-  message, 
-  onRetry 
-}: { 
-  message: string; 
+export function InlineError({
+  message,
+  onRetry
+}: {
+  message: string;
   onRetry?: () => void;
 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -5 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm"
+      className="flex items-center gap-2 rounded-lg bg-flade-2 p-3 text-sm text-blaek"
       role="alert"
     >
-      <span aria-hidden="true">⚠️</span>
       <span className="flex-1">{message}</span>
       {onRetry && (
         <button
           type="button"
           onClick={onRetry}
-          className="text-red-700 dark:text-red-300 hover:underline font-medium"
+          className="min-h-11 px-2 font-semibold underline underline-offset-4"
         >
           Prøv igen
         </button>

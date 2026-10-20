@@ -1,10 +1,11 @@
 import { Category, Question } from "@/types";
+import { dilemmaCategory } from "@/data/questions/dilemmaer";
 
 export const categories: Category[] = [
   {
     id: "parforhold",
     name: "Parforhold",
-    description: "Spørgsmål der styrker jeres forbindelse",
+    description: "Til jer to, når I vil tale om andet end hverdagen",
     emoji: "💑",
     color: "from-rose-400 to-pink-500",
     questions: [
@@ -63,7 +64,7 @@ export const categories: Category[] = [
   {
     id: "familie",
     name: "Familie",
-    description: "Lær hinanden bedre at kende på tværs af generationer",
+    description: "Til søndagsmiddagen, bilturen og besøget hos bedsteforældrene",
     emoji: "👨‍👩‍👧‍👦",
     color: "from-amber-400 to-orange-500",
     questions: [
@@ -122,7 +123,7 @@ export const categories: Category[] = [
   {
     id: "intimitet",
     name: "Intimitet",
-    description: "Dybe og personlige spørgsmål for par",
+    description: "Nære og ærlige spørgsmål til par, der stoler på hinanden",
     emoji: "🔥",
     color: "from-red-400 to-rose-600",
     questions: [
@@ -181,7 +182,7 @@ export const categories: Category[] = [
   {
     id: "fremtid",
     name: "Fremtid",
-    description: "Drømme, mål og hvad der venter forude",
+    description: "Hvor vil du hen, og hvad håber du at nå?",
     emoji: "🚀",
     color: "from-violet-400 to-purple-500",
     questions: [
@@ -240,7 +241,7 @@ export const categories: Category[] = [
   {
     id: "fortid",
     name: "Fortid",
-    description: "Minder, oplevelser og livets lærdom",
+    description: "Historierne fra dengang, og hvad de lærte dig",
     emoji: "📜",
     color: "from-emerald-400 to-teal-500",
     questions: [
@@ -299,7 +300,7 @@ export const categories: Category[] = [
   {
     id: "sjove",
     name: "Sjove",
-    description: "Lette og underholdende spørgsmål",
+    description: "Lette spørgsmål, der får bordet til at grine",
     emoji: "😂",
     color: "from-yellow-400 to-amber-500",
     questions: [
@@ -358,7 +359,7 @@ export const categories: Category[] = [
   {
     id: "dybe",
     name: "Dybe",
-    description: "Filosofiske spørgsmål om livet og eksistens",
+    description: "Personlige spørgsmål, der kræver lidt mod at svare på",
     emoji: "🌊",
     color: "from-blue-400 to-indigo-500",
     questions: [
@@ -417,7 +418,7 @@ export const categories: Category[] = [
   {
     id: "filosofiske",
     name: "Filosofiske",
-    description: "Eksistentielle og tankevækkende spørgsmål",
+    description: "Store spørgsmål om tid, valg og hvad der er rigtigt",
     emoji: "🧠",
     color: "from-slate-400 to-zinc-600",
     questions: [
@@ -476,7 +477,7 @@ export const categories: Category[] = [
   {
     id: "barndom",
     name: "Barndom",
-    description: "Minder og oplevelser fra barndommen",
+    description: "Legetøj, lugte, lærere og sommerferier",
     emoji: "👶",
     color: "from-pink-300 to-rose-400",
     questions: [
@@ -535,7 +536,7 @@ export const categories: Category[] = [
   {
     id: "droemme",
     name: "Drømme",
-    description: "Drømme, ønsker og fantasier",
+    description: "Hvis alt var muligt, hvad ville du så?",
     emoji: "✨",
     color: "from-purple-400 to-fuchsia-500",
     questions: [
@@ -782,7 +783,7 @@ export const categories: Category[] = [
   {
     id: "boern",
     name: "Børn",
-    description: "Sjove og nysgerrige spørgsmål til spisebordet med børn fra 6 til 12 år",
+    description: "Til spisebordet med børn fra 6 til 12 år",
     emoji: "🧒",
     color: "from-lime-400 to-green-500",
     questions: [
@@ -1064,7 +1065,7 @@ export const categories: Category[] = [
   {
     id: "selvindsigt",
     name: "Selvindsigt",
-    description: "Spørgsmål at tænke over alene, skrive om eller tale om med en, du stoler på",
+    description: "Til at tænke over alene eller tale om med en, du stoler på",
     emoji: "🪞",
     color: "from-indigo-300 to-violet-500",
     questions: [
@@ -1155,6 +1156,7 @@ export const categories: Category[] = [
       { id: "selv-85", categoryId: "selvindsigt", text: "Hvad vil du minde dig selv om, næste gang det bliver svært?", depth: "dyb" },
     ],
   },
+  dilemmaCategory,
 ];
 
 export function getCategory(id: string): Category | undefined {

@@ -21,24 +21,24 @@ interface ToastProps {
 
 const toastConfig: Record<ToastType, { bg: string; border: string; defaultEmoji: string }> = {
   success: {
-    bg: "bg-gradient-to-r from-emerald-400 to-green-500",
-    border: "border-emerald-300",
-    defaultEmoji: "✅",
+    bg: "bg-bord text-white",
+    border: "border-transparent",
+    defaultEmoji: "",
   },
   error: {
-    bg: "bg-gradient-to-r from-red-400 to-rose-500",
-    border: "border-red-300",
-    defaultEmoji: "❌",
+    bg: "bg-rose-600 text-white",
+    border: "border-transparent",
+    defaultEmoji: "",
   },
   info: {
-    bg: "bg-gradient-to-r from-blue-400 to-indigo-500",
-    border: "border-blue-300",
-    defaultEmoji: "ℹ️",
+    bg: "bg-blaek text-papir",
+    border: "border-transparent",
+    defaultEmoji: "",
   },
   warning: {
-    bg: "bg-gradient-to-r from-amber-400 to-orange-500",
-    border: "border-amber-300",
-    defaultEmoji: "⚠️",
+    bg: "bg-kridt text-kridt-blaek",
+    border: "border-transparent",
+    defaultEmoji: "",
   },
 };
 
@@ -61,17 +61,9 @@ function Toast({ toast, onDismiss }: ToastProps) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={`${config.bg} text-white rounded-xl shadow-lg p-3.5 sm:p-4 border ${config.border} max-w-sm w-full backdrop-blur-sm`}
+      className={`${config.bg} rounded-xl shadow-kort p-3.5 sm:p-4 border ${config.border} max-w-sm w-full`}
     >
       <div className="flex items-center gap-3">
-        <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", delay: 0.1 }}
-          className="text-xl sm:text-2xl flex-shrink-0"
-        >
-          {toast.emoji || config.defaultEmoji}
-        </motion.span>
         <p className="flex-1 text-sm sm:text-base font-medium leading-tight">
           {toast.message}
         </p>

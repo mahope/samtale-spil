@@ -10,6 +10,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { StreakBadge } from "@/components/StreakDisplay";
 import { TimerSettingsPanel } from "@/components/TimerDisplay";
 import { DifficultyFilter } from "@/components/DifficultyFilter";
+import { DeckBack } from "@/components/deck/DeckParts";
 
 interface GameHeaderProps {
   category: Category;
@@ -53,6 +54,10 @@ export function GameHeader({
 }: GameHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const menuOpenRef = useRef(false);
+  useEffect(() => {
+    menuOpenRef.current = isMenuOpen;
+  }, [isMenuOpen]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -68,7 +73,11 @@ export function GameHeader({
   // Close menu on escape
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") setIsMenuOpen(false);
+      if (event.key === "Escape" && menuOpenRef.current) {
+        // closing the menu must not also leave the game (useKeyboardShortcuts)
+        event.preventDefault();
+        setIsMenuOpen(false);
+      }
     }
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
@@ -78,13 +87,13 @@ export function GameHeader({
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-md mb-8"
+      className="mb-4 w-full max-w-[23rem] pt-2"
     >
       {/* Main header row */}
       <div className="flex items-center justify-between gap-2">
         {/* Back button */}
         <Link
-          href="/spil"
+          href="/spil/"
           className="inline-flex items-center gap-1.5 text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50 rounded-lg p-2 -ml-2 min-w-[44px] min-h-[44px] shrink-0"
           aria-label="Tilbage til kategorioversigt"
         >
@@ -107,8 +116,8 @@ export function GameHeader({
 
         {/* Category info - centered, truncates on small screens */}
         <div className="flex items-center gap-2 min-w-0 flex-1 justify-center">
-          <span className="text-2xl sm:text-3xl shrink-0" aria-hidden="true">{category.emoji}</span>
-          <h1 className="text-white font-semibold text-sm sm:text-base truncate">
+          <DeckBack categoryId={category.id} className="h-7 w-5 shrink-0 rounded-[4px] ring-1 ring-white/30" />
+          <h1 className="font-display truncate text-lg font-bold text-white">
             {category.name}
           </h1>
           {currentStreak > 0 && (
@@ -145,12 +154,12 @@ export function GameHeader({
             <ShareButton 
               category={category}
               type="category"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-colors"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/90 hover:text-white transition-colors"
             />
             <ShareProgressButton className="text-white/90 hover:text-white" />
             <Link
               href="/favoritter"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50"
               aria-label="Se dine gemte favoritter"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -169,7 +178,7 @@ export function GameHeader({
               type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               whileTap={{ scale: 0.95 }}
-              className={`p-2 rounded-xl backdrop-blur-sm text-white/90 hover:text-white transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
+              className={`p-2 rounded-xl text-white/90 hover:text-white transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
                 isMenuOpen ? "bg-white/30" : "bg-white/10 hover:bg-white/20"
               }`}
               aria-label="Flere muligheder"

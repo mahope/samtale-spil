@@ -17,13 +17,13 @@ export interface KeyboardShortcutConfig {
 
 /**
  * Hook for global keyboard shortcuts in the game
- * 
+ *
  * Shortcuts:
  * - Space: Flip card
  * - ArrowRight / N: Next question
  * - F: Toggle favorite
  * - Escape / Backspace: Go back
- * 
+ *
  * @example
  * ```tsx
  * useKeyboardShortcuts({
@@ -43,6 +43,9 @@ export function useKeyboardShortcuts({
 }: KeyboardShortcutConfig) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
+      // Already handled by the focused card, a button or an open menu
+      if (event.defaultPrevented) return;
+
       // Don't trigger shortcuts when typing in inputs
       const target = event.target as HTMLElement;
       if (
@@ -113,16 +116,16 @@ export function useKeyboardShortcuts({
  */
 export function KeyboardShortcutHints({ className = "" }: { className?: string }) {
   return (
-    <div 
-      className={`inline-flex items-center gap-4 px-4 py-2 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-sm border border-white/20 dark:border-white/10 ${className}`}
+    <div
+      className={`inline-flex items-center gap-4 px-4 py-2 ${className}`}
     >
-      <ShortcutHint keys={["Space"]} label="Vend" icon="↩️" />
+      <ShortcutHint keys={["Mellemrum"]} label="Vend kortet" />
       <span className="w-px h-4 bg-white/20" aria-hidden="true" />
-      <ShortcutHint keys={["→"]} label="Næste" icon="➡️" />
+      <ShortcutHint keys={["→"]} label="Næste kort" />
       <span className="w-px h-4 bg-white/20" aria-hidden="true" />
-      <ShortcutHint keys={["F"]} label="Favorit" icon="❤️" />
+      <ShortcutHint keys={["F"]} label="Gem" />
       <span className="w-px h-4 bg-white/20" aria-hidden="true" />
-      <ShortcutHint keys={["Esc"]} label="Tilbage" icon="🔙" />
+      <ShortcutHint keys={["Esc"]} label="Tilbage" />
     </div>
   );
 }

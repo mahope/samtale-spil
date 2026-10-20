@@ -7,8 +7,8 @@ import { categories } from "@/data/categories";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Question } from "@/types";
-import { DEPTH_CONFIG } from "@/components/DepthBadge";
-import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
+import { DepthIndicator } from "@/components/DepthBadge";
+import { getDeck } from "@/data/decks";
 import { STORAGE_KEYS } from "@/constants";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 
@@ -33,15 +33,15 @@ const overlayVariants = {
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.95, y: -20 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
+  visible: {
+    opacity: 1,
+    scale: 1,
     y: 0,
     transition: { type: "spring" as const, damping: 25, stiffness: 300 }
   },
-  exit: { 
-    opacity: 0, 
-    scale: 0.95, 
+  exit: {
+    opacity: 0,
+    scale: 0.95,
     y: -20,
     transition: { duration: 0.15 }
   },
@@ -93,8 +93,8 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           text: q.text,
           depth: q.depth,
         },
-        categoryName: "Mine Spørgsmål",
-        categoryEmoji: "✍️",
+        categoryName: "Dine egne",
+        categoryEmoji: "",
         categoryId: "custom",
         isCustom: true,
       });
@@ -127,7 +127,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   // Group results by category
   const groupedResults = useMemo(() => {
     const groups: Record<string, SearchResult[]> = {};
-    
+
     searchResults.forEach((result) => {
       const key = result.categoryId;
       if (!groups[key]) {
@@ -142,7 +142,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   // Save to recent searches
   const saveRecentSearch = useCallback((searchQuery: string) => {
     if (!searchQuery.trim()) return;
-    
+
     setRecentSearches((prev) => {
       const filtered = prev.filter((s) => s.toLowerCase() !== searchQuery.toLowerCase());
       return [searchQuery, ...filtered].slice(0, 5);
@@ -153,7 +153,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const handleResultClick = useCallback((result: SearchResult) => {
     saveRecentSearch(query);
     handleClose();
-    
+
     if (result.isCustom) {
       router.push(`/spil/custom?question=${result.question.id}`);
     } else {
@@ -187,7 +187,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -200,7 +200,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="relative w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-flade text-blaek shadow-kort ring-1 ring-streg"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Search input */}
@@ -222,7 +222,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Søg i alle spørgsmål..."
+                placeholder="Søg i alle spørgsmål"
                 className="flex-1 bg-transparent text-lg text-slate-800 dark:text-slate-100 placeholder-slate-400 outline-none"
                 autoComplete="off"
                 autoCorrect="off"
@@ -256,7 +256,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full mx-auto"
+                    className="w-6 h-6 border-2 border-bord border-t-transparent rounded-full mx-auto"
                   />
                 </div>
               ) : query.trim() ? (
@@ -266,7 +266,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                       <div key={categoryId} className="mb-4 last:mb-0">
                         {/* Category header */}
                         <div className="px-3 py-2 flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
-                          <span>{results[0].categoryEmoji}</span>
+                          <span className="h-3 w-3 rounded-full" style={{ background: getDeck(categoryId === "custom" ? "egne" : categoryId).bg }} aria-hidden="true" />
                           <span>{results[0].categoryName}</span>
                           <span className="text-xs text-slate-400 dark:text-slate-500">
                             ({results.length})
@@ -275,7 +275,6 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
 
                         {/* Results */}
                         {results.map((result) => {
-                          const depthConfig = DEPTH_CONFIG[result.question.depth];
                           return (
                             <motion.button
                               key={result.question.id}
@@ -285,12 +284,8 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                               className="w-full text-left px-3 py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group"
                             >
                               <div className="flex items-start gap-3">
-                                <span
-                                  className={`flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${depthConfig.color}`}
-                                >
-                                  {depthConfig.emoji} {depthConfig.label}
-                                </span>
-                                <p className="text-slate-700 dark:text-slate-200 leading-snug group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                                <DepthIndicator depth={result.question.depth} className="w-20 shrink-0 pt-0.5" />
+                                <p className="text-slate-700 dark:text-slate-200 leading-snug group-hover:underline transition-colors">
                                   {result.question.text}
                                 </p>
                               </div>
@@ -302,7 +297,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   </div>
                 ) : (
                   <div className="p-4">
-                    <EmptyState {...EmptyStatePresets.noSearchResults(query)} className="py-8" />
+                    <p className="py-8 text-center text-blaek-2">Ingen spørgsmål indeholder &quot;{query}&quot;. Prøv et andet ord.</p>
                   </div>
                 )
               ) : (
@@ -326,7 +321,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                           whileHover={{ x: 4 }}
                           className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-center justify-between group"
                         >
-                          <span className="text-slate-600 dark:text-slate-300 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                          <span className="text-slate-600 dark:text-slate-300 group-hover:underline transition-colors">
                             {search}
                           </span>
                           <button
@@ -348,7 +343,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   <div className="px-3 py-4 text-center text-slate-400 dark:text-slate-500 text-sm">
                     <p>Søg efter ord eller sætninger i spørgsmålene</p>
                     <p className="mt-1 text-xs">
-                      {allQuestions.length} spørgsmål i alt ({categories.length} kategorier + mine spørgsmål)
+                      {allQuestions.length.toLocaleString("da-DK")} spørgsmål i {categories.length} bunker og dine egne
                     </p>
                   </div>
                 </div>
@@ -362,7 +357,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   {searchResults.length} {searchResults.length === 1 ? "resultat" : "resultater"}
                 </span>
                 <span className="text-xs">
-                  Klik for at åbne kategorien
+                  Tryk for at spille kortet
                 </span>
               </div>
             )}
@@ -370,37 +365,5 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
         </motion.div>
       )}
     </AnimatePresence>
-  );
-}
-
-// Search button component for the header
-export function SearchButton({ onClick }: { onClick: () => void }) {
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="inline-flex items-center gap-2 px-3 py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-all focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-      aria-label="Søg i spørgsmål"
-    >
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
-      <span className="hidden sm:inline text-sm font-medium">Søg</span>
-      <kbd className="hidden sm:inline text-xs px-1.5 py-0.5 bg-slate-200 dark:bg-slate-600 rounded text-slate-500 dark:text-slate-300">
-        /
-      </kbd>
-    </motion.button>
   );
 }

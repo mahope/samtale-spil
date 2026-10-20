@@ -1,9 +1,8 @@
+import type { Metadata } from "next";
+import { appScreenMetadata } from "@/config/site";
 import AdultPlayClient from "./AdultPlayClient";
 
-export const metadata = {
-  title: "Voksne Spørgsmål | Samtale-Spil",
-  description: "Intime samtalespørgsmål for voksne par (18+)",
-};
+export const metadata: Metadata = appScreenMetadata("Kun for voksne");
 
 export default function AdultPlayPage() {
   return <AdultPlayClient />;

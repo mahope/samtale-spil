@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
+import { DepthPips } from "@/components/deck/DeckParts";
 import { useState } from "react";
 import type { DifficultyFilter } from "@/hooks/useLocalStorage";
 
@@ -13,10 +14,10 @@ interface DifficultyFilterProps {
 }
 
 const filterOptions: { value: DifficultyFilter; label: string; color: string; emoji: string }[] = [
-  { value: "alle", label: "Alle", color: "bg-slate-500", emoji: "🎯" },
-  { value: "let", label: "Let", color: "bg-green-500", emoji: "🌱" },
-  { value: "medium", label: "Medium", color: "bg-yellow-500", emoji: "🔥" },
-  { value: "dyb", label: "Dyb", color: "bg-red-500", emoji: "🌊" },
+  { value: "alle", label: "Alle", color: "bg-kridt", emoji: "" },
+  { value: "let", label: "Let", color: "bg-kridt", emoji: "" },
+  { value: "medium", label: "Medium", color: "bg-kridt", emoji: "" },
+  { value: "dyb", label: "Dyb", color: "bg-kridt", emoji: "" },
 ];
 
 export function DifficultyFilter({
@@ -39,31 +40,31 @@ export function DifficultyFilter({
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`relative flex items-center gap-2 px-3 py-2 rounded-xl backdrop-blur-sm transition-colors focus:ring-2 focus:ring-white/50 ${
-          isFiltered 
-            ? "bg-white/20 text-white" 
+        className={`relative flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg px-2.5 transition-colors ${
+          isFiltered
+            ? "bg-white/20 text-white"
             : "bg-white/10 text-white/90 hover:bg-white/20 hover:text-white"
         }`}
-        aria-label={`Sværhedsgrad filter: ${currentOption.label}. ${questionCount} af ${totalCount} spørgsmål`}
+        aria-label={`Vælg dybde. Nu: ${currentOption.label}, ${questionCount} af ${totalCount} kort`}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <svg 
-          className="w-5 h-5" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor" 
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
           strokeWidth={2}
           aria-hidden="true"
         >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" 
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
           />
         </svg>
         <span className="text-sm font-medium hidden sm:inline">{currentOption.label}</span>
-        
+
         {/* Active filter indicator */}
         {isFiltered && (
           <motion.span
@@ -88,22 +89,22 @@ export function DifficultyFilter({
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
             />
-            
+
             {/* Menu */}
             <motion.div
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="absolute right-0 top-full mt-2 z-50 w-64 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+              className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl bg-flade text-blaek shadow-kort ring-1 ring-streg"
               role="listbox"
-              aria-label="Vælg sværhedsgrad"
+              aria-label="Vælg dybde"
             >
               <div className="p-2">
-                <p className="text-xs text-slate-500 dark:text-slate-400 px-3 py-2 font-medium uppercase tracking-wide">
-                  Filtrer efter sværhedsgrad
+                <p className="px-3 py-2 text-sm font-semibold text-blaek-2">
+                  Hvor dybt vil I gå?
                 </p>
-                
+
                 {filterOptions.map((option) => {
                   const isSelected = filter === option.value;
                   return (
@@ -123,27 +124,29 @@ export function DifficultyFilter({
                       role="option"
                       aria-selected={isSelected}
                     >
-                      <span className="text-xl" aria-hidden="true">{option.emoji}</span>
+                      <span className="flex w-9 shrink-0 justify-center" aria-hidden="true">
+                        {option.value !== "alle" && <DepthPips depth={option.value} color="currentColor" />}
+                      </span>
                       <div className="flex-1 text-left">
                         <p className={`font-medium ${
-                          isSelected 
-                            ? "text-slate-900 dark:text-white" 
+                          isSelected
+                            ? "text-slate-900 dark:text-white"
                             : "text-slate-700 dark:text-slate-300"
                         }`}>
                           {option.label}
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
-                          {option.value === "let" && "Lette samtalestartere"}
+                          {option.value === "let" && "Lette at svare på"}
                           {option.value === "medium" && "Mere personlige spørgsmål"}
-                          {option.value === "dyb" && "Dybe, betydningsfulde samtaler"}
-                          {option.value === "alle" && "Vis alle sværhedsgrader"}
+                          {option.value === "dyb" && "Kræver ro og tid"}
+                          {option.value === "alle" && "Alle kort i bunken"}
                         </p>
                       </div>
                       {isSelected && (
                         <motion.svg
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="w-5 h-5 text-green-500"
+                          className="h-5 w-5 text-bord dark:text-kridt"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -157,12 +160,12 @@ export function DifficultyFilter({
                   );
                 })}
               </div>
-              
+
               {/* Question count footer */}
               <div className="border-t border-slate-200 dark:border-slate-700 px-4 py-3 bg-slate-50 dark:bg-slate-900/50">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-slate-600 dark:text-slate-400">
-                    Tilgængelige spørgsmål:
+                    Kort i bunken
                   </span>
                   <span className="font-semibold text-slate-900 dark:text-white">
                     {questionCount} {isFiltered && `/ ${totalCount}`}
@@ -196,15 +199,11 @@ export function DifficultyFilterIndicator({
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-        filter === "let" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
-        filter === "medium" ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400" :
-        "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-      } ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-xs font-semibold text-white ${className}`}
       role="status"
-      aria-label={`Filter aktivt: ${option.label} - ${questionCount} spørgsmål`}
+      aria-label={`Kun kort med dybde ${option.label.toLowerCase()}: ${questionCount}`}
     >
-      <span aria-hidden="true">{option.emoji}</span>
+      <DepthPips depth={filter} color="currentColor" />
       <span>{option.label}</span>
       <span className="opacity-70">({questionCount})</span>
     </motion.div>

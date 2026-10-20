@@ -33,7 +33,7 @@ export function TimerDisplay({
   useEffect(() => {
     const durationChanged = prevDurationRef.current !== duration;
     const becameActive = !prevActiveRef.current && isActive;
-    
+
     if (isActive && (durationChanged || becameActive)) {
       // Use requestAnimationFrame to defer state update
       requestAnimationFrame(() => {
@@ -41,7 +41,7 @@ export function TimerDisplay({
         hasTimedOut.current = false;
       });
     }
-    
+
     prevDurationRef.current = duration;
     prevActiveRef.current = isActive;
   }, [duration, isActive]);
@@ -59,20 +59,20 @@ export function TimerDisplay({
     intervalRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         const newTime = prev - 1;
-        
+
         // Notify parent of tick (for sound effects)
         // Speed mode: tick all seconds. Normal mode: only last 5 seconds.
         if (onTick && newTime > 0 && (speedMode || newTime <= 5)) {
           onTick(newTime);
         }
-        
+
         // Time's up!
         if (newTime <= 0 && !hasTimedOut.current) {
           hasTimedOut.current = true;
           setTimeout(() => onTimeout(), 0);
           return 0;
         }
-        
+
         return Math.max(0, newTime);
       });
     }, 1000);
@@ -90,11 +90,11 @@ export function TimerDisplay({
   const progress = timeLeft / duration;
   const circumference = 2 * Math.PI * 45; // radius = 45
   const strokeDashoffset = circumference * (1 - progress);
-  
+
   // Speed mode has more aggressive thresholds
   const urgentThreshold = speedMode ? 3 : 5;
   const warningThreshold = speedMode ? 5 : 15;
-  
+
   // Color based on time left
   const getColor = () => {
     if (timeLeft <= urgentThreshold) return "text-red-500";
@@ -120,13 +120,13 @@ export function TimerDisplay({
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
-          opacity: 1, 
+        animate={{
+          opacity: 1,
           scale: shouldPulse ? [1, pulseIntensity, 1] : 1,
         }}
         exit={{ opacity: 0, scale: 0.8 }}
-        transition={{ 
-          scale: shouldPulse ? { duration: 0.5, repeat: Infinity } : undefined 
+        transition={{
+          scale: shouldPulse ? { duration: 0.5, repeat: Infinity } : undefined
         }}
         className={`relative inline-flex items-center justify-center ${
           speedMode ? "drop-shadow-[0_0_15px_rgba(249,115,22,0.5)]" : ""
@@ -139,7 +139,7 @@ export function TimerDisplay({
           <motion.div
             className="absolute inset-0 rounded-full"
             animate={{
-              boxShadow: timeLeft <= urgentThreshold 
+              boxShadow: timeLeft <= urgentThreshold
                 ? ["0 0 20px rgba(239, 68, 68, 0.6)", "0 0 40px rgba(239, 68, 68, 0.3)", "0 0 20px rgba(239, 68, 68, 0.6)"]
                 : ["0 0 15px rgba(249, 115, 22, 0.4)", "0 0 25px rgba(249, 115, 22, 0.2)", "0 0 15px rgba(249, 115, 22, 0.4)"]
             }}
@@ -177,7 +177,7 @@ export function TimerDisplay({
             transition={{ duration: 0.3, ease: "linear" }}
           />
         </svg>
-        
+
         {/* Time display */}
         <motion.div
           className={`absolute inset-0 flex items-center justify-center font-bold ${
@@ -189,25 +189,6 @@ export function TimerDisplay({
           {timeLeft}
         </motion.div>
 
-        {/* Speed mode lightning bolts */}
-        {speedMode && timeLeft <= warningThreshold && (
-          <>
-            <motion.span
-              className="absolute -left-3 top-1/2 -translate-y-1/2 text-lg"
-              animate={{ opacity: [0.5, 1, 0.5], x: [-2, 2, -2] }}
-              transition={{ duration: 0.3, repeat: Infinity }}
-            >
-              ⚡
-            </motion.span>
-            <motion.span
-              className="absolute -right-3 top-1/2 -translate-y-1/2 text-lg"
-              animate={{ opacity: [1, 0.5, 1], x: [2, -2, 2] }}
-              transition={{ duration: 0.3, repeat: Infinity }}
-            >
-              ⚡
-            </motion.span>
-          </>
-        )}
 
         {/* Accessibility announcer - only at key thresholds */}
         {shouldAnnounce && (
@@ -255,19 +236,19 @@ export function TimerSettingsPanel({
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`p-2 rounded-xl backdrop-blur-sm transition-colors focus:ring-2 focus:ring-white/50 ${
-          isEnabled 
-            ? "bg-white/30 text-white" 
+        className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors ${
+          isEnabled
+            ? "bg-white/30 text-white"
             : "bg-white/10 text-white/80 hover:bg-white/20"
         }`}
-        aria-label={isOpen ? "Luk timer indstillinger" : "Åbn timer indstillinger"}
+        aria-label={isOpen ? "Luk indstillinger for ur" : "Indstil ur"}
         aria-expanded={isOpen}
       >
-        <svg 
-          className="w-5 h-5" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
+        <svg
+          className="w-5 h-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
           strokeWidth={2}
           aria-hidden="true"
         >
@@ -284,24 +265,24 @@ export function TimerSettingsPanel({
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-4 z-50"
+            className="absolute right-0 top-full z-50 mt-2 w-64 rounded-2xl bg-flade p-4 text-blaek shadow-kort ring-1 ring-streg"
             role="dialog"
-            aria-label="Timer indstillinger"
+            aria-label="Indstillinger for ur"
           >
             {/* Enable/disable toggle */}
             <div className="flex items-center justify-between mb-4">
-              <span className="text-slate-700 dark:text-slate-200 font-medium">
-                Timer Mode
+              <span className="font-semibold">
+                Ur på hvert kort
               </span>
               <button
                 type="button"
                 onClick={onToggle}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  isEnabled ? "bg-green-500" : "bg-slate-300 dark:bg-slate-600"
+                  isEnabled ? "bg-bord dark:bg-kridt" : "bg-slate-300 dark:bg-slate-600"
                 }`}
                 role="switch"
                 aria-checked={isEnabled}
-                aria-label="Aktiver timer mode"
+                aria-label="Ur på hvert kort"
               >
                 <motion.div
                   className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm"
@@ -314,7 +295,7 @@ export function TimerSettingsPanel({
             {/* Duration selection */}
             <div className="mb-4">
               <label className="block text-sm text-slate-500 dark:text-slate-400 mb-2">
-                Tid per spørgsmål
+                Tid pr. kort
               </label>
               <div className="flex gap-2">
                 {([30, 60, 90] as const).map((d) => (
@@ -325,12 +306,12 @@ export function TimerSettingsPanel({
                     disabled={!isEnabled}
                     className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                       duration === d
-                        ? "bg-blue-500 text-white"
+                        ? "bg-bord text-white dark:bg-kridt dark:text-kridt-blaek"
                         : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"
                     } ${!isEnabled && "opacity-50 cursor-not-allowed"}`}
                     aria-pressed={duration === d}
                   >
-                    {d}s
+                    {d} sek.
                   </button>
                 ))}
               </div>
@@ -340,18 +321,18 @@ export function TimerSettingsPanel({
             <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-700">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-slate-600 dark:text-slate-300">
-                  🔊 Lyd ved timeout
+                  Lyd når tiden er gået
                 </span>
                 <button
                   type="button"
                   onClick={onSoundToggle}
                   disabled={!isEnabled}
                   className={`relative w-10 h-5 rounded-full transition-colors ${
-                    soundEnabled && isEnabled ? "bg-green-500" : "bg-slate-300 dark:bg-slate-600"
+                    soundEnabled && isEnabled ? "bg-bord dark:bg-kridt" : "bg-slate-300 dark:bg-slate-600"
                   } ${!isEnabled && "opacity-50 cursor-not-allowed"}`}
                   role="switch"
                   aria-checked={soundEnabled}
-                  aria-label="Lyd ved timeout"
+                  aria-label="Lyd når tiden er gået"
                 >
                   <motion.div
                     className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm"
@@ -360,21 +341,21 @@ export function TimerSettingsPanel({
                   />
                 </button>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <span className="text-sm text-slate-600 dark:text-slate-300">
-                  📳 Vibration ved timeout
+                  Vibrér når tiden er gået
                 </span>
                 <button
                   type="button"
                   onClick={onVibrationToggle}
                   disabled={!isEnabled}
                   className={`relative w-10 h-5 rounded-full transition-colors ${
-                    vibrationEnabled && isEnabled ? "bg-green-500" : "bg-slate-300 dark:bg-slate-600"
+                    vibrationEnabled && isEnabled ? "bg-bord dark:bg-kridt" : "bg-slate-300 dark:bg-slate-600"
                   } ${!isEnabled && "opacity-50 cursor-not-allowed"}`}
                   role="switch"
                   aria-checked={vibrationEnabled}
-                  aria-label="Vibration ved timeout"
+                  aria-label="Vibrér når tiden er gået"
                 >
                   <motion.div
                     className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm"

@@ -25,15 +25,16 @@ interface ConfettiPiece {
   shapeIndex: number;
 }
 
+// Deck colours from src/data/decks.ts, so confetti looks like a spilled pile of cards
 const COLORS = [
-  "#ef4444", // red
-  "#f97316", // orange
-  "#eab308", // yellow
-  "#22c55e", // green
-  "#3b82f6", // blue
-  "#8b5cf6", // violet
-  "#ec4899", // pink
-  "#06b6d4", // cyan
+  "#c8384f",
+  "#e07a26",
+  "#f4c04e",
+  "#26805c",
+  "#2457c5",
+  "#4b3fa6",
+  "#5bb8d1",
+  "#ffffff",
 ];
 
 const SHAPES = ["square", "circle", "triangle"] as const;
@@ -83,7 +84,7 @@ export function Confetti({
   useEffect(() => {
     // Skip if user prefers reduced motion
     if (prefersReducedMotion) return;
-    
+
     if (isActive) {
       // Generate new seed for each activation
       const seed = seedRef.current = confettiSeedCounter++;
@@ -97,7 +98,7 @@ export function Confetti({
         duration: 2.5 + seededRandom(seed + i * 6) * 1.5,
         shapeIndex: Math.floor(seededRandom(seed + i * 7) * SHAPES.length),
       }));
-      
+
       // Use requestAnimationFrame to defer state update
       requestAnimationFrame(() => {
         setPieces(newPieces);
@@ -181,7 +182,7 @@ export function CelebrationBurst({ isActive }: { isActive: boolean }) {
   useEffect(() => {
     // Skip if user prefers reduced motion
     if (prefersReducedMotion) return;
-    
+
     if (isActive) {
       const seed = seedRef.current = confettiSeedCounter++;
       const newParticles = Array.from({ length: 12 }).map((_, i) => ({
@@ -191,7 +192,7 @@ export function CelebrationBurst({ isActive }: { isActive: boolean }) {
         color: COLORS[Math.floor(seededRandom(seed + i * 2) * COLORS.length)],
         size: 4 + seededRandom(seed + i * 3) * 4,
       }));
-      
+
       // Use requestAnimationFrame to defer state update
       requestAnimationFrame(() => {
         setParticles(newParticles);
@@ -244,11 +245,11 @@ export function CelebrationBurst({ isActive }: { isActive: boolean }) {
 }
 
 // Sparkle effect for hover/tap feedback
-export function Sparkle({ 
-  isActive, 
-  x = 0, 
-  y = 0 
-}: { 
+export function Sparkle({
+  isActive,
+  x = 0,
+  y = 0
+}: {
   isActive: boolean;
   x?: number;
   y?: number;
@@ -280,7 +281,7 @@ export function Sparkle({
 // Full-screen celebration overlay
 export function CelebrationOverlay({
   isVisible,
-  message = "🎉 Tillykke!",
+  message = "Godt spillet",
   subMessage,
   onDismiss,
 }: {
@@ -302,7 +303,7 @@ export function CelebrationOverlay({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 px-4"
         onClick={onDismiss}
         role="dialog"
         aria-modal="true"
@@ -310,43 +311,28 @@ export function CelebrationOverlay({
       >
         <motion.div
           ref={focusTrapRef}
-          initial={{ scale: 0.5, opacity: 0, y: 50 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.5, opacity: 0, y: 50 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl text-center max-w-sm mx-4"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 24 }}
+          transition={{ type: "spring", stiffness: 300, damping: 26 }}
+          className="w-full max-w-sm rounded-2xl bg-flade p-7 text-center text-blaek shadow-kort ring-1 ring-streg"
           onClick={(e) => e.stopPropagation()}
         >
-          <motion.div
-            animate={{ 
-              scale: [1, 1.2, 1],
-              rotate: [0, -10, 10, 0],
-            }}
-            transition={{ 
-              duration: 0.5, 
-              repeat: 2,
-              repeatType: "reverse",
-            }}
-            className="text-6xl mb-4"
-          >
-            🎉
-          </motion.div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
+          <h2 className="font-display mb-2 text-2xl font-bold">
             {message}
           </h2>
           {subMessage && (
-            <p className="text-slate-600 dark:text-slate-300 mb-6">
+            <p className="mb-6 text-blaek-2">
               {subMessage}
             </p>
           )}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
+            type="button"
             onClick={onDismiss}
-            className="px-6 py-3 bg-gradient-to-r from-rose-400 to-violet-500 text-white rounded-xl font-medium"
+            className="min-h-12 rounded-full bg-bord px-6 font-bold text-white dark:bg-kridt dark:text-kridt-blaek"
           >
-            Fortsæt
-          </motion.button>
+            Spil videre
+          </button>
         </motion.div>
       </motion.div>
     </AnimatePresence>

@@ -32,12 +32,23 @@ jobs:
       - name: Verify static export
         run: |
           set -euo pipefail
-          for f in index.html 404.html spil/index.html spil/parforhold/index.html sitemap.xml robots.txt manifest.json; do
+          for f in index.html 404.html spil/index.html spil/parforhold/index.html spoergsmaal/index.html                    spoergsmaal/parforhold/index.html spoergsmaal/parforhold/opengraph-image opengraph-image                    om/index.html privatliv/index.html sitemap.xml robots.txt manifest.json favicon.ico apple-icon.png; do
             test -f "out/$f" || { echo "missing out/$f"; exit 1; }
           done
           if grep -rl "github.io" out --include=*.html --include=*.xml --include=*.txt; then
             echo "old github.io URLs in export"; exit 1
           fi
+          # play screens stay out of the index, content pages stay in
+          grep -q 'name="robots" content="noindex' out/spil/parforhold/index.html || { echo "play screen is indexable"; exit 1; }
+          if grep -q 'name="robots" content="noindex' out/spoergsmaal/parforhold/index.html; then echo "landing page is noindex"; exit 1; fi
+          # the landing page carries the questions in its HTML
+          n=$(grep -o '<li class="flex gap-4' out/spoergsmaal/parforhold/index.html | wc -l)
+          [ "$n" -ge 10 ] || { echo "landing page lists only $n questions"; exit 1; }
+          grep -q 'rel="canonical" href="https://snakkespil.dk/spoergsmaal/parforhold/"' out/spoergsmaal/parforhold/index.html
+          # og:image must point at a file nginx serves as image/png (no trailing slash)
+          og=$(grep -o '<meta property="og:image" content="[^"]*"' out/spoergsmaal/parforhold/index.html | sed -E 's#.*content="https://snakkespil.dk([^"?]*).*#\1#')
+          echo "og:image -> $og"
+          case "$og" in */opengraph-image) test -f "out$og" ;; *) echo "unexpected og:image path"; exit 1 ;; esac
 
       - name: Verify nginx config
         run: |

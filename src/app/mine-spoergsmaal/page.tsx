@@ -4,11 +4,12 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { ToastContainer, useToast } from "@/components/Toast";
-import { EmptyState, EmptyStatePresets } from "@/components/EmptyState";
 import { QuestionForm } from "@/components/QuestionForm";
 import { EditableQuestionCard } from "@/components/EditableQuestionCard";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { DepthPips } from "@/components/deck/DeckParts";
 
 export default function MineSpoergsmaalPage() {
   const {
@@ -42,141 +43,72 @@ export default function MineSpoergsmaalPage() {
 
   const handleSuccess = () => {
     if (editingId) {
-      success("Spørgsmålet er opdateret! ✏️", "📝");
+      success("Spørgsmålet er gemt");
     } else {
-      success("Nyt spørgsmål oprettet! 🎉", "✨");
+      success("Kortet er lagt i din bunke");
     }
   };
 
   const handleFormError = (message: string) => {
-    showError(message, "😅");
+    showError(message);
   };
 
   const handleDelete = (id: string) => {
     deleteQuestion(id);
-    success("Spørgsmålet er slettet", "🗑️");
+    success("Kortet er slettet");
   };
 
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900 flex items-center justify-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="w-8 h-8 border-3 border-violet-400 border-t-transparent rounded-full"
-        />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
-      {/* Toast notifications */}
+    <>
+      <SiteHeader />
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
-      
-      <main className="max-w-2xl mx-auto px-6 py-8">
-        {/* Header */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          {/* Top row: back + theme toggle */}
-          <div className="flex items-center justify-between mb-3 sm:mb-0">
-            <Link
-              href="/spil"
-              className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-2 -ml-2 pl-2 pr-3 rounded-xl active:bg-slate-100 dark:active:bg-slate-800 min-h-[44px]"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11 17l-5-5m0 0l5-5m-5 5h12"
-                />
-              </svg>
-              <span className="hidden sm:inline">Tilbage</span>
-            </Link>
+      <main id="main-content" className="mx-auto max-w-2xl px-4 pt-8 sm:px-6">
+        <h1 className="text-4xl font-extrabold tracking-[-0.025em] sm:text-5xl" style={{ fontStretch: "88%" }}>
+          Dine egne spørgsmål
+        </h1>
+        <p className="mt-3 text-lg text-blaek-2">
+          Skriv de spørgsmål, I mangler, og spil med dem som kort. De gemmes kun på denne enhed.
+        </p>
 
-            {/* Desktop: title in center */}
-            <h1 className="hidden sm:flex text-2xl font-bold text-slate-800 dark:text-white items-center gap-2">
-              <span>✍️</span>
-              <span>Mine Spørgsmål</span>
-            </h1>
-
-            <ThemeToggle className="text-slate-600 dark:text-slate-400" />
+        {isLoaded && stats.total > 0 && (
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-2xl bg-flade px-5 py-4 ring-1 ring-streg">
+            <span className="font-semibold">
+              {stats.total} {stats.total === 1 ? "kort" : "kort"} i din bunke
+            </span>
+            <span className="flex items-center gap-4 text-sm text-blaek-2">
+              {(["let", "medium", "dyb"] as const).map((depth) => (
+                <span key={depth} className="flex items-center gap-1.5">
+                  <DepthPips depth={depth} color="currentColor" />
+                  <span className="tabular-nums">{stats.byDepth[depth]}</span>
+                </span>
+              ))}
+            </span>
           </div>
-
-          {/* Mobile: title below */}
-          <h1 className="sm:hidden text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <span>✍️</span>
-            <span>Mine Spørgsmål</span>
-          </h1>
-        </motion.header>
-
-        {/* Stats banner */}
-        {stats.total > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-gradient-to-r from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 rounded-xl"
-          >
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-              <span className="text-slate-700 dark:text-slate-200 font-medium text-sm sm:text-base">
-                {stats.total} {stats.total === 1 ? "spørgsmål" : "spørgsmål"} oprettet
-              </span>
-              <div className="flex gap-3 sm:gap-2 text-sm sm:text-xs">
-                <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
-                  <span>🟢</span>
-                  <span>{stats.byDepth.let}</span>
-                </span>
-                <span className="text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
-                  <span>🟡</span>
-                  <span>{stats.byDepth.medium}</span>
-                </span>
-                <span className="text-red-600 dark:text-red-400 flex items-center gap-1">
-                  <span>🔴</span>
-                  <span>{stats.byDepth.dyb}</span>
-                </span>
-              </div>
-            </div>
-          </motion.div>
         )}
 
-        {/* Create/Edit form */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-              <span>✨</span>
-              <span>{editingId ? "Rediger spørgsmål" : "Opret nyt spørgsmål"}</span>
+        <section className="mt-10" aria-labelledby="form-overskrift">
+          <div className="flex items-center justify-between gap-4">
+            <h2 id="form-overskrift" className="text-2xl font-bold">
+              {editingId ? "Ret spørgsmålet" : "Skriv et nyt spørgsmål"}
             </h2>
             {!editingId && questions.length > 0 && (
               <button
+                type="button"
                 onClick={() => setShowForm(!showForm)}
-                className="text-sm text-violet-600 dark:text-violet-400 hover:underline"
+                className="min-h-11 rounded px-2 text-sm font-semibold text-blaek-2 underline underline-offset-4 hover:text-blaek"
               >
-                {showForm ? "Skjul formular" : "Vis formular"}
+                {showForm ? "Skjul" : "Vis"}
               </button>
             )}
           </div>
 
           <AnimatePresence>
-            {(showForm || editingId) && (
+            {isLoaded && (showForm || editingId) && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-md border border-slate-100 dark:border-slate-700"
+                className="mt-4 overflow-hidden rounded-2xl bg-flade p-5 shadow-kort ring-1 ring-streg sm:p-6"
               >
                 <QuestionForm
                   onSubmit={handleSubmit}
@@ -190,33 +122,28 @@ export default function MineSpoergsmaalPage() {
                       : undefined
                   }
                   onCancel={editingId ? () => setEditingId(null) : undefined}
-                  submitLabel={editingId ? "Gem ændringer" : "Opret spørgsmål"}
+                  submitLabel={editingId ? "Gem ændringer" : "Læg i bunken"}
                   onSuccess={handleSuccess}
                   onError={handleFormError}
                 />
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.section>
+        </section>
 
-        {/* Questions list */}
-        <section>
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-            <span>📋</span>
-            <span>Dine spørgsmål</span>
-            {questions.length > 0 && (
-              <span className="text-sm font-normal text-slate-400">
-                ({questions.length})
-              </span>
-            )}
+        <section className="mt-12" aria-labelledby="liste-overskrift">
+          <h2 id="liste-overskrift" className="text-2xl font-bold">
+            Din bunke{questions.length > 0 && <span className="ml-2 text-base font-normal text-blaek-2">{questions.length} kort</span>}
           </h2>
 
-          {questions.length === 0 ? (
-            <EmptyState {...EmptyStatePresets.customQuestions} />
+          {!isLoaded ? (
+            <p className="mt-4 text-blaek-2" role="status">Henter dine kort</p>
+          ) : questions.length === 0 ? (
+            <p className="mt-4 text-blaek-2">Der er ingen kort endnu. Skriv det første ovenfor.</p>
           ) : (
-            <motion.div layout className="space-y-4">
+            <motion.div layout className="mt-4 space-y-3">
               <AnimatePresence>
-                {questions
+                {[...questions]
                   .sort((a, b) => b.createdAt - a.createdAt)
                   .map((question) => (
                     <EditableQuestionCard
@@ -235,30 +162,16 @@ export default function MineSpoergsmaalPage() {
           )}
         </section>
 
-        {/* Play button if has questions */}
-        {questions.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mt-8"
+        {isLoaded && questions.length > 0 && (
+          <Link
+            href="/spil/custom/"
+            className="mt-8 inline-flex min-h-12 items-center rounded-full bg-bord px-6 font-bold text-white dark:bg-kridt dark:text-kridt-blaek"
           >
-            <motion.div whileTap={{ scale: 0.98 }}>
-              <Link
-                href="/spil/custom"
-                className="flex items-center justify-center gap-2 w-full sm:w-auto sm:mx-auto px-6 py-4 sm:py-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity shadow-lg active:opacity-80 min-h-[52px]"
-              >
-                <span>Spil med dine spørgsmål</span>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </Link>
-            </motion.div>
-          </motion.div>
+            Spil med dine kort
+          </Link>
         )}
-
-        <div className="h-8" />
       </main>
-    </div>
+      <SiteFooter />
+    </>
   );
 }
