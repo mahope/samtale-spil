@@ -55,6 +55,8 @@ export const decks: Record<string, Deck> = {
   spejder: { bg: "#3d6a2b", ink: LIGHT, pattern: "zigzag", mark: "Sp" },
   gilwell: { bg: "#6b5a2e", ink: LIGHT, pattern: "tern", mark: "Gw" },
   voksne: { bg: "#1d1820", ink: LIGHT, pattern: "ruder", mark: "18" },
+  /** Dares, only in the 18+ app (src/data/questions/udfordringer.ts) */
+  udfordringer: { bg: "#8c1f3a", ink: LIGHT, pattern: "buer", mark: "Ud" },
   /** "Året der gik" (src/data/aaretDerGik.ts) */
   aaret: { bg: "#5c3b8f", ink: LIGHT, pattern: "prikker", mark: "År" },
   /** Mixed deck for "Bland alle" */

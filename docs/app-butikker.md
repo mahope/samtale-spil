@@ -2,7 +2,7 @@
 
 Tekster og svar til butikkerne. Kopiér felterne direkte. Tegnloft står ved hvert felt.
 
-Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en lav aldersmærkning (forventet 13+ hos Apple) og bruges af skoler og spejdergrupper. Voksen-bunken findes kun på snakkespil.dk.
+Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en lav aldersmærkning (forventet 13+ hos Apple) og bruges af skoler og spejdergrupper. Voksen-bunken findes på snakkespil.dk og i den særskilte app Snakkespil 18+ (se nederst).
 
 ## Fælles
 
@@ -148,3 +148,49 @@ And:
 Goodtalk is a conversation game for fun and closeness. It is not therapy.
 Made in Denmark by Mahope.
 ```
+
+## Snakkespil 18+ (voksenapp, issue #57)
+
+Særskilt app med kun voksen- og parbunker, bygget fra samme native projekt med `APP_VARIANT=voksen` (ruterne `src/app/**/*.voksen.tsx`, bunkerne i `src/voksen/decks.ts`). CI-artefakt: `snakkespil-voksen-android-<nr>`. Appen spørger om alder ved første start (`src/voksen/AgeGate.tsx`).
+
+**Indholdsgrænse (fra butikkernes regler, læst 21/10-2026):**
+- Apple 1.1.4 afviser "overtly sexual or pornographic material", dvs. eksplicitte beskrivelser af kønsdele eller seksuelle handlinger, der skal vække erotiske følelser.
+- Google Play afviser indhold "intended to be sexually gratifying", sexguides og eksplicit tekst, også i butiksteksten.
+- Derfor: kortene må være flirtende, frække og nære (kys, berøring, lyst, fantasier som emne), men aldrig beskrive sex, kroppe eller give instruktioner. Testen `voksen.test.ts` afviser eksplicitte ord i udfordringerne. Ingen frække ord i butiksteksten.
+
+- **Navn:** Snakkespil 18+
+- **Bundle-/pakke-id:** dk.snakkespil.voksen
+- **Kategori:** Lifestyle / Google Play: Livsstil
+- **Privatlivspolitik:** https://snakkespil.dk/privatliv/
+
+**Undertitel** (max 30): `Samtalekort for par`
+
+**Reklametekst** (max 170):
+`Kort til jer to: modige spørgsmål, nærhed og små udfordringer. Skiftes til at trække, og lær hinanden at kende på ny. Gratis og uden reklamer.`
+
+**Søgeord** (max 100): `par,kæreste,parforhold,samtalekort,date night,intimitet,spørgsmål til par,udfordringer`
+
+**Kort beskrivelse** (Google Play, max 80): `Samtalekort og små udfordringer for par. Kun for voksne.`
+
+**Beskrivelse:**
+
+```
+Snakkespil 18+ er samtalekort for par. Træk et kort, og lad det tage jer et sted hen, I ikke kommer hver dag.
+
+Bunker:
+• Udfordringer: kys, berøring og små opgaver, kun i appen
+• Kun for voksne: modige spørgsmål om lyst, fantasier og jer to
+• Intimitet og Parforhold
+• Kend din partner
+• Første date
+
+Hvert kort er mærket let, medium eller dyb. Ingen konto, ingen reklamer, ingen cookies. Det, du gemmer, bliver på telefonen.
+
+Kun for voksne over 18. Snakkespil 18+ er et samtalespil til par. Det er ikke terapi.
+Lavet i Danmark af Mahope.
+```
+
+**Aldersmærkning:**
+- App Store: Moden eller antydende tematik **hyppig/intens**, seksuelt indhold eller nøgenhed **sjælden/mild** (antydende tekst, ingen beskrivelser). Forventet **18+** på Apples aldersskala. Ingen brugerindhold.
+- Google Play (IARC): seksuelt indhold **ja, antydende tekst uden nøgenhed eller beskrivelser**, groft sprog nej, vold nej. Forventet **PEGI 16/18**. Målgruppe: **18 år og opefter**.
+- Datasikkerhed: som Snakkespil ovenfor.

@@ -93,6 +93,8 @@ jobs:
         run: |
           set -euo pipefail
           grep -rqE '"adult-[0-9]+"' out/ || { echo "guard finds no adult cards in the web build"; exit 1; }
+          # the dares (hot-N) belong to the Snakkespil 18+ app only (issue #57)
+          if grep -rqE '"hot-[0-9]+"' out/; then echo "18+-app dares in the web build"; exit 1; fi
           rm -rf out
           APP_BUILD=1 npm run build >/dev/null
           if grep -rqE '"adult-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi

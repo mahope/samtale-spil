@@ -9,6 +9,6 @@ const PlayDeck = dynamic(() => import("./PlayDeck").then((m) => m.PlayDeck), {
   loading: () => <div className="filt min-h-dvh" />,
 });
 
-export function PlayDeckLoader(props: { deckId: string; name: string; sharePath: string; backHref?: string; questions: Question[] }) {
+export function PlayDeckLoader(props: { deckId: string; name: string; sharePath: string; backHref?: string; questions: Question[]; jokers?: boolean }) {
   return <PlayDeck {...props} />;
 }

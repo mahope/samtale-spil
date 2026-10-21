@@ -16,6 +16,12 @@ const LOCALES = ['da', 'en'];
 const locale = process.env.SITE_LOCALE || 'da';
 if (!LOCALES.includes(locale)) throw new Error(`SITE_LOCALE must be one of ${LOCALES.join(', ')}, got "${locale}"`);
 const isIntl = locale !== 'da';
+// APP_VARIANT=voksen builds the separate 18+ app (issue #57) from the *.voksen.tsx route tree:
+// only adult and couple decks, behind an age gate. It needs the adult deck, so not with APP_BUILD.
+const VARIANTS = ['', 'voksen'];
+const variant = process.env.APP_VARIANT || '';
+if (!VARIANTS.includes(variant)) throw new Error(`APP_VARIANT must be empty or "voksen", got "${variant}"`);
+if (variant === 'voksen' && (isIntl || isAppBuild)) throw new Error('APP_VARIANT=voksen needs SITE_LOCALE=da and no APP_BUILD');
 const adultAlias = { '@/data/questions/voksne': './src/data/questions/voksne.app.ts' };
 // "@/locale/*" points at src/locales/<locale>/ (tsconfig maps it to Danish for type checks)
 const localeAlias = {
@@ -31,6 +37,7 @@ const localeAlias = {
 const nextConfig: NextConfig = {
   output: 'export',
   ...(isIntl && { pageExtensions: ['intl.tsx', 'intl.ts'] }),
+  ...(variant === 'voksen' && { pageExtensions: ['voksen.tsx', 'voksen.ts'] }),
   turbopack: { resolveAlias: { ...localeAlias, ...(isAppBuild ? adultAlias : {}) } },
   images: {
     unoptimized: true
