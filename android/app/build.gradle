@@ -4,7 +4,10 @@ android {
     namespace = "dk.snakkespil.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "dk.snakkespil.app"
+        // Goodtalk is built from the same project with APP_ID/APP_NAME (issue #74)
+        applicationId System.getenv("APP_ID") ?: "dk.snakkespil.app"
+        resValue "string", "app_name", System.getenv("APP_NAME") ?: "Snakkespil"
+        resValue "string", "title_activity_main", System.getenv("APP_NAME") ?: "Snakkespil"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // CI sets VERSION_CODE from the run number; Play needs it to increase with every upload

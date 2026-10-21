@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { site } from "@/locale/site";
+import { NativeBoot } from "@/components/NativeBoot";
 
 // International sites (SITE_LOCALE != "da"), issue #30.
 const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], axes: ["opsz", "wdth"] });
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
+        <NativeBoot />
       </body>
     </html>
   );

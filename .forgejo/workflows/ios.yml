@@ -7,7 +7,22 @@ on:
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      # Snakkespil (Danish) and Goodtalk (English, issue #74) from the same native project
+      matrix:
+        include:
+          - site: da
+            app_id: dk.snakkespil.app
+            app_name: Snakkespil
+            artifact: snakkespil
+          - site: en
+            app_id: com.goodtalkcards.app
+            app_name: Goodtalk
+            artifact: goodtalk
     runs-on: macos
+    env:
+      SITE_LOCALE: ${{ matrix.site }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,4 +44,5 @@ jobs:
           set -euo pipefail
           xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
             -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            PRODUCT_BUNDLE_IDENTIFIER="${{ matrix.app_id }}" APP_DISPLAY_NAME="${{ matrix.app_name }}" \
             CODE_SIGNING_ALLOWED=NO build | tail -20
