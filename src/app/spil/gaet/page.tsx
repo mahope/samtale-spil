@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { appScreenMetadata } from "@/config/site";
 import { GaetLoader } from "./GaetLoader";
+import { getCategory } from "@/data/categories";
 
 export const metadata: Metadata = appScreenMetadata(
   "Gæt svaret: Kend din partner med point",
@@ -8,5 +9,6 @@ export const metadata: Metadata = appScreenMetadata(
 );
 
 export default function GaetPage() {
-  return <GaetLoader />;
+  const deck = getCategory("kend-din-partner")!;
+  return <GaetLoader questions={deck.questions} deckName={deck.name} backHref="/spil/kend-din-partner/" />;
 }

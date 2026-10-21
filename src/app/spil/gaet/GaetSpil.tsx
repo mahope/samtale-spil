@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CardFace } from "@/components/deck/DeckParts";
-import { getCategory } from "@/data/categories";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { track } from "@/utils/track";
 import { tap } from "@/lib/platform";
 import type { Question } from "@/types";
+import { ui } from "@/locale/ui";
 
+/** Colours of Kend din partner / Know Your Partner */
 const DECK = "kend-din-partner";
+const T = ui.guess;
 const PLAYERS_KEY = "samtale-spil-gaet-spillere";
 const SCORES_KEY = "samtale-spil-gaet-point";
 const GAME_KEY = "samtale-spil-gaet-spil";
@@ -42,8 +44,8 @@ const secondary = `${button} bg-white/10 text-white ring-1 ring-white/30`;
  * phone, and the next one guesses before "Afslør". Or everyone answers in secret and all
  * answers are shown together. Answers and points stay on the device (localStorage).
  */
-export function GaetSpil() {
-  const deck = getCategory(DECK)!;
+/** The deck comes from the page (server data), so the client bundle only has one language */
+export function GaetSpil({ questions, deckName, backHref }: { questions: Question[]; deckName: string; backHref: string }) {
   const [savedPlayers, setSavedPlayers] = useLocalStorage<string[]>(PLAYERS_KEY, ["", ""]);
   const [scores, setScores] = useLocalStorage<Record<string, number>>(SCORES_KEY, {});
   const [mode, setMode] = useState<Mode>("gaet");
@@ -72,7 +74,7 @@ export function GaetSpil() {
   const setPlayer = (i: number, name: string) => setSavedPlayers(players.map((p, j) => (j === i ? name : p)));
 
   const start = () => {
-    setPile(shuffle(deck.questions));
+    setPile(shuffle(questions));
     setRound(0);
     setPhase("svar");
     setAnswers([]);
@@ -83,7 +85,7 @@ export function GaetSpil() {
 
   const resume = () => {
     if (!saved) return;
-    const byId = new Map(deck.questions.map((q) => [q.id, q]));
+    const byId = new Map(questions.map((q) => [q.id, q]));
     const restored = saved.ids.map((id) => byId.get(id)).filter((q): q is Question => Boolean(q));
     if (restored.length === 0) return;
     setMode(saved.mode);
@@ -99,13 +101,12 @@ export function GaetSpil() {
     return (
       <main id="main-content" className="filt min-h-dvh px-4 pb-16 pt-6 text-white">
         <div className="mx-auto max-w-lg">
-          <Link href={`/spil/${DECK}/`} className="text-white/80 underline">
-            Tilbage til Kend din partner
+          <Link href={backHref} className="text-white/80 underline">
+            {T.back}
           </Link>
-          <h1 className="mt-6 text-4xl font-extrabold">Gæt svaret</h1>
+          <h1 className="mt-6 text-4xl font-extrabold">{T.title}</h1>
           <p className="mt-3 text-lg text-white/85">
-            Én svarer i hemmelighed, og den næste gætter, før svaret bliver vist. Eller alle svarer skjult, og I afslører
-            svarene sammen. Svarene bliver på telefonen.
+            {T.intro}
           </p>
           <form
             className="mt-8 space-y-8"
@@ -115,18 +116,18 @@ export function GaetSpil() {
             }}
           >
             <fieldset>
-              <legend className="text-xl font-bold">Hvem spiller?</legend>
+              <legend className="text-xl font-bold">{T.who}</legend>
               <div className="mt-3 space-y-2">
                 {players.map((p, i) => (
                   <div key={i} className="flex gap-2">
                     <label className="sr-only" htmlFor={`gaet-spiller-${i}`}>
-                      Spiller {i + 1}
+                      {T.player(i + 1)}
                     </label>
                     <input
                       id={`gaet-spiller-${i}`}
                       value={p}
                       onChange={(e) => setPlayer(i, e.target.value.slice(0, 24))}
-                      placeholder={`Spiller ${i + 1}`}
+                      placeholder={T.player(i + 1)}
                       className="min-h-12 flex-1 rounded-xl bg-white px-4 text-lg text-[#15201b]"
                     />
                     {players.length > 2 && (
@@ -134,9 +135,9 @@ export function GaetSpil() {
                         type="button"
                         onClick={() => setSavedPlayers(players.filter((_, j) => j !== i))}
                         className={secondary}
-                        aria-label={`Fjern spiller ${i + 1}`}
+                        aria-label={T.removePlayer(i + 1)}
                       >
-                        Fjern
+                        {T.remove}
                       </button>
                     )}
                   </div>
@@ -144,18 +145,18 @@ export function GaetSpil() {
               </div>
               {players.length < 6 && (
                 <button type="button" onClick={() => setSavedPlayers([...players, ""])} className={`${secondary} mt-3`}>
-                  Tilføj spiller
+                  {T.addPlayer}
                 </button>
               )}
             </fieldset>
 
             <fieldset>
-              <legend className="text-xl font-bold">Hvordan?</legend>
+              <legend className="text-xl font-bold">{T.how}</legend>
               <div className="mt-3 space-y-2">
                 {(
                   [
-                    ["gaet", "Én svarer, den næste gætter", "I skiftes. Et rigtigt gæt giver et point."],
-                    ["alle", "Alle svarer skjult", "Alle skriver deres svar, og I ser dem samtidig."],
+                    ["gaet", T.modeGuess, T.modeGuessText],
+                    ["alle", T.modeAll, T.modeAllText],
                   ] as const
                 ).map(([id, title, text]) => (
                   <label key={id} className={`flex cursor-pointer gap-3 rounded-xl p-3 ring-1 ${mode === id ? "bg-white/15 ring-2 ring-kridt" : "ring-white/30"}`}>
@@ -170,19 +171,19 @@ export function GaetSpil() {
               {mode === "gaet" && (
                 <label className="mt-3 flex min-h-11 items-center gap-3">
                   <input type="checkbox" checked={withPoints} onChange={(e) => setWithPoints(e.target.checked)} className="h-5 w-5" />
-                  Tæl point
+                  {T.countPoints}
                 </label>
               )}
             </fieldset>
 
             <button type="submit" disabled={named.length < 2 || duplicate} className={`${primary} w-full text-lg`}>
-              Start spillet
+              {T.start}
             </button>
-            {named.length < 2 && <p className="text-white/80">Skriv mindst to navne.</p>}
-            {duplicate && <p className="text-white/80">To spillere har samme navn. Giv dem hver sit.</p>}
+            {named.length < 2 && <p className="text-white/80">{T.needTwo}</p>}
+            {duplicate && <p className="text-white/80">{T.duplicate}</p>}
             {saved && saved.ids.length > 0 && (
               <button type="button" onClick={resume} className={`${secondary} w-full`}>
-                Fortsæt spillet fra kort {saved.round + 1}
+                {T.resume(saved.round + 1)}
               </button>
             )}
           </form>
@@ -219,13 +220,13 @@ export function GaetSpil() {
     <main id="main-content" className="filt flex min-h-dvh flex-col items-center px-4 pb-10 pt-6 text-white">
       <div className="flex w-full max-w-[23rem] items-center justify-between">
         <button type="button" onClick={() => setPile(null)} className="text-white/80 underline">
-          Nyt spil
+          {T.newGame}
         </button>
-        <span className="text-sm text-white/70">Kort {round + 1}</span>
+        <span className="text-sm text-white/70">{T.card(round + 1)}</span>
       </div>
 
       {mode === "gaet" && withPoints && (
-        <ul className="mt-3 flex w-full max-w-[23rem] flex-wrap gap-2" aria-label="Point">
+        <ul className="mt-3 flex w-full max-w-[23rem] flex-wrap gap-2" aria-label={T.points}>
           {named.map((p) => (
             <li key={p} className="rounded-full bg-white/10 px-3 py-1 text-sm font-semibold tabular-nums">
               {p}: {scores?.[p] ?? 0}
@@ -235,10 +236,10 @@ export function GaetSpil() {
       )}
 
       <p className="sr-only" aria-live="polite">
-        Kort {round + 1}: {question.text}
+        {`${T.card(round + 1)}: ${question.text}`}
       </p>
       <div className="mt-5 w-full max-w-[21rem] sm:max-w-[23rem]">
-        <CardFace categoryId={DECK} categoryName={deck.name} question={question} className="aspect-[5/7]" />
+        <CardFace categoryId={DECK} categoryName={deckName} question={question} className="aspect-[5/7]" />
       </div>
 
       <div className="mt-6 w-full max-w-[23rem]">
@@ -250,13 +251,13 @@ export function GaetSpil() {
             }}
           >
             <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold outline-none">
-              {writer}, skriv dit svar
+              {T.writeAnswer(writer)}
             </h2>
             <p className="mt-1 text-white/80">
-              {mode === "gaet" ? `${guesser} kigger væk imens.` : "De andre kigger væk imens."}
+              {mode === "gaet" ? T.looksAway(guesser) : T.othersLookAway}
             </p>
             <label className="sr-only" htmlFor="gaet-svar">
-              Dit svar
+              {T.yourAnswer}
             </label>
             <input
               id="gaet-svar"
@@ -266,7 +267,7 @@ export function GaetSpil() {
               className="mt-3 min-h-12 w-full rounded-xl bg-white px-4 text-lg text-[#15201b]"
             />
             <button type="submit" disabled={!draft.trim()} className={`${primary} mt-3 w-full`}>
-              {mode === "gaet" ? `Skjul og giv telefonen til ${guesser}` : answers.length + 1 < n ? `Skjul og giv videre til ${named[answers.length + 1]}` : "Skjul svaret"}
+              {mode === "gaet" ? T.hideAndPass(guesser) : answers.length + 1 < n ? T.hideAndPassOn(named[answers.length + 1]) : T.hide}
             </button>
           </form>
         )}
@@ -274,11 +275,11 @@ export function GaetSpil() {
         {phase === "gaet" && (
           <div>
             <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold outline-none">
-              {guesser}, hvad tror du, {answerer} svarede?
+              {T.whatDidTheySay(guesser, answerer)}
             </h2>
-            <p className="mt-1 text-white/80">Sig dit gæt højt, og tryk så på Afslør.</p>
+            <p className="mt-1 text-white/80">{T.sayGuess}</p>
             <button type="button" onClick={() => setPhase("afsloeret")} className={`${primary} mt-4 w-full`}>
-              Afslør
+              {T.reveal}
             </button>
           </div>
         )}
@@ -286,7 +287,7 @@ export function GaetSpil() {
         {phase === "afsloeret" && mode === "gaet" && (
           <div>
             <h2 ref={headingRef} tabIndex={-1} className="text-white/80 outline-none">
-              {answerer} svarede:
+              {T.answered(answerer)}
             </h2>
             <p className="mt-1 text-2xl font-bold">{answers[0]}</p>
             {withPoints ? (
@@ -299,15 +300,15 @@ export function GaetSpil() {
                     nextCard();
                   }}
                 >
-                  Rigtigt gættet
+                  {T.right}
                 </button>
                 <button type="button" className={secondary} onClick={nextCard}>
-                  Forkert
+                  {T.wrong}
                 </button>
               </div>
             ) : (
               <button type="button" className={`${primary} mt-4 w-full`} onClick={nextCard}>
-                Næste kort
+                {T.next}
               </button>
             )}
           </div>
@@ -316,7 +317,7 @@ export function GaetSpil() {
         {phase === "afsloeret" && mode === "alle" && (
           <div>
             <h2 ref={headingRef} tabIndex={-1} className="text-2xl font-bold outline-none">
-              Jeres svar
+              {T.allAnswers}
             </h2>
             <ul className="mt-3 space-y-2">
               {named.map((p, i) => (
@@ -327,7 +328,7 @@ export function GaetSpil() {
               ))}
             </ul>
             <button type="button" className={`${primary} mt-4 w-full`} onClick={nextCard}>
-              Næste kort
+              {T.next}
             </button>
           </div>
         )}

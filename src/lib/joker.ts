@@ -1,13 +1,10 @@
 import type { Question } from "@/types";
+import { ui } from "@/locale/ui";
 
 /** localStorage key for the "Jokerkort" setting (on by default) */
 export const JOKER_KEY = "samtale-spil-joker";
 
-const JOKER_TEXTS = [
-  "Stil dit eget spørgsmål til en ved bordet, som du længe har haft lyst til at stille.",
-  "Giv kortet videre, og lad den næste vælge, hvem der skal svare på det næste kort.",
-  "Vælg et kort, I sprang over tidligere, og tag det nu.",
-];
+const JOKER_TEXTS = ui.joker;
 
 /**
  * A joker on about every 10th card (issue #41): every tenth turn shows a joker in the

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ui } from "@/locale/ui";
 import { DeckTile } from "@/components/deck/DeckParts";
 import { IntlHeader, IntlFooter } from "@/intl/Chrome";
@@ -21,6 +22,11 @@ export default function PlayChooser() {
           Choose a deck
         </h1>
         <p className="mt-3 max-w-xl text-lg text-blaek-2">Every deck has its own theme. Tap one to start.</p>
+        <ul className="mt-6 flex flex-wrap gap-2">
+          <li><Link href="/play/guess/" className="inline-flex min-h-11 items-center rounded-full bg-flade px-4 font-semibold ring-1 ring-streg hover:bg-flade-2">Guess the answer, with points</Link></li>
+          <li><Link href="/play/year-in-review/" className="inline-flex min-h-11 items-center rounded-full bg-flade px-4 font-semibold ring-1 ring-streg hover:bg-flade-2">Year in review</Link></li>
+          <li><Link href="/games/" className="inline-flex min-h-11 items-center rounded-full bg-flade px-4 font-semibold ring-1 ring-streg hover:bg-flade-2">Party games</Link></li>
+        </ul>
         <div className="mt-8 space-y-10">
           {intlGroups().map((g) => (
             <section key={g.id} aria-labelledby={`group-${g.id}`}>

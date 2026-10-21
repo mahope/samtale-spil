@@ -6,6 +6,8 @@ import { QuestionCard } from "@/components/QuestionCard";
 import { PlayScreen, dealMotion } from "@/components/PlayScreen";
 import { useFavorites } from "@/hooks/useLocalStorage";
 import { track } from "@/utils/track";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { JOKER_KEY, jokerAt } from "@/lib/joker";
 import type { Question } from "@/types";
 
 function shuffle<T>(items: T[]): T[] {
@@ -23,7 +25,10 @@ export function PlayDeck({ deckId, name, sharePath, backHref, questions }: { dec
   const [index, setIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
-  const card = pile[index % pile.length];
+  const [jokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
+  // Every tenth turn is a joker that sits between two cards, so no question is skipped
+  const joker = jokerAt(index, deckId, jokerOn ?? true);
+  const card = joker ?? pile[(index - Math.floor((index + 1) / 10)) % pile.length];
 
   const next = () => {
     if (index === 0) track("Spil startet", { kategori: deckId });
@@ -52,7 +57,7 @@ export function PlayDeck({ deckId, name, sharePath, backHref, questions }: { dec
         <motion.div key={card.id + index} {...dealMotion} className="w-full">
           <QuestionCard
             question={card}
-            categoryName={name}
+            categoryName={joker ? "Joker" : name}
             isFlipped={isFlipped}
             onFlip={() => setIsFlipped((f) => !f)}
             isFavorite={isFavorite(card.id)}
