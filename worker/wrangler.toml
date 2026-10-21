@@ -1,9 +1,14 @@
-# Cloudflare Worker for snakkespil.dk/api/* (flag mails and public stats).
+# Cloudflare Worker for snakkespil.dk/api/* and goodtalkcards.com/api/* (flag mails and public stats).
 # Deployed from agent-worker with worker/deploy.sh; secrets live in Bitwarden.
 name = "snakkespil-api"
 main = "src/index.ts"
 compatibility_date = "2026-10-01"
-routes = [{ pattern = "snakkespil.dk/api/*", zone_name = "snakkespil.dk" }]
+# Only the two routes: the Cache API (stats cache) does not work on workers.dev
+workers_dev = false
+routes = [
+  { pattern = "snakkespil.dk/api/*", zone_name = "snakkespil.dk" },
+  { pattern = "goodtalkcards.com/api/*", zone_name = "goodtalkcards.com" },
+]
 
 [vars]
 MAIL_TO = "mads@mahoje.dk"

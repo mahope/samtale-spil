@@ -6,7 +6,7 @@ export const site: typeof da = {
   name: "Goodtalk",
   lang: "en",
   ogLocale: "en_US",
-  report: false,
+  report: true,
   favorites: false,
   ogTagline: "Free conversation cards at goodtalkcards.com",
   plausibleScript: "https://analytics.holstjensen.eu/js/pa-ddNmoGtRKcppQoHKWvCnL.js",

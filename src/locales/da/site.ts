@@ -4,7 +4,7 @@ export const site = {
   name: "Snakkespil",
   lang: "da",
   ogLocale: "da_DK",
-  /** The report worker (snakkespil.dk/api) only serves this site */
+  /** The report worker (worker/) serves this site under /api */
   report: true,
   /** Favourites page exists (/favoritter/) */
   favorites: true,
