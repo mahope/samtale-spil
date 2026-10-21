@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useTheme, type Theme } from "@/components/ThemeToggle";
+import { isActive } from "@/components/site/navActive";
 
 export type NavItem = { href: string; label: string };
 
@@ -14,14 +15,6 @@ export type NavTexts = {
   cta: { href: string; label: string };
   theme: { label: string; light: string; dark: string; system: string };
 };
-
-const normalize = (path: string) => (path.endsWith("/") ? path : `${path}/`);
-
-/** Is `href` the current page, or a section the current page lives under? */
-function isActive(pathname: string, href: string) {
-  const here = normalize(pathname);
-  return href === "/" ? here === "/" : here.startsWith(href);
-}
 
 /**
  * Main menu for the website headers (Danish and international). Desktop shows the items inline;
@@ -69,8 +62,16 @@ export function SiteNav({
       if ((e.target as Element).closest("a")) setOpenOn(null);
     };
     dialog.addEventListener("click", onClick);
+    // The sheet is hidden from lg up, but a modal dialog keeps the page inert: close it when the window grows
+    const wide = window.matchMedia("(min-width: 64rem)");
+    const onWide = () => {
+      if (wide.matches) setOpenOn(null);
+    };
+    onWide();
+    wide.addEventListener("change", onWide);
     return () => {
       dialog.removeEventListener("click", onClick);
+      wide.removeEventListener("change", onWide);
       if (dialog.open) dialog.close();
       root.style.overflow = previous;
       button?.focus();
@@ -126,8 +127,6 @@ export function SiteNav({
             <button
               ref={closeRef}
               type="button"
-              aria-expanded={open}
-              aria-controls={sheetId}
               onClick={() => setOpen(false)}
               className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-[0.95rem] font-semibold text-blaek hover:bg-flade-2"
             >
