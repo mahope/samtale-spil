@@ -38,10 +38,10 @@ export function NativeBoot() {
         // The screens draw under the status bar and pad themselves (app-shell.css), so the
         // navigation bar's colour runs to the top edge like in a native app
         StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
-        // Light text on the felt and in dark mode, dark text on the paper screens
+        // Light text on the felt (AppShell marks those screens) and in dark mode, dark text on paper
         let current: string | null = null;
         const syncStyle = () => {
-          const felt = !document.querySelector(".app-has-tabbar");
+          const felt = !!document.querySelector(".app-screen.app-felt");
           const style = felt || html.classList.contains("dark") ? Style.Dark : Style.Light;
           if (style === current) return;
           current = style;
@@ -50,8 +50,8 @@ export function NativeBoot() {
         syncStyle();
         const observer = new MutationObserver(syncStyle);
         observer.observe(html, { attributes: true, attributeFilter: ["class"] });
-        // Screens are swapped as children of the shell, so this catches every route change
-        observer.observe(document.body, { childList: true, subtree: true });
+        // Catches every route change and the shell marking a felt screen
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
         cleanups.push(() => observer.disconnect());
       } else {
         StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});

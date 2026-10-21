@@ -7,7 +7,7 @@ import { HOURS, useReminderSettings } from "./ReminderSettings";
 const THEMES: { value: Theme; label: string }[] = [
   { value: "light", label: "Lyst" },
   { value: "dark", label: "Mørkt" },
-  { value: "system", label: "Som telefonen" },
+  { value: "system", label: "Automatisk" },
 ];
 
 /** Indstillinger in the app: the same settings as the site's ReminderSettings, as native lists */

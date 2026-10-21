@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { TabBar, type TabSpec } from "./TabBar";
 import { currentPlatform, isPopping, isStill, markPop, normalizePath, recordNavigation } from "./navState";
@@ -43,6 +43,18 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
     return () => cancelAnimationFrame(frame);
   }, [pathname, nav.dir]);
 
+  // Games on the felt get a felt strip under the status bar (app-shell.css, NativeBoot)
+  const screenRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const el = screenRef.current;
+    if (!el || !isFullscreen) return;
+    const update = () => el.classList.toggle("app-felt", !!el.querySelector(":scope > .filt, :scope > main.filt"));
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(el, { childList: true });
+    return () => observer.disconnect();
+  }, [pathname, isFullscreen]);
+
   useEffect(() => {
     // Remember the scroll position before every navigation, and spot steps back
     const save = () => scrollPositions.set(normalizePath(window.location.pathname), window.scrollY);
@@ -77,7 +89,7 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
 
   return (
     <>
-      <div key={pathname} className={`app-screen app-${nav.dir}${isFullscreen ? "" : " app-has-tabbar"}`}>
+      <div key={pathname} ref={screenRef} className={`app-screen app-${nav.dir}${isFullscreen ? "" : " app-has-tabbar"}`}>
         {children}
       </div>
       {!isFullscreen && <TabBar tabs={tabs} active={nav.tab} pathname={pathname} />}

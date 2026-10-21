@@ -155,7 +155,7 @@ export function AppSegmented<T extends string>({
     <div
       role="radiogroup"
       aria-label={label}
-      className="app-segmented flex w-full rounded-[9px] bg-flade-2 p-0.5 android:rounded-full android:bg-transparent android:p-0 android:ring-1 android:ring-blaek-2/60"
+      className="app-segmented flex w-full overflow-hidden rounded-[9px] bg-flade-2 p-0.5 android:rounded-full android:bg-transparent android:p-0 android:ring-1 android:ring-blaek-2/60"
     >
       {options.map((o, i) => {
         const on = o.value === value;
@@ -170,7 +170,7 @@ export function AppSegmented<T extends string>({
               tap();
               onChange(o.value);
             }}
-            className={`app-press relative min-h-8 flex-1 overflow-hidden rounded-[7px] px-2 text-[13px] font-semibold transition-colors android:min-h-10 android:rounded-none android:text-sm android:font-medium ${
+            className={`app-press relative min-h-8 flex-1 overflow-hidden whitespace-nowrap rounded-[7px] px-2 text-[13px] font-semibold transition-colors android:min-h-10 android:rounded-none android:text-sm android:font-medium ${
               i > 0 ? "android:border-l android:border-blaek-2/60" : ""
             } ${
               on

@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from "motion/react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import { useFavorites, useProgress, useQuestionHistory } from "@/hooks/useLocalStorage";
 import { useQuestionRatings } from "@/hooks/useQuestionRatings";
 import { categories, getCategory, getQuestionById } from "@/data/categories";
@@ -11,8 +11,6 @@ import { RatingStarsDisplay } from "@/components/RatingStars";
 import { FavoritePreviewCard } from "@/components/FavoritePreviewCard";
 import { HistoryItemCard } from "@/components/HistoryItemCard";
 import { StatsHeatMap } from "@/components/StatsHeatMap";
-import { SiteHeader } from "@/components/site/SiteHeader";
-import { SiteFooter } from "@/components/site/SiteFooter";
 import { useAdvancedStats } from "@/hooks/useAdvancedStats";
 
 function Figure({ value, label }: { value: string | number; label: string }) {
@@ -24,8 +22,9 @@ function Figure({ value, label }: { value: string | number; label: string }) {
   );
 }
 
-/** Your own statistics. app: the body only, for the app's screen (it has its own bar). */
-export function Statistik({ app = false }: { app?: boolean }) {
+/** Your own statistics. Without site (the app) only the body: the app screen has its own bar. */
+export function Statistik({ site }: { site?: { header: ReactNode; footer: ReactNode } }) {
+  const app = !site;
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
   const { progress, isLoaded: progressLoaded } = useProgress();
   const { history, clearHistory, isLoaded: historyLoaded } = useQuestionHistory();
@@ -336,14 +335,14 @@ export function Statistik({ app = false }: { app?: boolean }) {
 
   return (
     <>
-      <SiteHeader />
+      {site.header}
       <main id="main-content" className="mx-auto max-w-3xl px-4 pt-8 sm:px-6">
         <h1 className="text-4xl font-extrabold tracking-[-0.025em] sm:text-5xl" style={{ fontStretch: "88%" }}>
           Din statistik
         </h1>
         {body}
       </main>
-      <SiteFooter />
+      {site.footer}
     </>
   );
 }

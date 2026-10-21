@@ -1,18 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";
 import { ToastContainer, useToast } from "@/components/Toast";
 import { QuestionForm } from "@/components/QuestionForm";
 import { EditableQuestionCard } from "@/components/EditableQuestionCard";
-import { SiteHeader } from "@/components/site/SiteHeader";
-import { SiteFooter } from "@/components/site/SiteFooter";
 import { DepthPips } from "@/components/deck/DeckParts";
 
-/** Write and edit your own cards. app: the body only, for the app's screen (it has its own bar). */
-export function MineSpoergsmaal({ app = false }: { app?: boolean }) {
+/** Write and edit your own cards. Without site (the app) only the body: the app screen has its own bar. */
+export function MineSpoergsmaal({ site }: { site?: { header: ReactNode; footer: ReactNode } }) {
+  const app = !site;
   const {
     questions,
     addQuestion,
@@ -179,7 +178,7 @@ export function MineSpoergsmaal({ app = false }: { app?: boolean }) {
 
   return (
     <>
-      <SiteHeader />
+      {site.header}
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
       <main id="main-content" className="mx-auto max-w-2xl px-4 pt-8 sm:px-6">
         <h1 className="text-4xl font-extrabold tracking-[-0.025em] sm:text-5xl" style={{ fontStretch: "88%" }}>
@@ -187,7 +186,7 @@ export function MineSpoergsmaal({ app = false }: { app?: boolean }) {
         </h1>
         {body}
       </main>
-      <SiteFooter />
+      {site.footer}
     </>
   );
 }

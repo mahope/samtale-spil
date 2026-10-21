@@ -30,6 +30,25 @@
   padding-bottom: calc(var(--app-tabbar) + var(--app-inset-bottom));
 }
 
+/* Full-screen games (no tab bar) are the site's game screens: the shell pads them for the
+   status bar and home indicator once, and paints the strip in the felt when the game is on it */
+.app-screen:not(.app-has-tabbar) {
+  padding-top: var(--app-inset-top);
+  padding-bottom: var(--app-inset-bottom);
+}
+.app-screen:not(.app-has-tabbar) .pt-safe {
+  padding-top: 0;
+}
+.app-screen:not(.app-has-tabbar) .pb-safe {
+  padding-bottom: 0;
+}
+.app-screen:not(.app-has-tabbar) .min-h-dvh {
+  min-height: calc(100dvh - var(--app-inset-top) - var(--app-inset-bottom));
+}
+.app-felt {
+  background-color: var(--bord);
+}
+
 /* No hover looks in the app, and rows press in place instead of shrinking */
 :root[data-shell="app"] .app-press:active,
 :root[data-shell="app"] .app-press:active:not(:disabled) {
