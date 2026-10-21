@@ -46,6 +46,11 @@ export const ui = {
     spejder: "Spejder",
     dybt: "Dybe snakke og dig selv",
   } as Record<string, string>,
+  print: {
+    titleSuffix: "samtalekort til print",
+    license: "Gratis til personligt brug og undervisning. Må ikke sælges.",
+    blank: "Dit eget spørgsmål",
+  },
   favorite: { add: "Tilføj til favoritter", remove: "Fjern fra favoritter" },
   share: {
     question: "Del spørgsmål",

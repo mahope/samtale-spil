@@ -22,5 +22,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PlayDeckPage({ params }: Props) {
   const deck = intlDeckBySlug.get((await params).slug);
   if (!deck) notFound();
-  return <PlayDeckLoader deckId={deck.id} name={deck.name} slug={deck.slug} questions={deck.questions} />;
+  return <PlayDeckLoader deckId={deck.id} name={deck.name} sharePath={`/questions/${deck.slug}/`} questions={deck.questions} />;
 }

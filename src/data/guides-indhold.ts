@@ -265,7 +265,7 @@ export const guides: Guide[] =
       },
       {
         "kort": "Gottman & Levenson 1992",
-        "fuld": "Gottman, J. M., & Levenson, R. W. (1992). Marital processes predictive of later dissolution: Behavior, physiology, and health. Journal of Personality and Social Psychology, 63(2), 221ff.",
+        "fuld": "Gottman, J. M., & Levenson, R. W. (1992). Marital processes predictive of later dissolution: Behavior, physiology, and health. Journal of Personality and Social Psychology, 63(2), 221-233.",
         "forbehold": "73 par fulgt over tid. Viser en sammenhæng mellem konfliktmønstre og senere brud, men forudsigelserne er ikke afprøvet på en ny gruppe par."
       },
       {

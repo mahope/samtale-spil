@@ -18,7 +18,7 @@ function shuffle<T>(items: T[]): T[] {
 }
 
 /** One deck on an international site: shuffled once, played card by card. Browser only. */
-export function PlayDeck({ deckId, name, slug, questions }: { deckId: string; name: string; slug: string; questions: Question[] }) {
+export function PlayDeck({ deckId, name, sharePath, backHref, questions }: { deckId: string; name: string; sharePath: string; backHref?: string; questions: Question[] }) {
   const [pile, setPile] = useState(() => shuffle(questions));
   const [index, setIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -38,6 +38,7 @@ export function PlayDeck({ deckId, name, slug, questions }: { deckId: string; na
     <PlayScreen
       deckId={deckId}
       title={name}
+      backHref={backHref}
       answered={index}
       total={pile.length}
       onReset={() => {
@@ -56,7 +57,7 @@ export function PlayDeck({ deckId, name, slug, questions }: { deckId: string; na
             onFlip={() => setIsFlipped((f) => !f)}
             isFavorite={isFavorite(card.id)}
             onToggleFavorite={() => toggleFavorite(card)}
-            sharePath={`/questions/${slug}/`}
+            sharePath={sharePath}
           />
         </motion.div>
       </AnimatePresence>

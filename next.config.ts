@@ -23,6 +23,8 @@ const localeAlias = {
   '@/locale/site': `./src/locales/${locale}/site.ts`,
   '@/locale/decks': locale === 'da' ? './src/locales/da/decks.ts' : `./src/locales/${locale}/decks/index.ts`,
   '@/locale/marks': `./src/locales/${locale}/marks.ts`,
+  '@/locale/games': `./src/locales/${locale}/games.ts`,
+  '@/locale/guides': `./src/locales/${locale}/guides.ts`,
   ...(locale !== 'da' && { '@/data/followUps': `./src/locales/${locale}/followUps.ts` }),
 };
 
