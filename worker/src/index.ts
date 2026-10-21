@@ -32,6 +32,8 @@ const CARDS = cards as Record<string, Card>;
 const DECK_IDS = new Set(Object.values(CARDS).map((c) => c.d));
 /** Decks Goodtalk shows: those with English cards */
 const DECK_IDS_EN = new Set(Object.values(CARDS).filter((c) => c.e).map((c) => c.d));
+/** 18+ decks (web and app) never show up in the public stats */
+const ADULT_DECKS = new Set(Object.values(CARDS).filter((c) => c.a).map((c) => c.d));
 const cardFor = (id: string): Card | undefined => (Object.hasOwn(CARDS, id) ? CARDS[id] : undefined);
 
 const REASONS: Record<string, string> = {
@@ -215,7 +217,7 @@ async function handleStats(request: Request, env: Env, ctx: ExecutionContext): P
     kortVendt: flipped[0]?.metrics[0] ?? 0,
     // Event props can be sent by anyone, so only known decks and cards are shown
     bunker: perDeck
-      .filter((r) => (site === "en" ? DECK_IDS_EN : DECK_IDS).has(r.dimensions[0]) && r.dimensions[0] !== "voksne")
+      .filter((r) => (site === "en" ? DECK_IDS_EN : DECK_IDS).has(r.dimensions[0]) && !ADULT_DECKS.has(r.dimensions[0]))
       .map((r) => ({ id: r.dimensions[0], spil: r.metrics[0] }))
       .sort((a, b) => b.spil - a.spil),
     kort: topCards

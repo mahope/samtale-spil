@@ -9,34 +9,49 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      # Snakkespil (Danish) and Goodtalk (English, issue #74) from the same native project
+      # Snakkespil (Danish), Goodtalk (English, issue #74) and Snakkespil 18+ (issue #57)
+      # from the same native project
       matrix:
         include:
           - site: da
+            variant: ""
             app_id: dk.snakkespil.app
             app_name: Snakkespil
             artifact: snakkespil
           - site: en
+            variant: ""
             app_id: com.goodtalkcards.app
             app_name: Goodtalk
             artifact: goodtalk
+          - site: da
+            variant: voksen
+            app_id: dk.snakkespil.voksen
+            app_name: Snakkespil 18+
+            artifact: snakkespil-voksen
     runs-on: macos
     env:
       SITE_LOCALE: ${{ matrix.site }}
+      APP_VARIANT: ${{ matrix.variant }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
       - run: npm ci
-      - name: Build without the 18+ deck
-        env:
-          APP_BUILD: "1"
+      - name: Build the web content
         run: |
           set -euo pipefail
-          npm run build
-          # The adult cards must not be anywhere in the app bundle (issue #54)
-          if grep -rqE '"adult-[0-9]+"|et helt upassende sted' out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
+          if [ "$APP_VARIANT" = voksen ]; then
+            npm run build
+            # The 18+ app has the adult cards and dares, and nothing for families, kids or school (issue #57)
+            grep -rqE '"adult-1"' out/ || { echo "voksenkort mangler i 18+-appen"; exit 1; }
+            grep -rqE '"hot-1"' out/ || { echo "udfordringer mangler i 18+-appen"; exit 1; }
+            if grep -rqE '"(boern|fam|indskolingen|mellemtrinnet|udskolingen|spejder|gilwell)-[0-9]+"' out/; then echo "børne-, familie- eller skolekort fundet i 18+-appen"; exit 1; fi
+          else
+            APP_BUILD=1 npm run build
+            # The adult cards must not be anywhere in the regular app bundle (issue #54)
+            if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
+          fi
       - run: npx cap sync ios
       - name: Xcode build (simulator, unsigned)
         working-directory: ios/App

@@ -5,10 +5,12 @@ import type { CapacitorConfig } from "@capacitor/cli";
 // SITE_LOCALE=en builds Goodtalk (issue #74) from the same native projects: CI passes the
 // app id and name to Gradle (APP_ID/APP_NAME) and Xcode (PRODUCT_BUNDLE_IDENTIFIER/APP_DISPLAY_NAME).
 const goodtalk = process.env.SITE_LOCALE === "en";
+// APP_VARIANT=voksen is the separate 18+ app (issue #57)
+const voksen = process.env.APP_VARIANT === "voksen";
 
 const config: CapacitorConfig = {
-  appId: goodtalk ? "com.goodtalkcards.app" : "dk.snakkespil.app",
-  appName: goodtalk ? "Goodtalk" : "Snakkespil",
+  appId: goodtalk ? "com.goodtalkcards.app" : voksen ? "dk.snakkespil.voksen" : "dk.snakkespil.app",
+  appName: goodtalk ? "Goodtalk" : voksen ? "Snakkespil 18+" : "Snakkespil",
   webDir: "out",
   backgroundColor: "#1d4a38",
   ios: {
