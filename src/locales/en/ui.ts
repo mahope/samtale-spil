@@ -71,7 +71,7 @@ export const ui: typeof da = {
     countPoints: "Keep score",
     start: "Start the game",
     needTwo: "Enter at least two names.",
-    duplicate: "Two players have the same name. Give each one their own.",
+    duplicate: "Two players have the same name. Give each player a different name.",
     resume: (n: number) => `Continue from card ${n}`,
     newGame: "New game",
     card: (n: number) => `Card ${n}`,
