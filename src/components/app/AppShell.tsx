@@ -21,27 +21,30 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
   const isFullscreen = fullscreen.some((p) => pathname.startsWith(p));
 
   const depth = (path: string) => (roots.includes(path) ? 0 : path.split("/").filter(Boolean).length);
-  const [nav, setNav] = useState<{ path: string; dir: Direction; tab: string }>(() => ({
+  const [nav, setNav] = useState<{ path: string; dir: Direction; tab: string; restore: boolean }>(() => ({
     path: pathname,
     dir: "none",
     tab: tabFor(pathname, tabs, null),
+    restore: false,
   }));
   if (nav.path !== pathname) {
     const from = depth(nav.path);
     const to = depth(pathname);
     const dir: Direction = isStill() ? "none" : isPopping() || to < from ? "pop" : to === 0 && from === 0 ? "tab" : "push";
-    setNav({ path: pathname, dir, tab: tabFor(pathname, tabs, nav.tab) });
+    // Coming back (also after an edge swipe, which has no slide) or to a tab: restore its scroll
+    const restore = isPopping() || dir === "tab";
+    setNav({ path: pathname, dir, tab: tabFor(pathname, tabs, nav.tab), restore });
   }
 
   useEffect(() => {
     recordNavigation(pathname);
-    if (nav.dir !== "tab" && nav.dir !== "pop") return;
+    if (!nav.restore) return;
     const y = scrollPositions.get(pathname);
     if (!y) return;
     // After the router has scrolled the new screen to the top
     const frame = requestAnimationFrame(() => window.scrollTo(0, y));
     return () => cancelAnimationFrame(frame);
-  }, [pathname, nav.dir]);
+  }, [pathname, nav.restore]);
 
   // Games on the felt get a felt strip under the status bar (app-shell.css, NativeBoot)
   const screenRef = useRef<HTMLDivElement>(null);
@@ -56,12 +59,17 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
   }, [pathname, isFullscreen]);
 
   useEffect(() => {
-    // Remember the scroll position before every navigation, and spot steps back
-    const save = () => scrollPositions.set(normalizePath(window.location.pathname), window.scrollY);
-    const onPop = () => {
-      save();
-      markPop();
+    // Remember each screen's scroll position as it changes (the router scrolls a new screen to
+    // the top only after the URL has changed, so the old screen keeps its value), and spot steps back
+    let frame = 0;
+    const save = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        scrollPositions.set(normalizePath(window.location.pathname), window.scrollY);
+      });
     };
+    const onPop = () => markPop();
     // A Material ripple from the touch point on rows, tiles and tabs (Android only)
     const ripple = (e: PointerEvent) => {
       if (currentPlatform() !== "android") return;
@@ -77,11 +85,12 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
       host.appendChild(dot);
       dot.addEventListener("animationend", () => dot.remove());
     };
-    document.addEventListener("click", save, true);
+    window.addEventListener("scroll", save, { passive: true });
     window.addEventListener("popstate", onPop);
     document.addEventListener("pointerdown", ripple);
     return () => {
-      document.removeEventListener("click", save, true);
+      window.removeEventListener("scroll", save);
+      cancelAnimationFrame(frame);
       window.removeEventListener("popstate", onPop);
       document.removeEventListener("pointerdown", ripple);
     };

@@ -4,9 +4,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 import { isNative } from "@/lib/platform";
+import { SNAKKESPIL_TABS } from "@/components/app/tabs";
 
-/** The Snakkespil app's tab roots (layout.app.tsx); back on one of them goes to Spil, then out */
-const TAB_ROOTS = ["/dagens-spoergsmaal/", "/favoritter/", "/mere/"];
+/** The Snakkespil app's tab roots other than Spil; back on one of them goes to Spil, then out */
+const TAB_ROOTS = SNAKKESPIL_TABS.map((t) => t.href).filter((href) => href !== "/");
 
 /** The app shell (layout.app.tsx) marks <html data-shell="app">; the other apps are the site in a web view */
 const hasAppShell = () => document.documentElement.dataset.shell === "app";

@@ -5,7 +5,7 @@ import "@/components/app/app-shell.css";
 import { NativeBoot } from "@/components/NativeBoot";
 import { NativeReminders } from "@/components/NativeReminders";
 import { AppShell } from "@/components/app/AppShell";
-import type { TabSpec } from "@/components/app/TabBar";
+import { SNAKKESPIL_TABS } from "@/components/app/tabs";
 import { PLAUSIBLE_SRC, plausibleInitScript, themeInitScript } from "@/config/headScripts";
 import { SITE_NAME } from "@/config/site";
 import { legeSider } from "@/data/lege";
@@ -34,18 +34,6 @@ export const viewport: Viewport = {
 // ?platform=ios|android forces one for the rest of the session.
 const platformScript = `(function(){try{var d=document.documentElement,s=sessionStorage,q=new URLSearchParams(location.search).get('platform');if(q==='ios'||q==='android'||q==='web')s.setItem('app-platform',q);var c=window.Capacitor,p=c&&c.getPlatform?c.getPlatform():'web';if(p==='web')p=s.getItem('app-platform')||'web';d.dataset.platform=p;}catch(e){}})();`;
 
-const tabs: TabSpec[] = [
-  { href: "/", label: "Spil", icon: "kort", owns: ["/spil/", "/multiplayer/"] },
-  { href: "/dagens-spoergsmaal/", label: "I dag", icon: "kalender" },
-  { href: "/favoritter/", label: "Favoritter", icon: "hjerte" },
-  {
-    href: "/mere/",
-    label: "Mere",
-    icon: "mere",
-    owns: ["/indstillinger/", "/mine-spoergsmaal/", "/statistik/", "/saadan-spiller-i/", "/lege/", "/ikke-terapi/", "/om/", "/privatliv/"],
-  },
-];
-
 // The table with the card fills the screen: no tab bar there
 const fullscreen = ["/spil/", "/multiplayer/", ...legeSider.map((s) => `/lege/${s.slug}/kort/`)];
 
@@ -62,7 +50,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <a href="#main-content" className="skip-link">
           Spring til indholdet
         </a>
-        <AppShell tabs={tabs} fullscreen={fullscreen}>
+        <AppShell tabs={SNAKKESPIL_TABS} fullscreen={fullscreen}>
           {children}
         </AppShell>
         <NativeBoot />

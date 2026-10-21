@@ -153,7 +153,7 @@ export function AppSegmented<T extends string>({
 }) {
   return (
     <div
-      role="radiogroup"
+      role="group"
       aria-label={label}
       className="app-segmented flex w-full overflow-hidden rounded-[9px] bg-flade-2 p-0.5 android:rounded-full android:bg-transparent android:p-0 android:ring-1 android:ring-blaek-2/60"
     >
@@ -163,8 +163,7 @@ export function AppSegmented<T extends string>({
           <button
             key={o.value}
             type="button"
-            role="radio"
-            aria-checked={on}
+            aria-pressed={on}
             data-ripple
             onClick={() => {
               tap();

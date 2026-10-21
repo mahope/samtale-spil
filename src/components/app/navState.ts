@@ -34,7 +34,7 @@ export function previousScreen(path: string): { path: string; title?: string } |
   let prev: string | undefined;
   if (popping && at >= 0) prev = stack[at - 1];
   else if (at >= 0 && at === top) prev = stack[top - 1];
-  else if (stack[top] !== p) prev = stack[top];
+  else if (!popping && stack[top] !== p) prev = stack[top];
   return prev ? { path: prev, title: titles.get(prev) } : null;
 }
 
