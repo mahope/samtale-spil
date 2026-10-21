@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Fails if an internal link in the static export points at a page that is not there.
-// Checks href="/..." in every out/**/*.html, and href:"/..." literals in the client chunks
-// (links that only render after hydration, such as empty states). Usage: node scripts/check-links.mjs [out]
+// Checks href="/..." in every out/**/*.html, and href:"/..." and router .push("/...")/.replace("/...")
+// literals in the client chunks (links that only render after hydration, such as empty states, and
+// navigation from code, such as a keyboard shortcut). Usage: node scripts/check-links.mjs [out]
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
@@ -42,6 +43,7 @@ for (const file of walk(root)) {
   } else if (file.endsWith(".js") && file.includes(`${join("_next", "static")}`)) {
     const js = readFileSync(file, "utf8");
     for (const [, href] of js.matchAll(/href:"(\/[^"]*)"/g)) note(href, file);
+    for (const [, href] of js.matchAll(/\.(?:push|replace)\("(\/[^"]*)"\)/g)) note(href, file);
   }
 }
 

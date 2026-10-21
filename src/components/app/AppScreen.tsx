@@ -78,8 +78,16 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
     let startT = 0;
     let dx = 0;
     let state: "idle" | "maybe" | "drag" = "idle";
+    let leave = 0;
 
+    // touchmove is only non-passive while a swipe from the edge is under way, so it never holds up scrolling
+    const stopTracking = () => {
+      document.removeEventListener("touchmove", onMove);
+      document.removeEventListener("touchend", onEnd);
+      document.removeEventListener("touchcancel", reset);
+    };
     const reset = () => {
+      stopTracking();
       page.style.transition = "transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1)";
       page.style.transform = "";
       page.classList.remove("app-dragging");
@@ -94,6 +102,9 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
       startT = e.timeStamp;
       dx = 0;
       state = "maybe";
+      document.addEventListener("touchmove", onMove, { passive: false });
+      document.addEventListener("touchend", onEnd);
+      document.addEventListener("touchcancel", reset);
     };
     const onMove = (e: TouchEvent) => {
       if (state === "idle") return;
@@ -117,19 +128,16 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
         page.style.transition = "transform 0.2s ease-out";
         page.style.transform = "translateX(100%)";
         state = "idle";
+        stopTracking();
         markStill();
-        window.setTimeout(() => goBackRef.current(), 180);
+        leave = window.setTimeout(() => goBackRef.current(), 180);
       } else reset();
     };
     document.addEventListener("touchstart", onStart, { passive: true });
-    document.addEventListener("touchmove", onMove, { passive: false });
-    document.addEventListener("touchend", onEnd);
-    document.addEventListener("touchcancel", reset);
     return () => {
       document.removeEventListener("touchstart", onStart);
-      document.removeEventListener("touchmove", onMove);
-      document.removeEventListener("touchend", onEnd);
-      document.removeEventListener("touchcancel", reset);
+      stopTracking();
+      window.clearTimeout(leave);
     };
   }, [back]);
 

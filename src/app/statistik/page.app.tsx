@@ -1,7 +1,7 @@
-"use client";
-
 import { AppScreen } from "@/components/app/AppScreen";
 import { Statistik } from "./Statistik";
+
+export const metadata = { title: "Statistik" };
 
 export default function StatistikScreen() {
   return (
