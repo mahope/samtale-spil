@@ -6,7 +6,11 @@ Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en l
 
 ## App-skallen
 
-Appen er ikke hjemmesiden i en ramme. `APP_BUILD=1` (dansk, uden `APP_VARIANT`) bygger rutetræet `src/app/**/*.app.tsx`: en bundmenu med Spil, I dag, Favoritter og Mere, navigationsbjælker med tilbage-knap, og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appen.
+Appene er ikke hjemmesiden i en ramme. Alle tre har en bundmenu med fire faner, navigationsbjælker med tilbage-knap og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere/More, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appene.
+
+- **Snakkespil** (`APP_BUILD=1`, rutetræet `src/app/**/*.app.tsx`): Spil, I dag, Favoritter og Mere (indstillinger med påmindelse, dine egne spørgsmål, statistik, sådan spiller I, lege, ikke-terapi, om, privatliv, del).
+- **Goodtalk** (`APP_BUILD=1 SITE_LOCALE=en`, `*.intlapp.tsx`): Play, Today, Favorites og More (settings med jokere og udseende, how to play, party games, about, privacy, share). Al tekst er engelsk. Der er endnu ingen påmindelser og ingen egne spørgsmål på engelsk.
+- **Snakkespil 18+** (`APP_VARIANT=voksen`, `*.voksen.tsx`): alderskontrollen ligger foran alt, også fanerne. Bunker, I aften (et tilfældigt kort eller en udfordring), Favoritter og Mere (indstillinger med udseende og »spørg om alder igen«, når det bliver svært, om, privatliv, del). Mørkt tema som standard.
 
 Butiks-screenshots i `assets/store/screenshots/` viser den gamle app og skal tages om fra app-skallen.
 

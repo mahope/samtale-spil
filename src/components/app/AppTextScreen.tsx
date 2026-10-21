@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import { TEXT_PAGE_PROSE } from "@/components/site/TextPage";
+import { ui } from "@/locale/ui";
 import { AppScreen } from "./AppScreen";
 
-/** A pushed text screen (Om, Privatliv, Sådan spiller I) with the site's typography */
+/** A pushed text screen (Om, Privatliv, Sådan spiller I) with the site's typography; back goes to the Mere tab */
 export function AppTextScreen({
   title,
   lead,
-  back = { href: "/mere/", label: "Mere" },
+  back = { href: ui.shell.moreHref, label: ui.shell.more },
   children,
 }: {
   title: string;

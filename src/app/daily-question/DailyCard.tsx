@@ -16,8 +16,11 @@ const noSubscribe = () => () => {};
 const dayText = (key: string) =>
   new Date(`${key}T12:00:00Z`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" });
 
-/** Today's card (the same card id as Snakkespil shows that day) and the past week */
-export function DailyCard({ buildKey, pool }: { buildKey: string; pool: DailyPick[] }) {
+/**
+ * Today's card (the same card id as Snakkespil shows that day) and the past week.
+ * In the app (app) the past cards open their deck, because the app has no /questions/ pages.
+ */
+export function DailyCard({ buildKey, pool, app = false }: { buildKey: string; pool: DailyPick[]; app?: boolean }) {
   const key = useSyncExternalStore(noSubscribe, () => danishDateKey(new Date()), () => buildKey);
   const { q, deck } = vaelgForDato(key, pool);
   return (
@@ -44,7 +47,7 @@ export function DailyCard({ buildKey, pool }: { buildKey: string; pool: DailyPic
               <span className="w-48 shrink-0 text-sm font-semibold text-blaek-2">{dayText(day)}</span>
               <span>
                 {past.q.text}{" "}
-                <Link href={`/questions/${past.deck.slug}/`} className="text-sm text-blaek-2 underline">{past.deck.name}</Link>
+                <Link href={app ? `/play/${past.deck.slug}/` : `/questions/${past.deck.slug}/`} className="text-sm text-blaek-2 underline">{past.deck.name}</Link>
               </span>
             </li>
           );

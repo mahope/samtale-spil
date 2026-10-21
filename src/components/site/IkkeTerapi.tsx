@@ -1,7 +1,10 @@
 import Link from "next/link";
 
-/** Shown on every guide: Snakkespil is a conversation game, and where to find real help. */
-export function IkkeTerapi() {
+/**
+ * Shown on every guide: Snakkespil is a conversation game, and where to find real help.
+ * The 18+ app has no Sådan spiller I, so it passes saadanHref={null}.
+ */
+export function IkkeTerapi({ saadanHref = "/saadan-spiller-i/" }: { saadanHref?: string | null }) {
   return (
     <aside aria-labelledby="ikke-terapi" className="my-8 rounded-2xl bg-flade p-5 ring-1 ring-streg">
       <h2 id="ikke-terapi" className="text-lg font-bold">
@@ -21,9 +24,11 @@ export function IkkeTerapi() {
         </li>
         <li>Er nogen i akut fare, så ring 112.</li>
       </ul>
-      <p className="mt-3 text-[0.95rem]">
-        Mere om det i <Link href="/saadan-spiller-i/" className="underline">Sådan spiller I</Link>.
-      </p>
+      {saadanHref && (
+        <p className="mt-3 text-[0.95rem]">
+          Mere om det i <Link href={saadanHref} className="underline">Sådan spiller I</Link>.
+        </p>
+      )}
     </aside>
   );
 }

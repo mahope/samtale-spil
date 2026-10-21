@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { tap } from "@/lib/platform";
+import { ui } from "@/locale/ui";
 import { IconChevronVenstre, IconPilVenstre } from "./icons";
 import { currentPlatform, markPop, markStill, previousScreen, rememberTitle } from "./navState";
 
@@ -153,7 +154,7 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
               onClick={goBack}
               data-ripple
               className="app-press relative z-10 -ml-0.5 flex min-h-11 min-w-11 max-w-[45%] items-center text-bord dark:text-kridt android:ml-0 android:h-12 android:w-12 android:max-w-none android:justify-center android:overflow-hidden android:rounded-full android:text-blaek android:dark:text-blaek"
-              aria-label={`Tilbage til ${backLabel}`}
+              aria-label={ui.shell.backTo(backLabel)}
             >
               <IconChevronVenstre className="h-[1.4rem] w-[1.4rem] shrink-0 android:hidden" />
               <IconPilVenstre className="hidden h-6 w-6 android:block" />
