@@ -147,4 +147,11 @@ export const ui: typeof da = {
     copied: "Copied",
     dialogTitle: "Share the question",
   },
+  shell: {
+    tabs: "Tabs",
+    backTo: (label: string) => `Back to ${label}`,
+    more: "More",
+    moreHref: "/more/",
+    skip: "Skip to content",
+  },
 };

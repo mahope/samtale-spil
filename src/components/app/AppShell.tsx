@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { TabBar, type TabSpec } from "./TabBar";
-import { currentPlatform, isPopping, isStill, markPop, normalizePath, recordNavigation } from "./navState";
+import { currentPlatform, isPopping, isStill, markPop, normalizePath, recordNavigation, registerTabRoots } from "./navState";
 
 type Direction = "none" | "push" | "pop" | "tab";
 
@@ -13,7 +13,7 @@ const scrollPositions = new Map<string, number>();
 /**
  * The app around every screen: a tab bar (hidden on the full-screen game table), the slide
  * between screens, and Material ripples on Android. Screens draw their own navigation bar
- * with AppScreen. Generic: Snakkespil passes its tabs from layout.app.tsx.
+ * with AppScreen. Generic: each app passes its tabs from its root layout (src/components/app/tabs.ts).
  */
 export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; fullscreen: string[]; children: ReactNode }) {
   const pathname = normalizePath(usePathname() ?? "/");
@@ -35,6 +35,9 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
     const restore = isPopping() || dir === "tab";
     setNav({ path: pathname, dir, tab: tabFor(pathname, tabs, nav.tab), restore });
   }
+
+  const rootsKey = roots.join(" ");
+  useEffect(() => registerTabRoots(rootsKey.split(" ")), [rootsKey]);
 
   useEffect(() => {
     recordNavigation(pathname);

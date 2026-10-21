@@ -10,6 +10,7 @@ const stack: string[] = [];
 const titles = new Map<string, string>();
 let popping = false;
 let still = false;
+let tabRoots: string[] = [];
 
 export const normalizePath = (path: string) => (path.endsWith("/") ? path : `${path}/`);
 
@@ -58,6 +59,15 @@ export function markStill() {
 
 export function isStill() {
   return still;
+}
+
+/** AppShell registers its tabs, so NativeBoot knows the tab roots of whichever app this is */
+export function registerTabRoots(roots: string[]) {
+  tabRoots = roots.map(normalizePath);
+}
+
+export function registeredTabRoots(): string[] {
+  return tabRoots;
 }
 
 export function currentPlatform(): "ios" | "android" | "web" {

@@ -4,12 +4,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 import { isNative } from "@/lib/platform";
-import { SNAKKESPIL_TABS } from "@/components/app/tabs";
+import { registeredTabRoots } from "@/components/app/navState";
 
-/** The Snakkespil app's tab roots other than Spil; back on one of them goes to Spil, then out */
-const TAB_ROOTS = SNAKKESPIL_TABS.map((t) => t.href).filter((href) => href !== "/");
-
-/** The app shell (layout.app.tsx) marks <html data-shell="app">; the other apps are the site in a web view */
+/** Every app's root layout marks <html data-shell="app"> and draws the app shell (src/components/app) */
 const hasAppShell = () => document.documentElement.dataset.shell === "app";
 
 /**
@@ -23,7 +20,7 @@ export function NativeBoot() {
     if (!isNative()) return;
     const html = document.documentElement;
     html.classList.add("native");
-    // layout.app.tsx sets this before the first paint; this covers a bridge that loaded late
+    // The root layout sets this before the first paint; this covers a bridge that loaded late
     if (hasAppShell()) html.dataset.platform = Capacitor.getPlatform();
     const cleanups: (() => void)[] = [];
 
@@ -39,10 +36,11 @@ export function NativeBoot() {
         // The screens draw under the status bar and pad themselves (app-shell.css), so the
         // navigation bar's colour runs to the top edge like in a native app
         StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
-        // Light text on the felt (AppShell marks those screens) and in dark mode, dark text on paper
+        // Light text on the felt (AppShell marks those screens, the 18+ age gate is one) and in
+        // dark mode, dark text on paper
         let current: string | null = null;
         const syncStyle = () => {
-          const felt = !!document.querySelector(".app-screen.app-felt");
+          const felt = !!document.querySelector(".app-felt");
           const style = felt || html.classList.contains("dark") ? Style.Dark : Style.Light;
           if (style === current) return;
           current = style;
@@ -77,9 +75,9 @@ export function NativeBoot() {
           else App.exitApp();
           return;
         }
-        // App shell: from another tab go to Spil; from a pushed screen or a game go back
+        // App shell: from another tab go to the first tab ("/"); from a pushed screen or a game go back
         const root = path.endsWith("/") ? path : `${path}/`;
-        if (TAB_ROOTS.includes(root) || !canGoBack) router.replace("/");
+        if (registeredTabRoots().includes(root) || !canGoBack) router.replace("/");
         else window.history.back();
       });
       cleanups.push(() => back.remove());

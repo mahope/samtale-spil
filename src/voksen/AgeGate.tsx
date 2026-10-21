@@ -3,7 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 
 /** localStorage key for the age confirmation in the 18+ app (keys keep the samtale-spil- prefix) */
-const AGE_KEY = "samtale-spil-voksen-18";
+export const AGE_KEY = "samtale-spil-voksen-18";
 
 function readAge(): string | null {
   try {
@@ -31,7 +31,7 @@ export function AgeGate({ children }: { children: React.ReactNode }) {
   if (state === "ja") return <>{children}</>;
 
   return (
-    <div className="filt flex min-h-dvh items-center justify-center px-6 text-white">
+    <div className="filt app-felt flex min-h-dvh items-center justify-center px-6 pb-[var(--app-inset-bottom)] pt-[var(--app-inset-top)] text-white">
       <main id="main-content" className="max-w-sm text-center">
         {state === "nej" ? (
           <>

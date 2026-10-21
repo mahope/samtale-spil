@@ -16,7 +16,9 @@ function deckFor(categoryId: string) {
   const category = getCategory(categoryId);
   return {
     id: category ? category.id : categoryId === "custom" ? "egne" : categoryId,
-    name: category?.name ?? (categoryId === "custom" ? "Dine egne" : categoryId === "voksne" ? "Kun for voksne" : "Ukendt"),
+    name:
+      category?.name ??
+      (categoryId === "custom" ? "Dine egne" : categoryId === "voksne" ? "Kun for voksne" : categoryId === "udfordringer" ? "Udfordringer" : "Ukendt"),
   };
 }
 
