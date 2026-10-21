@@ -1,0 +1,282 @@
+/*
+ * The app shell (layout.app.tsx only). Tailwind classes and the "android:" variant come from
+ * globals.css; this file holds what utilities cannot say: insets, screen transitions, ripples,
+ * switches and the folding navigation bar.
+ */
+:root[data-shell="app"] {
+  /* Capacitor's SystemBars sets --safe-area-inset-* on Android; iOS and new web views use env() */
+  --app-inset-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --app-inset-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --app-tabbar: 49px;
+  overscroll-behavior: none;
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+:root[data-shell="app"][data-platform="android"] {
+  --app-tabbar: 80px;
+}
+
+/* Each screen and the tab bar handle the insets themselves */
+:root[data-shell="app"] body {
+  padding-top: 0;
+  padding-bottom: 0;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Screens above the tab bar leave room for it */
+.app-has-tabbar {
+  padding-bottom: calc(var(--app-tabbar) + var(--app-inset-bottom));
+}
+
+/* Full-screen games (no tab bar) are the site's game screens: the shell pads them for the
+   status bar and home indicator once, and paints the strip in the felt when the game is on it */
+.app-screen:not(.app-has-tabbar) {
+  padding-top: var(--app-inset-top);
+  padding-bottom: var(--app-inset-bottom);
+}
+.app-screen:not(.app-has-tabbar) .pt-safe {
+  padding-top: 0;
+}
+.app-screen:not(.app-has-tabbar) .pb-safe {
+  padding-bottom: 0;
+}
+.app-screen:not(.app-has-tabbar) .min-h-dvh {
+  min-height: calc(100dvh - var(--app-inset-top) - var(--app-inset-bottom));
+}
+.app-felt {
+  background-color: var(--bord);
+}
+
+/* No hover looks in the app, and rows press in place instead of shrinking */
+:root[data-shell="app"] .app-press:active,
+:root[data-shell="app"] .app-press:active:not(:disabled) {
+  transform: none;
+}
+:root[data-shell="app"] a:hover {
+  text-decoration-thickness: inherit;
+}
+
+/* Tab bar */
+.app-tabbar {
+  --app-bar-bg: var(--papir);
+  -webkit-user-select: none;
+}
+[data-platform="android"] .app-tabbar {
+  --app-bar-bg: var(--flade-2);
+}
+.app-tab-pill {
+  --app-bar-bg: var(--papir);
+}
+[data-platform="android"] .app-tab-pill {
+  --app-bar-bg: color-mix(in srgb, var(--kridt) 50%, var(--flade-2));
+  background: var(--app-bar-bg);
+}
+.dark[data-platform="android"] .app-tab-pill {
+  --app-bar-bg: var(--bord-lys);
+}
+
+/* Navigation bar: clear over the large title, filled once content scrolls under it */
+.app-navbar {
+  -webkit-user-select: none;
+  user-select: none;
+  background: transparent;
+  box-shadow: 0 0.5px 0 transparent;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.app-navbar[data-scrolled] {
+  background: color-mix(in srgb, var(--papir) 82%, transparent);
+  box-shadow: 0 0.5px 0 var(--streg);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+}
+[data-platform="android"] .app-navbar {
+  background: var(--papir);
+}
+[data-platform="android"] .app-navbar[data-scrolled] {
+  background: var(--flade-2);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.app-bar-title-fold {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.app-navbar[data-scrolled] .app-bar-title-fold {
+  opacity: 1;
+}
+
+/* Screen transitions. iOS: push slides in from the right, pop from a little to the left.
+   Android: Material shared axis (slide + fade), and fade through between tabs. */
+@keyframes app-push-ios {
+  from { transform: translateX(100%); box-shadow: -8px 0 24px rgb(0 0 0 / 0.12); }
+  to { transform: none; box-shadow: -8px 0 24px rgb(0 0 0 / 0); }
+}
+@keyframes app-pop-ios {
+  from { transform: translateX(-28%); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes app-push-android {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes app-pop-android {
+  from { transform: translateX(-30px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes app-fade-through {
+  from { transform: scale(0.94); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.app-screen {
+  min-height: 100dvh;
+}
+[data-platform="ios"] .app-push,
+[data-platform="web"] .app-push {
+  animation: app-push-ios 0.36s cubic-bezier(0.2, 0.85, 0.25, 1) backwards;
+}
+[data-platform="ios"] .app-pop,
+[data-platform="web"] .app-pop {
+  animation: app-pop-ios 0.32s cubic-bezier(0.2, 0.85, 0.25, 1) backwards;
+}
+[data-platform="android"] .app-push {
+  animation: app-push-android 0.3s cubic-bezier(0.2, 0, 0, 1) backwards;
+}
+[data-platform="android"] .app-pop {
+  animation: app-pop-android 0.3s cubic-bezier(0.2, 0, 0, 1) backwards;
+}
+[data-platform="android"] .app-tab {
+  animation: app-fade-through 0.25s cubic-bezier(0.2, 0, 0, 1) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-screen {
+    animation: none !important;
+  }
+  .app-ripple {
+    display: none;
+  }
+}
+
+/* While the iOS edge swipe drags a screen */
+.app-dragging {
+  box-shadow: -10px 0 30px rgb(0 0 0 / 0.18);
+}
+
+/* Material ripple (AppShell adds the span on Android) */
+[data-ripple] {
+  position: relative;
+  overflow: hidden;
+}
+.app-ripple {
+  position: absolute;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.12;
+  transform: scale(0);
+  pointer-events: none;
+  animation: app-ripple 0.5s cubic-bezier(0.2, 0, 0, 1) forwards;
+}
+@keyframes app-ripple {
+  to { transform: scale(1); opacity: 0; }
+}
+
+/* Row hairlines start after the icon; the first row has none */
+.app-rows > li:first-child .app-row-body {
+  border-top-color: transparent;
+}
+
+/* Switch: iOS 51x31 green, Material 3 52x32 with an outlined off state */
+.app-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 51px;
+  height: 31px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--blaek) 16%, transparent);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.app-switch::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 0.15), 0 1px 1px rgb(0 0 0 / 0.16);
+  transition: transform 0.22s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.app-switch:checked {
+  background: #2f9e62;
+}
+.app-switch:checked::before {
+  transform: translateX(20px);
+}
+.app-switch:disabled {
+  opacity: 0.45;
+}
+[data-platform="android"] .app-switch {
+  width: 52px;
+  height: 32px;
+  background: var(--flade-2);
+  box-shadow: inset 0 0 0 2px var(--blaek-2);
+}
+[data-platform="android"] .app-switch::before {
+  top: 8px;
+  left: 8px;
+  width: 16px;
+  height: 16px;
+  background: var(--blaek-2);
+  box-shadow: none;
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), width 0.2s, height 0.2s, top 0.2s, left 0.2s;
+}
+[data-platform="android"] .app-switch:checked {
+  background: var(--bord);
+  box-shadow: none;
+}
+.dark[data-platform="android"] .app-switch:checked {
+  background: var(--kridt);
+}
+[data-platform="android"] .app-switch:checked::before {
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  background: #ffffff;
+  transform: translateX(20px);
+}
+.dark[data-platform="android"] .app-switch:checked::before {
+  background: var(--kridt-blaek);
+}
+
+/* Native selects shown as the value at the end of a row */
+.app-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: var(--blaek-2);
+  font-size: 17px;
+  text-align: right;
+  padding-right: 1.1rem;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 6px center, right 1px center;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+[data-platform="android"] .app-select {
+  font-size: 0.875rem;
+}
+
+/* Deck shelves scroll sideways without a visible scrollbar */
+.app-shelf {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.app-shelf::-webkit-scrollbar {
+  display: none;
+}

@@ -23,6 +23,12 @@ const variant = process.env.APP_VARIANT || '';
 if (!VARIANTS.includes(variant)) throw new Error(`APP_VARIANT must be empty or "voksen", got "${variant}"`);
 if (variant === 'voksen' && (isIntl || isAppBuild)) throw new Error('APP_VARIANT=voksen needs SITE_LOCALE=da and no APP_BUILD');
 const adultAlias = { '@/data/questions/voksne': './src/data/questions/voksne.app.ts' };
+// The Snakkespil app (APP_BUILD=1, Danish, no variant) is its own app shell, not the website in a
+// frame: the *.app.tsx route tree with a tab bar and native navigation. Goodtalk (SITE_LOCALE=en)
+// keeps building its app from the intl tree.
+const isAppShell = isAppBuild && !isIntl && variant === '';
+// In the app the games go back to the Spil tab ("/"), which is where /spil/ lives on the site
+const appShellAlias = { '@/locale/ui': './src/locales/da/ui.app.ts' };
 // "@/locale/*" points at src/locales/<locale>/ (tsconfig maps it to Danish for type checks)
 const localeAlias = {
   '@/locale/ui': `./src/locales/${locale}/ui.ts`,
@@ -38,7 +44,10 @@ const nextConfig: NextConfig = {
   output: 'export',
   ...(isIntl && { pageExtensions: ['intl.tsx', 'intl.ts'] }),
   ...(variant === 'voksen' && { pageExtensions: ['voksen.tsx', 'voksen.ts'] }),
-  turbopack: { resolveAlias: { ...localeAlias, ...(isAppBuild ? adultAlias : {}) } },
+  ...(isAppShell && { pageExtensions: ['app.tsx', 'app.ts'] }),
+  turbopack: {
+    resolveAlias: { ...localeAlias, ...(isAppBuild ? adultAlias : {}), ...(isAppShell ? appShellAlias : {}) },
+  },
   images: {
     unoptimized: true
   },

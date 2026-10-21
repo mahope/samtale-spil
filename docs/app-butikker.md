@@ -4,6 +4,12 @@ Tekster og svar til butikkerne. Kopiér felterne direkte. Tegnloft står ved hve
 
 Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en lav aldersmærkning (forventet 13+ hos Apple) og bruges af skoler og spejdergrupper. Voksen-bunken findes på snakkespil.dk og i den særskilte app Snakkespil 18+ (se nederst).
 
+## App-skallen
+
+Appen er ikke hjemmesiden i en ramme. `APP_BUILD=1` (dansk, uden `APP_VARIANT`) bygger rutetræet `src/app/**/*.app.tsx`: en bundmenu med Spil, I dag, Favoritter og Mere, navigationsbjælker med tilbage-knap, og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appen.
+
+Butiks-screenshots i `assets/store/screenshots/` viser den gamle app og skal tages om fra app-skallen.
+
 ## Automatiske builds til butikkerne
 
 - **Android:** `android.yml` bygger alle tre apps. Builds fra master uploades til det lukkede testspor (`alpha`) med `scripts/store/play-upload.py` og service-kontoen `play-publisher@mahoje.iam.gserviceaccount.com` (repo-secret `PLAY_SERVICE_ACCOUNT_JSON_B64`, Bitwarden "Google Play: service-konto play-publisher"). Apps, der ikke findes i Play Console endnu, springes over. Så længe en app er kladde i Play, oprettes udgivelsen som kladde.

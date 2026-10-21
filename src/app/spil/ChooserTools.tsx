@@ -7,8 +7,8 @@ import { categories } from "@/data/categories";
 import { FAMILY_FRIENDLY_DECKS } from "@/data/cardTypes";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
-/** Search and "pick for us": the only interactive parts of the chooser. */
-export function ChooserTools() {
+/** State behind search, "pick for us" and the family filter; the app's Spil tab uses it too. */
+export function useChooserTools() {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [kunFamilie, setKunFamilie] = useLocalStorage<boolean>("samtale-spil-kun-familie", false);
@@ -40,6 +40,13 @@ export function ChooserTools() {
     const c = pool[Math.floor(Math.random() * pool.length)];
     router.push(`/spil/${c.id}/`);
   };
+
+  return { isSearchOpen, setIsSearchOpen, kunFamilie, setKunFamilie, pickRandom };
+}
+
+/** Search and "pick for us": the only interactive parts of the chooser. */
+export function ChooserTools() {
+  const { isSearchOpen, setIsSearchOpen, kunFamilie, setKunFamilie, pickRandom } = useChooserTools();
 
   return (
     <div className="flex flex-wrap gap-2">

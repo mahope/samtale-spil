@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ui } from "@/locale/ui";
 import { DeckBack } from "@/components/deck/DeckParts";
 
 /**
@@ -12,7 +13,7 @@ export function HardTalkFrame({ onStart }: { onStart: () => void }) {
   return (
     <div className="filt min-h-dvh">
       <main id="main-content" className="mx-auto max-w-md px-5 pb-12 pt-safe">
-        <Link href="/spil/" className="mt-4 inline-flex min-h-11 items-center font-semibold text-white/85 hover:text-white">
+        <Link href={ui.play.backHref} className="mt-4 inline-flex min-h-11 items-center font-semibold text-white/85 hover:text-white">
           Tilbage til spillene
         </Link>
         <DeckBack categoryId="svaere-samtaler" className="mt-4 h-20 w-14 rounded-lg ring-1 ring-white/20" />

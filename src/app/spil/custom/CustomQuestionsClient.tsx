@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { ui } from "@/locale/ui";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useCustomQuestions } from "@/hooks/useCustomQuestions";
@@ -56,7 +57,7 @@ function GameEmptyState() {
       >
         Skriv et spørgsmål
       </Link>
-      <Link href="/spil/" className="mt-4 inline-flex min-h-11 items-center font-semibold text-white/85 underline underline-offset-4">
+      <Link href={ui.play.backHref} className="mt-4 inline-flex min-h-11 items-center font-semibold text-white/85 underline underline-offset-4">
         Tilbage til spillene
       </Link>
     </div>
