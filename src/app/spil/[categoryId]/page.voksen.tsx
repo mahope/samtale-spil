@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { AgeGate } from "@/voksen/AgeGate";
 import { voksenDecks, voksenDeckById } from "@/voksen/decks";
 import { PlayDeckLoader } from "@/intl/PlayDeckLoader";
 
@@ -13,12 +12,13 @@ export function generateStaticParams() {
 
 export const dynamicParams = false;
 
+export async function generateMetadata({ params }: Props) {
+  return { title: voksenDeckById.get((await params).categoryId)?.name ?? "Spil" };
+}
+
+/** A deck on the felt; the age gate sits in front of everything in layout.voksen.tsx */
 export default async function VoksenPlay({ params }: Props) {
   const deck = voksenDeckById.get((await params).categoryId);
   if (!deck) notFound();
-  return (
-    <AgeGate>
-      <PlayDeckLoader deckId={deck.id} name={deck.name} sharePath={deck.sharePath} backHref="/" questions={deck.questions} jokers={false} />
-    </AgeGate>
-  );
+  return <PlayDeckLoader deckId={deck.id} name={deck.name} sharePath={deck.sharePath} backHref="/" questions={deck.questions} jokers={false} />;
 }

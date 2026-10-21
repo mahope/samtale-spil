@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { ui } from "@/locale/ui";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getCategory, getRandomQuestion, getCategoryQuestionCount } from "@/data/categories";
@@ -309,7 +310,7 @@ function CategoryPlay({ categoryId }: Props) {
 
   // Handle going back to category list
   const handleBack = useCallback(() => {
-    router.push("/spil");
+    router.push(ui.play.backHref);
   }, [router]);
 
   // Keyboard shortcuts for better navigation

@@ -23,12 +23,15 @@ const variant = process.env.APP_VARIANT || '';
 if (!VARIANTS.includes(variant)) throw new Error(`APP_VARIANT must be empty or "voksen", got "${variant}"`);
 if (variant === 'voksen' && (isIntl || isAppBuild)) throw new Error('APP_VARIANT=voksen needs SITE_LOCALE=da and no APP_BUILD');
 const adultAlias = { '@/data/questions/voksne': './src/data/questions/voksne.app.ts' };
-// The Snakkespil app (APP_BUILD=1, Danish, no variant) is its own app shell, not the website in a
-// frame: the *.app.tsx route tree with a tab bar and native navigation. Goodtalk (SITE_LOCALE=en)
-// keeps building its app from the intl tree.
+// Every app is its own app shell (src/components/app), not the website in a frame: a tab bar and
+// native navigation from a route tree of its own. Snakkespil (APP_BUILD=1, Danish) builds
+// *.app.tsx, Goodtalk (APP_BUILD=1 with SITE_LOCALE=en) *.intlapp.tsx, and the 18+ app *.voksen.tsx.
+// The websites (no APP_BUILD) keep page.tsx and *.intl.tsx.
 const isAppShell = isAppBuild && !isIntl && variant === '';
-// In the app the games go back to the Spil tab ("/"), which is where /spil/ lives on the site
-const appShellAlias = { '@/locale/ui': './src/locales/da/ui.app.ts' };
+const isIntlApp = isAppBuild && isIntl;
+// In the apps the games go back to the first tab ("/"), which is where /spil/ or /play/ lives on the site
+const appShellAlias = { '@/locale/ui': `./src/locales/${locale}/ui.app.ts` };
+const hasShell = isAppShell || isIntlApp || variant === 'voksen';
 // "@/locale/*" points at src/locales/<locale>/ (tsconfig maps it to Danish for type checks)
 const localeAlias = {
   '@/locale/ui': `./src/locales/${locale}/ui.ts`,
@@ -42,11 +45,12 @@ const localeAlias = {
 
 const nextConfig: NextConfig = {
   output: 'export',
-  ...(isIntl && { pageExtensions: ['intl.tsx', 'intl.ts'] }),
+  ...(isIntl && !isAppBuild && { pageExtensions: ['intl.tsx', 'intl.ts'] }),
+  ...(isIntlApp && { pageExtensions: ['intlapp.tsx', 'intlapp.ts'] }),
   ...(variant === 'voksen' && { pageExtensions: ['voksen.tsx', 'voksen.ts'] }),
   ...(isAppShell && { pageExtensions: ['app.tsx', 'app.ts'] }),
   turbopack: {
-    resolveAlias: { ...localeAlias, ...(isAppBuild ? adultAlias : {}), ...(isAppShell ? appShellAlias : {}) },
+    resolveAlias: { ...localeAlias, ...(isAppBuild ? adultAlias : {}), ...(hasShell ? appShellAlias : {}) },
   },
   images: {
     unoptimized: true

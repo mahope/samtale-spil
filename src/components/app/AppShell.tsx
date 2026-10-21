@@ -3,9 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { TabBar, type TabSpec } from "./TabBar";
-import { currentPlatform, isPopping, isStill, markPop, normalizePath, recordNavigation } from "./navState";
-
-type Direction = "none" | "push" | "pop" | "tab";
+import { currentPlatform, isPopping, isStill, markPop, normalizePath, recordNavigation, registerTabRoots, slideDirection, type Direction } from "./navState";
 
 /** Where the user had scrolled to on each screen, so a tab comes back where it was left */
 const scrollPositions = new Map<string, number>();
@@ -13,7 +11,7 @@ const scrollPositions = new Map<string, number>();
 /**
  * The app around every screen: a tab bar (hidden on the full-screen game table), the slide
  * between screens, and Material ripples on Android. Screens draw their own navigation bar
- * with AppScreen. Generic: Snakkespil passes its tabs from layout.app.tsx.
+ * with AppScreen. Generic: each app passes its tabs from its root layout (src/components/app/tabs.ts).
  */
 export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; fullscreen: string[]; children: ReactNode }) {
   const pathname = normalizePath(usePathname() ?? "/");
@@ -28,13 +26,22 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
     restore: false,
   }));
   if (nav.path !== pathname) {
-    const from = depth(nav.path);
-    const to = depth(pathname);
-    const dir: Direction = isStill() ? "none" : isPopping() || to < from ? "pop" : to === 0 && from === 0 ? "tab" : "push";
+    const tab = tabFor(pathname, tabs, nav.tab);
+    const dir = slideDirection({
+      fromDepth: depth(nav.path),
+      toDepth: depth(pathname),
+      fromTab: nav.tab,
+      toTab: tab,
+      popping: isPopping(),
+      still: isStill(),
+    });
     // Coming back (also after an edge swipe, which has no slide) or to a tab: restore its scroll
     const restore = isPopping() || dir === "tab";
-    setNav({ path: pathname, dir, tab: tabFor(pathname, tabs, nav.tab), restore });
+    setNav({ path: pathname, dir, tab, restore });
   }
+
+  const rootsKey = roots.join(" ");
+  useEffect(() => registerTabRoots(rootsKey.split(" ")), [rootsKey]);
 
   useEffect(() => {
     recordNavigation(pathname);

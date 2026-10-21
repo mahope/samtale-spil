@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { OG_BASE } from "@/config/site";
 import { IntlTextPage } from "@/intl/Chrome";
-import { intlDecks, INTL_CARD_COUNT } from "@/intl/data";
+import { AboutText } from "@/intl/content";
 
 export const metadata: Metadata = {
   title: "About Goodtalk",
@@ -13,21 +13,7 @@ export const metadata: Metadata = {
 export default function About() {
   return (
     <IntlTextPage title="About Goodtalk">
-      <p>
-        The idea comes from the box of conversation cards many people keep in a drawer: questions that get people to share things they
-        wouldn&rsquo;t otherwise say. Goodtalk does the same on your phone, for free.
-      </p>
-      <p>
-        There are {INTL_CARD_COUNT.toLocaleString("en-US")} questions in {intlDecks.length} decks. Every question is marked light, medium
-        or deep, so you can choose how deep you want to go.
-      </p>
-      <h2>Who makes it</h2>
-      <p>
-        Goodtalk is made by Mads Holst Jensen, who runs the small web studio <a href="https://mahoje.dk">Mahope</a> in Denmark. It started
-        in Danish as <a href="https://snakkespil.dk" hrefLang="da">Snakkespil</a>.
-      </p>
-      <h2>No account, no ads</h2>
-      <p>Nothing you do here is tied to you. There are no accounts, no tracking cookies, and we never sell or share data.</p>
+      <AboutText />
     </IntlTextPage>
   );
 }

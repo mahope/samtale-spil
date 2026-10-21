@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { tap } from "@/lib/platform";
+import { ui } from "@/locale/ui";
 import { TAB_ICONS, type TabIcon } from "./icons";
 
 export interface TabSpec {
@@ -19,7 +20,7 @@ export interface TabSpec {
 export function TabBar({ tabs, active, pathname }: { tabs: TabSpec[]; active: string; pathname: string }) {
   return (
     <nav
-      aria-label="Faner"
+      aria-label={ui.shell.tabs}
       className="app-tabbar fixed inset-x-0 bottom-0 z-40 select-none border-t-[0.5px] border-streg bg-papir/80 pb-[var(--app-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 android:border-t-0 android:bg-flade-2 android:backdrop-blur-none"
     >
       <ul className="mx-auto flex h-[49px] max-w-xl android:h-20">
@@ -36,7 +37,8 @@ export function TabBar({ tabs, active, pathname }: { tabs: TabSpec[]; active: st
                   // Tapping the tab you are on scrolls back to the top, like the system apps
                   if (pathname === t.href) {
                     e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    window.scrollTo({ top: 0, behavior: still ? "auto" : "smooth" });
                   }
                 }}
                 className={`app-press flex h-full flex-col items-center justify-center gap-px pt-1 text-[10px] font-medium leading-none tracking-[0.01em] android:gap-1 android:pt-0 android:text-xs android:tracking-normal ${

@@ -161,6 +161,42 @@ jobs:
           if grep -rlqE 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort' out/; then echo "Danish text in the English build"; exit 1; fi
           if grep -rqE '"adult-[0-9]+"' out/; then echo "adult cards in the English build"; exit 1; fi
 
+      - name: Goodtalk app build is the English app shell, with no dead links
+        run: |
+          set -euo pipefail
+          rm -rf out
+          SITE_LOCALE=en APP_BUILD=1 npm run build >/dev/null
+          # the *.intlapp.tsx tree: tabs, no website pages
+          grep -q 'data-shell="app"' out/index.html || { echo "the Goodtalk app build is not the app shell"; exit 1; }
+          grep -q '<html lang="en"' out/index.html || { echo "the Goodtalk app is not lang=en"; exit 1; }
+          for p in more settings privacy about how-to-play favorites daily-question games play/questions-for-couples play/guess; do
+            test -f "out/$p/index.html" || { echo "missing /$p/ in the Goodtalk app"; exit 1; }
+          done
+          test ! -e out/questions && test ! -e out/guide && test ! -e out/print || { echo "website pages leaked into the Goodtalk app"; exit 1; }
+          # no Danish UI words, shell texts or cards anywhere in the English app
+          # (public/manifest.json is the Danish site's PWA manifest; every build copies it, no app page links it)
+          if grep -rlqE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/; then
+            grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/ | head -5
+            echo "Danish text in the Goodtalk app"; exit 1
+          fi
+          if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"' out/; then echo "adult cards in the Goodtalk app"; exit 1; fi
+          npm run check:links
+
+      - name: 18+ app build is the app shell behind the age gate
+        run: |
+          set -euo pipefail
+          rm -rf out
+          APP_VARIANT=voksen npm run build >/dev/null
+          grep -q 'data-shell="app"' out/index.html || { echo "the 18+ app is not the app shell"; exit 1; }
+          grep -q 'Er du fyldt 18?' out/index.html || { echo "the age gate is missing in front of the 18+ app"; exit 1; }
+          for p in i-aften favoritter mere indstillinger om privatliv ikke-terapi spil/udfordringer; do
+            test -f "out/$p/index.html" || { echo "missing /$p/ in the 18+ app"; exit 1; }
+            grep -q 'Er du fyldt 18?' "out/$p/index.html" || { echo "/$p/ is not behind the age gate"; exit 1; }
+          done
+          grep -rqE '"adult-1"' out/ && grep -rqE '"hot-1"' out/ || { echo "adult cards or dares missing in the 18+ app"; exit 1; }
+          if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "kids, family or school cards in the 18+ app"; exit 1; fi
+          npm run check:links
+
       - name: Verify nginx config
         run: |
           set -euo pipefail
