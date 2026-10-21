@@ -99,6 +99,17 @@ jobs:
           APP_BUILD=1 npm run build >/dev/null
           if grep -rqE '"adult-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
 
+      - name: App build is the app shell, with no dead links
+        run: |
+          set -euo pipefail
+          # out/ is still the APP_BUILD=1 export from the step above: the *.app.tsx tree (tabs, no site pages)
+          grep -q 'data-shell="app"' out/index.html || { echo "the app build is not the app shell"; exit 1; }
+          for p in mere indstillinger privatliv favoritter dagens-spoergsmaal spil/parforhold multiplayer; do
+            test -f "out/$p/index.html" || { echo "missing /$p/ in the app"; exit 1; }
+          done
+          test ! -e out/spoergsmaal && test ! -e out/guide || { echo "website pages leaked into the app build"; exit 1; }
+          npm run check:links
+
       - name: International build (Goodtalk, SITE_LOCALE=en)
         run: |
           set -euo pipefail

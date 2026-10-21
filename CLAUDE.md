@@ -12,7 +12,8 @@ Gratis danske samtalekort: https://snakkespil.dk. Mads' eget produkt uden kunder
 
 ## Apps (Capacitor)
 
-- `dk.snakkespil.app`, iOS og Android fra samme `out/`. Native kode kun i `src/lib/platform.ts`, `src/lib/native.ts` og `src/components/NativeBoot.tsx`; alt andet skal virke uændret på web.
+- `dk.snakkespil.app`, iOS og Android fra samme `out/`. Native kode kun i `src/lib/platform.ts`, `src/lib/native.ts`, `src/components/NativeBoot.tsx` og `NativeReminders.tsx`; alt andet skal virke uændret på web.
+- Snakkespil-appen er en app-skal, ikke hjemmesiden: `APP_BUILD=1` med `SITE_LOCALE=da` bygger kun ruterne `src/app/**/*.app.tsx` (`pageExtensions` i `next.config.ts`). Fire faner (Spil `/`, I dag, Favoritter, Mere), navigationsbjælke og liste-komponenter i `src/components/app/` (generiske, så Goodtalk og 18+ kan flyttes over senere). `<html data-platform="ios|android|web">` vælger udseende; Tailwind-varianten `android:` giver Material, standarden er iOS. Preview i browser: `?platform=ios|android`. Web-sider og app-skærme deler indholdskomponenter (fx `FavoritterIndhold`, `OmIndhold`, `Statistik`); web-markup må ikke ændre sig. `@/locale/ui` peger på `ui.app.ts` i app-buildet, så spillenes tilbage-link går til `/`. CI kører `npm run check:links` på app-buildet: intet internt link må pege på en side, der ikke findes i appen.
 - Android bygges og signeres i `.forgejo/workflows/android.yml` (upload-nøgle i repo-secrets + Bitwarden). iOS kompileres i `ios.yml` på `mahope-mac`; signering/TestFlight kræver Mads' Apple-certifikater.
 - `android/` og `ios/` genereres/synkes på agent-worker (`npx cap sync`), ikke på PC'en.
 - Goodtalk-appen (`com.goodtalkcards.app`, #74) bygges fra samme `android/`/`ios/` med `SITE_LOCALE=en`: `capacitor.config.ts` vælger id og navn, og CI giver `APP_ID`/`APP_NAME` til Gradle og `PRODUCT_BUNDLE_IDENTIFIER`/`APP_DISPLAY_NAME` til Xcode (matrix i `android.yml` og `ios.yml`).
