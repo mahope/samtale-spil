@@ -23,7 +23,7 @@ export const voksenDecks: VoksenDeck[] = [
   {
     id: "udfordringer",
     name: "Udfordringer",
-    description: "Kys, berøring og små dares. Kun i appen.",
+    description: "Kys, berøring og små opgaver. Kun i appen.",
     questions: udfordringer,
     sharePath: "/",
   },

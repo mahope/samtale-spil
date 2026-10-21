@@ -18,7 +18,7 @@ export default async function VoksenPlay({ params }: Props) {
   if (!deck) notFound();
   return (
     <AgeGate>
-      <PlayDeckLoader deckId={deck.id} name={deck.name} sharePath={deck.sharePath} backHref="/" questions={deck.questions} />
+      <PlayDeckLoader deckId={deck.id} name={deck.name} sharePath={deck.sharePath} backHref="/" questions={deck.questions} jokers={false} />
     </AgeGate>
   );
 }

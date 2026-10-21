@@ -1,7 +1,7 @@
 import type { Question } from "@/types";
 
 /**
- * "Udfordringer": dares for couples, only in the 18+ app (issue #57).
+ * "Udfordringer": small challenges for couples, only in the 18+ app (issue #57).
  * Flirty and intimate, never explicit: no descriptions of sex acts or bodies, so the app stays
  * inside Apple 1.1.4 and Google Play's sexual-content policy (see docs/app-butikker.md).
  * Ids are "hot-N"; never change or reuse them.
@@ -11,14 +11,14 @@ const raw: [string, Question["depth"]][] = [
   ["Hvisk noget i din partners øre, du aldrig har sagt højt.", "medium"],
   ["Se hinanden i øjnene i et helt minut uden at sige noget.", "medium"],
   ["Giv din partner en nakkemassage, til næste kort er trukket.", "let"],
-  ["Sig tre ting ved din partners krop, du er vild med.", "medium"],
+  ["Sig tre ting ved din partners udseende, du er vild med.", "medium"],
   ["Dans tæt med din partner til den næste sang, der kommer i radioen eller på telefonen.", "let"],
   ["Skriv en lille seddel med noget frækt, og gem den et sted, din partner finder den i morgen.", "medium"],
   ["Kys din partner, som om det var første gang.", "let"],
   ["Fortæl din partner, hvad du tænkte på, sidste gang du savnede jer to.", "medium"],
   ["Lad din partner bestemme, hvor du skal kysse næste gang.", "medium"],
   ["Giv din partner et kompliment, der får vedkommende til at rødme.", "let"],
-  ["Hold din partners hånd og fortæl, hvad du vil gøre ved jer næste weekend.", "let"],
+  ["Hold din partners hånd og fortæl, hvad du vil gøre med jer to næste weekend.", "let"],
   ["Lav en plan for jeres næste date, som kun den ene af jer kender til.", "let"],
   ["Sid helt tæt i to minutter uden at bruge hænderne.", "medium"],
   ["Beskriv jeres bedste kys nogensinde, så præcist du kan.", "medium"],
@@ -36,7 +36,7 @@ const raw: [string, Question["depth"]][] = [
   ["Sig tre ord, der beskriver, hvordan din partner ser ud lige nu.", "let"],
   ["Gå hen og giv din partner et kram, der varer mindst 20 sekunder.", "let"],
   ["Fortæl din partner om en drøm, du har haft om jer to.", "medium"],
-  ["Lav et hemmeligt tegn, der betyder »jeg har lyst til dig«, som I kan bruge blandt andre.", "medium"],
+  ["Lav et hemmeligt tegn, der betyder »jeg har lyst til dig«, som I kan bruge foran andre.", "medium"],
   ["Giv din partner et kys et sted, vedkommende selv peger på.", "medium"],
   ["Fortæl din partner, hvilket tøj du synes, vedkommende er allermest lækker i.", "let"],
   ["Sig, hvad du allerbedst kan lide, at din partner gør, når I er tæt.", "dyb"],
@@ -54,13 +54,13 @@ const raw: [string, Question["depth"]][] = [
   ["Lad din partner sætte en timer på et minut, og kys, til den ringer.", "medium"],
   ["Fortæl om første gang, du tænkte, at du gerne ville kysse din partner.", "let"],
   ["Sig, hvordan du gerne vil vækkes en lørdag morgen.", "medium"],
-  ["Giv din partner et kys, som du ville give, hvis I skulle skilles i en måned.", "medium"],
+  ["Giv din partner et kys, som du ville give, hvis I skulle være væk fra hinanden i en måned.", "medium"],
   ["Fortæl, hvad der er det mest romantiske, din partner nogensinde har gjort.", "let"],
   ["Lav en lille aftale om noget frækt, I gør næste gang, I er alene.", "dyb"],
   ["Stryg din partner langsomt over håret, mens du siger tre ting, du elsker ved vedkommende.", "let"],
   ["Fortæl, hvad du savner fra jeres første tid sammen, og find på en måde at få det tilbage.", "dyb"],
   ["Lad din partner vælge den næste udfordring til dig.", "medium"],
-  ["Sig, hvad du synes, er det mest sexede ved din partners personlighed.", "medium"],
+  ["Sig, hvad ved din partners personlighed der tænder dig mest.", "medium"],
   ["Fortæl, hvordan du helst vil vise, at du har lyst, og hvordan du helst vil se det hos din partner.", "dyb"],
   ["Giv din partner et kys på hånden, panden og læberne, i den rækkefølge.", "let"],
   ["Sig, hvad der er dit yndlingsminde fra en nat, I har haft sammen.", "dyb"],

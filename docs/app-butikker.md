@@ -2,7 +2,7 @@
 
 Tekster og svar til butikkerne. Kopiér felterne direkte. Tegnloft står ved hvert felt.
 
-Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en lav aldersmærkning (forventet 13+ hos Apple) og bruges af skoler og spejdergrupper. Voksen-bunken findes kun på snakkespil.dk.
+Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en lav aldersmærkning (forventet 13+ hos Apple) og bruges af skoler og spejdergrupper. Voksen-bunken findes på snakkespil.dk og i den særskilte app Snakkespil 18+ (se nederst).
 
 ## Fælles
 
@@ -178,7 +178,7 @@ Særskilt app med kun voksen- og parbunker, bygget fra samme native projekt med 
 Snakkespil 18+ er samtalekort for par. Træk et kort, og lad det tage jer et sted hen, I ikke kommer hver dag.
 
 Bunker:
-• Udfordringer: kys, berøring og små dares, kun i appen
+• Udfordringer: kys, berøring og små opgaver, kun i appen
 • Kun for voksne: modige spørgsmål om lyst, fantasier og jer to
 • Intimitet og Parforhold
 • Kend din partner
@@ -191,6 +191,6 @@ Lavet i Danmark af Mahope.
 ```
 
 **Aldersmærkning:**
-- App Store: Moden eller antydende tematik **hyppig/intens**, seksuelt indhold eller nøgenhed **sjælden/mild** (antydende tekst, ingen beskrivelser). Forventet **17+** (18+ hvis Apple vurderer det). Ingen brugerindhold.
+- App Store: Moden eller antydende tematik **hyppig/intens**, seksuelt indhold eller nøgenhed **sjælden/mild** (antydende tekst, ingen beskrivelser). Forventet **18+** på Apples aldersskala. Ingen brugerindhold.
 - Google Play (IARC): seksuelt indhold **ja, antydende tekst uden nøgenhed eller beskrivelser**, groft sprog nej, vold nej. Forventet **PEGI 16/18**. Målgruppe: **18 år og opefter**.
 - Datasikkerhed: som Snakkespil ovenfor.

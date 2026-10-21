@@ -20,19 +20,20 @@ function shuffle<T>(items: T[]): T[] {
 }
 
 /** One deck on an international site: shuffled once, played card by card. Browser only. */
-export function PlayDeck({ deckId, name, sharePath, backHref, questions }: { deckId: string; name: string; sharePath: string; backHref?: string; questions: Question[] }) {
+export function PlayDeck({ deckId, name, sharePath, backHref, questions, jokers = true }: { deckId: string; name: string; sharePath: string; backHref?: string; questions: Question[]; jokers?: boolean }) {
   const [pile, setPile] = useState(() => shuffle(questions));
   const [at, setAt] = useState<DeckTurn>({ pos: 0, turn: 0 });
   const [isFlipped, setIsFlipped] = useState(false);
   const { isFavorite, toggleFavorite } = useFavorites();
-  const [jokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
-  const joker = jokerAt(at.turn, deckId, jokerOn ?? true);
+  const [jokerSetting] = useLocalStorage<boolean>(JOKER_KEY, true);
+  const jokerOn = jokers && (jokerSetting ?? true);
+  const joker = jokerAt(at.turn, deckId, jokerOn);
   const card = joker ?? pile[at.pos];
 
   const next = () => {
     if (at.turn === 0) track("Spil startet", { kategori: deckId });
     setIsFlipped(false);
-    const step = stepDeck(at, pile.length, jokerOn ?? true, deckId);
+    const step = stepDeck(at, pile.length, jokerOn, deckId);
     if (step.wrapped) setPile(shuffle(questions));
     setAt({ pos: step.pos, turn: step.turn });
   };

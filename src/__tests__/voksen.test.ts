@@ -32,7 +32,7 @@ describe("18+ app (issue #57)", () => {
   });
 
   it("stays below the store limit: no explicit words in the dares", () => {
-    const explicit = /\b(sex|samleje|orgasme|nøgen|nøgne|bryst|kønsdel|penis|vagina|porno|klæd .* af)\b/i;
+    const explicit = new RegExp("(?<!\\p{L})(?:sex\\p{L}*|seksu\\p{L}*|samleje\\p{L}*|orgasme\\p{L}*|nøgen|nøgne|bryst\\p{L}*|kønsdel\\p{L}*|penis|vagina|porno\\p{L}*|klæd\\p{L}* .* af)(?!\\p{L})", "iu");
     for (const q of udfordringer) expect(q.text, q.id).not.toMatch(explicit);
   });
 
