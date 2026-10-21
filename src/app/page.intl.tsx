@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <>
       <IntlHeader tone="filt" />
-      <main id="main-content">
+      <main id="main-content" data-route="forside">
         <section className="filt px-4 pb-16 pt-10 text-white sm:px-6">
           <div className="mx-auto max-w-6xl">
             <h1 className="max-w-3xl text-5xl font-extrabold leading-[1.02] tracking-[-0.03em] sm:text-7xl" style={{ fontStretch: "86%" }}>

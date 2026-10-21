@@ -27,9 +27,25 @@ on:
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      # Snakkespil (Danish) and Goodtalk (English, issue #74) from the same native project
+      matrix:
+        include:
+          - site: da
+            app_id: dk.snakkespil.app
+            app_name: Snakkespil
+            artifact: snakkespil
+          - site: en
+            app_id: com.goodtalkcards.app
+            app_name: Goodtalk
+            artifact: goodtalk
     runs-on: ubuntu-latest
     env:
       VERSION_CODE: ${{ github.run_number }}
+      SITE_LOCALE: ${{ matrix.site }}
+      APP_ID: ${{ matrix.app_id }}
+      APP_NAME: ${{ matrix.app_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -83,6 +99,13 @@ jobs:
             bash ./gradlew --no-daemon assembleDebug
           fi
           find app/build/outputs -name "*.aab" -o -name "*.apk" | xargs ls -la
+          # the package id in the built app must be the one for this site
+          aapt2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | tail -1)
+          apk=$(find app/build/outputs/apk -name "*.apk" | head -1)
+          # read it into a variable first: grep -q closing the pipe would fail aapt2 under pipefail
+          badging=$("$aapt2" dump badging "$apk")
+          grep -q "package: name='$APP_ID'" <<< "$badging" || { echo "forkert app-id i $apk:"; grep -E "^package:" <<< "$badging"; exit 1; }
+          grep -q "application-label:'$APP_NAME'" <<< "$badging" || { echo "forkert app-navn i $apk:"; grep -E "^application-label" <<< "$badging"; exit 1; }
 
       - name: Remove key
         if: always()
@@ -90,7 +113,7 @@ jobs:
 
       - uses: https://code.forgejo.org/forgejo/upload-artifact@v4
         with:
-          name: snakkespil-android-${{ github.run_number }}
+          name: ${{ matrix.artifact }}-android-${{ github.run_number }}
           path: |
             android/app/build/outputs/bundle/release/*.aab
             android/app/build/outputs/apk/release/*.apk

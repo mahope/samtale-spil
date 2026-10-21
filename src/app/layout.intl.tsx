@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { site } from "@/locale/site";
+import { NativeBoot } from "@/components/NativeBoot";
 
 // International sites (SITE_LOCALE != "da"), issue #30.
 const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], axes: ["opsz", "wdth"] });
@@ -15,9 +16,9 @@ export const metadata: Metadata = {
 };
 
 const plausibleInitScript =
-  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()";
+  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init(window.Capacitor?{captureOnLocalhost:true}:undefined)";
 
-export const viewport: Viewport = { themeColor: "#1d4a38", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#1d4a38", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
+        <NativeBoot />
       </body>
     </html>
   );

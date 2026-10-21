@@ -15,6 +15,7 @@ Gratis danske samtalekort: https://snakkespil.dk. Mads' eget produkt uden kunder
 - `dk.snakkespil.app`, iOS og Android fra samme `out/`. Native kode kun i `src/lib/platform.ts`, `src/lib/native.ts` og `src/components/NativeBoot.tsx`; alt andet skal virke uændret på web.
 - Android bygges og signeres i `.forgejo/workflows/android.yml` (upload-nøgle i repo-secrets + Bitwarden). iOS kompileres i `ios.yml` på `mahope-mac`; signering/TestFlight kræver Mads' Apple-certifikater.
 - `android/` og `ios/` genereres/synkes på agent-worker (`npx cap sync`), ikke på PC'en.
+- Goodtalk-appen (`com.goodtalkcards.app`, #74) bygges fra samme `android/`/`ios/` med `SITE_LOCALE=en`: `capacitor.config.ts` vælger id og navn, og CI giver `APP_ID`/`APP_NAME` til Gradle og `PRODUCT_BUNDLE_IDENTIFIER`/`APP_DISPLAY_NAME` til Xcode (matrix i `android.yml` og `ios.yml`).
 - App-builds kører med `APP_BUILD=1`: `next.config.ts` aliaser `@/data/questions/voksne` til den tomme `voksne.app.ts`, så appen er uden 18+ og kan mærkes 12+ (#54). Workflowene fejler, hvis et voksenkort findes i `out/`. Butikstekster: `docs/app-butikker.md`.
 
 ## Arbejdsgang uden aftryk på PC'en

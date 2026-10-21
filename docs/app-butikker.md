@@ -94,3 +94,57 @@ Appen indeholder ingen voksenkort. Et par kort i de almindelige bunker nævner d
 ## Screenshots
 
 Ligger i `assets/store/screenshots/` (iPhone 6,9" 1290×2796 og Android 1080×2340). Rækkefølge: forside, valg af spil, et vendt kort, Spørg videre, Trappen.
+
+## Goodtalk (engelsk app, issue #74)
+
+Samme native projekt bygget med `SITE_LOCALE=en`: CI sætter app-id og navn (`APP_ID`/`APP_NAME` til Gradle, `PRODUCT_BUNDLE_IDENTIFIER`/`APP_DISPLAY_NAME` til Xcode). Artefaktet hedder `goodtalk-android-<nr>`. Aldersmærkning, datasikkerhed og screenshots-rækkefølge som ovenfor.
+
+- **Navn:** Goodtalk
+- **Bundle-/pakke-id:** com.goodtalkcards.app
+- **Kategori:** Lifestyle (sekundær: Games > Card) / Google Play: Games > Card
+- **Privatlivspolitik:** https://goodtalkcards.com/privacy/
+- **Support-URL:** https://goodtalkcards.com/about/
+- **Marketing-URL:** https://goodtalkcards.com/
+- **Sprog:** English (U.S.) og English (U.K.)
+
+**Undertitel** (App Store, max 30): `Cards for better conversations`
+
+**Reklametekst** (max 170):
+`Draw a card, read the question out loud, and let the conversation flow. Over 2,500 questions for couples, families, friends and classrooms. Free, no ads.`
+
+**Søgeord** (max 100):
+`conversation cards,questions,couples,date night,family,deep questions,would you rather,icebreakers`
+
+**Kort beskrivelse** (Google Play, max 80):
+`Free conversation cards for couples, families, friends and coworkers.`
+
+**Beskrivelse** (max 4.000):
+
+```
+Goodtalk is conversation cards on your phone. Draw a card, read the question out loud, and let the conversation flow.
+
+Over 2,500 questions in decks for whoever you're with:
+• Couples, intimacy and first dates
+• Family, kids, new parents and family stories
+• School, college and student life
+• Friends, coworkers and holidays
+• Deep and philosophical questions, dreams, the past and the future
+• Would you rather, with 120 dilemmas
+• Hard talks, for the conversations that matter
+
+Every card is marked light, medium or deep, so you choose how far in you want to go.
+
+Ways to play:
+• Guess the answer: one person answers in secret, the next one guesses, with points if you like
+• Year in review: four rounds for New Year's Eve and birthdays
+• Party games with ready-made cards
+• A daily question, the same for everyone that day
+
+And:
+• Joker cards now and then, such as "ask a question of your own"
+• Works offline
+• No account, no ads, no cookies. What you save stays on your phone
+
+Goodtalk is a conversation game for fun and closeness. It is not therapy.
+Made in Denmark by Mahope.
+```

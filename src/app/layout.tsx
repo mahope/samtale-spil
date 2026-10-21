@@ -3,6 +3,7 @@ import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/googl
 import "./globals.css";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { NativeBoot } from "@/components/NativeBoot";
+import { NativeReminders } from "@/components/NativeReminders";
 import { SITE_URL, SITE_NAME, CATEGORY_COUNT, QUESTION_COUNT_LABEL } from "@/config/site";
 
 const display = Bricolage_Grotesque({
@@ -109,6 +110,7 @@ export default function RootLayout({
         {children}
         <ServiceWorkerRegistration />
         <NativeBoot />
+        <NativeReminders />
       </body>
     </html>
   );
