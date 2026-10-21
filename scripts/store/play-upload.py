@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Upload an Android App Bundle to a Google Play track (Android Publisher API v3).
 
-  PLAY_SERVICE_ACCOUNT_JSON_B64=... python3 scripts/store/play-upload.py <package> <aab> <track> "<release name>" ["<release notes da-DK>"]
+  PLAY_SERVICE_ACCOUNT_JSON_B64=... python3 scripts/store/play-upload.py <package> <aab> <track> "<release name>" ["<notes>"] [lang, default da-DK]
 
 Standard library plus the openssl CLI (for the RS256 signature), so CI needs no pip install.
 - An app that does not exist in Play Console yet is skipped (exit 0): apps are created by hand once.
@@ -13,6 +13,7 @@ import base64, json, os, subprocess, sys, tempfile, time, urllib.error, urllib.r
 
 pkg, aab, track, name = sys.argv[1:5]
 notes = sys.argv[5] if len(sys.argv) > 5 else ""
+lang = sys.argv[6] if len(sys.argv) > 6 else "da-DK"
 key = json.loads(base64.b64decode(os.environ["PLAY_SERVICE_ACCOUNT_JSON_B64"]))
 API = "https://androidpublisher.googleapis.com/androidpublisher/v3/applications"
 UP = "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications"
@@ -55,12 +56,23 @@ def call(method, url, data=None, ctype="application/json"):
         raise RuntimeError(f"{e.code} {e.read().decode()[:400]}")
 
 
+def new_edit():
+    try:
+        return call("POST", f"{API}/{pkg}/edits")["id"]
+    except RuntimeError as e:
+        if str(e).startswith("404"):
+            # only the app itself missing is a skip; every other 404 fails the build
+            print(f"::warning::{pkg} findes ikke i Play Console (eller service-kontoen mangler adgang), springer over")
+            sys.exit(0)
+        raise
+
+
 def release(status: str):
-    edit = call("POST", f"{API}/{pkg}/edits")["id"]
+    edit = new_edit()
     bundle = call("POST", f"{UP}/{pkg}/edits/{edit}/bundles?uploadType=media", open(aab, "rb").read(), "application/octet-stream")
     rel = {"name": name, "versionCodes": [str(bundle["versionCode"])], "status": status}
     if notes:
-        rel["releaseNotes"] = [{"language": "da-DK", "text": notes}]
+        rel["releaseNotes"] = [{"language": lang, "text": notes}]
     call("PUT", f"{API}/{pkg}/edits/{edit}/tracks/{track}", {"track": track, "releases": [rel]})
     call("POST", f"{API}/{pkg}/edits/{edit}:commit")
     print(f"{pkg}: versionCode {bundle['versionCode']} -> {track} ({status})")
@@ -70,9 +82,7 @@ try:
     release("completed")
 except RuntimeError as e:
     msg = str(e)
-    if msg.startswith("404") or "Package not found" in msg:
-        print(f"{pkg}: findes ikke i Play Console endnu, springer over")
-    elif "draft app" in msg:
+    if "draft app" in msg:
         release("draft")
     else:
         sys.exit(f"{pkg}: upload fejlede: {msg}")

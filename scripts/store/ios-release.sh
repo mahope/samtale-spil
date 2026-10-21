@@ -7,9 +7,11 @@
 set -euo pipefail
 BUNDLE="$1"; NAME="$2"; LOCALE="$3"; BUILD="$4"
 TEAM=P7698GU4AV
+# the team's Apple Distribution certificate (Bitwarden "Apple Distribution-certifikat Mads Holst Jensen")
+CERT_ID="${IOS_DIST_CERT_ID:-2UUXQDN955}"
 export PATH="/opt/homebrew/bin:$PATH"
 WORK="$(mktemp -d)"
-trap 'security delete-keychain "$WORK/ci.keychain-db" 2>/dev/null || true; rm -rf "$WORK"' EXIT
+trap 'security delete-keychain "$WORK/ci.keychain-db" 2>/dev/null || true; rm -rf "$WORK"' EXIT INT TERM
 
 (umask 077; echo "$ASC_KEY_P8_B64" | base64 -d > "$WORK/AuthKey.p8")
 export ASC_PRIVATE_KEY_PATH="$WORK/AuthKey.p8"
@@ -28,13 +30,30 @@ security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KP" "$KC
 security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
 CERT_SHA=$(security find-identity -v -p codesigning "$KC" | awk '/Apple Distribution/ {print $2; exit}')
 
-# App Store profile for this bundle and certificate (created once, then reused)
-asc signing fetch --bundle-id "$BUNDLE" --profile-type IOS_APP_STORE --output "$WORK/signing" >/dev/null 2>&1 || true
-PROFILE=$(ls "$WORK"/signing/*.mobileprovision 2>/dev/null | head -1)
-if [ -z "$PROFILE" ]; then echo "ingen App Store-profil for $BUNDLE"; exit 1; fi
-UUID=$(security cms -D -i "$PROFILE" | plutil -extract UUID raw -)
-mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-cp "$PROFILE" "$HOME/Library/MobileDevice/Provisioning Profiles/$UUID.mobileprovision"
+# App Store profile for this bundle with exactly this certificate (created once, then reused)
+PROFILE_NAME="$NAME App Store $CERT_ID"
+asc profiles list --output json --paginate > "$WORK/profiles.json"
+PROF_ID=$(python3 -c "
+import json,sys
+d=json.load(open(sys.argv[1]))
+print(next((p['id'] for p in d['data'] if p['attributes']['name']==sys.argv[2] and p['attributes'].get('profileState')=='ACTIVE'),''))" "$WORK/profiles.json" "$PROFILE_NAME")
+if [ -z "$PROF_ID" ]; then
+  BUNDLE_RES=$(asc bundle-ids list --output json --paginate | python3 -c "
+import json,sys
+print(next((b['id'] for b in json.load(sys.stdin)['data'] if b['attributes']['identifier']==sys.argv[1]),''))" "$BUNDLE")
+  [ -n "$BUNDLE_RES" ] || { echo "bundle-id $BUNDLE er ikke registreret"; exit 1; }
+  asc profiles create --name "$PROFILE_NAME" --profile-type IOS_APP_STORE --bundle "$BUNDLE_RES" --certificate "$CERT_ID" --output json > /dev/null
+  asc profiles list --output json --paginate > "$WORK/profiles.json"
+fi
+UUID=$(python3 -c "
+import json,sys,base64,os
+d=json.load(open(sys.argv[1]))
+a=next(p['attributes'] for p in d['data'] if p['attributes']['name']==sys.argv[2] and p['attributes'].get('profileState')=='ACTIVE')
+raw=base64.b64decode(a['profileContent'])
+for dst in ('~/Library/MobileDevice/Provisioning Profiles','~/Library/Developer/Xcode/UserData/Provisioning Profiles'):
+    dst=os.path.expanduser(dst); os.makedirs(dst,exist_ok=True)
+    open(os.path.join(dst,a['uuid']+'.mobileprovision'),'wb').write(raw)
+print(a['uuid'])" "$WORK/profiles.json" "$PROFILE_NAME")
 
 cd ios/App
 xcodebuild -project App.xcodeproj -scheme App -configuration Release -sdk iphoneos \

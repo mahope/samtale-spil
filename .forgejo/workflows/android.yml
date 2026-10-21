@@ -15,6 +15,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - ".forgejo/workflows/android.yml"
+      - "scripts/store/play-upload.py"
   pull_request:
     paths:
       - "android/**"
@@ -134,8 +135,9 @@ jobs:
           PLAY_SERVICE_ACCOUNT_JSON_B64: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON_B64 }}
         run: |
           set -euo pipefail
+          if [ "$SITE_LOCALE" = en ]; then NOTES="New cards and improvements."; LANG_CODE=en-US; else NOTES="Nye kort og forbedringer."; LANG_CODE=da-DK; fi
           python3 scripts/store/play-upload.py "$APP_ID" android/app/build/outputs/bundle/release/app-release.aab alpha \
-            "$(node -p 'require("./package.json").version') ($VERSION_CODE)" "Nye kort og forbedringer."
+            "$(node -p 'require("./package.json").version') ($VERSION_CODE)" "$NOTES" "$LANG_CODE"
 
       - uses: https://code.forgejo.org/forgejo/upload-artifact@v4
         with:

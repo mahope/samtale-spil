@@ -1,7 +1,6 @@
 name: iOS
 
-# iOS on the Mac runner (mahope-mac). Pull requests and manual runs compile an unsigned simulator
-# build; master builds are signed and uploaded to App Store Connect (scripts/store/ios-release.sh),
+# iOS on the Mac runner (mahope-mac). Manual runs compile an unsigned simulator build; master builds are signed and uploaded to App Store Connect (scripts/store/ios-release.sh),
 # which only skips apps that have no App Store Connect record yet.
 on:
   push:
