@@ -26,6 +26,9 @@ export function IntlHeader({ tone = "papir" }: { tone?: "papir" | "filt" }) {
           <Link href="/questions/" className={`${link} hidden sm:inline-flex`}>
             Questions
           </Link>
+          <Link href="/games/" className={`${link} hidden sm:inline-flex`}>
+            Games
+          </Link>
         </nav>
       </div>
     </header>
@@ -62,6 +65,11 @@ export function IntlFooter() {
             <h2 className="text-base font-bold">{site.name}</h2>
             <ul className="mt-3 space-y-1.5 text-[0.95rem]">
               <li><Link href="/questions/" className="text-blaek-2 hover:text-blaek hover:underline">All questions</Link></li>
+              <li><Link href="/games/" className="text-blaek-2 hover:text-blaek hover:underline">Party games</Link></li>
+              <li><Link href="/daily-question/" className="text-blaek-2 hover:text-blaek hover:underline">Question of the day</Link></li>
+              <li><Link href="/question-generator/" className="text-blaek-2 hover:text-blaek hover:underline">Question generator</Link></li>
+              <li><Link href="/guide/" className="text-blaek-2 hover:text-blaek hover:underline">Guides</Link></li>
+              <li><Link href="/print/" className="text-blaek-2 hover:text-blaek hover:underline">Printable cards</Link></li>
               <li><Link href="/how-to-play/" className="text-blaek-2 hover:text-blaek hover:underline">How to play</Link></li>
               <li><Link href="/about/" className="text-blaek-2 hover:text-blaek hover:underline">About</Link></li>
               <li><Link href="/privacy/" className="text-blaek-2 hover:text-blaek hover:underline">Privacy</Link></li>

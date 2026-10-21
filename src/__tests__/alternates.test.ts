@@ -21,6 +21,6 @@ describe("hreflang between snakkespil.dk and goodtalkcards.com", () => {
   });
 
   it("does not link decks that only exist in Danish", () => {
-    expect(deckLanguages("gilwell")).toBeUndefined();
+    expect(deckLanguages("efterskolen")).toBeUndefined();
   });
 });

@@ -44,6 +44,11 @@ export const ui: typeof da = {
     spejder: "Scouts",
     dybt: "Deep talks and self-reflection",
   },
+  print: {
+    titleSuffix: "conversation cards to print",
+    license: "Free for personal use and teaching. Not for sale.",
+    blank: "Your own question",
+  },
   favorite: { add: "Add to favorites", remove: "Remove from favorites" },
   share: {
     question: "Share question",

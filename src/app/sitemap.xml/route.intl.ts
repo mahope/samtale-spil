@@ -1,11 +1,28 @@
 import { SITE_URL } from "@/config/site";
 import { intlDecks } from "@/intl/data";
+import { intlGames } from "@/intl/games";
+import { localeGuides } from "@/locale/guides";
 
 // Metadata files (sitemap.ts) are not picked up with the intl page extensions, so the
 // international sites serve their sitemap from a static route handler instead.
 export const dynamic = "force-static";
 
-const PAGES = ["/", "/play/", "/questions/", ...intlDecks.map((d) => `/questions/${d.slug}/`), "/how-to-play/", "/about/", "/privacy/"];
+const PAGES = [
+  "/",
+  "/play/",
+  "/questions/",
+  ...intlDecks.map((d) => `/questions/${d.slug}/`),
+  "/games/",
+  ...intlGames.map((g) => `/games/${g.slug}/`),
+  "/guide/",
+  ...localeGuides.map((g) => `/guide/${g.slug}/`),
+  "/daily-question/",
+  "/question-generator/",
+  "/print/",
+  "/how-to-play/",
+  "/about/",
+  "/privacy/",
+];
 
 export function GET() {
   const today = new Date().toISOString().slice(0, 10);

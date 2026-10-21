@@ -3,6 +3,8 @@ import path from "node:path";
 import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { getDeck, markColorOnWhite } from "@/data/decks";
+import { site } from "@/locale/site";
+import { ui } from "@/locale/ui";
 
 /**
  * Print-yourself cards (issue #45): A4, 8 cards per sheet with cut lines, the back
@@ -75,9 +77,10 @@ export async function buildPrintPdf(opts: { deckId: string; title: string; cards
 
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
-  doc.setTitle(`${opts.title}: samtalekort til print`);
-  doc.setAuthor("Snakkespil");
-  doc.setSubject("Gratis til personligt brug og undervisning. Må ikke sælges. snakkespil.dk");
+  const host = new URL(site.url).host;
+  doc.setTitle(`${opts.title}: ${ui.print.titleSuffix}`);
+  doc.setAuthor(site.name);
+  doc.setSubject(`${ui.print.license} ${host}`);
   doc.setLanguage("da-DK");
   const fonts = path.join(process.cwd(), "assets", "fonts");
   const bold = await doc.embedFont(await readFile(path.join(fonts, "bricolage-grotesque-latin-700-normal.woff")), { subset: true });
@@ -106,7 +109,7 @@ export async function buildPrintPdf(opts: { deckId: string; title: string; cards
           const ly = y - CARD.h / 2 + 8 - l * 9 * MM + 6 * MM;
           front.drawLine({ start: { x: x + pad, y: ly }, end: { x: x + CARD.w - pad, y: ly }, thickness: 0.5, color: LINE });
         }
-        front.drawText("Dit eget spørgsmål", { x: x + pad, y: y - CARD.h + pad, size: 7.5, font: bold, color: MUTED });
+        front.drawText(ui.print.blank, { x: x + pad, y: y - CARD.h + pad, size: 7.5, font: bold, color: MUTED });
         return;
       }
       if (card.label) front.drawText(card.label, { x: x + pad, y: y - pad - 22, size: 8, font: heavy, color: mark });
@@ -119,7 +122,7 @@ export async function buildPrintPdf(opts: { deckId: string; title: string; cards
       const lineH = size * 1.25;
       const top = y - CARD.h / 2 + (lines.length * lineH) / 2 - size * 0.8;
       lines.forEach((line, l) => front.drawText(line, { x: x + pad, y: top - l * lineH, size, font: bold, color: INK }));
-      front.drawText("snakkespil.dk", { x: x + pad, y: y - CARD.h + pad - 2, size: 6.5, font: bold, color: MUTED });
+      front.drawText(host, { x: x + pad, y: y - CARD.h + pad - 2, size: 6.5, font: bold, color: MUTED });
     });
     cutLines(front);
 
@@ -145,8 +148,8 @@ export async function buildPrintPdf(opts: { deckId: string; title: string; cards
         font: heavy,
         color: ink,
       });
-      back.drawText("snakkespil.dk", {
-        x: x + CARD.w / 2 - bold.widthOfTextAtSize("snakkespil.dk", 8) / 2,
+      back.drawText(host, {
+        x: x + CARD.w / 2 - bold.widthOfTextAtSize(host, 8) / 2,
         y: y - CARD.h + 5 * MM,
         size: 8,
         font: bold,
