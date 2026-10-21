@@ -4,6 +4,12 @@ Tekster og svar til butikkerne. Kopiér felterne direkte. Tegnloft står ved hve
 
 Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en lav aldersmærkning (forventet 13+ hos Apple) og bruges af skoler og spejdergrupper. Voksen-bunken findes på snakkespil.dk og i den særskilte app Snakkespil 18+ (se nederst).
 
+## Automatiske builds til butikkerne
+
+- **Android:** `android.yml` bygger alle tre apps. Builds fra master uploades til det lukkede testspor (`alpha`) med `scripts/store/play-upload.py` og service-kontoen `play-publisher@mahoje.iam.gserviceaccount.com` (repo-secret `PLAY_SERVICE_ACCOUNT_JSON_B64`, Bitwarden "Google Play: service-konto play-publisher"). Apps, der ikke findes i Play Console endnu, springes over. Så længe en app er kladde i Play, oprettes udgivelsen som kladde.
+- **iOS:** `ios.yml` kører på `mahope-mac`. Builds fra master signeres med Apple Distribution-certifikatet (team P7698GU4AV, Bitwarden "Apple Distribution-certifikat Mads Holst Jensen") og uploades til App Store Connect med `scripts/store/ios-release.sh` (secrets `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8_B64`, `IOS_DIST_P12_B64`, `IOS_DIST_P12_PASSWORD`). Build-nummer er 100 + kørselsnummer. Apps uden app-post i App Store Connect springes over.
+- Selve app-posterne oprettes én gang i hånden. Indsendelse til review sker stadig med vilje (Apple: `asc review submit`, Play: Udgivelsesoversigt).
+
 ## Fælles
 
 - **Navn:** Snakkespil
