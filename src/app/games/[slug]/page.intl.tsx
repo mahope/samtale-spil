@@ -78,12 +78,12 @@ export default async function GamePage({ params }: Props) {
               <section key={leg.navn} className="rounded-2xl bg-flade p-5 ring-1 ring-streg">
                 <h3 className="text-xl font-bold">{leg.navn}</h3>
                 <p className="mt-1 text-sm text-blaek-2">
-                  {leg.antal} players, {leg.tid}, {leg.alder}
+                  {/^\d+(-\d+)?$/.test(leg.antal) ? `${leg.antal} players` : leg.antal}, {leg.tid}, {leg.alder}
                 </p>
                 <ol className="mt-3 list-decimal space-y-1 pl-6">
                   {leg.saadan.map((step) => <li key={step}>{step}</li>)}
                 </ol>
-                {leg.variant && <p className="mt-3 text-[0.95rem]"><strong>Twist:</strong> {leg.variant}</p>}
+                {leg.variant && <p className="mt-3 text-[0.95rem]"><strong>Tip:</strong> {leg.variant}</p>}
               </section>
             ))}
           </div>

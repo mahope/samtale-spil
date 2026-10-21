@@ -18,7 +18,7 @@ export default function GamesIndex() {
       <IntlHeader />
       <main id="main-content" className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
         <h1 className="text-4xl font-extrabold tracking-[-0.025em] sm:text-5xl" style={{ fontStretch: "88%" }}>
-          Games for the party
+          Party games
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-blaek-2">
           Games that get people talking, for the holidays, the office party and the dinner table. Every page has the rules and a deck of cards you can play on your phone. No drinking games.

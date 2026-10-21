@@ -81,7 +81,7 @@ export async function buildPrintPdf(opts: { deckId: string; title: string; cards
   doc.setTitle(`${opts.title}: ${ui.print.titleSuffix}`);
   doc.setAuthor(site.name);
   doc.setSubject(`${ui.print.license} ${host}`);
-  doc.setLanguage("da-DK");
+  doc.setLanguage(site.ogLocale.replace("_", "-"));
   const fonts = path.join(process.cwd(), "assets", "fonts");
   const bold = await doc.embedFont(await readFile(path.join(fonts, "bricolage-grotesque-latin-700-normal.woff")), { subset: true });
   const heavy = await doc.embedFont(await readFile(path.join(fonts, "bricolage-grotesque-latin-800-normal.woff")), { subset: true });

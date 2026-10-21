@@ -271,7 +271,7 @@ export const guidesEn: Guide[] = [
       },
       {
         kort: "Gottman & Levenson 1992",
-        fuld: "Gottman, J. M., & Levenson, R. W. (1992). Marital processes predictive of later dissolution: Behavior, physiology, and health. Journal of Personality and Social Psychology, 63(2), 221ff.",
+        fuld: "Gottman, J. M., & Levenson, R. W. (1992). Marital processes predictive of later dissolution: Behavior, physiology, and health. Journal of Personality and Social Psychology, 63(2), 221-233.",
         forbehold:
           "73 couples followed over time. It shows a link between conflict patterns and later breakups, but the predictions were not tested on a new group of couples.",
       },
@@ -326,7 +326,7 @@ export const guidesEn: Guide[] = [
           "Some arguments go in circles because you're both too upset to listen. Then it's often wiser to stop than to keep going.",
         ],
         punkter: [
-          "Agree ahead of time on a word or a signal that means pause, and that either of you can use it.",
+          "Agree ahead of time on a word or a signal that means pause, one that either of you can use.",
           "Say when you'll pick the conversation back up, for example in an hour or tomorrow after dinner.",
           "Use the break for something that slows you down, like a walk, not for polishing your arguments.",
           "When you start again, start gently.",
@@ -336,7 +336,7 @@ export const guidesEn: Guide[] = [
         h2: "When should you get help?",
         tekst: [
           "These exercises are for couples who are doing reasonably well and want to talk better. They aren't enough if your conversations often end in fights you can't find your way out of, or if the same conflict keeps going in circles.",
-          "If there is violence, threats, or controlling behavior in the relationship, these exercises are not the right place to start. Contact your local emergency number or a domestic violence hotline (findahelpline.com lists them by country). If one of you feels unsafe or pressured, or has been struggling with mental health for a long time, talk to a doctor or a licensed counselor. If anyone is in immediate danger, call your local emergency number.",
+          "If there is violence, threats, or controlling behavior in the relationship, these exercises are not the right place to start. Contact a domestic violence hotline (findahelpline.com lists them by country). If one of you feels unsafe or pressured, or has been struggling with mental health for a long time, talk to a doctor or a licensed counselor. If anyone is in immediate danger, call your local emergency number.",
         ],
       },
     ],
@@ -348,7 +348,7 @@ export const guidesEn: Guide[] = [
       "How would you like me to respond when you tell me about something you're happy about?",
       "What did I do the last time you felt really heard by me?",
       "What topic do we often avoid because it usually goes badly?",
-      "What would make it easier for you to push back with me?",
+      "What would make it easier for you to disagree with me?",
       "What does a break in the middle of a disagreement mean to you?",
       "How can we show each other we're still on the same team when we disagree?",
       "What time of day is best for us to talk about something hard?",
