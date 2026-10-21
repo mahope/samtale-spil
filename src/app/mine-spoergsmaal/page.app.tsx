@@ -1,7 +1,7 @@
-"use client";
-
 import { AppScreen } from "@/components/app/AppScreen";
 import { MineSpoergsmaal } from "./MineSpoergsmaal";
+
+export const metadata = { title: "Dine egne spørgsmål" };
 
 export default function MineSpoergsmaalScreen() {
   return (

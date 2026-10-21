@@ -37,7 +37,8 @@ export function TabBar({ tabs, active, pathname }: { tabs: TabSpec[]; active: st
                   // Tapping the tab you are on scrolls back to the top, like the system apps
                   if (pathname === t.href) {
                     e.preventDefault();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    window.scrollTo({ top: 0, behavior: still ? "auto" : "smooth" });
                   }
                 }}
                 className={`app-press flex h-full flex-col items-center justify-center gap-px pt-1 text-[10px] font-medium leading-none tracking-[0.01em] android:gap-1 android:pt-0 android:text-xs android:tracking-normal ${

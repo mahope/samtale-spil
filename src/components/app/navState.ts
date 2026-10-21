@@ -70,6 +70,31 @@ export function registeredTabRoots(): string[] {
   return tabRoots;
 }
 
+export type Direction = "none" | "push" | "pop" | "tab";
+
+/**
+ * How the next screen comes in. A step back pops; landing on another tab's root is a tab switch
+ * (no slide on iOS, fade through on Android), also from a screen pushed inside a tab.
+ */
+export function slideDirection(o: { fromDepth: number; toDepth: number; fromTab: string; toTab: string; popping: boolean; still: boolean }): Direction {
+  if (o.still) return "none";
+  if (o.popping) return "pop";
+  if (o.toDepth === 0 && (o.fromDepth === 0 || o.toTab !== o.fromTab)) return "tab";
+  return o.toDepth < o.fromDepth ? "pop" : "push";
+}
+
+/**
+ * What Android's back button does in the app shell: leave the app from Spil ("/"), go to Spil
+ * from the other tab roots (Material: back from a top destination goes to the start one), and
+ * step back from a pushed screen or a game, or go to Spil when there is nothing to step back to.
+ */
+export function androidBack(path: string, canGoBack: boolean, tabRoots: string[]): "exit" | "home" | "back" {
+  const p = normalizePath(path);
+  if (p === "/") return "exit";
+  if (tabRoots.includes(p) || !canGoBack) return "home";
+  return "back";
+}
+
 export function currentPlatform(): "ios" | "android" | "web" {
   if (typeof document === "undefined") return "web";
   const p = document.documentElement.dataset.platform;
