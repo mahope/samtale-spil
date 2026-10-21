@@ -5,6 +5,7 @@ import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistratio
 import { NativeBoot } from "@/components/NativeBoot";
 import { NativeReminders } from "@/components/NativeReminders";
 import { SITE_URL, SITE_NAME, CATEGORY_COUNT, QUESTION_COUNT_LABEL } from "@/config/site";
+import { PLAUSIBLE_SRC, plausibleInitScript, themeInitScript } from "@/config/headScripts";
 
 const display = Bricolage_Grotesque({
   variable: "--font-display",
@@ -72,25 +73,6 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-// Inline script to set theme before hydration (prevents flash)
-const themeInitScript = `
-(function() {
-  try {
-    var theme = localStorage.getItem('theme');
-    var isDark = theme === 'dark' ||
-      (theme === 'system' || !theme) && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.classList.add(isDark ? 'dark' : 'light');
-    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-  } catch (e) {}
-})();
-`;
-
-// Plausible CE (analytics.holstjensen.eu): cookieless, self-hosted in the EU.
-// The pa-<id>.js script only sends events once plausible.init() has run. Inside the
-// apps the page host is localhost, which Plausible skips unless captureOnLocalhost is set.
-const plausibleInitScript =
-  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init(window.Capacitor?{captureOnLocalhost:true}:undefined)";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -100,7 +82,7 @@ export default function RootLayout({
     <html lang="da" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <script async src="https://analytics.holstjensen.eu/js/pa-yk0peyirQvnSBppLjWJYB.js" />
+        <script async src={PLAUSIBLE_SRC} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
       </head>
       <body>

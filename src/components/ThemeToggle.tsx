@@ -2,12 +2,13 @@
 
 import { useEffect, useState, useCallback, useLayoutEffect } from "react";
 
-type Theme = "light" | "dark" | "system";
+export type Theme = "light" | "dark" | "system";
 
 // Use useLayoutEffect on client, useEffect on server to avoid hydration mismatch
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
-export function ThemeToggle({ className = "" }: { className?: string }) {
+/** The chosen theme (light, dark or follow the system) and the resolved look; the app's settings use it too */
+export function useTheme() {
   // Initialize with lazy function to read from localStorage immediately if available
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window === 'undefined') return "system";
@@ -50,11 +51,17 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     return () => mediaQuery.removeEventListener("change", updateTheme);
   }, [theme, mounted]);
 
-  const toggleTheme = useCallback(() => {
-    const next: Theme = theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
+  const setTheme = useCallback((next: Theme) => {
     setThemeState(next);
     localStorage.setItem("theme", next);
-  }, [theme]);
+  }, []);
+
+  return { theme, isDark, mounted, setTheme };
+}
+
+export function ThemeToggle({ className = "" }: { className?: string }) {
+  const { theme, isDark, mounted, setTheme } = useTheme();
+  const toggleTheme = () => setTheme(theme === "light" ? "dark" : theme === "dark" ? "system" : "light");
 
   // Don't render until mounted to avoid hydration mismatch
   if (!mounted) {

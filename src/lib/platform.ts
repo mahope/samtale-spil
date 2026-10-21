@@ -38,3 +38,15 @@ export async function shareText(text: string, url?: string): Promise<"delt" | "k
     return "afbrudt";
   }
 }
+
+/** "2.1.0 (57)" from the installed app, or null on the web */
+export async function appVersion(): Promise<string | null> {
+  if (!isNative()) return null;
+  try {
+    const { App } = await import("@capacitor/app");
+    const info = await App.getInfo();
+    return `${info.version} (${info.build})`;
+  } catch {
+    return null;
+  }
+}

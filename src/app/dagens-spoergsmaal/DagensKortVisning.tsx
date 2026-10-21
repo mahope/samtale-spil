@@ -11,8 +11,11 @@ const noSubscribe = () => () => {};
 const datoTekst = (key: string) =>
   new Date(`${key}T12:00:00Z`).toLocaleDateString("da-DK", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 
-/** Today's card and the past week. The server renders the build day; in the browser it follows the Danish date. */
-export function DagensKortVisning({ buildKey }: { buildKey: string }) {
+/**
+ * Today's card and the past week. The server renders the build day; in the browser it follows the Danish date.
+ * In the app (app) the past cards open in the game, because the app has no /spoergsmaal/ pages.
+ */
+export function DagensKortVisning({ buildKey, app = false }: { buildKey: string; app?: boolean }) {
   const key = useSyncExternalStore(noSubscribe, () => danishDateKey(new Date()), () => buildKey);
   const { q, c } = dagensKortForDato(key);
   return (
@@ -43,7 +46,7 @@ export function DagensKortVisning({ buildKey }: { buildKey: string }) {
               <span className="w-44 shrink-0 text-sm font-semibold text-blaek-2 first-letter:uppercase">{datoTekst(dag)}</span>
               <span>
                 {tidligere.q.text}{" "}
-                <Link href={`/spoergsmaal/${tidligere.c.id}/`} className="text-sm text-blaek-2 underline">
+                <Link href={app ? `/spil/${tidligere.c.id}/?question=${tidligere.q.id}` : `/spoergsmaal/${tidligere.c.id}/`} className="text-sm text-blaek-2 underline">
                   {tidligere.c.name}
                 </Link>
               </span>

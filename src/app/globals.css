@@ -3,6 +3,10 @@
 /* Override dark variant to use class instead of media query */
 @variant dark (&:where(.dark, .dark *));
 
+/* App shell (src/components/app): iOS forms are the default, "android:" switches to Material.
+   <html data-platform> is only set in the app build, so the site never matches. */
+@custom-variant android (&:where([data-platform="android"] *));
+
 /*
  * Snakkespil: "spillebordet". A green card table, white playing cards and a
  * coloured box per deck (src/data/decks.ts). Tokens are named after the table.

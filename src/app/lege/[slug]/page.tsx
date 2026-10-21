@@ -9,6 +9,7 @@ import { getDeck } from "@/data/decks";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack } from "@/components/deck/DeckParts";
+import { LegeListe } from "./LegeListe";
 import { OG_BASE, SITE_URL } from "@/config/site";
 
 interface Props {
@@ -80,28 +81,7 @@ export default async function LegePage({ params }: Props) {
 
           <section id="lege" className="mt-14 scroll-mt-6">
             <h2 className="text-2xl font-bold sm:text-3xl">Lege</h2>
-            <div className="mt-6 space-y-8">
-              {side.lege.map((leg, i) => (
-                <div key={leg.navn} className="rounded-2xl bg-flade p-5 ring-1 ring-streg">
-                  <h3 className="text-xl font-bold">
-                    {i + 1}. {leg.navn}
-                  </h3>
-                  <p className="mt-1 text-[0.95rem] text-blaek-2">
-                    {leg.antal} spillere, {leg.tid}, {leg.alder.charAt(0).toLowerCase() + leg.alder.slice(1)}
-                  </p>
-                  <ol className="mt-3 list-decimal space-y-1.5 pl-5">
-                    {leg.saadan.map((trin) => (
-                      <li key={trin}>{trin}</li>
-                    ))}
-                  </ol>
-                  {leg.variant && (
-                    <p className="mt-3 text-blaek-2">
-                      <strong className="font-semibold text-blaek">Variant:</strong> {leg.variant}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
+            <LegeListe side={side} />
           </section>
 
           <section className="mt-14">

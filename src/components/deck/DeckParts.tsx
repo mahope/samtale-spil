@@ -159,3 +159,41 @@ export function DeckTile({
     </Link>
   );
 }
+
+/**
+ * A deck as a standing card box for the app's shelves: the patterned back with the mark and
+ * the count, the name under it. Large tap target, no hover.
+ */
+export function DeckBox({
+  categoryId,
+  name,
+  count,
+  href,
+  familievenlig,
+}: {
+  categoryId: string;
+  name: string;
+  count: number;
+  href: string;
+  familievenlig?: boolean;
+}) {
+  const deck = getDeck(categoryId);
+  return (
+    <Link
+      href={href}
+      data-familie={familievenlig === undefined ? undefined : familievenlig ? "ja" : "nej"}
+      className="app-press group block w-[7.4rem] shrink-0 snap-start select-none"
+    >
+      <DeckBack
+        categoryId={categoryId}
+        className="relative flex aspect-[5/7] flex-col items-start justify-between rounded-[14px] p-3 shadow-[0_1px_0_rgb(0_0_0/0.08),0_6px_14px_-8px_rgb(0_0_0/0.45)] ring-1 ring-black/10 transition-transform duration-150 group-active:scale-[0.96]"
+      >
+        <span className="font-display text-[2.6rem] font-extrabold leading-none">{deck.mark}</span>
+        <span className="self-start rounded-full bg-black/15 px-2 py-0.5 text-[11px] font-bold tabular-nums" style={{ color: deck.ink }}>
+          {ui.deck.cards(count)}
+        </span>
+      </DeckBack>
+      <span className="mt-2 line-clamp-2 block text-[15px] font-semibold leading-tight">{name}</span>
+    </Link>
+  );
+}

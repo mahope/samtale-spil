@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { ui } from "@/locale/ui";
 import { useState, useRef, useEffect } from "react";
 import type { Category } from "@/types";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -93,7 +94,7 @@ export function GameHeader({
       <div className="flex items-center justify-between gap-2">
         {/* Back button */}
         <Link
-          href="/spil/"
+          href={ui.play.backHref}
           className="inline-flex items-center gap-1.5 text-white/90 hover:text-white transition-colors focus:ring-2 focus:ring-white/50 rounded-lg p-2 -ml-2 min-w-[44px] min-h-[44px] shrink-0"
           aria-label="Tilbage til kategorioversigt"
         >

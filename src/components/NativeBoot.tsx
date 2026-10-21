@@ -2,7 +2,14 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Capacitor } from "@capacitor/core";
 import { isNative } from "@/lib/platform";
+
+/** The Snakkespil app's tab roots (layout.app.tsx); back on one of them goes to Spil, then out */
+const TAB_ROOTS = ["/dagens-spoergsmaal/", "/favoritter/", "/mere/"];
+
+/** The app shell (layout.app.tsx) marks <html data-shell="app">; the other apps are the site in a web view */
+const hasAppShell = () => document.documentElement.dataset.shell === "app";
 
 /**
  * App-only start-up. On the web this renders nothing and does nothing.
@@ -13,7 +20,10 @@ export function NativeBoot() {
 
   useEffect(() => {
     if (!isNative()) return;
-    document.documentElement.classList.add("native");
+    const html = document.documentElement;
+    html.classList.add("native");
+    // layout.app.tsx sets this before the first paint; this covers a bridge that loaded late
+    if (hasAppShell()) html.dataset.platform = Capacitor.getPlatform();
     const cleanups: (() => void)[] = [];
 
     (async () => {
@@ -24,10 +34,31 @@ export function NativeBoot() {
         import("@capacitor/local-notifications"),
       ]);
 
-      StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
-      StatusBar.setBackgroundColor({ color: "#1d4a38" }).catch(() => {});
-      // Style.Dark = light text, for the dark green strip
-      StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      if (hasAppShell()) {
+        // The screens draw under the status bar and pad themselves (app-shell.css), so the
+        // navigation bar's colour runs to the top edge like in a native app
+        StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
+        // Light text on the felt and in dark mode, dark text on the paper screens
+        let current: string | null = null;
+        const syncStyle = () => {
+          const felt = !document.querySelector(".app-has-tabbar");
+          const style = felt || html.classList.contains("dark") ? Style.Dark : Style.Light;
+          if (style === current) return;
+          current = style;
+          StatusBar.setStyle({ style }).catch(() => {});
+        };
+        syncStyle();
+        const observer = new MutationObserver(syncStyle);
+        observer.observe(html, { attributes: true, attributeFilter: ["class"] });
+        // Screens are swapped as children of the shell, so this catches every route change
+        observer.observe(document.body, { childList: true, subtree: true });
+        cleanups.push(() => observer.disconnect());
+      } else {
+        StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
+        StatusBar.setBackgroundColor({ color: "#1d4a38" }).catch(() => {});
+        // Style.Dark = light text, for the dark green strip
+        StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+      }
       SplashScreen.hide().catch(() => {});
 
       // The app's web server answers unknown paths with the front page. If that
@@ -36,10 +67,19 @@ export function NativeBoot() {
         router.replace(window.location.pathname + window.location.search);
       }
 
-      // Android back button: go back, or leave the app from the front page
       const back = await App.addListener("backButton", ({ canGoBack }) => {
-        if (canGoBack && window.location.pathname !== "/") window.history.back();
-        else App.exitApp();
+        const path = window.location.pathname;
+        if (path === "/") return App.exitApp();
+        if (!hasAppShell()) {
+          // Go back, or leave the app from the front page
+          if (canGoBack) window.history.back();
+          else App.exitApp();
+          return;
+        }
+        // App shell: from another tab go to Spil; from a pushed screen or a game go back
+        const root = path.endsWith("/") ? path : `${path}/`;
+        if (TAB_ROOTS.includes(root) || !canGoBack) router.replace("/");
+        else window.history.back();
       });
       cleanups.push(() => back.remove());
 

@@ -8,10 +8,11 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { track } from "@/utils/track";
 import { JOKER_KEY } from "@/lib/joker";
 
-const HOURS = [7, 8, 12, 16, 17, 18, 19, 20, 21];
-const WEEKDAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
+export const HOURS = [7, 8, 12, 16, 17, 18, 19, 20, 21];
+export const WEEKDAYS = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
 
-export function ReminderSettings() {
+/** Reminder and joker state with the scheduling side effects; the app's Indstillinger uses it too */
+export function useReminderSettings() {
   const [stored, setReminder] = useLocalStorage<Reminder>(REMINDER_KEY, DEFAULT_REMINDER);
   // Older versions stored no frequency or weekday
   const reminder = normalizeReminder(stored);
@@ -47,6 +48,12 @@ export function ReminderSettings() {
       setMessage("Telefonen tillader ikke notifikationer fra Snakkespil. Slå dem til under Indstillinger på telefonen.");
     }
   };
+
+  return { reminder, native, message, apply, jokerOn, setJokerOn };
+}
+
+export function ReminderSettings() {
+  const { reminder, native, message, apply, jokerOn, setJokerOn } = useReminderSettings();
 
   return (
     <div className="space-y-10">

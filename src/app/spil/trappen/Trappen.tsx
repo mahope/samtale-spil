@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ui } from "@/locale/ui";
 import { SequenceGame, type SequenceStep } from "@/components/SequenceGame";
 import { DeckBack } from "@/components/deck/DeckParts";
 
@@ -39,7 +40,7 @@ export function Trappen() {
   return (
     <div className="min-h-dvh bg-papir">
       <main id="main-content" className="mx-auto max-w-xl px-4 pb-16 pt-safe sm:px-6">
-        <Link href="/spil/" className="mt-4 inline-flex min-h-11 items-center font-semibold text-blaek-2 hover:text-blaek">
+        <Link href={ui.play.backHref} className="mt-4 inline-flex min-h-11 items-center font-semibold text-blaek-2 hover:text-blaek">
           Tilbage til spillene
         </Link>
         <h1 className="mt-4 text-4xl font-extrabold tracking-[-0.025em]" style={{ fontStretch: "88%" }}>

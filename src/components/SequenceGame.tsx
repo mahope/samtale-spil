@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ui } from "@/locale/ui";
 import { AnimatePresence, motion } from "motion/react";
 import { categories, getCategory } from "@/data/categories";
 import { useFavorites } from "@/hooks/useLocalStorage";
@@ -119,7 +120,7 @@ export function SequenceGame({
             <button type="button" onClick={restart} className="min-h-14 rounded-full bg-kridt px-6 text-lg font-bold text-kridt-blaek">
               En runde til
             </button>
-            <Link href="/spil/" className="inline-flex min-h-12 items-center justify-center rounded-full font-semibold text-white underline underline-offset-4">
+            <Link href={ui.play.backHref} className="inline-flex min-h-12 items-center justify-center rounded-full font-semibold text-white underline underline-offset-4">
               Vælg et andet spil
             </Link>
           </div>

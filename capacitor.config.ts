@@ -30,8 +30,9 @@ const config: CapacitorConfig = {
     StatusBar: {
       style: "DARK",
       backgroundColor: "#1d4a38",
-      // A fixed felt-green strip: readable on both the felt and the paper pages
-      overlaysWebView: false,
+      // Snakkespil has its own app shell that draws under the status bar (NativeBoot sets the
+      // text colour per screen). Goodtalk and 18+ keep a fixed felt-green strip.
+      overlaysWebView: !goodtalk && !voksen,
     },
     LocalNotifications: {
       smallIcon: "ic_stat_snakkespil",
