@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { androidBack, markPop, previousScreen, recordNavigation, rememberTitle, slideDirection } from "@/components/app/navState";
-import { SNAKKESPIL_TABS } from "@/components/app/tabs";
+import {
+  androidBack,
+  markPop,
+  previousScreen,
+  recordNavigation,
+  registerTabRoots,
+  registeredTabRoots,
+  rememberTitle,
+  slideDirection,
+} from "@/components/app/navState";
+import { GOODTALK_TABS, SNAKKESPIL_TABS, VOKSEN_TABS } from "@/components/app/tabs";
 
 describe("app shell navigation stack", () => {
   it("knows the screen below, before and after the shell records the new one", () => {
@@ -61,5 +70,25 @@ describe("Android back in the app shell", () => {
     expect(androidBack("/indstillinger/", true, roots)).toBe("back");
     expect(androidBack("/spil/familie/", true, roots)).toBe("back");
     expect(androidBack("/spil/familie/", false, roots)).toBe("home");
+  });
+});
+
+describe("tab roots of each app", () => {
+  it("gives NativeBoot the roots of the app that is running", () => {
+    registerTabRoots(GOODTALK_TABS.map((t) => t.href));
+    expect(androidBack("/favorites/", true, registeredTabRoots())).toBe("home");
+    expect(androidBack("/settings/", true, registeredTabRoots())).toBe("back");
+    // A Danish tab root is not a root in Goodtalk
+    expect(androidBack("/favoritter/", true, registeredTabRoots())).toBe("back");
+    registerTabRoots(VOKSEN_TABS.map((t) => t.href));
+    expect(androidBack("/i-aften", true, registeredTabRoots())).toBe("home");
+    expect(androidBack("/spil/udfordringer/", true, registeredTabRoots())).toBe("back");
+  });
+
+  it("starts every app's tabs at /, where the Android back button leaves the app", () => {
+    for (const tabs of [SNAKKESPIL_TABS, GOODTALK_TABS, VOKSEN_TABS]) {
+      expect(tabs[0].href).toBe("/");
+      expect(tabs).toHaveLength(4);
+    }
   });
 });

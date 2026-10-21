@@ -6,7 +6,7 @@ import { NativeBoot } from "@/components/NativeBoot";
 import { NativeReminders } from "@/components/NativeReminders";
 import { AppShell } from "@/components/app/AppShell";
 import { SNAKKESPIL_TABS } from "@/components/app/tabs";
-import { PLAUSIBLE_SRC, plausibleInitScript, themeInitScript } from "@/config/headScripts";
+import { appPlatformScript, PLAUSIBLE_SRC, plausibleInitScript, themeInitScript } from "@/config/headScripts";
 import { SITE_NAME } from "@/config/site";
 import { legeSider } from "@/data/lege";
 
@@ -30,10 +30,6 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-// data-platform picks the iOS or Material look before the first paint. In a browser preview
-// ?platform=ios|android forces one for the rest of the session.
-const platformScript = `(function(){try{var d=document.documentElement,s=sessionStorage,q=new URLSearchParams(location.search).get('platform');if(q==='ios'||q==='android'||q==='web')s.setItem('app-platform',q);var c=window.Capacitor,p=c&&c.getPlatform?c.getPlatform():'web';if(p==='web')p=s.getItem('app-platform')||'web';d.dataset.platform=p;}catch(e){}})();`;
-
 // The table with the card fills the screen: no tab bar there
 const fullscreen = ["/spil/", "/multiplayer/", ...legeSider.map((s) => `/lege/${s.slug}/kort/`)];
 
@@ -41,7 +37,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-shell="app" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: platformScript }} />
+        <script dangerouslySetInnerHTML={{ __html: appPlatformScript }} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src={PLAUSIBLE_SRC} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />

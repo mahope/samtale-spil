@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { tap } from "@/lib/platform";
+import { ui } from "@/locale/ui";
 import { TAB_ICONS, type TabIcon } from "./icons";
 
 export interface TabSpec {
@@ -19,7 +20,7 @@ export interface TabSpec {
 export function TabBar({ tabs, active, pathname }: { tabs: TabSpec[]; active: string; pathname: string }) {
   return (
     <nav
-      aria-label="Faner"
+      aria-label={ui.shell.tabs}
       className="app-tabbar fixed inset-x-0 bottom-0 z-40 select-none border-t-[0.5px] border-streg bg-papir/80 pb-[var(--app-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 android:border-t-0 android:bg-flade-2 android:backdrop-blur-none"
     >
       <ul className="mx-auto flex h-[49px] max-w-xl android:h-20">

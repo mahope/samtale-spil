@@ -64,7 +64,16 @@ export function IconMere({ className, filled }: IconProps) {
   );
 }
 
-export const TAB_ICONS = { kort: IconKort, kalender: IconKalender, hjerte: IconHjerte, mere: IconMere };
+/** A crescent moon: tonight (the 18+ app's I aften tab) */
+export function IconMaane({ className, filled }: IconProps) {
+  return (
+    <Svg className={className} filled={filled}>
+      <path d="M19.6 14.6A8.2 8.2 0 0 1 9.4 4.4a8.2 8.2 0 1 0 10.2 10.2Z" />
+    </Svg>
+  );
+}
+
+export const TAB_ICONS = { kort: IconKort, kalender: IconKalender, hjerte: IconHjerte, mere: IconMere, maane: IconMaane };
 export type TabIcon = keyof typeof TAB_ICONS;
 
 /** iOS back: a chevron */

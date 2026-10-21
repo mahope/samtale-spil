@@ -149,4 +149,12 @@ export const ui = {
     copied: "Kopieret",
     dialogTitle: "Del spørgsmålet",
   },
+  /** The app shell (src/components/app) */
+  shell: {
+    tabs: "Faner",
+    backTo: (label: string) => `Tilbage til ${label}`,
+    more: "Mere",
+    moreHref: "/mere/",
+    skip: "Spring til indholdet",
+  },
 };

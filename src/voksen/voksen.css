@@ -1,0 +1,22 @@
+/*
+ * Snakkespil 18+ (layout.voksen.tsx only): the table is plum instead of green, and the dark
+ * look (the default) is a warm near-black, #1d1820 like the status bar and the 18+ deck.
+ */
+:root[data-variant="voksen"] {
+  --bord: #5a2347;
+  --bord-dyb: #43193a;
+  --bord-lys: #7a3462;
+  --graf: var(--bord);
+}
+:root[data-variant="voksen"].dark {
+  --papir: #1d1820;
+  --flade: #28212b;
+  --flade-2: #342b37;
+  --blaek: #f1ebf0;
+  --blaek-2: #bdaeb9;
+  --streg: #43384a;
+  --bord: #3b1d33;
+  --bord-dyb: #2a1424;
+  --bord-lys: #5c2f50;
+  --graf: var(--kridt);
+}

@@ -2,7 +2,8 @@ import { AppScreen } from "@/components/app/AppScreen";
 import { AppRow, AppSection } from "@/components/app/AppList";
 import { IconBlyant, IconBog, IconFest, IconHaand, IconInfo, IconLaas, IconSoejler, IconTandhjul } from "@/components/app/icons";
 import { version } from "../../../package.json";
-import { AppVersion, DelAppenRow } from "./MereRows";
+import { AppShareRow, AppVersion } from "@/components/app/AppShareRow";
+import { SITE_URL } from "@/config/site";
 
 export const metadata = { title: "Mere" };
 
@@ -30,11 +31,16 @@ export default function MereTab() {
       </AppSection>
 
       <AppSection>
-        <DelAppenRow />
+        <AppShareRow
+          label="Del Snakkespil"
+          text="Snakkespil: gratis samtalekort på dansk til par, familie og venner."
+          url={`${SITE_URL}/`}
+          copied="Linket er kopieret"
+        />
       </AppSection>
 
       <p className="mt-8 text-center text-[13px] text-blaek-2">
-        <AppVersion fallback={version} />
+        <AppVersion name="Snakkespil" fallback={version} />
         <br />
         Gratis, uden reklamer og uden konto.
       </p>
