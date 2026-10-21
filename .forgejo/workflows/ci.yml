@@ -149,8 +149,9 @@ jobs:
           done
           test ! -e out/questions && test ! -e out/guide && test ! -e out/print || { echo "website pages leaked into the Goodtalk app"; exit 1; }
           # no Danish UI words, shell texts or cards anywhere in the English app
-          if grep -rlqE 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/; then
-            grep -rlE 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/ | head -5
+          # (public/manifest.json is the Danish site's PWA manifest; every build copies it, no app page links it)
+          if grep -rlqE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/; then
+            grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/ | head -5
             echo "Danish text in the Goodtalk app"; exit 1
           fi
           if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"' out/; then echo "adult cards in the Goodtalk app"; exit 1; fi

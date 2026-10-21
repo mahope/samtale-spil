@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { PlayScreen, dealMotion } from "@/components/PlayScreen";
 import { track } from "@/utils/track";
+import { ui } from "@/locale/ui";
 import type { Question } from "@/types";
 
 export interface YearStep {
@@ -54,7 +55,7 @@ export function YearInReview({ steps }: { steps: YearStep[] }) {
             >
               One more round
             </button>
-            <Link href="/play/" className="inline-flex min-h-12 items-center justify-center rounded-full font-semibold text-white underline underline-offset-4">
+            <Link href={ui.play.backHref} className="inline-flex min-h-12 items-center justify-center rounded-full font-semibold text-white underline underline-offset-4">
               Pick another deck
             </Link>
           </div>
