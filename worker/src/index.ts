@@ -30,6 +30,8 @@ interface RateLimit {
 type Card = { t: string; c: string; d: string; a?: 1; e?: string; ce?: string };
 const CARDS = cards as Record<string, Card>;
 const DECK_IDS = new Set(Object.values(CARDS).map((c) => c.d));
+/** Decks Goodtalk shows: those with English cards */
+const DECK_IDS_EN = new Set(Object.values(CARDS).filter((c) => c.e).map((c) => c.d));
 const cardFor = (id: string): Card | undefined => (Object.hasOwn(CARDS, id) ? CARDS[id] : undefined);
 
 const REASONS: Record<string, string> = {
@@ -42,7 +44,7 @@ const REASONS: Record<string, string> = {
 };
 
 type Site = "da" | "en";
-const siteOf = (request: Request): Site => (new URL(request.url).hostname.endsWith("goodtalkcards.com") ? "en" : "da");
+const siteOf = (request: Request): Site => (new URL(request.url).hostname === "goodtalkcards.com" ? "en" : "da");
 const PLAUSIBLE_SITE: Record<Site, string> = { da: "snakkespil.dk", en: "goodtalkcards.com" };
 
 const TEXT = {
@@ -213,7 +215,7 @@ async function handleStats(request: Request, env: Env, ctx: ExecutionContext): P
     kortVendt: flipped[0]?.metrics[0] ?? 0,
     // Event props can be sent by anyone, so only known decks and cards are shown
     bunker: perDeck
-      .filter((r) => DECK_IDS.has(r.dimensions[0]) && r.dimensions[0] !== "voksne")
+      .filter((r) => (site === "en" ? DECK_IDS_EN : DECK_IDS).has(r.dimensions[0]) && r.dimensions[0] !== "voksne")
       .map((r) => ({ id: r.dimensions[0], spil: r.metrics[0] }))
       .sort((a, b) => b.spil - a.spil),
     kort: topCards

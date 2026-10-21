@@ -3,6 +3,8 @@
 name = "snakkespil-api"
 main = "src/index.ts"
 compatibility_date = "2026-10-01"
+# Only the two routes: the Cache API (stats cache) does not work on workers.dev
+workers_dev = false
 routes = [
   { pattern = "snakkespil.dk/api/*", zone_name = "snakkespil.dk" },
   { pattern = "goodtalkcards.com/api/*", zone_name = "goodtalkcards.com" },

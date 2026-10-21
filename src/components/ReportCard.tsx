@@ -35,7 +35,7 @@ function loadTurnstile(): Promise<TurnstileApi> {
 
 /**
  * "Rapportér": lets a player tell Mads that a card has a problem. The report goes
- * to the snakkespil.dk worker, which checks Turnstile and mails it on. Nothing about
+ * to the site's worker (/api), which checks Turnstile and mails it on. Nothing about
  * the player is sent: only the card id, a reason and an optional comment.
  */
 export function ReportCard({ questionId }: { questionId: string }) {
