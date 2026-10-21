@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { API_BASE, TURNSTILE_SITEKEY } from "@/config/api";
 import { track } from "@/utils/track";
+import { ui } from "@/locale/ui";
 
 type TurnstileApi = {
   render: (el: HTMLElement, opts: Record<string, unknown>) => string;
@@ -11,14 +12,8 @@ type TurnstileApi = {
   reset: (id: string) => void;
 };
 
-const REASONS = [
-  { id: "stavefejl", label: "Stavefejl eller sprog" },
-  { id: "upassende", label: "Upassende eller sårende" },
-  { id: "dublet", label: "Det samme som et andet kort" },
-  { id: "dybde", label: "Forkert dybde (let, medium, dyb)" },
-  { id: "forslag", label: "Jeg har et bedre forslag" },
-  { id: "andet", label: "Andet" },
-];
+// The ids are what the worker accepts; the labels follow the site's language
+const REASONS = ["stavefejl", "upassende", "dublet", "dybde", "forslag", "andet"].map((id) => ({ id, label: ui.report.reasons[id] }));
 
 let turnstileLoading: Promise<TurnstileApi> | null = null;
 function loadTurnstile(): Promise<TurnstileApi> {
@@ -66,12 +61,12 @@ export function ReportCard({ questionId }: { questionId: string }) {
         if (cancelled || !widgetRef.current) return;
         widgetIdRef.current = t.render(widgetRef.current, {
           sitekey: TURNSTILE_SITEKEY,
-          language: "da",
+          language: ui.report.turnstileLanguage,
           callback: (tok: string) => setToken(tok),
           "expired-callback": () => setToken(""),
         });
       })
-      .catch(() => setMessage("Spambeskyttelsen kunne ikke indlæses. Tjek forbindelsen, og prøv igen."));
+      .catch(() => setMessage(ui.report.noTurnstile));
     return () => {
       cancelled = true;
       const t = (window as unknown as { turnstile?: TurnstileApi }).turnstile;
@@ -117,13 +112,13 @@ export function ReportCard({ questionId }: { questionId: string }) {
         track("Kort rapporteret", { aarsag: reason });
       } else {
         setStatus("error");
-        setMessage(data.fejl ?? "Rapporten kunne ikke sendes.");
+        setMessage(data.fejl ?? ui.report.failed);
         resetChallenge();
       }
     } catch {
       if (controller.signal.aborted) return;
       setStatus("error");
-      setMessage("Rapporten kunne ikke sendes. Tjek forbindelsen.");
+      setMessage(ui.report.offline);
       resetChallenge();
     }
   };
@@ -134,8 +129,8 @@ export function ReportCard({ questionId }: { questionId: string }) {
         type="button"
         onClick={() => setOpen(true)}
         className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full bg-white text-[#15201b] shadow-kort"
-        aria-label="Rapportér et problem med kortet"
-        title="Rapportér"
+        aria-label={ui.report.button}
+        title={ui.report.buttonTitle}
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 21V4m0 0h11l-2 4 2 4H4" />
@@ -152,18 +147,18 @@ export function ReportCard({ questionId }: { questionId: string }) {
         >
           {status === "sent" ? (
             <div className="p-6">
-              <h2 id={titleId} className="text-2xl font-bold">Tak for hjælpen</h2>
-              <p className="mt-2 text-blaek-2">Din rapport er sendt. Kortet bliver kigget på.</p>
+              <h2 id={titleId} className="text-2xl font-bold">{ui.report.thanks}</h2>
+              <p className="mt-2 text-blaek-2">{ui.report.sent}</p>
               <button type="button" onClick={close} className="mt-6 min-h-12 w-full rounded-full bg-bord font-bold text-white">
-                Luk
+                {ui.report.close}
               </button>
             </div>
           ) : (
             <form onSubmit={send} className="p-6">
-              <h2 id={titleId} className="text-2xl font-bold">Rapportér kortet</h2>
-              <p className="mt-1 text-blaek-2">Hvad er der galt? Rapporten er anonym.</p>
+              <h2 id={titleId} className="text-2xl font-bold">{ui.report.title}</h2>
+              <p className="mt-1 text-blaek-2">{ui.report.lead}</p>
               <fieldset className="mt-4 space-y-1.5">
-                <legend className="sr-only">Årsag</legend>
+                <legend className="sr-only">{ui.report.reasonLegend}</legend>
                 {REASONS.map((r) => (
                   <label key={r.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-2 hover:bg-flade-2">
                     <input type="radio" name="aarsag" value={r.id} checked={reason === r.id} onChange={() => setReason(r.id)} className="h-5 w-5 accent-[var(--bord)]" />
@@ -172,7 +167,7 @@ export function ReportCard({ questionId }: { questionId: string }) {
                 ))}
               </fieldset>
               <label className="mt-4 block font-semibold" htmlFor={`${titleId}-k`}>
-                Kommentar <span className="font-normal text-blaek-2">(valgfri, uden links)</span>
+                {ui.report.comment} <span className="font-normal text-blaek-2">{ui.report.commentHint}</span>
               </label>
               <textarea
                 id={`${titleId}-k`}
@@ -185,7 +180,7 @@ export function ReportCard({ questionId }: { questionId: string }) {
               {/* Honeypot: hidden from people, tempting for bots */}
               <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
                 <label>
-                  Hjemmeside
+                  {ui.report.honeypot}
                   <input tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} name="website" />
                 </label>
               </div>
@@ -197,14 +192,14 @@ export function ReportCard({ questionId }: { questionId: string }) {
               )}
               <div className="mt-5 flex gap-3">
                 <button type="button" onClick={close} className="min-h-12 flex-1 rounded-full font-semibold ring-1 ring-streg">
-                  Annullér
+                  {ui.report.cancel}
                 </button>
                 <button
                   type="submit"
                   disabled={!reason || !token || status === "sending"}
                   className="min-h-12 flex-1 rounded-full bg-bord font-bold text-white disabled:opacity-50"
                 >
-                  {status === "sending" ? "Sender" : "Send"}
+                  {status === "sending" ? ui.report.sending : ui.report.send}
                 </button>
               </div>
             </form>

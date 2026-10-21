@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 
 export default function SamletPage() {
   const deckNames = Object.fromEntries(categories.map((c) => [c.id, c.name]));
+  const deckHref = Object.fromEntries(categories.map((c) => [c.id, `/spoergsmaal/${c.id}/`]));
   return (
     <>
       <SiteHeader />
@@ -29,7 +30,7 @@ export default function SamletPage() {
           kan genkendes. Din egen statistik ligger kun på din telefon under{" "}
           <Link href="/statistik/" className="underline">Din statistik</Link>.
         </p>
-        <SamletStatistik deckNames={deckNames} />
+        <SamletStatistik deckNames={deckNames} deckHref={deckHref} />
       </main>
       <SiteFooter />
     </>

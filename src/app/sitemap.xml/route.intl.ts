@@ -19,6 +19,7 @@ const PAGES = [
   "/daily-question/",
   "/question-generator/",
   "/print/",
+  "/stats/",
   "/how-to-play/",
   "/about/",
   "/privacy/",

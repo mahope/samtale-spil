@@ -19,6 +19,12 @@ export default function Privacy() {
         We use Plausible, a privacy-friendly analytics tool hosted in the EU, to count page views and a few anonymous events such as
         &ldquo;a game was started&rdquo;. It sets no cookies and stores no personal data or IP addresses.
       </p>
+      <h2>Reporting a card</h2>
+      <p>
+        If you report a card, we receive the card, the reason you picked and your comment by email, sent through the email service Resend.
+        We don&rsquo;t receive your name, email or IP address. To keep spam out, the form uses Cloudflare Turnstile, which checks that you&rsquo;re
+        human; Cloudflare briefly uses your IP address for that check and to limit how many reports can come from one address.
+      </p>
       <h2>Who is responsible</h2>
       <p>Mahope, Denmark. Questions about privacy: mads@mahoje.dk.</p>
     </IntlTextPage>
