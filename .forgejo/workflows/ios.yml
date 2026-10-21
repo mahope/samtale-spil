@@ -1,8 +1,20 @@
 name: iOS
 
-# Compile check for the iOS app on the Mac runner (mahope-mac). Unsigned simulator
-# build: signing and TestFlight upload need the Apple team's certificates (issue #20).
+# iOS on the Mac runner (mahope-mac). Manual runs compile an unsigned simulator build; master builds are signed and uploaded to App Store Connect (scripts/store/ios-release.sh),
+# which only skips apps that have no App Store Connect record yet.
 on:
+  push:
+    branches: [master]
+    paths:
+      - "ios/**"
+      - "src/**"
+      - "public/**"
+      - "capacitor.config.ts"
+      - "next.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".forgejo/workflows/ios.yml"
+      - "scripts/store/ios-release.sh"
   workflow_dispatch:
 
 jobs:
@@ -54,6 +66,7 @@ jobs:
           fi
       - run: npx cap sync ios
       - name: Xcode build (simulator, unsigned)
+        if: github.event_name != 'push'
         working-directory: ios/App
         run: |
           set -euo pipefail
@@ -61,3 +74,14 @@ jobs:
             -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
             PRODUCT_BUNDLE_IDENTIFIER="${{ matrix.app_id }}" APP_DISPLAY_NAME="${{ matrix.app_name }}" APP_DEV_REGION="${{ matrix.site }}" \
             CODE_SIGNING_ALLOWED=NO build | tail -20
+
+      - name: Signed build to App Store Connect
+        if: github.event_name == 'push'
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8_B64: ${{ secrets.ASC_KEY_P8_B64 }}
+          IOS_DIST_P12_B64: ${{ secrets.IOS_DIST_P12_B64 }}
+          IOS_DIST_P12_PASSWORD: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+        # build numbers from 100 up, above the hand-made builds
+        run: bash scripts/store/ios-release.sh "${{ matrix.app_id }}" "${{ matrix.app_name }}" "${{ matrix.site }}" "$((100 + ${{ github.run_number }}))"
