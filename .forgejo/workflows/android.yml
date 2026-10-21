@@ -102,8 +102,10 @@ jobs:
           # the package id in the built app must be the one for this site
           aapt2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | tail -1)
           apk=$(find app/build/outputs/apk -name "*.apk" | head -1)
-          "$aapt2" dump badging "$apk" | grep -q "package: name='$APP_ID'" || { echo "forkert app-id i $apk"; exit 1; }
-          "$aapt2" dump badging "$apk" | grep -q "application-label:'$APP_NAME'" || { echo "forkert app-navn i $apk"; exit 1; }
+          # read it into a variable first: grep -q closing the pipe would fail aapt2 under pipefail
+          badging=$("$aapt2" dump badging "$apk")
+          grep -q "package: name='$APP_ID'" <<< "$badging" || { echo "forkert app-id i $apk:"; grep -E "^package:" <<< "$badging"; exit 1; }
+          grep -q "application-label:'$APP_NAME'" <<< "$badging" || { echo "forkert app-navn i $apk:"; grep -E "^application-label" <<< "$badging"; exit 1; }
 
       - name: Remove key
         if: always()

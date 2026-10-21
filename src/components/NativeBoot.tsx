@@ -3,10 +3,10 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { isNative } from "@/lib/platform";
-import { readReminder } from "@/lib/reminder";
 
 /**
  * App-only start-up. On the web this renders nothing and does nothing.
+ * Shared by every site; Danish-only reminders live in NativeReminders.
  */
 export function NativeBoot() {
   const router = useRouter();
@@ -49,13 +49,6 @@ export function NativeBoot() {
         if (typeof url === "string" && url.startsWith("/")) router.push(url);
       });
       cleanups.push(() => tap.remove());
-
-      // Keep the 14-day reminder window rolling
-      const reminder = readReminder();
-      if (reminder.enabled) {
-        const { scheduleDailyQuestion } = await import("@/lib/native");
-        scheduleDailyQuestion(reminder, { ask: false }).catch(() => {});
-      }
     })();
 
     return () => cleanups.forEach((fn) => fn());
