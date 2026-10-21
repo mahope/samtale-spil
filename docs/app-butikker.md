@@ -107,13 +107,13 @@ Samme native projekt bygget med `SITE_LOCALE=en`: CI sætter app-id og navn (`AP
 - **Marketing-URL:** https://goodtalkcards.com/
 - **Sprog:** English (U.S.) og English (U.K.)
 
-**Undertitel** (App Store, max 30): `Conversation cards for good talks`
+**Undertitel** (App Store, max 30): `Cards for better conversations`
 
 **Reklametekst** (max 170):
 `Draw a card, read the question out loud, and let the conversation flow. Over 2,500 questions for couples, families, friends and classrooms. Free, no ads.`
 
 **Søgeord** (max 100):
-`conversation cards,questions,couples,date night,family,friends,deep questions,would you rather,icebreakers`
+`conversation cards,questions,couples,date night,family,deep questions,would you rather,icebreakers`
 
 **Kort beskrivelse** (Google Play, max 80):
 `Free conversation cards for couples, families, friends and coworkers.`
@@ -130,7 +130,7 @@ Over 2,500 questions in decks for whoever you're with:
 • Friends, coworkers and holidays
 • Deep and philosophical questions, dreams, the past and the future
 • Would you rather, with 120 dilemmas
-• Hard conversations, with a simple frame for the talks that matter
+• Hard talks, for the conversations that matter
 
 Every card is marked light, medium or deep, so you choose how far in you want to go.
 

@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 };
 
 const plausibleInitScript =
-  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()";
+  "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init(window.Capacitor?{captureOnLocalhost:true}:undefined)";
 
-export const viewport: Viewport = { themeColor: "#1d4a38", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#1d4a38", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

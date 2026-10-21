@@ -44,5 +44,5 @@ jobs:
           set -euo pipefail
           xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
             -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
-            PRODUCT_BUNDLE_IDENTIFIER="${{ matrix.app_id }}" APP_DISPLAY_NAME="${{ matrix.app_name }}" \
+            PRODUCT_BUNDLE_IDENTIFIER="${{ matrix.app_id }}" APP_DISPLAY_NAME="${{ matrix.app_name }}" APP_DEV_REGION="${{ matrix.site }}" \
             CODE_SIGNING_ALLOWED=NO build | tail -20

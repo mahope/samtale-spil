@@ -309,6 +309,7 @@
 				);
 				MARKETING_VERSION = 2.0.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
+				APP_DEV_REGION = da;
 				APP_DISPLAY_NAME = Snakkespil;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.snakkespil.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -331,6 +332,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 2.0.0;
+				APP_DEV_REGION = da;
 				APP_DISPLAY_NAME = Snakkespil;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.snakkespil.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
