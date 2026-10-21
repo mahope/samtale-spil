@@ -58,7 +58,7 @@ export default function AppPage() {
             </p>
             <Link
               href="/play/"
-              className="mt-6 inline-flex min-h-12 items-center rounded-full bg-bord px-6 text-base font-bold text-white hover:bg-bord-lys"
+              className="mt-6 inline-flex min-h-12 items-center rounded-full bg-bord px-6 dark:bg-kridt dark:text-kridt-blaek dark:hover:bg-kridt/90 text-base font-bold text-white hover:bg-bord-lys"
             >
               Choose a deck
             </Link>

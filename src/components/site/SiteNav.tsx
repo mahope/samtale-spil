@@ -161,7 +161,7 @@ export function SiteNav({
 
             <Link
               href={texts.cta.href}
-              className="mt-8 flex min-h-13 w-full items-center justify-center rounded-full bg-bord px-6 text-lg font-bold text-white hover:bg-bord-lys"
+              className="mt-8 flex min-h-13 w-full items-center justify-center rounded-full bg-bord px-6 dark:bg-kridt dark:text-kridt-blaek dark:hover:bg-kridt/90 text-lg font-bold text-white hover:bg-bord-lys"
             >
               {texts.cta.label}
             </Link>

@@ -93,16 +93,18 @@ export function SiteFooter({ englishHref }: { englishHref?: string }) {
           <Column title="Juridisk" links={juridisk} />
         </div>
       </div>
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-streg px-4 py-6 text-sm text-blaek-2 sm:px-6">
-        <p>
-          Lavet af <a href="https://mahoje.dk" className="underline hover:text-blaek">Mahope</a> i Danmark.
-        </p>
-        <p>
-          <span lang="en">In English: </span>
-          <a href={englishHref ?? homeLanguages.en} hrefLang="en" lang="en" className="inline-flex min-h-8 items-center font-semibold underline hover:text-blaek">
-            Goodtalk
-          </a>
-        </p>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-streg py-6 text-sm text-blaek-2">
+          <p>
+            Lavet af <a href="https://mahoje.dk" className="underline hover:text-blaek">Mahope</a> i Danmark.
+          </p>
+          <p>
+            <span lang="en">In English: </span>
+            <a href={englishHref ?? homeLanguages.en} hrefLang="en" lang="en" className="inline-flex min-h-8 items-center font-semibold underline hover:text-blaek">
+              Goodtalk
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );

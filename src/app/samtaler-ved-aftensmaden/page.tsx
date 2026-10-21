@@ -51,7 +51,12 @@ export default function AftensmadPage() {
       },
     ],
   };
-  let n = 0;
+  // Running numbers across the three age groups
+  const groups = aftensmadAldre.map((alder, i) => ({
+    ...alder,
+    first: aftensmadAldre.slice(0, i).reduce((sum, a) => sum + a.questionIds.length, 1),
+    questions: alder.questionIds.map((id) => getQuestionById(id)?.question).filter((q) => q !== undefined),
+  }));
 
   return (
     <>
@@ -95,10 +100,7 @@ export default function AftensmadPage() {
           </section>
 
           <div id="spoergsmaal" className="scroll-mt-6">
-            {aftensmadAldre.map((alder) => {
-              const questions = alder.questionIds
-                .map((id) => getQuestionById(id)?.question)
-                .filter((q) => q !== undefined);
+            {groups.map((alder) => {
               return (
                 <section key={alder.id} className="mt-14" aria-labelledby={alder.id}>
                   <h2 id={alder.id} className="text-2xl font-bold sm:text-3xl">
@@ -112,12 +114,11 @@ export default function AftensmadPage() {
                   </ul>
                   <h3 className="mt-6 text-lg font-bold">Spørgsmål at starte med</h3>
                   <ol className="mt-3 divide-y divide-streg border-y border-streg">
-                    {questions.map((q) => {
-                      n += 1;
+                    {alder.questions.map((q, i) => {
                       return (
                         <li key={q.id} data-kort="true" className="flex gap-4 py-3.5">
                           <span className="w-7 shrink-0 pt-0.5 text-right text-sm font-semibold tabular-nums text-blaek-2" aria-hidden="true">
-                            {n}
+                            {alder.first + i}
                           </span>
                           <span className="text-[1.0625rem] leading-snug">{q.text}</span>
                         </li>
