@@ -30,6 +30,10 @@ describe("Goodtalk (English) decks", () => {
     for (const [id, d] of entries) expect(deckMarks[id], id).toBe(d.mark);
   });
 
+  it("give every Goodtalk card back an English mark, also outside the decks", () => {
+    for (const id of ["aaret", ...entries.map(([id]) => id)]) expect(deckMarks[id], id).toMatch(/^[A-Za-z]{2}$/);
+  });
+
   it("promise the right number of cards and keep search snippets short", () => {
     for (const [id, d] of entries) {
       const n = d.seoTitle.match(/\d+/)?.[0];

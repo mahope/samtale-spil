@@ -1,5 +1,6 @@
 /** Letters on the card backs for Goodtalk (issue #30); generated from src/locales/en/decks */
 export const deckMarks: Record<string, string> = {
+  "aaret": "Yr",
   "barndom": "Ch",
   "boern": "Ki",
   "dilemmaer": "Wr",
