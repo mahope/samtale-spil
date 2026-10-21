@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { jokerAt } from "@/lib/joker";
+import { jokerAt, stepDeck } from "@/lib/joker";
 import { AAR_KORT, AAR_TILBAGEBLIK, AAR_GAET_TILBAGE, AAR_FREMTID, AAR_GAET_FREM } from "@/data/aaretDerGik";
 import { categories } from "@/data/categories";
 import { decks } from "@/data/decks";
@@ -30,4 +30,24 @@ describe("Året der gik", () => {
     for (const id of own) expect(ids.has(id), id).toBe(false);
     expect(decks.aaret).toBeDefined();
   });
+});
+
+describe("stepDeck", () => {
+  for (const size of [1, 9, 10, 19, 70])
+    for (const on of [true, false])
+      it(`deals each of ${size} cards once per round (jokers ${on ? "on" : "off"})`, () => {
+        let at = { pos: 0, turn: 0 };
+        const dealt: number[] = [];
+        let jokers = 0;
+        for (let guard = 0; guard < size * 3; guard++) {
+          if (jokerAt(at.turn, "x", on)) jokers++;
+          else dealt.push(at.pos);
+          const step = stepDeck(at, size, on);
+          at = step;
+          if (step.wrapped) break;
+        }
+        expect(dealt).toEqual([...Array(size).keys()]);
+        // a joker after every nine cards, as long as cards are left
+        expect(jokers).toBe(on ? Math.floor((size - 1) / 9) : 0);
+      });
 });

@@ -72,6 +72,7 @@ export function IntlFooter() {
               <li><Link href="/print/" className="text-blaek-2 hover:text-blaek hover:underline">Printable cards</Link></li>
               <li><Link href="/how-to-play/" className="text-blaek-2 hover:text-blaek hover:underline">How to play</Link></li>
               <li><Link href="/stats/" className="text-blaek-2 hover:text-blaek hover:underline">What people play</Link></li>
+              <li><Link href="/settings/" className="text-blaek-2 hover:text-blaek hover:underline">Settings</Link></li>
               <li><Link href="/about/" className="text-blaek-2 hover:text-blaek hover:underline">About</Link></li>
               <li><Link href="/privacy/" className="text-blaek-2 hover:text-blaek hover:underline">Privacy</Link></li>
             </ul>

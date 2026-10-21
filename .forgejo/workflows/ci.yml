@@ -114,7 +114,7 @@ jobs:
           done
           n=$(ls out/print/*.pdf | wc -l)
           [ "$n" -ge 40 ] || { echo "only $n English print PDFs"; exit 1; }
-          for p in games games/christmas-games guide/love-languages daily-question question-generator print; do
+          for p in games games/christmas-games guide/love-languages daily-question question-generator print stats settings play/guess play/year-in-review; do
             test -f "out/$p/index.html" || { echo "missing /$p/"; exit 1; }
           done
           n=$(grep -o 'data-kort="true"' out/games/never-have-i-ever/index.html | wc -l)

@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { GaetSpil } from "@/app/spil/gaet/GaetSpil";
+import { GaetSpil as Game } from "@/app/spil/gaet/GaetSpil";
+import { getCategory } from "@/data/categories";
+
+const deck = getCategory("kend-din-partner")!;
+const GaetSpil = () => <Game questions={deck.questions} deckName={deck.name} backHref="/spil/kend-din-partner/" />;
 
 describe("Gæt svaret", () => {
   beforeEach(() => localStorage.clear());
