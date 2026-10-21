@@ -6,14 +6,31 @@ import { ShareButton } from "@/components/ShareButton";
 import { DepthPips, depthLabel } from "@/components/deck/DeckParts";
 import { getDeck, markColorOnWhite } from "@/data/decks";
 import { useFavorites, type FavoriteQuestion } from "@/hooks/useLocalStorage";
-import { intlDeckById } from "@/intl/data";
 
-const deckName = (id: string) => intlDeckById.get(id)?.name ?? (id === "joker" ? "Joker" : "Goodtalk");
+/** Every word on the tab, so each app passes its own language */
+export interface FavoritesTexts {
+  loading: string;
+  empty: string;
+  count: (n: number) => string;
+  hint: string;
+  cta: string;
+  remove: (text: string) => string;
+  saved: (date: string) => string;
+  dateLocale: string;
+  /** Deck name for cards from a deck that is not in deckNames (jokers) */
+  otherDeck: string;
+}
 
-function FavoriteCard({ favorite, onRemove }: { favorite: FavoriteQuestion; onRemove: () => void }) {
+interface FavoritesProps {
+  /** Names of the app's decks by id, from the server, so the client does not load every deck */
+  deckNames: Record<string, string>;
+  playHref: string;
+  texts: FavoritesTexts;
+}
+
+function FavoriteCard({ favorite, name, texts, onRemove }: { favorite: FavoriteQuestion; name: string; texts: FavoritesTexts; onRemove: () => void }) {
   const deck = getDeck(favorite.categoryId);
   const mark = markColorOnWhite(deck);
-  const name = deckName(favorite.categoryId);
   return (
     <motion.li
       layout
@@ -37,7 +54,7 @@ function FavoriteCard({ favorite, onRemove }: { favorite: FavoriteQuestion; onRe
             type="button"
             onClick={onRemove}
             className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-rose-500"
-            aria-label={`Remove "${favorite.text.substring(0, 30)}..." from favorites`}
+            aria-label={texts.remove(favorite.text.substring(0, 30))}
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path
@@ -52,31 +69,30 @@ function FavoriteCard({ favorite, onRemove }: { favorite: FavoriteQuestion; onRe
       <p className="font-display mt-2 text-xl font-semibold leading-snug">{favorite.text}</p>
       <p className="mt-4 border-t border-streg pt-3 text-sm text-blaek-2">
         <time dateTime={new Date(favorite.savedAt).toISOString()}>
-          Saved {new Date(favorite.savedAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}
+          {texts.saved(new Date(favorite.savedAt).toLocaleDateString(texts.dateLocale, { day: "numeric", month: "short", year: "numeric" }))}
         </time>
       </p>
     </motion.li>
   );
 }
 
-/** The Goodtalk app's Favorites tab: the cards saved with the heart, newest first */
-export function FavoritesList() {
+/**
+ * A Favorites tab for the Goodtalk and 18+ apps: the cards saved with the heart, newest first.
+ * (The Snakkespil app shares FavoritterIndhold with the site.)
+ */
+export function AppFavorites({ deckNames, playHref, texts }: FavoritesProps) {
   const { favorites, removeFavorite, isLoaded } = useFavorites();
   const sorted = [...favorites].sort((a, b) => b.savedAt - a.savedAt);
   return (
     <>
       <p className="text-lg text-blaek-2" aria-live="polite">
-        {!isLoaded
-          ? "Loading your saved cards"
-          : favorites.length === 0
-            ? "You haven't saved any cards yet."
-            : `${favorites.length} saved ${favorites.length === 1 ? "card" : "cards"}. They stay on this device.`}
+        {!isLoaded ? texts.loading : favorites.length === 0 ? texts.empty : texts.count(favorites.length)}
       </p>
       {isLoaded && favorites.length === 0 && (
         <div className="mt-8 rounded-2xl bg-flade p-6 ring-1 ring-streg">
-          <p>Tap the heart on a card while you play, and it ends up here. Good for the questions you want to come back to.</p>
-          <Link href="/" className="mt-5 inline-flex min-h-12 items-center rounded-full bg-bord px-6 font-bold text-white dark:bg-kridt dark:text-kridt-blaek">
-            Choose a deck
+          <p>{texts.hint}</p>
+          <Link href={playHref} className="mt-5 inline-flex min-h-12 items-center rounded-full bg-bord px-6 font-bold text-white dark:bg-kridt dark:text-kridt-blaek">
+            {texts.cta}
           </Link>
         </div>
       )}
@@ -84,7 +100,13 @@ export function FavoritesList() {
         <motion.ul layout className="mt-8 space-y-4">
           <AnimatePresence>
             {sorted.map((f) => (
-              <FavoriteCard key={f.id} favorite={f} onRemove={() => removeFavorite(f.id)} />
+              <FavoriteCard
+                key={f.id}
+                favorite={f}
+                name={deckNames[f.categoryId] ?? texts.otherDeck}
+                texts={texts}
+                onRemove={() => removeFavorite(f.id)}
+              />
             ))}
           </AnimatePresence>
         </motion.ul>
