@@ -25,7 +25,7 @@ export default async function GameScreen({ params }: Props) {
   if (!game) notFound();
   const deck = getDeck(game.deckId);
   return (
-    <AppScreen title={game.h1.split(":")[0]} back={{ href: "/games/", label: "Games" }}>
+    <AppScreen title={game.h1.split(":")[0]} back={{ href: "/games/", label: "Party games" }}>
       <div className="px-4 pt-1">
         <p className="leading-relaxed">{game.intro}</p>
         <Link

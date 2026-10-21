@@ -34,7 +34,11 @@ export function PrivacyText({ app = false }: { app?: boolean }) {
   return (
     <>
       <h2>What stays on your device</h2>
-      <p>Your settings are stored in your browser&rsquo;s local storage. They never leave your device, and you can delete them by clearing your browser data.</p>
+      {app ? (
+        <p>Your favorites and settings are stored in the app on your phone. They never leave your device, and deleting the app deletes them.</p>
+      ) : (
+        <p>Your settings are stored in your browser&rsquo;s local storage. They never leave your device, and you can delete them by clearing your browser data.</p>
+      )}
       <h2>What we count</h2>
       <p>
         We use Plausible, a privacy-friendly analytics tool hosted in the EU, to count page views and a few anonymous events such as
@@ -46,12 +50,6 @@ export function PrivacyText({ app = false }: { app?: boolean }) {
         We don&rsquo;t receive your name, email or IP address. To keep spam out, the form uses Cloudflare Turnstile, which checks that you&rsquo;re
         human; Cloudflare briefly uses your IP address for that check and to limit how many reports can come from one address.
       </p>
-      {app && (
-        <>
-          <h2>The app</h2>
-          <p>The app for iPhone and Android works like the website and keeps everything on your phone as well.</p>
-        </>
-      )}
       <h2>Who is responsible</h2>
       <p>Mahope, Denmark. Questions about privacy: mads@mahoje.dk.</p>
     </>

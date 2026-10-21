@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 /** localStorage key for the age confirmation in the 18+ app (keys keep the samtale-spil- prefix) */
 export const AGE_KEY = "samtale-spil-voksen-18";
@@ -27,6 +27,11 @@ export function AgeGate({ children }: { children: React.ReactNode }) {
   const stored = useSyncExternalStore(subscribe, readAge, () => null);
   const [answer, setState] = useState<"ja" | "nej" | null>(null);
   const state = answer ?? (stored === "ja" ? "ja" : "ukendt");
+  // "Nej" removes the button that had focus; move it to the new heading so a screen reader reads it
+  const noHeading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (state === "nej") noHeading.current?.focus();
+  }, [state]);
 
   if (state === "ja") return <>{children}</>;
 
@@ -35,7 +40,9 @@ export function AgeGate({ children }: { children: React.ReactNode }) {
       <main id="main-content" className="max-w-sm text-center">
         {state === "nej" ? (
           <>
-            <h1 className="text-3xl font-extrabold">Kortene er for voksne</h1>
+            <h1 ref={noHeading} tabIndex={-1} className="text-3xl font-extrabold outline-none">
+              Kortene er for voksne
+            </h1>
             <p className="mt-4 text-lg text-white/85">
               Snakkespil 18+ er kun for voksne. Prøv den almindelige Snakkespil-app med kort til familie, venner og skole.
             </p>
