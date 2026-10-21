@@ -114,7 +114,7 @@ export default async function QuestionsPage({ params }: Props) {
         </section>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       </main>
-      <IntlFooter />
+      <IntlFooter danishHref={deckLanguages(deck.id)?.da} />
     </>
   );
 }

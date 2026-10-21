@@ -59,7 +59,11 @@ export function useTheme() {
   return { theme, isDark, mounted, setTheme };
 }
 
-export function ThemeToggle({ className = "" }: { className?: string }) {
+export type ThemeToggleTexts = { title: string; switch: string; now: string; light: string; dark: string; system: string };
+
+const DA_TEXTS: ThemeToggleTexts = { title: "Tema", switch: "Skift tema", now: "nu", light: "Lys", dark: "Mørk", system: "System" };
+
+export function ThemeToggle({ className = "", texts = DA_TEXTS }: { className?: string; texts?: ThemeToggleTexts }) {
   const { theme, isDark, mounted, setTheme } = useTheme();
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : theme === "dark" ? "system" : "light");
 
@@ -93,9 +97,9 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
   };
 
   const getLabel = () => {
-    if (theme === "system") return "System";
-    if (isDark) return "Mørk";
-    return "Lys";
+    if (theme === "system") return texts.system;
+    if (isDark) return texts.dark;
+    return texts.light;
   };
 
   return (
@@ -103,8 +107,8 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       type="button"
       onClick={toggleTheme}
       className={`inline-flex h-11 w-11 items-center justify-center rounded-lg hover:bg-black/5 dark:hover:bg-white/10 ${className}`}
-      title={`Tema: ${getLabel()}`}
-      aria-label={`Skift tema (nu: ${getLabel()})`}
+      title={`${texts.title}: ${getLabel()}`}
+      aria-label={`${texts.switch} (${texts.now}: ${getLabel()})`}
     >
       {getIcon()}
     </button>
