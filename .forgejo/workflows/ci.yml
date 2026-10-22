@@ -83,6 +83,27 @@ jobs:
           echo "og:image -> $og"
           case "$og" in */opengraph-image) test -f "out$og" ;; *) echo "unexpected og:image path"; exit 1 ;; esac
 
+      - name: New site pages (app, dinner, not-therapy) and the menu
+        run: |
+          set -euo pipefail
+          for p in app samtaler-ved-aftensmaden ikke-terapi; do
+            f="out/$p/index.html"
+            test -f "$f" || { echo "missing /$p/"; exit 1; }
+            grep -q "rel=\"canonical\" href=\"https://snakkespil.dk/$p/\"" "$f" || { echo "/$p/ has no canonical"; exit 1; }
+            grep -q "<loc>https://snakkespil.dk/$p/</loc>" out/sitemap.xml || { echo "/$p/ is not in the sitemap"; exit 1; }
+            if grep -q 'content="noindex' "$f"; then echo "/$p/ is noindex"; exit 1; fi
+          done
+          # the dinner page carries its example questions and the FAQ in the HTML
+          n=$(grep -o 'data-kort="true"' out/samtaler-ved-aftensmaden/index.html | wc -l)
+          [ "$n" -ge 10 ] || { echo "/samtaler-ved-aftensmaden/ has only $n questions"; exit 1; }
+          grep -q '"FAQPage"' out/samtaler-ved-aftensmaden/index.html || { echo "dinner page has no FAQPage JSON-LD"; exit 1; }
+          # menu and footer link the new pages; the family deck page links the dinner page
+          grep -q 'aria-controls=' out/index.html || { echo "front page has no menu button"; exit 1; }
+          grep -q 'href="/app/"' out/index.html || { echo "front page does not link /app/"; exit 1; }
+          grep -q 'href="/samtaler-ved-aftensmaden/"' out/spoergsmaal/familie/index.html || { echo "family deck does not link the dinner page"; exit 1; }
+          # play screens keep their own header, without the site menu
+          if grep -q 'menu-ark' out/spil/parforhold/index.html; then echo "site menu on a play screen"; exit 1; fi
+
       - name: Danish pages link their English version
         run: |
           set -euo pipefail
@@ -127,6 +148,10 @@ jobs:
           done
           n=$(ls out/print/*.pdf | wc -l)
           [ "$n" -ge 40 ] || { echo "only $n English print PDFs"; exit 1; }
+          grep -q '<loc>https://goodtalkcards.com/app/</loc>' out/sitemap.xml || { echo "/app/ is not in the English sitemap"; exit 1; }
+          grep -q 'rel="canonical" href="https://goodtalkcards.com/app/"' out/app/index.html || { echo "English /app/ has no canonical"; exit 1; }
+          if grep -q 'content="noindex' out/app/index.html; then echo "English /app/ is noindex"; exit 1; fi
+          grep -q 'aria-controls=' out/index.html || { echo "English front page has no menu button"; exit 1; }
           for p in games games/christmas-games guide/love-languages daily-question question-generator print stats settings play/guess play/year-in-review; do
             test -f "out/$p/index.html" || { echo "missing /$p/"; exit 1; }
           done

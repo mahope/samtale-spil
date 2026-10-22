@@ -77,7 +77,7 @@ export function HowToPlayText({ app = false }: { app?: boolean }) {
         <li>Take a break if anyone feels overwhelmed, and agree on when to pick it up again.</li>
       </ul>
 
-      <h2>A conversation game, not therapy</h2>
+      <h2 id="not-therapy">A conversation game, not therapy</h2>
       <p>
         Goodtalk can make it easier to talk, but it doesn&rsquo;t replace help from a professional. If something weighs on you, or the
         same fights keep coming back, talk to a doctor or a counselor.

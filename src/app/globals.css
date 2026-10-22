@@ -244,6 +244,20 @@ a:focus-visible,
   border: 0;
 }
 
+/* Mobile menu sheet on the website (src/components/site/SiteNav.tsx) */
+@keyframes menu-ark-ind {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .menu-ark[open] {
+    animation: menu-ark-ind 180ms ease-out;
+  }
+}
+
 /* Reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,

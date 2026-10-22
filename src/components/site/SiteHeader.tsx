@@ -1,11 +1,24 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteNav, type NavItem, type NavTexts } from "@/components/site/SiteNav";
 
-const nav = [
-  { href: "/spil/", label: "Kategorier" },
+const nav: NavItem[] = [
+  { href: "/spil/", label: "Spil" },
+  { href: "/spoergsmaal/", label: "Spørgsmål" },
+  { href: "/lege/", label: "Lege" },
+  { href: "/guide/", label: "Guides" },
+  { href: "/app/", label: "Appen" },
   { href: "/favoritter/", label: "Favoritter" },
 ];
+
+const texts: NavTexts = {
+  label: "Hovedmenu",
+  open: "Menu",
+  close: "Luk",
+  cta: { href: "/spil/", label: "Vælg et spil" },
+  theme: { label: "Tema", light: "Lys", dark: "Mørk", system: "System" },
+};
 
 /** Top bar for the content pages. The play screen has its own compact header. */
 export function SiteHeader({ tone = "papir" }: { tone?: "papir" | "filt" }) {
@@ -16,20 +29,17 @@ export function SiteHeader({ tone = "papir" }: { tone?: "papir" | "filt" }) {
         <Link href="/" className="rounded-lg py-1" aria-label="Snakkespil, til forsiden">
           <Logo />
         </Link>
-        <nav aria-label="Hovedmenu" className="flex items-center gap-1">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`min-h-11 items-center rounded-lg px-3 text-[0.95rem] font-semibold ${item.href === "/spil/" ? "inline-flex" : "hidden sm:inline-flex"} ${
-                onFelt ? "text-white/90 hover:bg-white/10" : "text-blaek-2 hover:bg-flade-2 hover:text-blaek"
-              }`}
-            >
-              {item.label}
+        <SiteNav
+          items={nav}
+          texts={texts}
+          tone={tone}
+          logo={
+            <Link href="/" className="rounded-lg py-1" aria-label="Snakkespil, til forsiden">
+              <Logo />
             </Link>
-          ))}
-          <ThemeToggle className={onFelt ? "text-white/90" : "text-blaek-2"} />
-        </nav>
+          }
+          themeToggle={<ThemeToggle className={onFelt ? "text-white/90" : "text-blaek-2"} />}
+        />
       </div>
     </header>
   );

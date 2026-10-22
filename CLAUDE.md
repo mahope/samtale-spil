@@ -20,6 +20,9 @@ Gratis danske samtalekort: https://snakkespil.dk. Mads' eget produkt uden kunder
 - Snakkespil 18+ (`dk.snakkespil.voksen`, #57) bygges med `APP_VARIANT=voksen`: kun ruterne `src/app/**/*.voksen.tsx`, bunkerne i `src/voksen/decks.ts` og en alderskontrol (`AgeGate`), som `layout.voksen.tsx` lægger foran hele skallen. Mørkt blommefarvet tema som standard (`src/voksen/voksen.css`, themeColor #1d1820). Udfordringerne (`src/data/questions/udfordringer.ts`, id `hot-N`) findes kun i den app. Klientkode i 18+ må ikke importere `@/data/categories` (så kommer børne- og familiekort med i bundlen, og guarden i `android.yml` fejler); bunkenavne sendes fra serveren. Indholdsgrænsen står i `docs/app-butikker.md`.
 - App-builds kører med `APP_BUILD=1`: `next.config.ts` aliaser `@/data/questions/voksne` til den tomme `voksne.app.ts`, så appen er uden 18+ og kan mærkes 12+ (#54). Workflowene fejler, hvis et voksenkort findes i `out/`. Butikstekster: `docs/app-butikker.md`.
 
+- Hjemmesiderne viser appen på `/app/` og i footeren. Butiks-URL'erne står i `src/locales/<sprog>/site.ts` (`apps`), men vises først, når `APPS_LIVE` i `src/config/site.ts` er `true`; indtil da står der "Kommer snart". Goodtalk har endnu ingen URL'er (`null`).
+- Menuen på hjemmesiderne (`src/components/site/SiteNav.tsx`) deles af den danske header og Goodtalks `src/intl/Chrome.tsx`: menupunkter inline fra `lg`, ellers et fuldskærmsark (modal `<dialog>`). Spilskærmene har deres egen header.
+
 ## Arbejdsgang uden aftryk på PC'en
 
 Byg aldrig lokalt. Rediger og commit lokalt; byg og test på agent-worker (Tailscale) eller i CI:

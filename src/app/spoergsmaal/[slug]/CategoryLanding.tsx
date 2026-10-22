@@ -9,12 +9,16 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack, DepthPips, deckStyle } from "@/components/deck/DeckParts";
 import { SITE_URL } from "@/config/site";
 import type { Question } from "@/types";
+import { deckLanguages } from "@/locales/alternates";
 
 const GROUPS: { depth: Question["depth"]; title: string; intro: string }[] = [
   { depth: "let", title: "Lette spørgsmål", intro: "Gode at starte med. De kræver ikke meget at svare på." },
   { depth: "medium", title: "Lidt mere personlige", intro: "Her kommer historierne og meningerne frem." },
   { depth: "dyb", title: "Dybe spørgsmål", intro: "Tag dem, når der er ro og tid. Det er fint at tænke længe." },
 ];
+
+/** Decks for families with children: their landing pages point to /samtaler-ved-aftensmaden/ */
+const AFTENSMAD_DECKS = ["familie", "boern", "familiehistorier"];
 
 export function CategoryLanding({ categoryId }: { categoryId: string }) {
   const category = getCategory(categoryId);
@@ -134,6 +138,13 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
               )}
             </div>
           )}
+          {AFTENSMAD_DECKS.includes(category.id) && (
+            <p className="mt-10 leading-relaxed">
+              Skal kortene med til middagsbordet? Læs{" "}
+              <Link href="/samtaler-ved-aftensmaden/" className="underline">samtaler ved aftensmaden</Link>, med råd til
+              småbørn, skolebørn og teenagere.
+            </p>
+          )}
           <div className="mt-10">
             <Link
               href={`/spil/${category.id}/`}
@@ -177,7 +188,7 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
           </ul>
         </section>
       </main>
-      <SiteFooter />
+      <SiteFooter englishHref={deckLanguages(category.id)?.en} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     </>
   );

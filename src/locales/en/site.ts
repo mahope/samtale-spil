@@ -9,5 +9,7 @@ export const site: typeof da = {
   report: true,
   favorites: false,
   ogTagline: "Free conversation cards at goodtalkcards.com",
+  // The Goodtalk app (com.goodtalkcards.app, #74) has no store ids yet
+  apps: { ios: null, android: null },
   plausibleScript: "https://analytics.holstjensen.eu/js/pa-ddNmoGtRKcppQoHKWvCnL.js",
 };

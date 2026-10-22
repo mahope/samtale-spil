@@ -21,6 +21,7 @@ const PAGES = [
   "/print/",
   "/stats/",
   "/how-to-play/",
+  "/app/",
   "/about/",
   "/privacy/",
 ];
