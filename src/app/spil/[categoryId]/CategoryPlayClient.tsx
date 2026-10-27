@@ -489,8 +489,9 @@ function CategoryPlay({ categoryId }: Props) {
             >
               Næste kort
             </button>
-            <p className="mt-3 text-center text-sm text-white/70 sm:hidden">Tryk på kortet for at vende det</p>
-            <div className="mt-3 hidden sm:block">
+            {/* Tastaturgenveje kun med mus eller trackpad: på en iPad uden tastatur (og i appen) giver de ingen mening */}
+            <p className="mt-3 text-center text-sm text-white/70 pointer-fine:sm:hidden">Tryk på kortet for at vende det</p>
+            <div className="mt-3 hidden pointer-fine:sm:block">
               <KeyboardShortcutHints className="text-white/70" />
             </div>
           </div>

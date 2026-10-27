@@ -88,7 +88,7 @@ export function GameHeader({
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mb-4 w-full max-w-[23rem] pt-2"
+      className="mb-4 w-full max-w-[23rem] pt-2 md:max-w-xl"
     >
       {/* Main header row */}
       <div className="flex items-center justify-between gap-2">
@@ -279,7 +279,7 @@ export function GameHeader({
                         </div>
                         <CategoryShareButton
                           category={category}
-                          className="p-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                          className="p-2 rounded-xl bg-slate-100 text-[#4b5a53] dark:bg-slate-700 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                         />
                       </div>
                     </div>
