@@ -85,7 +85,8 @@
   box-shadow: 0 0.5px 0 transparent;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
-.app-navbar[data-scrolled] {
+.app-navbar[data-scrolled],
+.app-navbar[data-under] {
   background: color-mix(in srgb, var(--papir) 82%, transparent);
   box-shadow: 0 0.5px 0 var(--streg);
   -webkit-backdrop-filter: blur(20px) saturate(1.6);
@@ -94,7 +95,8 @@
 [data-platform="android"] .app-navbar {
   background: var(--papir);
 }
-[data-platform="android"] .app-navbar[data-scrolled] {
+[data-platform="android"] .app-navbar[data-scrolled],
+[data-platform="android"] .app-navbar[data-under] {
   background: var(--flade-2);
   box-shadow: none;
   -webkit-backdrop-filter: none;

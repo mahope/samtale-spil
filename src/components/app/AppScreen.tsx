@@ -32,6 +32,9 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
   const [prev] = useState(() => (back ? previousScreen(pathname) : null));
   const backLabel = prev?.title ?? back?.label ?? "";
   const [scrolled, setScrolled] = useState(false);
+  // Content under the bar at all: on short pages (iPad) the large title never scrolls fully past,
+  // so the bar needs its background from the first pixel, or the title runs into the status bar
+  const [under, setUnder] = useState(false);
   const largeRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +48,7 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
       const large = largeRef.current;
       const limit = large ? large.offsetTop + large.offsetHeight - 52 : 1;
       setScrolled(window.scrollY > Math.max(limit, 1));
+      setUnder(window.scrollY > 0);
     };
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -146,7 +150,7 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
 
   return (
     <div ref={pageRef} className="app-page min-h-dvh bg-papir">
-      <header className="app-navbar sticky top-0 z-30 select-none pt-[var(--app-inset-top)]" data-scrolled={scrolled ? "" : undefined}>
+      <header className="app-navbar sticky top-0 z-30 select-none pt-[var(--app-inset-top)]" data-scrolled={scrolled ? "" : undefined} data-under={under ? "" : undefined}>
         <div className="relative flex h-11 items-center gap-1 px-2 android:h-16 android:px-1">
           {back && (
             <button
