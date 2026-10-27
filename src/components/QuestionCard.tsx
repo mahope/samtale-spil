@@ -70,7 +70,7 @@ export const QuestionCard = memo(function QuestionCard({
   );
 
   return (
-    <div className="perspective-1000 mx-auto w-full max-w-[21rem] sm:max-w-[23rem]">
+    <div className="perspective-1000 mx-auto w-full max-w-[21rem] sm:max-w-[23rem] pointer-coarse:landscape:sm:max-w-[clamp(12rem,calc((100dvh-25rem)*5/7),23rem)]">
       <motion.div
         className="relative aspect-[5/7] w-full cursor-pointer touch-manipulation rounded-[1.25rem]"
         onClick={() => {
