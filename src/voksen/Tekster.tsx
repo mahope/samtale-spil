@@ -35,7 +35,7 @@ export function PrivatlivTekst() {
       </p>
       <h2>Hvad vi måler</h2>
       <p>
-        Vi bruger Plausible, et besøgstal uden cookies, som kører på vores egen server i EU. Det tæller, at et spil bliver startet, og
+        Vi bruger Plausible og Umami, to besøgstal uden cookies, som begge kører på vores egne servere i EU. De tæller, at et spil bliver startet, og
         med hvilken bunke. Det gemmer ingen IP-adresser og kan ikke følge dig fra dag til dag.
       </p>
       <h2>Når du rapporterer et kort</h2>

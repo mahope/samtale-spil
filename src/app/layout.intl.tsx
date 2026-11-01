@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   description: "Free conversation cards for couples, first dates, families, kids and friends. Draw a card, read the question out loud, and talk.",
 };
 
+import { UMAMI_SRC, UMAMI_HOST } from "@/config/headScripts";
+
 const plausibleInitScript =
   "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init(window.Capacitor?{captureOnLocalhost:true}:undefined)";
 
@@ -27,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Plausible CE: cookieless; events wait for plausible.init() (src/utils/track.ts) */}
         <script async src={site.plausibleScript} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
+        <script defer src={UMAMI_SRC} data-website-id={site.umamiId} data-host-url={UMAMI_HOST} />
       </head>
       <body className="bg-papir text-blaek antialiased">
         <a href="#main-content" className="skip-link">

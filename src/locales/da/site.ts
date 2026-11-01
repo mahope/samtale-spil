@@ -15,5 +15,7 @@ export const site = {
     android: "https://play.google.com/store/apps/details?id=dk.snakkespil.app",
   } as { ios: string | null; android: string | null },
   /** Plausible CE tracker for this site (analytics.holstjensen.eu) */
+  /** Umami website id (stats.mahoje.dk) */
+  umamiId: "27ffe2b6-3ebf-40a4-8d0f-2cb1761f67db",
   plausibleScript: "https://analytics.holstjensen.eu/js/pa-yk0peyirQvnSBppLjWJYB.js",
 };

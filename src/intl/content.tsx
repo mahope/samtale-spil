@@ -41,7 +41,7 @@ export function PrivacyText({ app = false }: { app?: boolean }) {
       )}
       <h2>What we count</h2>
       <p>
-        We use Plausible, a privacy-friendly analytics tool hosted in the EU, to count page views and a few anonymous events such as
+        We use Plausible and Umami, two privacy-friendly analytics tools that we host ourselves on our own servers in the EU, to count page views and a few anonymous events such as
         &ldquo;a game was started&rdquo;. It sets no cookies and stores no personal data or IP addresses.
       </p>
       <h2>Reporting a card</h2>

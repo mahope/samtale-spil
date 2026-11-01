@@ -13,7 +13,7 @@ export function PrivatlivIndhold() {
 
       <h2>Hvad vi måler</h2>
       <p>
-        Vi bruger Plausible, et besøgstal uden cookies, som kører på vores egen server i EU. Det tæller sidevisninger
+        Vi bruger Plausible og Umami, to besøgstal uden cookies, som begge kører på vores egne servere i EU. De tæller sidevisninger
         og enkelte handlinger, fx at et spil bliver startet, og hvilken kategori det er. Det gemmer ingen IP-adresser
         og kan ikke følge dig fra side til side eller fra dag til dag.
       </p>
