@@ -1,5 +1,6 @@
 /**
- * Plausible custom events. Cookieless; props never contain question text typed by
+ * Custom events, sent to Plausible and Umami side by side (transition period; keep both
+ * receiving the same events). Cookieless; props never contain question text typed by
  * the player, only ids, category and depth. Event names are Danish, so the
  * Plausible dashboard reads naturally; goals must exist in Plausible to show up.
  */
@@ -34,12 +35,11 @@ export function umamiTrack(event: string, data?: Record<string, unknown>, waited
 
 export function track(event: string, props: Props = {}): void {
   if (typeof window === "undefined") return;
-  const all = { ...props, platform: platform() };
-  umamiTrack(event, all);
-  const plausible = (window as unknown as { plausible?: PlausibleFn }).plausible;
-  if (typeof plausible !== "function") return;
   try {
-    plausible(event, { props: all });
+    const all = { ...props, platform: platform() };
+    umamiTrack(event, all);
+    const plausible = (window as unknown as { plausible?: PlausibleFn }).plausible;
+    if (typeof plausible === "function") plausible(event, { props: all });
   } catch {
     // analytics must never break the game
   }

@@ -42,7 +42,9 @@ export function PrivacyText({ app = false }: { app?: boolean }) {
       <h2>What we count</h2>
       <p>
         We use Plausible and Umami, two privacy-friendly analytics tools that we host ourselves on our own servers in the EU, to count page views and a few anonymous events such as
-        &ldquo;a game was started&rdquo;. It sets no cookies and stores no personal data or IP addresses.
+        &ldquo;a game was started&rdquo;. Neither sets cookies or stores personal data or IP addresses. Plausible cannot follow you from page to page or day to day.
+        Umami gives your browser an anonymous visit ID calculated from your IP address and browser with a secret value that is changed regularly, so it can
+        tell that page views within the same period come from the same browser, but not who you are.
       </p>
       <h2>Reporting a card</h2>
       <p>

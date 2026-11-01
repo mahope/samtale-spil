@@ -3,6 +3,7 @@ import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/googl
 import "./globals.css";
 import { site } from "@/locale/site";
 import { NativeBoot } from "@/components/NativeBoot";
+import { UMAMI_SRC, UMAMI_HOST } from "@/config/headScripts";
 
 // International sites (SITE_LOCALE != "da"), issue #30.
 const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], axes: ["opsz", "wdth"] });
@@ -14,8 +15,6 @@ export const metadata: Metadata = {
   title: { default: "Goodtalk: free conversation cards", template: "%s | Goodtalk" },
   description: "Free conversation cards for couples, first dates, families, kids and friends. Draw a card, read the question out loud, and talk.",
 };
-
-import { UMAMI_SRC, UMAMI_HOST } from "@/config/headScripts";
 
 const plausibleInitScript =
   "window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init(window.Capacitor?{captureOnLocalhost:true}:undefined)";

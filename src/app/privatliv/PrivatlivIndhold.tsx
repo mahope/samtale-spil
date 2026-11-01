@@ -14,8 +14,11 @@ export function PrivatlivIndhold() {
       <h2>Hvad vi måler</h2>
       <p>
         Vi bruger Plausible og Umami, to besøgstal uden cookies, som begge kører på vores egne servere i EU. De tæller sidevisninger
-        og enkelte handlinger, fx at et spil bliver startet, og hvilken kategori det er. Det gemmer ingen IP-adresser
-        og kan ikke følge dig fra side til side eller fra dag til dag.
+        og enkelte handlinger, fx at et spil bliver startet, og hvilken kategori det er. Ingen af dem gemmer
+        IP-adresser eller personoplysninger. Plausible kan ikke følge dig fra side til side eller fra dag til dag.
+        Umami giver din browser et anonymt besøgs-id, der er regnet ud af IP-adresse og browser med et hemmeligt
+        tal, som skiftes jævnligt. Så kan Umami se, at sidevisninger inden for samme periode kommer fra den samme
+        browser, men ikke hvem du er, og id&rsquo;et kan ikke føres tilbage til din IP-adresse.
       </p>
       <p>
         Teksten i dine egne spørgsmål bliver aldrig sendt nogen steder hen.

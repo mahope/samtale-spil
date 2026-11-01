@@ -6,7 +6,8 @@ import "@/voksen/voksen.css";
 import { NativeBoot } from "@/components/NativeBoot";
 import { AppShell } from "@/components/app/AppShell";
 import { VOKSEN_TABS } from "@/components/app/tabs";
-import { appPlatformScript, PLAUSIBLE_SRC, plausibleInitScript, UMAMI_HOST, UMAMI_ID_DA, UMAMI_SRC, voksenThemeInitScript } from "@/config/headScripts";
+import { appPlatformScript, PLAUSIBLE_SRC, plausibleInitScript, UMAMI_HOST, UMAMI_SRC, voksenThemeInitScript } from "@/config/headScripts";
+import { site } from "@/locale/site";
 import { AgeGate } from "@/voksen/AgeGate";
 
 // The 18+ app (APP_VARIANT=voksen, issue #57): an app shell with tabs behind the age gate. Never deployed as a website.
@@ -29,7 +30,7 @@ export default function VoksenLayout({ children }: { children: React.ReactNode }
         <script dangerouslySetInnerHTML={{ __html: voksenThemeInitScript }} />
         <script async src={PLAUSIBLE_SRC} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
-        <script defer src={UMAMI_SRC} data-website-id={UMAMI_ID_DA} data-host-url={UMAMI_HOST} />
+        <script defer src={UMAMI_SRC} data-website-id={site.umamiId} data-host-url={UMAMI_HOST} />
       </head>
       <body>
         <a href="#main-content" className="skip-link">

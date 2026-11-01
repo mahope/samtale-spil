@@ -6,7 +6,8 @@ import { NativeBoot } from "@/components/NativeBoot";
 import { NativeReminders } from "@/components/NativeReminders";
 import { AppShell } from "@/components/app/AppShell";
 import { SNAKKESPIL_TABS } from "@/components/app/tabs";
-import { appPlatformScript, PLAUSIBLE_SRC, plausibleInitScript, themeInitScript, UMAMI_HOST, UMAMI_ID_DA, UMAMI_SRC } from "@/config/headScripts";
+import { appPlatformScript, PLAUSIBLE_SRC, plausibleInitScript, themeInitScript, UMAMI_HOST, UMAMI_SRC } from "@/config/headScripts";
+import { site } from "@/locale/site";
 import { SITE_NAME } from "@/config/site";
 import { legeSider } from "@/data/lege";
 
@@ -41,7 +42,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src={PLAUSIBLE_SRC} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
-        <script defer src={UMAMI_SRC} data-website-id={UMAMI_ID_DA} data-host-url={UMAMI_HOST} />
+        <script defer src={UMAMI_SRC} data-website-id={site.umamiId} data-host-url={UMAMI_HOST} />
       </head>
       <body>
         <a href="#main-content" className="skip-link">

@@ -29,8 +29,7 @@ export const plausibleInitScript =
 export const PLAUSIBLE_SRC = "https://analytics.holstjensen.eu/js/pa-yk0peyirQvnSBppLjWJYB.js";
 
 // Umami (stats.mahoje.dk) runs next to Plausible during the transition: cookieless, self-hosted in the EU.
+// The tag is a plain <script defer> in each layout (like Plausible's), not next/script: deliberate, it loads the same way and needs no client component.
 // data-host-url is explicit so the Capacitor apps (non-http origin) still report to our instance.
 export const UMAMI_SRC = "https://stats.mahoje.dk/s.js";
 export const UMAMI_HOST = "https://stats.mahoje.dk";
-export const UMAMI_ID_DA = "27ffe2b6-3ebf-40a4-8d0f-2cb1761f67db";
-export const UMAMI_ID_EN = "07eee0ac-ee63-44b5-a850-6f36a089dd5e";
