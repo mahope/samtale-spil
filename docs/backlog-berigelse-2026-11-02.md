@@ -58,7 +58,7 @@ Intention: "spørgsmål til par/familie/venner" er listesøgninger, hvor brugere
 - 404: ingen genveje (h).
 - Analyse: eventnavne findes, men ingen oversigt over de mål, der skal oprettes i Plausible (j).
 - ASO-tekster med søgeord ligger allerede i `docs/app-butikker.md`; der er ikke lavet et nyt ASO-issue.
-- Sandboxen kunne ikke bruge Brave-søgning (tom respons med en Tor-side); søgning skete via WebSearch.
+- Sandboxen kunne ikke bruge Brave-søgning (tom respons med en Tor-side); søgning skete via WebSearch. Det præcise antal søgninger blev ikke logget (grænsen var højst 10); de brugte kilder står i Kilder, og konkurrentafsnittet bygger på få søgninger.
 
 ## Prioriteret plan
 
@@ -66,8 +66,8 @@ Intention: "spørgsmål til par/familie/venner" er listesøgninger, hvor brugere
 |---|---|---|---|---|
 | a | Slå butikslinks til på hjemmesiderne, pr. butik | P1 | S | Direkte installationsvej fra al webtrafik; størrelse ukendt |
 | b | Tilbyd installation som app fra spilskærmen efter tre kort | P2 | M | Retention via PWA/app; måles med nye events |
-| c | Tilføj sider til bryllupsdag, langdistance og livshistorie | P2 | M | Tre nye indekserbare sider; volumen lille til middel (1.600 / 140 / 170 pr. md. i tidligere kørsel) |
-| d | Tilføj lege-siderne polterabend, lege i bilen og konfirmation | P2 | M | Sæsonbetonet; 1.300 / 90 / 20 pr. md. i tidligere kørsel |
+| c | Tilføj sider til bryllupsdag, langdistance og livshistorie | P3 | M | Tre nye indekserbare sider; volumen fra 2026-10-20, ikke målt nu: 1.600 / 140 / 170 pr. md., men 1.600 for "bryllupsdag" er sandsynligvis bryllupsnavne og gaver (SERP ikke tjekket), så P3 som i kilden |
+| d | Tilføj lege-siderne polterabend, lege i bilen og konfirmation | P3 | M | Sæsonbetonet; volumen fra 2026-10-20: 1.300 / 90 / 20 pr. md. Intentionen bag "polterabend ideer" (1.300) er aktiviteter og shop, ikke spørgsmål, så P3 som i kilden |
 | e | Lav en side til arbejdspladser med 30 minutters samtaleøvelse | P2 | M | Ny målgruppe; volumen ukendt |
 | f | Reducér JavaScript og HTML-vægt på forsiden | P2 | M | Hurtigere mobilindlæsning; mål −25 % JS |
 | k | Beslut: frivillig støtte | P2 | S (beslutning) | Mulig første indtægt |
