@@ -1,0 +1,130 @@
+{
+  "repo": "samtale-spil",
+  "issues": [
+    {
+      "id": "a",
+      "title": "Slå butikslinks til på hjemmesiderne, pr. butik",
+      "body": "## Hvorfor\nAppsene er udgivet, men `APPS_LIVE` i `src/config/site.ts` er `false`. Derfor viser https://snakkespil.dk/app/ fem gange teksten \"Kommer snart i App Store og Google Play\" (set med curl 2026-11-01), og forsiden og footeren har ingen vej til appen. Det er den billigste kanal til installationer, fordi besøgende allerede er på sitet. Butiks-URL'erne ligger allerede i `src/locales/da/site.ts` (`apps`).\n\n## Hvad der skal bygges\n1. Erstat den globale `APPS_LIVE`-flagning med et flag pr. butik (fx `APPS_LIVE = { ios: boolean, android: boolean }`), så en butik kan gå live uden den anden. `APP_STORE_LINKS` i `src/config/site.ts` og `src/components/site/StoreButtons.tsx` tilpasses; teksten \"Kommer snart\" vises kun for den butik, der ikke er live.\n2. Byggeren verificerer med `curl -sI` at hver URL i `site.apps` svarer med 200 (eller en redirect til en butiksside), og sætter kun flag til `true` for dem, der gør. Resultatet skrives i PR-beskrivelsen. Svarer en URL ikke, forbliver dens flag `false`.\n3. Vis butiksknapperne (StoreButtons) på forsiden under hovedindholdet og på `/app/`. Footeren viser dem allerede, når flaget er sandt.\n4. Spor klik med et nyt dansk eventnavn via `src/utils/track.ts` (fx `Butik-klik` med prop `butik: ios|android`).\n5. Goodtalk (`src/locales/en`) har `null`-URL'er og skal forblive uændret.\n\n## Acceptkriterier\n- [ ] Flag pr. butik, og kun butikker hvis URL svarer, er slået til (bevis i PR-beskrivelsen).\n- [ ] `/app/`, forside og footer viser rigtige butikslinks for live butikker og \"Kommer snart\" for resten.\n- [ ] Appens egne builds (`APP_BUILD=1`) viser stadig ingen app-reklame (`SHOW_APP_PROMO`).\n- [ ] Tjekket på mobil (390 px), skærmbilleder før og efter i PR'en.\n- [ ] Tests opdateret og `npm run typecheck && npm run lint && npm run test:run && npm run build` er grønne; `npm run check:links` er grøn for alle tre app-builds.\n\n## Afgrænsning\nIngen ændring af butiksmetadata, ASO eller app-kode. Ingen nye pakker. Goodtalk-sitet røres ikke. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P1",
+        "ux"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "b",
+      "title": "Tilbyd installation som app fra spilskærmen efter tre kort",
+      "body": "## Hvorfor\nDer er ingen installationsprompt på web: søgning efter `beforeinstallprompt` i `src/` giver ingen træf, og sitet har ellers en manifest og service worker (`public/manifest.json`, `public/sw.js`). Konti findes ikke, så installation (PWA eller app) er den eneste retention-vej: appen kan sende ugentlige påmindelser og virker offline. Sitet har cookiefri analyse, så effekten kan måles med et nyt event.\n\n## Hvad der skal bygges\nEt lille, afvisbart kort (ikke modal) på spilskærmen på web efter at brugeren har trukket 3 kort i samme session: på Android/Chrome ved hjælp af `beforeinstallprompt` (\"Gem Snakkespil på hjemmeskærmen\"), på iOS Safari med en kort vejledning (\"Tryk på del-ikonet og vælg Føj til hjemmeskærm\"), og med et link til `/app/`. Afvist = vises ikke igen i 30 dage (localStorage, nøgle med præfikset `samtale-spil-`). Vises aldrig i appen, i standalone-visning eller på 18+-sitet. Events: `Installationstilbud-vist`, `Installationstilbud-afvist`, `Installationstilbud-klik` via `track()`. Dansk tekst uden anglicismer og emoji.\n\n## Acceptkriterier\n- [ ] Kortet vises efter 3 kort, kan afvises, og kommer ikke igen inden 30 dage.\n- [ ] Vises ikke når `display-mode: standalone`, i Capacitor-appen eller i app-builds.\n- [ ] Kortet overlapper ikke kortet, knapperne eller navigationsbjælken på 390 px; skærmbilleder før og efter i PR'en.\n- [ ] Enhedstest af logikken (tæller, udsættelse, skjul i standalone).\n- [ ] typecheck, lint, tests og build er grønne.\n\n## Afgrænsning\nIngen e-mailindsamling, ingen cookies, ingen nye pakker. Service worker og manifest ændres ikke. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P2",
+        "feature"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "c",
+      "title": "Tilføj sider til bryllupsdag, langdistance og livshistorie",
+      "body": "## Hvorfor\n`docs/butik-og-seo.md` (2026-10-20, tal fra OpenSEO/DataForSEO, Danmark) rangerede tre siders-idéer, som endnu ikke findes i https://snakkespil.dk/sitemap.xml (71 URL'er, intet af dem): `/spoergsmaal/bryllupsdag/` (søgeord \"bryllupsdag\" 1.600/md, men intention usikker; \"årsdag ideer\" 30), `/spoergsmaal/langdistance/` (\"langdistance forhold\" 140) og `/spoergsmaal/livshistorie/` (\"livshistorie\" 170, interviews til bedsteforældre og forældre). Volumenerne er små til dels, men siderne genbruger eksisterende kortformater og konkurrencen er svag (KD 0 i kilden).\n\n## Hvad der skal bygges\nTre kuraterede sider efter mønstret i `src/data/curatedPages2.ts` (render i `CuratedLanding.tsx`), med 40 til 60 nye spørgsmål hver med nye id'er (`src/data/questions/`):\n- **Bryllupsdag** (intention: ideer til en aften for to, tilbageblik og fremtid). Disposition: kort intro, tre dybder (lette, minder, fremtid), 10 spørgsmål til \"næste år\", link til `/spoergsmaal/date-night/`, `/spoergsmaal/fremtid/`, `/spoergsmaal/parforhold/`, `/spoergsmaal/tak/`.\n- **Langdistance** (videoopkald, korte daglige kort, \"næste gang vi ses\"). Link til `/spoergsmaal/kend-din-partner/`, `/spoergsmaal/parforhold/`, `/spoergsmaal/date-night/`.\n- **Livshistorie** (interview med bedsteforældre og forældre, med en kort vejledning i at lytte og optage med tilladelse). Link til `/spoergsmaal/familiehistorier/`, `/spoergsmaal/barndom/`, `/guide/aktiv-lytning/`.\nHver side: unik title (≤60 tegn) og description (≤155), canonical, Breadcrumb, med i sitemap og print-PDF efter eksisterende mekanik. Ingen påstande om forskning uden kilde: brug kun kilder, der allerede står i `docs/forskning.md`, ellers ingen.\n\n## Acceptkriterier\n- [ ] Tre sider er med i sitemap, har unik title/description/canonical og står i den statiske eksport.\n- [ ] Alle nye spørgsmål har nye, stabile id'er; ingen eksisterende id ændres.\n- [ ] Ingen alkohol på kort uden for 18+ (eksisterende test), ingen dubletter af eksisterende spørgsmål (tjek manuelt og med test hvis den findes).\n- [ ] Interne links begge veje: hver ny side er linket fra mindst to eksisterende sider (`relaterede`).\n- [ ] Tjekket på mobil (390 px), skærmbillede i PR'en. `npm run check:links` og curatedPages-tests er grønne.\n\n## Afgrænsning\nIngen opfundne tal, citater eller forskningshenvisninger. Ingen ændring af eksisterende sider ud over interne links. Spørgsmåls-id'er må ikke genbruges. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P2",
+        "seo",
+        "content"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "d",
+      "title": "Tilføj lege-siderne polterabend, lege i bilen og konfirmation",
+      "body": "## Hvorfor\nEfter julelege, nytårslege, bryllupslege m.fl. mangler tre sider fra planen i `docs/butik-og-seo.md`: `polterabend-lege` (søgeordet \"polterabend ideer\" 1.300/md, \"polterabend lege\" 140), `lege-i-bilen` (\"bil lege\" 90) og `konfirmation` (\"spørgsmål til konfirmanden\" 20, peak 110 i maj). Tallene er fra dokumentet (OpenSEO, Danmark); de er sæsonbetonede og derfor ikke P1. Lege-siderne er det mest vellykkede format på sitet (10 af 71 URL'er, bl.a. https://snakkespil.dk/lege/julelege/).\n\n## Hvad der skal bygges\nTre nye poster i `src/data/lege-indhold.ts` (render i `src/app/lege/[slug]/page.tsx`), hver med en intro, 6 til 10 lege uden alkohol og et spilbart bunke på 30 kort (som de eksisterende lege-sider). Brief:\n- **Polterabend-lege:** quiz om brudeparret og samtalekort til holdet, uden udstilling eller fornærmende udfordringer (samme tone som `bryllupslege`). Link til `/lege/bryllupslege/`, `/lege/sjove-udfordringer/`, `/lege/jeg-har-aldrig/`.\n- **Lege i bilen:** samtalespil og spørgsmål til lange køreture, uden skærm og uden at føreren skal kigge. Link til `/spoergsmaal/boern/`, `/spoergsmaal/hvad-vil-du-helst/`.\n- **Konfirmation:** spørgsmål til konfirmanden og bordlege til festen. Ingen religiøse påstande, neutral tone. Link til `/lege/selskabslege-ved-bordet/`, `/spoergsmaal/familie/`.\nTitles ≤60 tegn, descriptions ≤155, med i sitemap og i `/lege/`-oversigten.\n\n## Acceptkriterier\n- [ ] Tre sider live i eksporten, i sitemap og i oversigten på `/lege/`.\n- [ ] Nye kort-id'er, ingen alkohol (test grøn), unikke metatekster.\n- [ ] Hver ny side har ≥3 interne links ud og er linket fra ≥2 eksisterende sider.\n- [ ] Mobiltjek (390 px) og skærmbillede i PR'en; typecheck, lint, tests, build og `check:links` er grønne.\n\n## Afgrænsning\nIngen drukspil, ingen opfundne tal eller citater. Ingen ændring af eksisterende lege-sider ud over `relaterede`-links. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P2",
+        "seo",
+        "content"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "e",
+      "title": "Lav en side til arbejdspladser med 30 minutters samtaleøvelse",
+      "body": "## Hvorfor\nSnakkespil har en kollegabunke (`/spoergsmaal/kollegaer/`), men ingen side, der er skrevet til dem, der leder et møde. Danske kilder peger på efterspørgslen: BFA har psykologisk tryghed-dialogkort, hvor man trækker et kort og taler højst fem minutter (https://www.arbejdsmiljoweb.dk/media/5gqg0u1z/bfa-psykologisk-tryghed-dialogkort-uden-talebobletekst-tryk-220224.pdf), og Videnskab.dk refererer forskning om, at målrettede øvelser, hvor man fortæller noget personligt, virkede bedre end traditionel teambuilding (https://videnskab.dk/kultur-samfund/forskere-teambuilding-kan-vaere-spild-af-tid-personlige-samtaler-med-kollegerne-er-mere-givende/). Søgevolumen for \"samtalekort arbejdsplads\" og \"teambuilding spørgsmål\" er ukendt (ikke målt); siden er også en gratis B2B-indgang, hvis Mads senere vil sælge noget.\n\n## Hvad der skal bygges\nNy side `/til-arbejdspladsen/` (intention: \"samtalekort til møder og teamet\"). Disposition: 1) kort intro, 2) en 30-minutters øvelse i trin (ramme og frivillighed, 3 runder à 8 minutter med fire spørgsmål hver fra kollegabunken, afslutning), 3) \"hvad man ikke gør\" (ingen tvang, ingen personlige spørgsmål om helbred eller privatliv, man må sige pas), 4) link til print-PDF'en for kollegabunken (`/print/`), 5) knap til at spille bunken. Forklar, at materialet ikke er terapi eller en erstatning for en arbejdsmiljøindsats (genbrug tonen fra `/ikke-terapi/`). Kilder: de to ovenstående, ellers kun `docs/forskning.md`. Skriv ingen påstande om effekt ud over, hvad kilderne siger. Med i sitemap, nav-link i footer, Breadcrumb og unik title/description. Skriv 12 til 20 nye kollegaspørgsmål med nye id'er, hvis bunken mangler lette isbrydere.\n\n## Acceptkriterier\n- [ ] Siden findes, er i sitemap og linket fra footer og `/spoergsmaal/kollegaer/`.\n- [ ] Hver faktuel påstand har en kilde på siden; ingen opfundne tal.\n- [ ] Øvelsen er brugbar uden forberedelse (tidsplan og spørgsmål står på siden).\n- [ ] Mobiltjek (390 px) og skærmbillede; typecheck, lint, tests, build og `check:links` er grønne.\n\n## Afgrænsning\nIngen prissætning, ingen kontaktformular, ingen betalt tilbud (se separat beslutning). Ingen nye pakker. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P2",
+        "seo",
+        "content"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "f",
+      "title": "Reducér JavaScript og HTML-vægt på forsiden",
+      "body": "## Hvorfor\nMålt med curl 2026-11-01 med mobil User-Agent: forsiden https://snakkespil.dk/ er 148.718 bytes HTML (ukomprimeret) og indlæser 19 script-tags; de refererede `/_next/static/*.js`-filer er tilsammen ca. 283 kB gzip. Sitet er et statisk eksport og skal virke på dårlig mobildækning. Kategorisiderne er endnu tungere (`/spoergsmaal/parforhold/` 131 kB HTML). Core Web Vitals-målinger fra rigtige brugere findes ikke i repoet, så første skridt er at måle.\n\n## Hvad der skal bygges\n1. Mål med Lighthouse (mobil, simuleret 4G) og `next build`-outputtet på agent-worker for forsiden, `/spoergsmaal/parforhold/` og `/spil/`; skriv tal før i PR'en.\n2. Find de største klient-chunks (fx `@next/bundle-analyzer` er IKKE tilladt som ny pakke uden tjek: brug `next build`s eget output eller `source-map-explorer` via `npx` uden at tilføje til `package.json`). Reducér ved at lade tunge komponenter indlæses dynamisk (`next/dynamic`), flytte ikke-kritiske ting (søgeoverlay, statistik, konfetti, motion i sektioner uden animation) ud af forsidens bundle, og undgå at sende hele spørgsmålsdata til klienten på sider, der kun skal vise et udsnit.\n3. Mål igen og skriv tal efter. Mål: mindst 25 % mindre gzip-JS på forsiden uden funktionsændring.\n\n## Acceptkriterier\n- [ ] Før- og eftertal (JS gzip, HTML, LCP og TBT fra Lighthouse) står i PR'en.\n- [ ] Mindst 25 % mindre forside-JS, eller en begrundet forklaring på hvorfor mere ikke er muligt.\n- [ ] Ingen visuel ændring (skærmbilleder før og efter på 390 px) og ingen hydration-fejl (`hydration.test.tsx` grøn).\n- [ ] typecheck, lint, tests, build og eksporttjek er grønne.\n\n## Afgrænsning\nIngen redesign, ingen fjernelse af funktioner, ingen ændring af analytics-tags eller CSP. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P2",
+        "tech"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "g",
+      "title": "Tilføj ItemList og CollectionPage som structured data på bunke- og lege-sider",
+      "body": "## Hvorfor\nBunke- og lege-siderne har kun `BreadcrumbList` (set på https://snakkespil.dk/spoergsmaal/parforhold/ og /lege/julelege/); kun guides har `Article`. Forsiden har `WebApplication`, men uden butikslinks. Bemærk: Google viser kun FAQ-rich results for visse offentlige sites, så FAQPage er bevidst ikke med her. ItemList og CollectionPage hjælper forståelsen af sidens indhold og er billige at generere fra data, der allerede findes.\n\n## Hvad der skal bygges\nUdvid `CategoryLanding.tsx`, `CuratedLanding.tsx` og `src/app/lege/[slug]/page.tsx` med JSON-LD: `CollectionPage` med `name`, `description`, `inLanguage`, `isPartOf` (WebSite-id'et `https://snakkespil.dk/#website`) og `mainEntity` som `ItemList` med de første 10 spørgsmål (`ListItem` med `position` og `name`; ikke alle kort, for at holde HTML'en let). Opret en delt hjælpefunktion i `src/lib/` og enhedstest den (gyldig JSON, positioner, ingen tomme navne). Tilføj et eksporttjek i CI-scriptet, hvis der er en naturlig plads, der verificerer at JSON-LD kan parses på tre stikprøvesider.\n\n## Acceptkriterier\n- [ ] JSON-LD kan parses og validerer på https://validator.schema.org (manuelt eller dokumenteret i PR'en) for tre stikprøvesider.\n- [ ] Ingen eksisterende JSON-LD (Breadcrumb, Article) forsvinder.\n- [ ] HTML-størrelsen på `/spoergsmaal/parforhold/` vokser med under 3 kB.\n- [ ] typecheck, lint, tests og build er grønne.\n\n## Afgrænsning\nIngen FAQPage, ingen Review/AggregateRating (der er ingen rigtige anmeldelser), ingen ændring af synligt indhold. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P3",
+        "seo"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "h",
+      "title": "Ret 404-siden med genveje til bunker og aliasser for gættede adresser",
+      "body": "## Hvorfor\nhttps://snakkespil.dk/spoergsmaal/til-par/ giver 404 (HTTP 404, 56 kB), og siden under title \"Siden findes ikke\" har kun to knapper (`src/app/not-found.tsx`: \"Spil\" og forsiden). Folk gætter adresser som `/spoergsmaal/til-par/`, `/spoergsmaal/par/`, `/spoergsmaal/kollegaer-spoergsmaal/`; de lander i en blindgyde. Antallet af 404-hits er ukendt (ingen logmåling i repoet), men rettelsen er billig.\n\n## Hvad der skal bygges\n1. `not-found.tsx` (og `not-found.app.tsx` kun hvis det er naturligt): vis søgeoverlayet (`SearchOverlay`) eller et søgefelt og 6 genveje til de mest brugte bunker (par, familie, venner, børn, kollegaer, første date) fra `src/data/decks.ts`.\n2. Tilføj 301-redirects i `deploy/nginx.conf` for et lille sæt rimelige aliasser (`/spoergsmaal/til-par/` til `/spoergsmaal/parforhold/`, `/spoergsmaal/par/` til samme, `/spoergsmaal/til-familien/` til `/spoergsmaal/familie/`, `/spoergsmaal/venner-spoergsmaal/` til `/spoergsmaal/venner/`). Tjek at målene findes i eksporten og at `nginx -t` i CI er grøn.\n3. Spor 404-visninger med eventet `404-set` (prop: sti uden søgestreng).\n\n## Acceptkriterier\n- [ ] 404-siden har søgning og genveje; skærmbillede på 390 px før og efter.\n- [ ] Redirects giver 301 til eksisterende sider (verificeret med curl mod en lokal nginx i CI eller dokumenteret test).\n- [ ] `nginx -t`, `check:links`, typecheck, lint, tests og build er grønne.\n\n## Afgrænsning\nIngen wildcard-redirects. Ingen ændring af canonical-regler eller sitemap. Appens 404 må ikke få webnavigation. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P3",
+        "ux"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "i",
+      "title": "Gør det muligt at dele et kort som billede",
+      "body": "## Hvorfor\nDeling er i dag tekst plus link (`ShareButton.tsx`, `useShare.ts`). Samtalekort er visuelle, og et billede med kortets farve og mønster (fra `src/data/decks.ts`) kan sendes i Messages, Stories og grupper og bærer sitenavnet med. Det er den eneste organiske vækstmekanisme, der ikke kræver konti. Effekten er ukendt og skal måles.\n\n## Hvad der skal bygges\nTilføj \"Del som billede\" i deleflowet: tegn kortet (bunkens `bg`/`ink`, mønster, spørgsmålstekst, \"snakkespil.dk\" nederst) på et `<canvas>` i 1080x1350 med den eksisterende skrifttype, og del det som fil via `navigator.share({files})` hvis `navigator.canShare({files})` er sand, ellers download. Brug ikke nye pakker. Hold AA-kontrast (eksisterende test for deck-farver). Spørgsmål med lange tekster skal ombrydes og skaleres, så intet klippes. Event: `Del-billede` med prop bunke-id (aldrig spørgsmålstekst). I Capacitor-appen bruges det eksisterende delingslag i `src/lib/native.ts` kun hvis det allerede understøtter filer, ellers skjules valget i appen.\n\n## Acceptkriterier\n- [ ] Billedet genereres for korte og meget lange spørgsmål uden afskæring (enhedstest af ombrydningsfunktionen).\n- [ ] Virker i Chrome (Android) og Safari (iOS) via preview på agent-worker eller dokumenteret manuel test; fallback er download.\n- [ ] Skærmbilleder af knap og genereret billede i PR'en; mobiltjek 390 px.\n- [ ] typecheck, lint, tests og build er grønne.\n\n## Afgrænsning\nIngen server-side billedgenerering, ingen nye pakker, ingen ændring af native kode ud over det, `src/lib/native.ts` allerede tillader. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P3",
+        "feature"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "j",
+      "title": "Opret en liste over analysemål og kobl dem til eventnavnene",
+      "body": "## Hvorfor\nCLAUDE.md siger, at Plausible-mål ('goals') skal oprettes manuelt, og at eventnavnene i `src/utils/track.ts` er danske. Der findes ingen samlet liste i repoet (søgning i `docs/` efter 'plausible' og 'goal' giver ingen træf), så ingen kan se, hvilke mål der skal oprettes, og nye events (fx fra a og b) bliver glemt. Uden målene kan man ikke se konverteringer som app-klik eller installation.\n\n## Hvad der skal bygges\nNy fil `docs/analyse-maal.md`: tabel over alle eventnavne, der kaldes via `track(...)` i `src/` (udtrækkes med grep), med kolonnerne eventnavn, hvor i koden, props, og \"skal oprettes som mål i Plausible: ja/nej\". Tilføj en vitest-test, der parser kildekoden for `track(\"...\")`-kald og fejler, hvis et eventnavn ikke står i dokumentet (så listen holdes ajour). Ret `CLAUDE.md`-afsnittet om analyse med et link til filen.\n\n## Acceptkriterier\n- [ ] Alle nuværende event-navne er i tabellen, og testen fejler, når man tilføjer et event uden at opdatere dokumentet (vist ved at fjerne en linje midlertidigt).\n- [ ] Testen er hurtig (<1 s) og grøn i CI.\n- [ ] typecheck, lint og tests er grønne.\n\n## Afgrænsning\nIngen ændring af selve trackingkaldene eller Umami/Plausible-konfigurationen. Mål oprettes af Mads i Plausible bagefter. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P3",
+        "tech"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "k",
+      "title": "Beslut: frivillig støtte til Snakkespil",
+      "body": "## Hvorfor\nSnakkespil er gratis, har ingen konti, cookies eller reklamer, og README og koden nævner ingen indtægt (søgning efter donation, støtte, kaffe og MobilePay i `src/` giver ingen træf). Det er et bevidst, rent produkt, så enhver indtjening skal ikke forringe oplevelsen. Konkurrenterne sælger fysiske æsker til 99 til 289 kr. (SNAK 99,95 kr., Go' Samtale 199 kr., Qvalitetstid 289 kr., se `docs/butik-og-seo.md`), og Kartotek Copenhagen sælger et dansk familiesæt på 110 spørgsmål til 100 DKK (https://kartotekcopenhagen.com/products/conversation-cards-danish-familie). Brugerne får altså gratis noget, andre tager penge for.\n\n## Hvad der skal bygges\n**Beslutningen (Mads):** skal der være en diskret, frivillig støttemulighed, og i så fald hvilken?\nMuligheder:\n1. **Ingen indtjening nu.** Fokus på vækst først. Nul arbejde, nul risiko.\n2. **Link til Ko-fi eller Buy Me a Coffee** på `/om/` og efter et afsluttet spil. Buy Me a Coffee tager 5 % plus betalingsgebyr (typisk ca. 2,9 % + 0,30 USD pr. betaling ifølge tredjepartsanmeldelser, ikke bekræftet på platformens egen side); Ko-fi opgives som 0 % på donationer (https://schoolmaker.com/blog/buy-me-a-coffee-pricing, https://app.unilink.us/blog/patreon-vs-buymeacoffee-vs-kofi-2026). Tilmelding og udbetalingskonto skal stå på Mahope, CVR 39413892.\n3. **MobilePay-link** (kræver MobilePay-aftale for Mahope) med samme placering.\n4. **Betalt tillægsprodukt** (fx trykte æsker eller et pænt PDF-sæt). Mest indtjening, men kræver pris, produktion og support.\n\n**Anbefaling:** mulighed 1 indtil appsene har et par måneders data; derefter mulighed 2 på `/om/` og et lille, afvisbart kort efter et afsluttet spil, aldrig midt i et spil. Når Mads har valgt, oprettes et byggeissue.\n\n## Acceptkriterier\n- [ ] Mads har valgt en af mulighederne i en kommentar, og et nyt byggeissue er oprettet, hvis valget kræver kode.\n\n## Afgrænsning\nDette issue bygges ikke. Ingen tilmelding, intet køb og ingen kontakt til eksterne før Mads har besluttet. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P2",
+        "feature",
+        "needs-decision"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "l",
+      "title": "Beslut: skal arbejdspladsmaterialet være gratis eller en betalt pakke?",
+      "body": "## Hvorfor\nIssue e laver en gratis side til arbejdspladser. Det kan senere blive en indtægt, men det er en forretningsbeslutning: Danske virksomheder bruger penge på psykologisk tryghed, kurser og dialogkort (fx kurser hos Dansk Industri og Dansk Erhverv; BFA udgiver gratis dialogkort, så en gratis konkurrent findes: https://www.arbejdsmiljoweb.dk/media/5gqg0u1z/bfa-psykologisk-tryghed-dialogkort-uden-talebobletekst-tryk-220224.pdf). Prisniveau og efterspørgsel for et dansk privat produkt er ukendt.\n\n## Hvad der skal bygges\n**Beslutningen (Mads):** skal der bag siden fra issue e ligge et betalt tilbud?\nMuligheder:\n1. **Kun gratis** (anbefalet nu): siden er SEO og brandopbygning. Ingen faktura, ingen support.\n2. **Gratis side + betalt printpakke** (fx lamineret kortsæt til teamet, afhentning eller forsendelse). Kræver produktion, pris, momshåndtering og en sælger (Mahope).\n3. **Workshop** (Mads faciliterer 60 min. for et team). Mest indtjening pr. time, men tager Mads' tid og passer måske ikke til brandet.\n\n**Anbefaling:** mulighed 1, og kig på sidens trafik og henvendelser efter 2 til 3 måneder, før mulighed 2 eller 3 overvejes.\n\n## Acceptkriterier\n- [ ] Mads har valgt en mulighed i en kommentar.\n\n## Afgrænsning\nDette issue bygges ikke. Ingen priser, tilmeldinger eller kontakt til virksomheder før beslutningen. Der udgives ikke til App Store eller Google Play, og butiksmetadata, signering og filer i `ios/` og `android/` røres ikke.",
+      "labels": [
+        "P3",
+        "needs-decision",
+        "feature"
+      ],
+      "depends_on": []
+    }
+  ]
+}
