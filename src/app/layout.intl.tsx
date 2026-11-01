@@ -3,6 +3,7 @@ import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/googl
 import "./globals.css";
 import { site } from "@/locale/site";
 import { NativeBoot } from "@/components/NativeBoot";
+import { UMAMI_SRC, UMAMI_HOST } from "@/config/headScripts";
 
 // International sites (SITE_LOCALE != "da"), issue #30.
 const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], axes: ["opsz", "wdth"] });
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Plausible CE: cookieless; events wait for plausible.init() (src/utils/track.ts) */}
         <script async src={site.plausibleScript} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
+        <script defer src={UMAMI_SRC} data-website-id={site.umamiId} data-host-url={UMAMI_HOST} />
       </head>
       <body className="bg-papir text-blaek antialiased">
         <a href="#main-content" className="skip-link">

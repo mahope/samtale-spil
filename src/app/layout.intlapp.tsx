@@ -5,7 +5,7 @@ import "@/components/app/app-shell.css";
 import { NativeBoot } from "@/components/NativeBoot";
 import { AppShell } from "@/components/app/AppShell";
 import { GOODTALK_TABS } from "@/components/app/tabs";
-import { appPlatformScript, plausibleInitScript, themeInitScript } from "@/config/headScripts";
+import { appPlatformScript, plausibleInitScript, themeInitScript, UMAMI_HOST, UMAMI_SRC } from "@/config/headScripts";
 import { intlGames } from "@/intl/games";
 import { site } from "@/locale/site";
 import { ui } from "@/locale/ui";
@@ -41,6 +41,7 @@ export default function GoodtalkAppLayout({ children }: { children: React.ReactN
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src={site.plausibleScript} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
+        <script defer src={UMAMI_SRC} data-website-id={site.umamiId} data-host-url={UMAMI_HOST} />
       </head>
       <body>
         <a href="#main-content" className="skip-link">

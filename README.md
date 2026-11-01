@@ -13,7 +13,7 @@ Live at **https://snakkespil.dk**.
 - Free print-yourself PDFs for every deck under `/print/`, built at export time (`src/lib/printPdf.ts`)
 - "Rapportér" on every card and a public stats page (`/statistik/samlet/`), served by the Cloudflare Worker in `worker/`
 - No accounts and no cookies: favourites, progress and custom questions live in `localStorage`
-- Cookieless analytics with self-hosted Plausible (`src/utils/track.ts`)
+- Cookieless analytics with self-hosted Plausible and Umami side by side during a transition period (`src/utils/track.ts` sends every event to both)
 - Installable PWA and native iOS/Android apps (Capacitor) built from the same export; the apps are built with `APP_BUILD=1` and leave out the 18+ deck; `SITE_LOCALE=en` builds the Goodtalk app and `APP_VARIANT=voksen` the separate Snakkespil 18+ app (adult and couple decks only, behind an age check)
 
 ## Stack

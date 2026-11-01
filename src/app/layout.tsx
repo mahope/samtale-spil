@@ -5,7 +5,8 @@ import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistratio
 import { NativeBoot } from "@/components/NativeBoot";
 import { NativeReminders } from "@/components/NativeReminders";
 import { SITE_URL, SITE_NAME, CATEGORY_COUNT, QUESTION_COUNT_LABEL } from "@/config/site";
-import { PLAUSIBLE_SRC, plausibleInitScript, themeInitScript } from "@/config/headScripts";
+import { PLAUSIBLE_SRC, plausibleInitScript, themeInitScript, UMAMI_HOST, UMAMI_SRC } from "@/config/headScripts";
+import { site } from "@/locale/site";
 
 const display = Bricolage_Grotesque({
   variable: "--font-display",
@@ -84,6 +85,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src={PLAUSIBLE_SRC} />
         <script dangerouslySetInnerHTML={{ __html: plausibleInitScript }} />
+        <script defer src={UMAMI_SRC} data-website-id={site.umamiId} data-host-url={UMAMI_HOST} />
       </head>
       <body>
         <a href="#main-content" className="skip-link">
