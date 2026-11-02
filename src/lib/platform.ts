@@ -9,6 +9,7 @@ import { ui } from "@/locale/ui";
 
 // The native shell injects window.Capacitor before the app loads, so the web bundles never need to
 // ship @capacitor/core: the plugins below are imported on demand, only inside the apps.
+// Assumes the bridge (android native-bridge.js, ios equivalent) has set window.Capacitor before app code runs.
 export const isNative = () =>
   typeof window !== "undefined" &&
   !!(window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.();

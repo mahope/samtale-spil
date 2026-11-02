@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useState, type ComponentType } from "react";
 import Link from "next/link";
 import { CardFace, DeckBack } from "@/components/deck/DeckParts";
 import { track } from "@/utils/track";
@@ -21,15 +21,17 @@ export function CardDraw({ cards }: { cards: DrawCard[] }) {
   const [index, setIndex] = useState(0);
   // The motion library is fetched once the page is idle, not as part of the first load
   const [Stack, setStack] = useState<ComponentType<{ card: DrawCard }> | null>(null);
+  const load = useCallback(() => {
+    import("./CardStack").then((m) => setStack(() => m.default)).catch(() => {});
+  }, []);
   useEffect(() => {
-    const load = () => import("./CardStack").then((m) => setStack(() => m.default)).catch(() => {});
     if ("requestIdleCallback" in window) {
       const id = window.requestIdleCallback(load, { timeout: 3000 });
       return () => window.cancelIdleCallback(id);
     }
     const t = setTimeout(load, 1500);
     return () => clearTimeout(t);
-  }, []);
+  }, [load]);
   const card = cards[index % cards.length];
 
   const draw = () => {
@@ -57,7 +59,13 @@ export function CardDraw({ cards }: { cards: DrawCard[] }) {
       <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
         <button
           type="button"
-          onClick={draw}
+          onPointerEnter={load}
+          onFocus={load}
+          onClick={() => {
+            // On a slow connection the idle load may not have finished: start it now so the next draw animates
+            load();
+            draw();
+          }}
           className="min-h-12 rounded-full bg-kridt px-6 text-base font-bold text-kridt-blaek shadow-[0_2px_0_rgb(0_0_0/0.25)] transition-transform active:translate-y-px"
         >
           Træk et nyt kort

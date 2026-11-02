@@ -30,8 +30,17 @@ export function NativeBoot() {
     if (!isNative()) return;
     const html = document.documentElement;
     html.classList.add("native");
+    import("@capacitor/haptics").catch(() => {}); // warm the chunk so the first tap is not late
     // The root layout sets this before the first paint; this covers a bridge that loaded late
-    if (hasAppShell()) import("@capacitor/core").then(({ Capacitor }) => (html.dataset.platform = Capacitor.getPlatform())).catch(() => {});
+    if (hasAppShell()) {
+      import("@capacitor/core")
+        .then(({ Capacitor }) => {
+          html.dataset.platform = Capacitor.getPlatform();
+        })
+        .catch(() => {
+          // the layout has already set data-platform; this only covers a late bridge
+        });
+    }
     const cleanups: (() => void)[] = [];
 
     (async () => {
