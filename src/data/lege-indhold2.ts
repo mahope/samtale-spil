@@ -2677,7 +2677,8 @@ export const legeSider2: LegeSide[] = [
       "/spoergsmaal/kend-din-partner/",
       "/spoergsmaal/parforhold/",
       "/spoergsmaal/sjove/",
-      "/lege/selskabslege-ved-bordet/"
+      "/lege/selskabslege-ved-bordet/",
+      "/lege/polterabend-lege/"
     ]
   }
 ];
