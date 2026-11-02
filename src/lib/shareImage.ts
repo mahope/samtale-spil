@@ -171,7 +171,8 @@ export async function renderCardImage(opts: {
     return ctx.measureText(t).width;
   }, { max: 44, min: 28, lineHeight: 1.2 });
   ctx.font = `600 ${headerSize.size}px ${family}`;
-  ctx.fillText(headerSize.lines[0] ?? "", cx, panel.y + 120);
+  const headerLh = headerSize.size * 1.2;
+  headerSize.lines.forEach((line, i) => ctx.fillText(line, cx, panel.y + 120 + i * headerLh));
 
   // Question
   const boxTop = panel.y + 200;

@@ -147,6 +147,7 @@ export const ui: typeof da = {
     copied: "Copied",
     dialogTitle: "Share the question",
     image: "Share as image",
+    imageFailed: "Could not create the image",
     imageFile: "goodtalk-card.png",
   },
   shell: {

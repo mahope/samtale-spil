@@ -152,9 +152,7 @@ export const QuestionCard = memo(function QuestionCard({
         </span>
         )}
         {type !== "joker" && (
-        <span className="rounded-full bg-white shadow-kort">
-          <ShareImageButton text={question.text} categoryId={question.categoryId} categoryName={categoryName} />
-        </span>
+        <ShareImageButton text={question.text} categoryId={question.categoryId} categoryName={categoryName} />
         )}
         {site.report && question.categoryId !== "custom" && type !== "joker" && <ReportCard questionId={question.id} />}
         {type === "peg" ? (

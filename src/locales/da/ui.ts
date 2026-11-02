@@ -149,6 +149,7 @@ export const ui = {
     copied: "Kopieret",
     dialogTitle: "Del spørgsmålet",
     image: "Del som billede",
+    imageFailed: "Kunne ikke lave billedet",
     imageFile: "snakkespil-kort.png",
   },
   /** The app shell (src/components/app) */

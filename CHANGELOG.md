@@ -5,6 +5,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- "Del som billede" on question cards (web only, hidden in the apps): draws the card as a 1080x1350 PNG and shares it as a file, or downloads it. Tracked as the event `Del-billede` with the deck id as `bunke` (never the question text); the goal must be created in Plausible.
+
 ## [2.2.0] - 2026-10-21
 
 ### Added
