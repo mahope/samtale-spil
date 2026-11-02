@@ -23,6 +23,7 @@ import { track } from "@/utils/track";
 import { tap } from "@/lib/platform";
 import { HardTalkFrame } from "@/components/HardTalkFrame";
 import { JOKER_KEY, jokerCard } from "@/lib/joker";
+import { InstallTilbud } from "@/components/InstallTilbud";
 
 interface Props {
   categoryId: string;
@@ -467,6 +468,8 @@ function CategoryPlay({ categoryId }: Props) {
               )}
             </AnimatePresence>
           </div>
+
+          <InstallTilbud cardsThisSession={cardsThisSession} />
 
           <div className="w-full max-w-[23rem] pb-6">
             <button
