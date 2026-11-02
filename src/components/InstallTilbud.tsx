@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { isNative } from "@/lib/platform";
 import { track } from "@/utils/track";
 import {
@@ -18,24 +18,37 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+// The event can fire before this component mounts (or while it is unmounted between
+// cards), so it is captured once at module level and read through a subscription.
+let savedPrompt: BeforeInstallPromptEvent | null = null;
+const promptListeners = new Set<() => void>();
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeinstallprompt", (e: Event) => {
+    e.preventDefault();
+    savedPrompt = e as BeforeInstallPromptEvent;
+    promptListeners.forEach((l) => l());
+  });
+  window.addEventListener("appinstalled", () => {
+    savedPrompt = null;
+    promptListeners.forEach((l) => l());
+  });
+}
+function subscribePrompt(cb: () => void) {
+  promptListeners.add(cb);
+  return () => {
+    promptListeners.delete(cb);
+  };
+}
+
 /**
  * Small dismissible card (not a modal) offering to install Snakkespil, shown after a few
  * cards on the web game screen. Never in the apps, in standalone display or on the 18+ site.
  */
 export function InstallTilbud({ cardsThisSession }: { cardsThisSession: number }) {
-  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const prompt = useSyncExternalStore(subscribePrompt, () => savedPrompt, () => null);
   const [gone, setGone] = useState(false);
   const [mountedAt] = useState(() => Date.now());
   const shown = useRef(false);
-
-  useEffect(() => {
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setPrompt(e as BeforeInstallPromptEvent);
-    };
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    return () => window.removeEventListener("beforeinstallprompt", onPrompt);
-  }, []);
 
   // Only reachable after the player has drawn cards, i.e. after hydration, so reading browser state here is safe
   const kind: InstallKind | null =
@@ -72,12 +85,14 @@ export function InstallTilbud({ cardsThisSession }: { cardsThisSession: number }
   const install = async () => {
     track("Installationstilbud-klik", { type: kind, handling: "gem" });
     if (!prompt) return;
+    let outcome: string = "fejl";
     try {
       await prompt.prompt();
-      await prompt.userChoice;
+      outcome = (await prompt.userChoice).outcome === "accepted" ? "accepteret" : "afvist";
     } catch {
       // the browser may refuse a second prompt; nothing to recover
     }
+    track("Installationstilbud-klik", { type: kind, handling: "browser-" + outcome });
     writeDismissedAt(window.localStorage, Date.now());
     setGone(true);
   };
@@ -85,18 +100,18 @@ export function InstallTilbud({ cardsThisSession }: { cardsThisSession: number }
   return (
     <section
       aria-label="Gem Snakkespil"
-      className="mb-4 w-full max-w-[23rem] rounded-2xl bg-white/10 p-4 text-white ring-1 ring-white/25"
+      className="mb-3 w-full max-w-[23rem] rounded-2xl bg-white/10 px-3 py-2 text-sm text-white ring-1 ring-white/25"
     >
-      <p className="font-semibold">Gem Snakkespil på hjemmeskærmen</p>
+      <p className="font-semibold leading-snug">Gem Snakkespil på hjemmeskærmen</p>
       {kind === "ios" && (
-        <p className="mt-1 text-sm text-white/85">Tryk på del-ikonet og vælg Føj til hjemmeskærm.</p>
+        <p className="text-white/85">Tryk på del-ikonet og vælg Føj til hjemmeskærm.</p>
       )}
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      <div className="mt-1 flex flex-wrap items-center gap-x-2">
         {kind === "android" && (
           <button
             type="button"
             onClick={install}
-            className="min-h-11 rounded-full bg-kridt px-5 font-bold text-kridt-blaek"
+            className="min-h-11 rounded-full bg-kridt px-4 font-bold text-kridt-blaek"
           >
             Gem på hjemmeskærmen
           </button>
@@ -111,7 +126,7 @@ export function InstallTilbud({ cardsThisSession }: { cardsThisSession: number }
         <button
           type="button"
           onClick={dismiss}
-          className="ml-auto min-h-11 rounded px-2 text-sm underline decoration-white/40 underline-offset-4"
+          className="ml-auto min-h-11 rounded px-2 underline decoration-white/40 underline-offset-4"
         >
           Ikke nu
         </button>

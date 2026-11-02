@@ -210,3 +210,7 @@ Lavet i Danmark af Mahope.
 - App Store: Moden eller antydende tematik **hyppig/intens**, seksuelt indhold eller nøgenhed **sjælden/mild** (antydende tekst, ingen beskrivelser). Forventet **18+** på Apples aldersskala. Ingen brugerindhold.
 - Google Play (IARC): seksuelt indhold **ja, antydende tekst uden nøgenhed eller beskrivelser**, groft sprog nej, vold nej. Forventet **PEGI 16/18**. Målgruppe: **18 år og opefter**.
 - Datasikkerhed: som Snakkespil ovenfor.
+
+## Installationstilbud på web (#96)
+
+Efter tre kort viser spilskærmen et afvisbart kort om at gemme Snakkespil på hjemmeskærmen. Events via `track()`: `Installationstilbud-vist`, `Installationstilbud-afvist` og `Installationstilbud-klik` (med `handling`: `gem`, `app-side`, `browser-accepteret|afvist|fejl`). Goals med de tre navne skal oprettes i Plausible, før tallene kan ses dér.
