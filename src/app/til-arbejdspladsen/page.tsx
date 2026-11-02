@@ -124,8 +124,8 @@ export default function TilArbejdspladsenPage() {
             </ul>
             <p className="mt-4 leading-relaxed text-blaek-2">
               Forskningen bag Snakkespil peger på, at kollegakort bør holde sig til arbejdsliv, styrker og læring, og at alle
-              kan springe over (se <Link href="/saadan-spiller-i/" className="underline">Sådan spiller I</Link>). Der er ikke
-              fundet fagfællebedømt forskning, der viser, at icebreakers i sig selv gør teams bedre.
+              kan springe over (se <Link href="/saadan-spiller-i/" className="underline">Sådan spiller I</Link>). Vi har ikke
+              fundet forskning, der viser, at isbrydere alene gør teams bedre, og lover derfor ikke en effekt.
             </p>
           </section>
 

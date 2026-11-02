@@ -1,3 +1,8 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import sitemap from "@/app/sitemap";
+import { SITE_URL } from "@/config/site";
+import { printDecks } from "@/data/printDecks";
 import { describe, expect, it } from "vitest";
 import { ARBEJDSPLADS_DECK, ARBEJDSPLADS_MINUTTER, arbejdspladsTrin } from "@/data/arbejdsplads";
 import { getQuestionById } from "@/data/categories";
@@ -23,5 +28,23 @@ describe("/til-arbejdspladsen/", () => {
       expect(found!.category.id).toBe(ARBEJDSPLADS_DECK);
       expect(found!.question.depth, id).not.toBe("dyb");
     }
+  });
+});
+
+describe("/til-arbejdspladsen/ links", () => {
+  const src = (p: string) => readFileSync(path.join(process.cwd(), p), "utf8");
+
+  it("is in the sitemap", () => {
+    expect(sitemap().map((e) => e.url)).toContain(`${SITE_URL}/til-arbejdspladsen/`);
+  });
+
+  it("is linked from the footer and the colleague deck page", () => {
+    expect(src("src/components/site/SiteFooter.tsx")).toContain("/til-arbejdspladsen/");
+    expect(src("src/app/spoergsmaal/[slug]/CategoryLanding.tsx")).toContain("/til-arbejdspladsen/");
+  });
+
+  it("points at an existing print PDF for the deck", () => {
+    expect(printDecks.map((d) => d.fil)).toContain(`snakkespil-${ARBEJDSPLADS_DECK}`);
+    expect(src("src/app/til-arbejdspladsen/page.tsx")).toContain("snakkespil-${ARBEJDSPLADS_DECK}.pdf");
   });
 });

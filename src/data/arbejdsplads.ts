@@ -21,7 +21,7 @@ export const arbejdspladsTrin: ArbejdspladsTrin[] = [
     id: "ramme",
     title: "Ramme og frivillighed",
     minutter: 4,
-    text: "Sig, hvad I skal, og hvor lang tid det tager. Sig også, at alle må sige pas uden at forklare hvorfor, og at det man hører, bliver i rummet. Del gruppen i hold på tre til fem, hvis I er mange. Lederen svarer først på det første spørgsmål, så alle kan høre, hvor personligt eller let et svar må være.",
+    text: "Sig, hvad I skal, og hvor lang tid det tager. Sig også, at alle må sige pas uden at forklare hvorfor, og at det man hører, bliver i rummet. Del gruppen i hold på tre til fem, hvis I er mange. Lederen svarer først i runde 1, så alle kan høre, hvor kort og let et svar må være.",
     questionIds: [],
   },
   {
@@ -56,7 +56,7 @@ export const arbejdspladsTrin: ArbejdspladsTrin[] = [
 
 export const arbejdspladsHuskeregler = [
   "Ingen tvang. Ingen skal svare, og ingen skal forklare, hvorfor de siger pas.",
-  "Ingen personlige spørgsmål om helbred, økonomi, familie eller privatliv. Brug kun kortene fra denne øvelse, eller lad være.",
+  "Ingen personlige spørgsmål om helbred, økonomi, familie eller privatliv. Stil ikke egne spørgsmål om det, og hold jer til kortene i øvelsen.",
   "Svar ikke på andres vegne, og tag ikke andres svar med videre uden at spørge.",
   "Brug ikke svarene i en vurdering, en samtale om løn eller en afskedigelsessag.",
   "Lederen deltager på lige fod og svarer selv først, men har ikke ret til at kræve et svar af nogen.",
