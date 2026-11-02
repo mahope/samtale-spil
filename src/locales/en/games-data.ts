@@ -1638,7 +1638,7 @@ export const games: Record<string, LocaleGamePage> = {
   "polterabend-lege": {
     slug: "bachelor-and-bachelorette-games",
     seoTitle: "Clean Bachelor Party Games: Quiz and 30 Cards",
-    metaDescription: "Bachelor and bachelorette party games everyone can join: a quiz about the couple, guess the guest of honor and 30 free cards that bring out the best stories.",
+    metaDescription: "Bachelor and bachelorette party games for everyone: a quiz about the couple, guess the guest of honor and 30 free cards full of good stories.",
     h1: "Bachelor and bachelorette party games: a quiz about the couple and 30 cards",
     intro: "A good pre-wedding party is an evening where the closest friends say why they're glad for the person getting married. Here are seven games for a living room, a garden or a table, and 30 cards that bring out the best stories. No game needs alcohol, and none of them is about exposing anyone: the guest of honor decides what gets told.",
     lege: [

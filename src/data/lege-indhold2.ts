@@ -712,7 +712,8 @@ export const legeSider2: LegeSide[] = [
       "/spoergsmaal/sjove/",
       "/spoergsmaal/venner/",
       "/spoergsmaal/familie/",
-      "/multiplayer/"
+      "/multiplayer/",
+      "/lege/polterabend-lege/"
     ]
   },
   {
@@ -1318,7 +1319,8 @@ export const legeSider2: LegeSide[] = [
       "/lege/selskabslege-ved-bordet/",
       "/spoergsmaal/sjove/",
       "/spoergsmaal/venner/",
-      "/multiplayer/"
+      "/multiplayer/",
+      "/lege/lege-i-bilen/"
     ]
   },
   {
@@ -1927,7 +1929,8 @@ export const legeSider2: LegeSide[] = [
       "/spoergsmaal/boern/",
       "/spoergsmaal/familie/",
       "/spoergsmaal/sjove/",
-      "/spoergsmaal/dilemmaer/"
+      "/spoergsmaal/dilemmaer/",
+      "/lege/lege-i-bilen/"
     ]
   },
   {
@@ -2333,7 +2336,8 @@ export const legeSider2: LegeSide[] = [
       "/lege/selskabslege-ved-bordet/",
       "/lege/julefrokost-lege/",
       "/spoergsmaal/sjove/",
-      "/spoergsmaal/venner/"
+      "/spoergsmaal/venner/",
+      "/lege/polterabend-lege/"
     ]
   },
   {
@@ -2678,7 +2682,8 @@ export const legeSider2: LegeSide[] = [
       "/spoergsmaal/parforhold/",
       "/spoergsmaal/sjove/",
       "/lege/selskabslege-ved-bordet/",
-      "/lege/polterabend-lege/"
+      "/lege/polterabend-lege/",
+      "/lege/konfirmation/"
     ]
   }
 ];

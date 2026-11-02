@@ -1182,7 +1182,8 @@ export const legeSider: LegeSide[] =
       "/spoergsmaal/sjove/",
       "/spoergsmaal/dilemmaer/",
       "/spoergsmaal/venner/",
-      "/multiplayer/"
+      "/multiplayer/",
+      "/lege/konfirmation/"
     ]
   }
 ];

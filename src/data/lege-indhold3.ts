@@ -16,7 +16,7 @@ export const legeSider3: LegeSide[] = [
   {
     slug: "polterabend-lege",
     seoTitle: "Polterabend-lege uden alkohol: quiz og 30 kort til holdet",
-    metaDescription: "Polterabend-lege, hvor alle er med: quiz om brudeparret, gæt hovedpersonen, hukommelseslege og 30 gratis kort, der giver de gode historier.",
+    metaDescription: "Polterabend-lege, hvor alle er med: quiz om brudeparret, gæt hovedpersonen, bordlege og 30 gratis kort, der giver de gode historier.",
     h1: "Polterabend-lege: quiz om brudeparret og 30 kort til holdet",
     intro:
       "En god polterabend er en aften, hvor de nærmeste fortæller, hvorfor de er glade for den, der skal giftes. Her er syv lege, der kan spilles i en stue, i en have eller rundt om et bord, og 30 kort, der får de bedste historier frem. Ingen lege kræver alkohol, og ingen går ud på at udstille nogen: det er hovedpersonen, der bestemmer, hvad der må fortælles.",
@@ -187,16 +187,16 @@ export const legeSider3: LegeSide[] = [
         variant: "Føreren behøver aldrig at kigge på skærmen. Slå lyden fra, så kun stemmen bruges.",
       },
       {
-        navn: "Jeg ser noget, du ikke ser",
+        navn: "Jeg hører noget",
         antal: "2-6",
         tid: "10-20 min",
         alder: "Fra 4 år",
         saadan: [
-          "Én vælger noget uden for bilen og siger kun, hvilken farve det har.",
-          "De andre stiller ja/nej-spørgsmål, indtil nogen gætter det.",
-          "Den, der gætter, vælger næste ting.",
+          "Én lytter efter en lyd i bilen, fx motoren, blinklyset eller en, der trommer med fingrene, og siger kun: »Jeg hører noget.«",
+          "De andre stiller ja/nej-spørgsmål, indtil nogen gætter lyden.",
+          "Den, der gætter, vælger næste lyd.",
         ],
-        variant: "Føreren gætter kun ved at lytte og kigger ikke efter, mens der køres.",
+        variant: "Føreren bruger kun ørerne og kan svare med ja eller nej uden at flytte blikket.",
       },
       {
         navn: "Ordkæden",
@@ -285,7 +285,7 @@ export const legeSider3: LegeSide[] = [
       [S, "Hvad er det mest uventede, du har fundet på en tur?"],
       [S, "Hvad er du mest stolt af fra den sidste uge?"],
       [S, "Hvis du kunne opfinde en ting til bilen, hvad skulle den så kunne?"],
-      [O, "Nævn fem ting, du kan se uden for bilen, uden at kigge for længe."],
+      [O, "Nævn fem ting, du kan høre i bilen lige nu, uden at flytte blikket."],
       [S, "Hvilket sted har du aldrig været, men ville elske at se?"],
       [S, "Hvem i familien er den bedste til at læse kort, og hvorfor?"],
       [S, "Hvad er det bedste ved at være på vej et sted hen?"],
@@ -312,11 +312,11 @@ export const legeSider3: LegeSide[] = [
       },
       {
         q: "Hvad er gode spil til børn i bilen?",
-        a: "Jeg ser noget, du ikke ser, ferie-kufferten og kortene med dyr og ferie passer til de mindre børn. Lad børnene læse kort op, hvis de kan læse selv.",
+        a: "Jeg hører noget, ferie-kufferten og kortene med dyr og ferie passer til de mindre børn. Lad børnene læse kort op, hvis de kan læse selv.",
       },
       {
         q: "Hvor mange kort er der, og kan de spilles på telefonen?",
-        a: "Der er 30 kort, og de kan spilles på telefonen. Tryk på »Spil kortene«, og læs ét kort ad gangen. Sæt telefonen fast eller hold den i hånden, så den ikke skal findes mens der køres.",
+        a: "Der er 30 kort, og de kan spilles på telefonen. Tryk på »Spil kortene«, og læs ét kort ad gangen. Lad passageren holde telefonen, så føreren aldrig rører den under kørsel.",
       },
     ],
     relaterede: [
