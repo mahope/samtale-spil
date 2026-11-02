@@ -3,6 +3,17 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack } from "@/components/deck/DeckParts";
+import { NotFoundSearch } from "@/components/site/NotFoundSearch";
+
+/** Most used decks, as /spoergsmaal/<id>/ landing pages. */
+const shortcuts = [
+  { id: "parforhold", label: "Par" },
+  { id: "familie", label: "Familie" },
+  { id: "venner", label: "Venner" },
+  { id: "boern", label: "Børn" },
+  { id: "kollegaer", label: "Kollegaer" },
+  { id: "foerste-date", label: "Første date" },
+];
 
 export const metadata: Metadata = {
   title: "Siden findes ikke",
@@ -25,10 +36,24 @@ export default function NotFound() {
             <Link href="/spil/" className="inline-flex min-h-12 items-center rounded-full bg-bord px-6 font-bold text-white dark:bg-kridt dark:text-kridt-blaek">
               Vælg et spil
             </Link>
+            <NotFoundSearch />
             <Link href="/" className="inline-flex min-h-12 items-center rounded-full px-5 font-semibold ring-1 ring-streg hover:bg-flade-2">
               Til forsiden
             </Link>
           </div>
+          <h2 className="mt-10 text-lg font-bold">Prøv en af de mest brugte bunker</h2>
+          <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {shortcuts.map((s) => (
+              <li key={s.id}>
+                <Link
+                  href={`/spoergsmaal/${s.id}/`}
+                  className="flex min-h-12 items-center rounded-xl px-4 font-semibold ring-1 ring-streg hover:bg-flade-2"
+                >
+                  {s.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
         <DeckBack categoryId="blandet" className="hidden aspect-[5/7] rotate-[-6deg] items-center justify-center rounded-[1.25rem] shadow-kort md:flex">
           <span className="font-display text-7xl font-extrabold">?</span>
