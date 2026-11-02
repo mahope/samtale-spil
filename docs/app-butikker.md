@@ -14,6 +14,14 @@ Appene er ikke hjemmesiden i en ramme. Alle tre har en bundmenu med fire faner, 
 
 Butiks-screenshots i `assets/store/screenshots/` viser den gamle app og skal tages om fra app-skallen.
 
+## Deep links (issue #20)
+
+Snakkespil-appen (`dk.snakkespil.app`) åbner links til snakkespil.dk, men kun stier, som appen har (listen står i `public/.well-known/apple-app-site-association`; websidernes SEO-sider og `/app/` bliver i browseren). `NativeBoot` sender `appUrlOpen` videre til routeren. Goodtalk og 18+ har ingen deep links.
+
+Det mangler, og kun Mads kan gøre det:
+- **Android:** `public/.well-known/assetlinks.json` findes ikke endnu, fordi den skal indeholde SHA-256-fingeraftrykket for Play App Signing-nøglen (Play Console > Appintegritet > App-signering). Uden filen fejler `autoVerify` stille, og links åbner i browseren. Filen skal ligge med `relation: ["delegate_permission/common.handle_all_urls"]`, `namespace: android_app`, `package_name: dk.snakkespil.app`. nginx serverer allerede `/.well-known/` som JSON.
+- **iOS:** slå Associated Domains til på app-id'et `dk.snakkespil.app` i Apple Developer, lad `ios-release.sh` oprette en ny profil (slet den gamle "App Store"-profil, ellers genbruges den uden capability), og tilføj `ios/App/App/App.entitlements` med `applinks:snakkespil.dk` og `CODE_SIGN_ENTITLEMENTS` i Xcode-projektet. Er det gjort før profilen er ny, fejler signeringen, så rækkefølgen er vigtig.
+
 ## Automatiske builds til butikkerne
 
 - **Android:** `android.yml` bygger alle tre apps. Builds fra master uploades til det lukkede testspor (`alpha`) med `scripts/store/play-upload.py` og service-kontoen `play-publisher@mahoje.iam.gserviceaccount.com` (repo-secret `PLAY_SERVICE_ACCOUNT_JSON_B64`, Bitwarden "Google Play: service-konto play-publisher"). Apps, der ikke findes i Play Console endnu, springes over. Så længe en app er kladde i Play, oprettes udgivelsen som kladde.

@@ -95,6 +95,17 @@ export function NativeBoot() {
       });
       cleanups.push(() => back.remove());
 
+      // A snakkespil.dk link opened in the app (universal link / app link): show that page
+      const open = await App.addListener("appUrlOpen", ({ url }) => {
+        try {
+          const u = new URL(url);
+          if (u.pathname.startsWith("/")) router.push(u.pathname + u.search);
+        } catch {
+          /* not a URL we understand */
+        }
+      });
+      cleanups.push(() => open.remove());
+
       // Tapping "Dagens spørgsmål" opens that card
       const tap = await LocalNotifications.addListener("localNotificationActionPerformed", (action) => {
         const url = action.notification.extra?.url;

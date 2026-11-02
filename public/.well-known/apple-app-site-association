@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["P7698GU4AV.dk.snakkespil.app"],
+        "paths": ["/", "/spil/*", "/multiplayer/*", "/dagens-spoergsmaal/*", "/favoritter/*", "/mere/*", "/indstillinger/*", "/mine-spoergsmaal/*", "/statistik/*", "/saadan-spiller-i/*", "/lege/*", "/om/*", "/privatliv/*"]
+      }
+    ]
+  }
+}
