@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { CardFace, DeckBack } from "@/components/deck/DeckParts";
 import { track } from "@/utils/track";
 
@@ -20,7 +19,17 @@ export interface DrawCard {
  */
 export function CardDraw({ cards }: { cards: DrawCard[] }) {
   const [index, setIndex] = useState(0);
-  const reduce = useReducedMotion();
+  // The motion library is fetched once the page is idle, not as part of the first load
+  const [Stack, setStack] = useState<ComponentType<{ card: DrawCard }> | null>(null);
+  useEffect(() => {
+    const load = () => import("./CardStack").then((m) => setStack(() => m.default)).catch(() => {});
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(load, { timeout: 3000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const t = setTimeout(load, 1500);
+    return () => clearTimeout(t);
+  }, []);
   const card = cards[index % cards.length];
 
   const draw = () => {
@@ -36,23 +45,14 @@ export function CardDraw({ cards }: { cards: DrawCard[] }) {
         {/* the pile underneath */}
         <DeckBack categoryId="sjove" className="absolute inset-0 rotate-[-7deg] rounded-[1.25rem] shadow-kort" />
         <DeckBack categoryId="parforhold" className="absolute inset-0 rotate-[4deg] rounded-[1.25rem] shadow-kort" />
-        <AnimatePresence initial={false} mode="popLayout">
-          <motion.div
-            key={card.id}
-            className="absolute inset-0"
-            initial={reduce ? { opacity: 0 } : { x: 60, y: -30, rotate: 10, opacity: 0 }}
-            animate={{ x: 0, y: 0, rotate: -1, opacity: 1 }}
-            exit={reduce ? { opacity: 0 } : { x: -80, y: 20, rotate: -14, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 260, damping: 26 }}
-          >
-            <CardFace
-              categoryId={card.categoryId}
-              categoryName={card.categoryName}
-              question={card}
-              className="h-full"
-            />
-          </motion.div>
-        </AnimatePresence>
+        {Stack ? (
+          <Stack card={card} />
+        ) : (
+          // Same markup the animated card ends in, so the swap below is invisible
+          <div className="absolute inset-0" style={{ transform: "rotate(-1deg)" }}>
+            <CardFace categoryId={card.categoryId} categoryName={card.categoryName} question={card} className="h-full" />
+          </div>
+        )}
       </div>
       <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
         <button

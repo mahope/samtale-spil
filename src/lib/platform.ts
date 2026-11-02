@@ -5,16 +5,18 @@
  * back to browser APIs or do nothing. Reminder scheduling lives in ./native.ts,
  * which pulls in the question data and is loaded on demand.
  */
-import { Capacitor } from "@capacitor/core";
-import { Haptics, ImpactStyle } from "@capacitor/haptics";
-import { Share } from "@capacitor/share";
 import { ui } from "@/locale/ui";
 
-export const isNative = () => Capacitor.isNativePlatform();
+// The native shell injects window.Capacitor before the app loads, so the web bundles never need to
+// ship @capacitor/core: the plugins below are imported on demand, only inside the apps.
+export const isNative = () =>
+  typeof window !== "undefined" &&
+  !!(window as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.();
 
 export async function tap(strength: "let" | "fast" = "let") {
   if (!isNative()) return;
   try {
+    const { Haptics, ImpactStyle } = await import("@capacitor/haptics");
     await Haptics.impact({ style: strength === "let" ? ImpactStyle.Light : ImpactStyle.Medium });
   } catch {
     // haptics are a nicety
@@ -25,6 +27,7 @@ export async function tap(strength: "let" | "fast" = "let") {
 export async function shareText(text: string, url?: string): Promise<"delt" | "kopieret" | "afbrudt"> {
   try {
     if (isNative()) {
+      const { Share } = await import("@capacitor/share");
       await Share.share({ text, url, dialogTitle: ui.share.dialogTitle });
       return "delt";
     }

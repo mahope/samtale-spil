@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Capacitor } from "@capacitor/core";
 import { isNative } from "@/lib/platform";
 import { androidBack, registeredTabRoots } from "@/components/app/navState";
 
@@ -32,7 +31,7 @@ export function NativeBoot() {
     const html = document.documentElement;
     html.classList.add("native");
     // The root layout sets this before the first paint; this covers a bridge that loaded late
-    if (hasAppShell()) html.dataset.platform = Capacitor.getPlatform();
+    if (hasAppShell()) import("@capacitor/core").then(({ Capacitor }) => (html.dataset.platform = Capacitor.getPlatform())).catch(() => {});
     const cleanups: (() => void)[] = [];
 
     (async () => {
