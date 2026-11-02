@@ -148,6 +148,8 @@ export const ui = {
     category: "Del kategori-fremskridt",
     copied: "Kopieret",
     dialogTitle: "Del spørgsmålet",
+    image: "Del som billede",
+    imageFile: "snakkespil-kort.png",
   },
   /** The app shell (src/components/app) */
   shell: {

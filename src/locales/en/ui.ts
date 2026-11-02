@@ -146,6 +146,8 @@ export const ui: typeof da = {
     category: "Share progress",
     copied: "Copied",
     dialogTitle: "Share the question",
+    image: "Share as image",
+    imageFile: "goodtalk-card.png",
   },
   shell: {
     tabs: "Tabs",

@@ -4,6 +4,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { Question } from "@/types";
 import { ShareButton } from "@/components/ShareButton";
+import { ShareImageButton } from "@/components/ShareImageButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { CardFace, DeckBack } from "@/components/deck/DeckParts";
 import { getDeck } from "@/data/decks";
@@ -148,6 +149,11 @@ export const QuestionCard = memo(function QuestionCard({
             categoryName={categoryName}
             path={sharePath ?? (question.categoryId === "custom" ? undefined : ui.play.cardPath(question.categoryId, question.id))}
           />
+        </span>
+        )}
+        {type !== "joker" && (
+        <span className="rounded-full bg-white shadow-kort">
+          <ShareImageButton text={question.text} categoryId={question.categoryId} categoryName={categoryName} />
         </span>
         )}
         {site.report && question.categoryId !== "custom" && type !== "joker" && <ReportCard questionId={question.id} />}
