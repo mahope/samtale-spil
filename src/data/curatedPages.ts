@@ -3,6 +3,7 @@
  * referenced by id from the decks, so the text lives in one place.
  */
 import { curatedPages2 } from "./curatedPages2";
+import { curatedPages3 } from "./curatedPages3";
 
 export interface CuratedPage {
   slug: string;
@@ -12,6 +13,8 @@ export interface CuratedPage {
   intro: string;
   sections: { heading: string; text?: string; questionIds?: string[]; items?: string[] }[];
   faq?: { q: string; a: string }[];
+  /** Hand-picked links to related pages, shown after the sections */
+  links?: { href: string; label: string }[];
   playDeck?: string;
 }
 
@@ -171,6 +174,9 @@ const basePages: CuratedPage[] = [
         "q": "Er der også frække spørgsmål?",
         "a": "Ikke på denne side. Spillet har et særskilt sæt kun for voksne, som kræver, at man bekræfter at være fyldt 18."
       }
+    ],
+    "links": [
+      { "href": "/spoergsmaal/langdistance/", "label": "Langdistanceforhold" }
     ],
     "playDeck": "parforhold"
   },
@@ -582,6 +588,9 @@ const basePages: CuratedPage[] = [
         ]
       }
     ],
+    "links": [
+      { "href": "/spoergsmaal/livshistorie/", "label": "Livshistorie" }
+    ],
     "playDeck": "foerste-date"
   },
   {
@@ -680,4 +689,4 @@ const basePages: CuratedPage[] = [
   },
 ];
 
-export const curatedPages: CuratedPage[] = [...basePages, ...curatedPages2];
+export const curatedPages: CuratedPage[] = [...basePages, ...curatedPages2, ...curatedPages3];

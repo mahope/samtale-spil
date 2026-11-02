@@ -2,6 +2,7 @@ import Link from "next/link";
 import { curatedPages, type CuratedPage } from "@/data/curatedPages";
 import { categoryTexts } from "@/data/categoryTexts";
 import { getCategory, getQuestionById } from "@/data/categories";
+import { getTemasideQuestion } from "@/data/questions/temasider";
 import { getDeck } from "@/data/decks";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -50,7 +51,7 @@ export function CuratedLanding({ page }: { page: CuratedPage }) {
 
           {page.sections.map((section) => {
             const questions = (section.questionIds ?? [])
-              .map((id) => getQuestionById(id)?.question.text)
+              .map((id) => (getQuestionById(id)?.question ?? getTemasideQuestion(id))?.text)
               .filter((t): t is string => Boolean(t));
             const list = [...questions, ...(section.items ?? [])];
             const isQuestionList = list.filter((t) => t.trim().endsWith("?")).length * 2 >= list.length;
@@ -84,6 +85,21 @@ export function CuratedLanding({ page }: { page: CuratedPage }) {
               </section>
             );
           })}
+
+          {page.links && page.links.length > 0 && (
+            <section className="mt-14" aria-labelledby="laes-ogsaa">
+              <h2 id="laes-ogsaa" className="text-2xl font-bold sm:text-3xl">Læs også</h2>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {page.links.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="inline-flex min-h-11 items-center rounded-full bg-flade px-4 font-semibold ring-1 ring-streg hover:bg-flade-2">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {page.faq && page.faq.length > 0 && (
             <section className="mt-14">

@@ -306,6 +306,7 @@ export const legeSider: LegeSide[] =
     "relaterede": [
       "/spoergsmaal/hoejtider/",
       "/spoergsmaal/familiehistorier/",
+      "/spoergsmaal/livshistorie/",
       "/spoergsmaal/familie/",
       "/spil/aftensmad/"
     ]

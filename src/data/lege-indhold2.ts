@@ -2673,6 +2673,7 @@ export const legeSider2: LegeSide[] = [
       }
     ],
     "relaterede": [
+      "/spoergsmaal/bryllupsdag/",
       "/spoergsmaal/laer-hinanden-at-kende/",
       "/spoergsmaal/kend-din-partner/",
       "/spoergsmaal/parforhold/",

@@ -269,6 +269,10 @@ export const curatedPages2: CuratedPage[] = [
         "a": "Ja. Knappen øverst åbner bunken Nyt og ukendt, hvor I trækker kortene ét ad gangen. Vil I bruge netop spørgsmålene på denne side, så læs dem op fra listen."
       }
     ],
+    "links": [
+      { "href": "/spoergsmaal/bryllupsdag/", "label": "Bryllupsdag" },
+      { "href": "/spoergsmaal/langdistance/", "label": "Langdistanceforhold" }
+    ],
     "playDeck": "nyt-og-ukendt"
   },
   {
@@ -379,6 +383,9 @@ export const curatedPages2: CuratedPage[] = [
         "q": "Hvad er forskellen på valentinsdag og date night?",
         "a": "Siden om date night er en plan til en hvilken som helst aften med et gættespil i midten. Her handler spørgsmålene mere om jeres begyndelse og om at sige tak."
       }
+    ],
+    "links": [
+      { "href": "/spoergsmaal/bryllupsdag/", "label": "Bryllupsdag" }
     ],
     "playDeck": "parforhold"
   }
