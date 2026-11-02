@@ -22,6 +22,7 @@ const spil: FooterLink[] = [
 const spoergsmaal: FooterLink[] = [
   { href: "/spoergsmaal/", label: "Alle spørgsmål" },
   { href: "/samtaler-ved-aftensmaden/", label: "Samtaler ved aftensmaden" },
+  { href: "/til-arbejdspladsen/", label: "Til arbejdspladsen" },
   ...categories
     .filter((c) => categoryTexts[c.id])
     .slice(0, 6)

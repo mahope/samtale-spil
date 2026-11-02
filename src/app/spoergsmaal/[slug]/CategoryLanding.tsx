@@ -145,6 +145,13 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
               småbørn, skolebørn og teenagere.
             </p>
           )}
+          {category.id === "kollegaer" && (
+            <p className="mt-10 leading-relaxed">
+              Skal du lede en snak på arbejdspladsen? Se{" "}
+              <Link href="/til-arbejdspladsen/" className="underline">øvelsen på 30 minutter</Link>, med tidsplan og
+              spørgsmål.
+            </p>
+          )}
           <div className="mt-10">
             <Link
               href={`/spil/${category.id}/`}
