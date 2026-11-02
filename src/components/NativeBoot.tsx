@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 import { isNative } from "@/lib/platform";
+import { deepLinkRoute } from "@/lib/deepLink";
 import { androidBack, registeredTabRoots } from "@/components/app/navState";
 
 /** Every app's root layout marks <html data-shell="app"> and draws the app shell (src/components/app) */
@@ -42,6 +43,22 @@ export function NativeBoot() {
         import("@capacitor/app"),
         import("@capacitor/local-notifications"),
       ]);
+
+      // A snakkespil.dk link opened in the app (universal link / app link): show that page.
+      // Registered first, and the launch URL fetched, so a link that starts the app is not lost.
+      let lastOpened = "";
+      const openLink = (url: string) => {
+        if (url === lastOpened) return;
+        lastOpened = url;
+        router.push(deepLinkRoute(url));
+      };
+      const open = await App.addListener("appUrlOpen", ({ url }) => openLink(url));
+      cleanups.push(() => open.remove());
+      App.getLaunchUrl()
+        .then((launch) => {
+          if (launch?.url) openLink(launch.url);
+        })
+        .catch(() => {});
 
       if (hasAppShell()) {
         // The screens draw under the status bar and pad themselves (app-shell.css), so the
@@ -94,17 +111,6 @@ export function NativeBoot() {
         else window.history.back();
       });
       cleanups.push(() => back.remove());
-
-      // A snakkespil.dk link opened in the app (universal link / app link): show that page
-      const open = await App.addListener("appUrlOpen", ({ url }) => {
-        try {
-          const u = new URL(url);
-          if (u.pathname.startsWith("/")) router.push(u.pathname + u.search);
-        } catch {
-          /* not a URL we understand */
-        }
-      });
-      cleanups.push(() => open.remove());
 
       // Tapping "Dagens spørgsmål" opens that card
       const tap = await LocalNotifications.addListener("localNotificationActionPerformed", (action) => {

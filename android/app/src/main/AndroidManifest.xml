@@ -18,12 +18,24 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Links to snakkespil.dk open the app once /.well-known/assetlinks.json lists the signing key (docs/app-butikker.md) -->
-            <intent-filter android:autoVerify="true">
+            <!-- Only dk.snakkespil.app claims snakkespil.dk (placeholders in build.gradle); paths mirror the AASA list. Links open the app once /.well-known/assetlinks.json lists the signing key (docs/app-butikker.md) -->
+            <intent-filter android:autoVerify="${deepLinkVerify}">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="snakkespil.dk" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:path="/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/spil/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/multiplayer/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/dagens-spoergsmaal/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/favoritter/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/mere/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/indstillinger/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/mine-spoergsmaal/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/statistik/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/saadan-spiller-i/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/lege/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/om/" />
+                <data android:scheme="https" android:host="${deepLinkHost}" android:pathPrefix="/privatliv/" />
             </intent-filter>
         </activity>
 
