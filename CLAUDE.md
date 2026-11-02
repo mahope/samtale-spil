@@ -7,7 +7,7 @@ Gratis danske samtalekort: https://snakkespil.dk. Mads' eget produkt uden kunder
 - **Repo:** Forgejo `git.mahoje.dk/mahope/samtale-spil` (primær). GitHub `mahope/samtale-spil` er push-spejl uden Actions. PR'er og issues med `tea` (login `mahoje`).
 - **CI:** `.forgejo/workflows/ci.yml` på Forgejo-runneren: tsc, lint, vitest, build, eksporttjek, `nginx -t`.
 - **Deploy:** push til `master` -> Forgejo-webhook -> Dokploy-appen `snakkespil` (worker1) bygger `Dockerfile` (Node 24 -> nginx). Detaljer i wikien (`samtale-spil`).
-- **Analytics:** Plausible CE på analytics.holstjensen.eu og Umami på stats.mahoje.dk kører side om side i en overgangsperiode og skal have de samme sidevisninger og events. Events via `src/utils/track.ts`, som kalder begge (danske eventnavne; goals skal oprettes i Plausible). Umami-id'et står i `src/locales/<sprog>/site.ts` (`umamiId`), taggene i `src/app/layout*.tsx`. CSP i `deploy/security-headers.conf`.
+- **Analytics:** Plausible CE på analytics.holstjensen.eu og Umami på stats.mahoje.dk kører side om side i en overgangsperiode og skal have de samme sidevisninger og events. Events via `src/utils/track.ts`, som kalder begge (danske eventnavne; goals skal oprettes i Plausible). Alle events og om de skal være mål står i `docs/analyse-maal.md`; en test fejler, hvis et nyt `track("…")`-kald ikke står dér. Umami-id'et står i `src/locales/<sprog>/site.ts` (`umamiId`), taggene i `src/app/layout*.tsx`. CSP i `deploy/security-headers.conf`.
 - **Gammel adresse:** mahope.github.io/samtale-spil er en redirect-stub til snakkespil.dk.
 
 ## Apps (Capacitor)
