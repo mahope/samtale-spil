@@ -1,0 +1,281 @@
+[
+  {
+    "route": "/",
+    "html": 148426,
+    "jsGzip": 192586,
+    "chunks": [
+      {
+        "src": "/_next/static/chunks/0s2cptn1mmf6r.js",
+        "gzip": 8314
+      },
+      {
+        "src": "/_next/static/chunks/2khxl0v1q4i6n.js",
+        "gzip": 71969
+      },
+      {
+        "src": "/_next/static/chunks/1_53dzdee2x1b.js",
+        "gzip": 44333
+      },
+      {
+        "src": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+        "gzip": 4390
+      },
+      {
+        "src": "/_next/static/chunks/42onvq6nokjl2.js",
+        "gzip": 3514
+      },
+      {
+        "src": "/_next/static/chunks/1nekntsq1ue7o.js",
+        "gzip": 4520
+      },
+      {
+        "src": "/_next/static/chunks/2fnp6dmxydnwk.js",
+        "gzip": 3904
+      },
+      {
+        "src": "/_next/static/chunks/0xjsg2mkvyo-8.js",
+        "gzip": 8313
+      },
+      {
+        "src": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "gzip": 39627
+      },
+      {
+        "src": "/_next/static/chunks/0-o74znen4827.js",
+        "gzip": 3702
+      }
+    ],
+    "errors": [],
+    "runs": [
+      {
+        "lcp": 3460.1897,
+        "tbt": 17,
+        "score": 0.91,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      },
+      {
+        "lcp": 3465.4151999999995,
+        "tbt": 50,
+        "score": 0.91,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      },
+      {
+        "lcp": 3459.8117,
+        "tbt": 34,
+        "score": 0.91,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      }
+    ]
+  },
+  {
+    "route": "/spoergsmaal/parforhold/",
+    "html": 131653,
+    "jsGzip": 189865,
+    "chunks": [
+      {
+        "src": "/_next/static/chunks/0s2cptn1mmf6r.js",
+        "gzip": 8314
+      },
+      {
+        "src": "/_next/static/chunks/2khxl0v1q4i6n.js",
+        "gzip": 71969
+      },
+      {
+        "src": "/_next/static/chunks/1_53dzdee2x1b.js",
+        "gzip": 44333
+      },
+      {
+        "src": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+        "gzip": 4390
+      },
+      {
+        "src": "/_next/static/chunks/42onvq6nokjl2.js",
+        "gzip": 3514
+      },
+      {
+        "src": "/_next/static/chunks/1nekntsq1ue7o.js",
+        "gzip": 4520
+      },
+      {
+        "src": "/_next/static/chunks/2fnp6dmxydnwk.js",
+        "gzip": 3904
+      },
+      {
+        "src": "/_next/static/chunks/3exi6j3eqkqn_.js",
+        "gzip": 5592
+      },
+      {
+        "src": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "gzip": 39627
+      },
+      {
+        "src": "/_next/static/chunks/0-o74znen4827.js",
+        "gzip": 3702
+      }
+    ],
+    "errors": [],
+    "runs": [
+      {
+        "lcp": 3156.296,
+        "tbt": 53,
+        "score": 0.94,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      },
+      {
+        "lcp": 3155.3334999999997,
+        "tbt": 15,
+        "score": 0.94,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      },
+      {
+        "lcp": 3155.1692,
+        "tbt": 34,
+        "score": 0.94,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      }
+    ]
+  },
+  {
+    "route": "/spil/",
+    "html": 138746,
+    "jsGzip": 318329,
+    "chunks": [
+      {
+        "src": "/_next/static/chunks/0s2cptn1mmf6r.js",
+        "gzip": 8314
+      },
+      {
+        "src": "/_next/static/chunks/2khxl0v1q4i6n.js",
+        "gzip": 71969
+      },
+      {
+        "src": "/_next/static/chunks/1_53dzdee2x1b.js",
+        "gzip": 44333
+      },
+      {
+        "src": "/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+        "gzip": 4390
+      },
+      {
+        "src": "/_next/static/chunks/42onvq6nokjl2.js",
+        "gzip": 3514
+      },
+      {
+        "src": "/_next/static/chunks/1nekntsq1ue7o.js",
+        "gzip": 4520
+      },
+      {
+        "src": "/_next/static/chunks/2fnp6dmxydnwk.js",
+        "gzip": 3904
+      },
+      {
+        "src": "/_next/static/chunks/207rjzx427qy9.js",
+        "gzip": 12496
+      },
+      {
+        "src": "/_next/static/chunks/16krpm8r-1_7f.js",
+        "gzip": 49305
+      },
+      {
+        "src": "/_next/static/chunks/3jidh2m7jsj-k.js",
+        "gzip": 68311
+      },
+      {
+        "src": "/_next/static/chunks/366a0ah27_o37.js",
+        "gzip": 3944
+      },
+      {
+        "src": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+        "gzip": 39627
+      },
+      {
+        "src": "/_next/static/chunks/0-o74znen4827.js",
+        "gzip": 3702
+      }
+    ],
+    "errors": [],
+    "runs": [
+      {
+        "lcp": 4205.1486,
+        "tbt": 21.999999999999545,
+        "score": 0.86,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      },
+      {
+        "lcp": 3904.8333999999995,
+        "tbt": 14.000000000000455,
+        "score": 0.88,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      },
+      {
+        "lcp": 3903.947,
+        "tbt": 18.000000000000455,
+        "score": 0.88,
+        "settings": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "requestLatencyMs": 562.5,
+          "downloadThroughputKbps": 1474.5600000000002,
+          "uploadThroughputKbps": 675,
+          "cpuSlowdownMultiplier": 4
+        }
+      }
+    ]
+  }
+]

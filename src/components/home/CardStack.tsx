@@ -13,6 +13,7 @@ export default function CardStack({ card }: { card: DrawCard }) {
   return (
     <AnimatePresence initial={false} mode="popLayout">
       <motion.div
+        data-card-stack={card.id}
         key={card.id}
         className="absolute inset-0"
         initial={reduce ? { opacity: 0 } : { x: 60, y: -30, rotate: 10, opacity: 0 }}

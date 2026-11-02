@@ -1,0 +1,100 @@
+
+> samtale-spil@2.0.0 build
+> next build
+
+▲ Next.js 16.4.2 (Turbopack)
+✓ Running next.config.ts took 16ms
+- Experiments (use with caution):
+  · optimizePackageImports
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 306ms
+  Running TypeScript ...
+  Finished TypeScript in 1291ms ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/221) ...
+  Generating static pages using 3 workers (55/221)
+  Generating static pages using 3 workers (110/221)
+  Generating static pages using 3 workers (165/221)
+✓ Generating static pages using 3 workers (221/221) in 5.2s
+Turbopack build encountered 1 warning:
+./
+Warning: Failed to find font override values for font `Atkinson Hyperlegible Next`
+Skipping generating a fallback font.
+
+
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /app
+├ ○ /apple-icon.png
+├ ○ /dagens-spoergsmaal
+├ ○ /favoritter
+├ ○ /generator
+├ ○ /guide
+├   /guide/[slug]
+│ ├ ● /guide/aktiv-lytning
+│ ├ ● /guide/kaerlighedssprog
+│ ├ ● /guide/love-maps
+│ └ ● /guide/kommunikation-i-parforhold
+├ ○ /icon.svg
+├ ○ /ikke-terapi
+├ ○ /indstillinger
+├ ○ /lege
+├   /lege/[slug]
+│ ├ ● /lege/julelege
+│ ├ ● /lege/julefrokost-lege
+│ ├ ● /lege/nytaarslege
+│ └ ● [+6 more paths]
+├   /lege/[slug]/kort
+│ ├ ● /lege/julelege/kort
+│ ├ ● /lege/julefrokost-lege/kort
+│ ├ ● /lege/nytaarslege/kort
+│ └ ● [+6 more paths]
+├ ○ /mine-spoergsmaal
+├ ○ /multiplayer
+├ ○ /om
+├ ○ /opengraph-image
+├ ○ /print
+├   /print/[fil]
+│ ├ ● /print/snakkespil-parforhold.pdf
+│ ├ ● /print/snakkespil-familie.pdf
+│ ├ ● /print/snakkespil-intimitet.pdf
+│ └ ● [+41 more paths]
+├ ○ /privatliv
+├ ○ /robots.txt
+├ ○ /saadan-spiller-i
+├ ○ /samtaler-ved-aftensmaden
+├ ○ /sitemap.xml
+├ ○ /spil
+├   /spil/[categoryId]
+│ ├ ● /spil/parforhold
+│ ├ ● /spil/familie
+│ ├ ● /spil/intimitet
+│ └ ● [+31 more paths]
+├ ○ /spil/aaret-der-gik
+├ ○ /spil/aftensmad
+├ ○ /spil/custom
+├ ○ /spil/gaet
+├ ○ /spil/shuffle-all
+├ ○ /spil/trappen
+├ ○ /spil/voksne
+├ ○ /spoergsmaal
+├   /spoergsmaal/[slug]
+│ ├ ● /spoergsmaal/parforhold
+│ ├ ● /spoergsmaal/familie
+│ ├ ● /spoergsmaal/intimitet
+│ └ ● [+40 more paths]
+├   /spoergsmaal/[slug]/opengraph-image
+│ ├ ● /spoergsmaal/parforhold/opengraph-image
+│ ├ ● /spoergsmaal/familie/opengraph-image
+│ ├ ● /spoergsmaal/intimitet/opengraph-image
+│ └ ● [+40 more paths]
+├ ○ /statistik
+└ ○ /statistik/samlet
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)

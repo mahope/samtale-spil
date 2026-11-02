@@ -1,0 +1,357 @@
+{
+  "candidates": {
+    "SearchOverlay": {
+      "parts": 1,
+      "bytes": 7331,
+      "moduleCompressedBytes": 2417
+    },
+    "Statistik": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "StatsHeatMap": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "Confetti": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "motion": {
+      "parts": 269,
+      "bytes": 144206,
+      "moduleCompressedBytes": 69916
+    },
+    "questions/": {
+      "parts": 7,
+      "bytes": 180005,
+      "moduleCompressedBytes": 41351
+    },
+    "CardDraw": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "@capacitor/core": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    }
+  },
+  "initialOutputs": [
+    "[client-fs]/_next/static/chunks/0z1byjlun34nh.js",
+    "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+    "[client-fs]/_next/static/chunks/1n-sm3bpwlrb4.js",
+    "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+    "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+    "[client-fs]/_next/static/chunks/1tdixtstwa656.js",
+    "[client-fs]/_next/static/chunks/2fkkcuq-zyc4e.js",
+    "[client-fs]/_next/static/chunks/2unwr57usnoek.js",
+    "[client-fs]/_next/static/chunks/3-8tvljoq97uq.js",
+    "[client-fs]/_next/static/chunks/3rt63s2_6cpch.js",
+    "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+    "[client-fs]/_next/static/chunks/42r51l1r_6snn.js",
+    "[client-fs]/_next/static/chunks/turbopack-18hpueb50ebbw.js"
+  ],
+  "appParts": [
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/questions/foraeldre.ts",
+      "size": 26749,
+      "compressed_size": 6451
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/questions/uddannelse.ts",
+      "size": 31593,
+      "compressed_size": 7622
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/questions/skole.ts",
+      "size": 30111,
+      "compressed_size": 6517
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/questions/spejder.ts",
+      "size": 19971,
+      "compressed_size": 5101
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/questions/foelelser.ts",
+      "size": 3282,
+      "compressed_size": 1422
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/categories.ts",
+      "size": 156644,
+      "compressed_size": 29876
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/questions/dilemmaer.ts",
+      "size": 17265,
+      "compressed_size": 3810
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1in9v1g4g077m.js",
+      "source_path": "[project]/src/data/questions/forskning.ts",
+      "size": 51034,
+      "compressed_size": 10428
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/components/NativeBoot.tsx",
+      "size": 2034,
+      "compressed_size": 970
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/components/app/navState.ts",
+      "size": 78,
+      "compressed_size": 83
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/components/NativeReminders.tsx",
+      "size": 251,
+      "compressed_size": 200
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/components/ServiceWorkerRegistration.tsx",
+      "size": 400,
+      "compressed_size": 242
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/lib/platform.ts",
+      "size": 556,
+      "compressed_size": 340
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/lib/reminder.ts",
+      "size": 859,
+      "compressed_size": 430
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/locales/da/ui.ts",
+      "size": 4619,
+      "compressed_size": 2295
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1q1807b4v67ts.js",
+      "source_path": "[project]/src/utils/logger.ts",
+      "size": 809,
+      "compressed_size": 285
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/2unwr57usnoek.js",
+      "source_path": "[project]/src/app/error.tsx",
+      "size": 126,
+      "compressed_size": 106
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/2unwr57usnoek.js",
+      "source_path": "[project]/src/components/ErrorScreen.tsx",
+      "size": 1247,
+      "compressed_size": 598
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/app/spil/ChooserTools.tsx",
+      "size": 1970,
+      "compressed_size": 928
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/components/SearchOverlay.tsx",
+      "size": 7331,
+      "compressed_size": 2417
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/components/DepthBadge.tsx",
+      "size": 1608,
+      "compressed_size": 644
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/components/ThemeToggle.tsx",
+      "size": 2272,
+      "compressed_size": 1024
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/components/deck/DeckParts.tsx",
+      "size": 2315,
+      "compressed_size": 967
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/components/site/SiteNav.tsx",
+      "size": 4449,
+      "compressed_size": 1598
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/components/site/navActive.ts",
+      "size": 86,
+      "compressed_size": 81
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/data/cardTypes.ts",
+      "size": 322,
+      "compressed_size": 219
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/locales/da/marks.ts",
+      "size": 9,
+      "compressed_size": 11
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/data/decks.ts",
+      "size": 2709,
+      "compressed_size": 1014
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/hooks/useCustomQuestions.ts",
+      "size": 1851,
+      "compressed_size": 771
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/hooks/useFocusTrap.ts",
+      "size": 1070,
+      "compressed_size": 534
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/hooks/useLocalStorage.ts",
+      "size": 3034,
+      "compressed_size": 1149
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3sax293-ijhmo.js",
+      "source_path": "[project]/src/constants/storage.ts",
+      "size": 742,
+      "compressed_size": 383
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3rt63s2_6cpch.js",
+      "source_path": "[project]/src/app/spil/error.tsx",
+      "size": 191,
+      "compressed_size": 151
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/3rt63s2_6cpch.js",
+      "source_path": "[project]/src/components/ErrorScreen.tsx",
+      "size": 1247,
+      "compressed_size": 598
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+      "source_path": "[project]/src/components/ThemeToggle.tsx",
+      "size": 2272,
+      "compressed_size": 1024
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+      "source_path": "[project]/src/components/site/SiteNav.tsx",
+      "size": 4489,
+      "compressed_size": 1593
+    },
+    {
+      "type": "part",
+      "route": "/spil",
+      "filename": "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+      "source_path": "[project]/src/components/site/navActive.ts",
+      "size": 86,
+      "compressed_size": 80
+    }
+  ]
+}

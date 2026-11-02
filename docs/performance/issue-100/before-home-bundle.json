@@ -1,0 +1,235 @@
+{
+  "candidates": {
+    "SearchOverlay": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "Statistik": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "StatsHeatMap": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "Confetti": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "motion": {
+      "parts": 270,
+      "bytes": 144499,
+      "moduleCompressedBytes": 70041
+    },
+    "questions/": {
+      "parts": 0,
+      "bytes": 0,
+      "moduleCompressedBytes": 0
+    },
+    "CardDraw": {
+      "parts": 1,
+      "bytes": 1836,
+      "moduleCompressedBytes": 892
+    },
+    "@capacitor/core": {
+      "parts": 1,
+      "bytes": 8092,
+      "moduleCompressedBytes": 3145
+    }
+  },
+  "initialOutputs": [
+    "[client-fs]/_next/static/chunks/0z1byjlun34nh.js",
+    "[client-fs]/_next/static/chunks/1n-sm3bpwlrb4.js",
+    "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+    "[client-fs]/_next/static/chunks/1tdixtstwa656.js",
+    "[client-fs]/_next/static/chunks/2fkkcuq-zyc4e.js",
+    "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+    "[client-fs]/_next/static/chunks/2unwr57usnoek.js",
+    "[client-fs]/_next/static/chunks/3-8tvljoq97uq.js",
+    "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+    "[client-fs]/_next/static/chunks/42r51l1r_6snn.js",
+    "[client-fs]/_next/static/chunks/turbopack-18hpueb50ebbw.js"
+  ],
+  "appParts": [
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/components/NativeBoot.tsx",
+      "size": 1857,
+      "compressed_size": 950
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/components/app/navState.ts",
+      "size": 75,
+      "compressed_size": 80
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/components/NativeReminders.tsx",
+      "size": 251,
+      "compressed_size": 201
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/components/ServiceWorkerRegistration.tsx",
+      "size": 400,
+      "compressed_size": 242
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/lib/platform.ts",
+      "size": 489,
+      "compressed_size": 302
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/lib/reminder.ts",
+      "size": 859,
+      "compressed_size": 430
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/locales/da/ui.ts",
+      "size": 4619,
+      "compressed_size": 2295
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/3tx1a7n0r4spb.js",
+      "source_path": "[project]/src/utils/logger.ts",
+      "size": 708,
+      "compressed_size": 269
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2unwr57usnoek.js",
+      "source_path": "[project]/src/app/error.tsx",
+      "size": 126,
+      "compressed_size": 106
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2unwr57usnoek.js",
+      "source_path": "[project]/src/components/ErrorScreen.tsx",
+      "size": 1247,
+      "compressed_size": 598
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/components/ThemeToggle.tsx",
+      "size": 2272,
+      "compressed_size": 1024
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/components/deck/DeckParts.tsx",
+      "size": 2315,
+      "compressed_size": 967
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/components/home/CardDraw.tsx",
+      "size": 1836,
+      "compressed_size": 892
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/components/site/SiteNav.tsx",
+      "size": 4449,
+      "compressed_size": 1598
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/components/site/navActive.ts",
+      "size": 86,
+      "compressed_size": 80
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/data/cardTypes.ts",
+      "size": 322,
+      "compressed_size": 219
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/locales/da/marks.ts",
+      "size": 9,
+      "compressed_size": 11
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/data/decks.ts",
+      "size": 2720,
+      "compressed_size": 1018
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/2fpfmp7n0hc5j.js",
+      "source_path": "[project]/src/utils/track.ts",
+      "size": 365,
+      "compressed_size": 220
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+      "source_path": "[project]/src/components/ThemeToggle.tsx",
+      "size": 2272,
+      "compressed_size": 1024
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+      "source_path": "[project]/src/components/site/SiteNav.tsx",
+      "size": 4489,
+      "compressed_size": 1593
+    },
+    {
+      "type": "part",
+      "route": "/",
+      "filename": "[client-fs]/_next/static/chunks/1srtt3__o4wad.js",
+      "source_path": "[project]/src/components/site/navActive.ts",
+      "size": 86,
+      "compressed_size": 80
+    }
+  ]
+}
