@@ -16,16 +16,28 @@ export const OG_BASE = {
   ...(site.lang !== "da" && { images: [{ url: "/og.png", width: 1200, height: 630 }] }),
 };
 
-/**
- * Flip to true when the apps are live in App Store and Google Play. Until then the website says
- * "coming soon" instead of linking to store pages that do not open yet.
- */
-export const APPS_LIVE = false;
+export type Store = "ios" | "android";
+export type StoreLinks = { ios: string | null; android: string | null };
 
-/** Store links to show on the website: null for a store that is not live (yet) */
-export const APP_STORE_LINKS: { ios: string | null; android: string | null } = APPS_LIVE
-  ? site.apps
-  : { ios: null, android: null };
+/**
+ * One flag per store. Flip a store to true only when its store page is live and opens; until
+ * then the website says "coming soon" for that store instead of linking to a page that does not work.
+ */
+export const APPS_LIVE: Record<Store, boolean> = {
+  ios: false,
+  android: false,
+};
+
+/** Links for the stores that are live: null for a store that is not live (or has no URL) */
+export function liveStoreLinks(live: Record<Store, boolean>, apps: StoreLinks): StoreLinks {
+  return { ios: live.ios ? apps.ios : null, android: live.android ? apps.android : null };
+}
+
+/** Store links to show on the website */
+export const APP_STORE_LINKS: StoreLinks = liveStoreLinks(APPS_LIVE, site.apps);
+
+/** True while at least one store is not live: pages keep the browser fallback ("Add to Home Screen") */
+export const APPS_PENDING = !APP_STORE_LINKS.ios || !APP_STORE_LINKS.android;
 
 /** The app's own build (APP_BUILD=1) should not advertise the app or link to /app/ */
 export const SHOW_APP_PROMO = process.env.APP_BUILD !== "1";

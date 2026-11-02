@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { OG_BASE, SITE_URL, SITE_NAME, QUESTION_COUNT, CATEGORY_COUNT } from "@/config/site";
+import { OG_BASE, SITE_URL, SITE_NAME, QUESTION_COUNT, CATEGORY_COUNT, SHOW_APP_PROMO } from "@/config/site";
 import Link from "next/link";
 import { categories } from "@/data/categories";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CardDraw, type DrawCard } from "@/components/home/CardDraw";
 import { GroupedDecks } from "@/components/deck/GroupedDecks";
+import { StoreButtons } from "@/components/site/StoreButtons";
 import { homeLanguages } from "@/locales/alternates";
 
 export const metadata: Metadata = {
@@ -185,6 +186,21 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+        {SHOW_APP_PROMO && (
+          <section className="mx-auto mt-20 max-w-3xl px-4 sm:px-6" aria-labelledby="app-overskrift">
+            <h2 id="app-overskrift" className="text-3xl font-bold sm:text-4xl">
+              Snakkespil som app
+            </h2>
+            <p className="mt-3 text-lg text-blaek-2">Til iPhone og Android, også uden internet.</p>
+            <div className="mt-5">
+              <StoreButtons />
+            </div>
+            <Link href="/app/" className="mt-4 inline-flex min-h-8 items-center font-semibold underline underline-offset-4">
+              Læs om appen
+            </Link>
+          </section>
+        )}
       </main>
       <SiteFooter />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

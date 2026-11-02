@@ -9,7 +9,7 @@ export const site = {
   /** Favourites page exists (/favoritter/) */
   favorites: true,
   ogTagline: "Gratis samtalekort på snakkespil.dk",
-  /** Store pages of the app; shown only once APPS_LIVE in src/config/site.ts is true */
+  /** Store pages of the app; each store is shown once its flag in APPS_LIVE (src/config/site.ts) is true */
   apps: {
     ios: "https://apps.apple.com/dk/app/id6825365746",
     android: "https://play.google.com/store/apps/details?id=dk.snakkespil.app",

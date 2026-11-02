@@ -30,6 +30,8 @@ export const STORE_TEXTS_EN: StoreTexts = {
   ios: "Download on the App Store",
   android: "Get it on Google Play",
   soon: "Coming soon to the App Store and Google Play.",
+  soonIos: "Coming soon to the App Store.",
+  soonAndroid: "Coming soon to Google Play.",
 };
 
 function HomeLink() {
