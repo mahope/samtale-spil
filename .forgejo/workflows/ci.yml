@@ -41,7 +41,7 @@ jobs:
             echo "old github.io URLs in export"; exit 1
           fi
           # play screens stay out of the index, content pages stay in
-          for t in parforhold familie venner; do test -f "out/spoergsmaal/$t/index.html" || { echo "redirect target $t missing"; exit 1; }; done
+          for t in parforhold familie venner boern kollegaer foerste-date; do test -f "out/spoergsmaal/$t/index.html" || { echo "redirect target $t missing"; exit 1; }; done
           grep -q 'name="robots" content="noindex' out/spil/parforhold/index.html || { echo "play screen is indexable"; exit 1; }
           if grep -q 'name="robots" content="noindex' out/spoergsmaal/parforhold/index.html; then echo "landing page is noindex"; exit 1; fi
           # the landing page carries the questions in its HTML

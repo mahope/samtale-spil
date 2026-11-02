@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
 import { track } from "@/utils/track";
 
 // Search pulls in every question; load it only when someone opens it
@@ -11,11 +10,11 @@ const SearchOverlay = dynamic(() => import("@/components/SearchOverlay").then((m
 /** Search button for the 404 page; also reports the missing path (without query string). */
 export function NotFoundSearch() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
-    track("404-set", { sti: pathname });
-  }, [pathname]);
+    // Read the real address: 404.html is served on the guessed URL, so the router path may be the internal one
+    track("404-set", { sti: window.location.pathname });
+  }, []);
 
   return (
     <>

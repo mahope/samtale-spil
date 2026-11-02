@@ -4,16 +4,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack } from "@/components/deck/DeckParts";
 import { NotFoundSearch } from "@/components/site/NotFoundSearch";
-
-/** Most used decks, as /spoergsmaal/<id>/ landing pages. */
-const shortcuts = [
-  { id: "parforhold", label: "Par" },
-  { id: "familie", label: "Familie" },
-  { id: "venner", label: "Venner" },
-  { id: "boern", label: "Børn" },
-  { id: "kollegaer", label: "Kollegaer" },
-  { id: "foerste-date", label: "Første date" },
-];
+import { notFoundShortcuts } from "@/config/notFoundShortcuts";
 
 export const metadata: Metadata = {
   title: "Siden findes ikke",
@@ -43,7 +34,7 @@ export default function NotFound() {
           </div>
           <h2 className="mt-10 text-lg font-bold">Prøv en af de mest brugte bunker</h2>
           <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {shortcuts.map((s) => (
+            {notFoundShortcuts().map((s) => (
               <li key={s.id}>
                 <Link
                   href={`/spoergsmaal/${s.id}/`}

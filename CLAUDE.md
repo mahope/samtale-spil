@@ -8,6 +8,7 @@ Gratis danske samtalekort: https://snakkespil.dk. Mads' eget produkt uden kunder
 - **CI:** `.forgejo/workflows/ci.yml` på Forgejo-runneren: tsc, lint, vitest, build, eksporttjek, `nginx -t`.
 - **Deploy:** push til `master` -> Forgejo-webhook -> Dokploy-appen `snakkespil` (worker1) bygger `Dockerfile` (Node 24 -> nginx). Detaljer i wikien (`samtale-spil`).
 - **Analytics:** Plausible CE på analytics.holstjensen.eu og Umami på stats.mahoje.dk kører side om side i en overgangsperiode og skal have de samme sidevisninger og events. Events via `src/utils/track.ts`, som kalder begge (danske eventnavne; goals skal oprettes i Plausible). Umami-id'et står i `src/locales/<sprog>/site.ts` (`umamiId`), taggene i `src/app/layout*.tsx`. CSP i `deploy/security-headers.conf`.
+- **404-siden:** `src/app/not-found.tsx` har søgning og seks bunkegenveje (`src/config/notFoundShortcuts.ts`, navne fra `categories`) og sender eventet `404-set` (prop `sti`, uden søgestreng; goal oprettes i Plausible). Gættede adresser omdirigeres med 301 i `deploy/nginx.conf` (kun eksakte aliasser, ingen wildcard; målene tjekkes i CI).
 - **Gammel adresse:** mahope.github.io/samtale-spil er en redirect-stub til snakkespil.dk.
 
 ## Apps (Capacitor)
