@@ -61,7 +61,16 @@ jobs:
             grep -q "rel=\"canonical\" href=\"https://snakkespil.dk/lege/$p/\"" "$f" || { echo "/lege/$p/ has no self-canonical"; exit 1; }
             if grep -q 'name="robots" content="noindex' "$f"; then echo "/lege/$p/ is noindex"; exit 1; fi
             if grep -oE '<title>[^<]*' "$f" | grep -qi 'spørgsmål til jul'; then echo "/lege/$p/ title contains 'spørgsmål til jul'"; exit 1; fi
-            grep -q '<h1' "$f" || { echo "/lege/$p/ has no h1"; exit 1; }
+            case "$p" in
+              julelege) t="Julelege for hele familien: lege og kort til juleaften"; h="Julelege for hele familien" ;;
+              julefrokost-lege) t="Julefrokost-lege: lege der får alle til at snakke"; h="Julefrokost-lege" ;;
+              nytaarslege) t="Nytårslege: lege og spørgsmål til nytårsaften"; h="Nytårslege" ;;
+              selskabslege-ved-bordet) t="Sjove selskabslege ved bordet uden forberedelse"; h="Sjove selskabslege ved bordet" ;;
+            esac
+            grep -oE "<title>[^<]*" "$f" | grep -qF "$t" || { echo "/lege/$p/ title is not '$t'"; exit 1; }
+            grep -oE '<h1[^>]*>[^<]*' "$f" | grep -qF "$h" || { echo "/lege/$p/ h1 does not start with '$h'"; exit 1; }
+            c=$(grep -o '<li class="flex gap-4' "$f" | wc -l)
+            [ "$c" -le 40 ] || { echo "/lege/$p/ lists $c cards (max 40)"; exit 1; }
             grep -q 'href="/lege/'"$p"'/kort/"' "$f" || { echo "/lege/$p/ has no play button"; exit 1; }
           done
           # linked from named deck pages, and linking back
