@@ -54,6 +54,21 @@ jobs:
             n=$(grep -o '<li class="flex gap-4' "$f" | wc -l)
             [ "$n" -ge 20 ] || { echo "$f lists only $n cards"; exit 1; }
           done
+          # season pages (#42): sitemap, self-canonical, indexable, no "spørgsmål til jul" in title, game text in HTML
+          for p in julelege julefrokost-lege nytaarslege selskabslege-ved-bordet; do
+            f="out/lege/$p/index.html"
+            grep -q "<loc>https://snakkespil.dk/lege/$p/</loc>" out/sitemap.xml || { echo "/lege/$p/ is not in the sitemap"; exit 1; }
+            grep -q "rel=\"canonical\" href=\"https://snakkespil.dk/lege/$p/\"" "$f" || { echo "/lege/$p/ has no self-canonical"; exit 1; }
+            if grep -q 'name="robots" content="noindex' "$f"; then echo "/lege/$p/ is noindex"; exit 1; fi
+            if grep -oE '<title>[^<]*' "$f" | grep -qi 'spørgsmål til jul'; then echo "/lege/$p/ title contains 'spørgsmål til jul'"; exit 1; fi
+            grep -q '<h1' "$f" || { echo "/lege/$p/ has no h1"; exit 1; }
+            grep -q 'href="/lege/'"$p"'/kort/"' "$f" || { echo "/lege/$p/ has no play button"; exit 1; }
+          done
+          # linked from named deck pages, and linking back
+          grep -q 'href="/lege/julelege/"' out/spoergsmaal/hoejtider/index.html || { echo "hoejtider does not link julelege"; exit 1; }
+          grep -q 'href="/lege/julefrokost-lege/"' out/spoergsmaal/kollegaer/index.html || { echo "kollegaer does not link julefrokost-lege"; exit 1; }
+          grep -q 'href="/spoergsmaal/hoejtider/"' out/lege/julelege/index.html || { echo "julelege does not link hoejtider"; exit 1; }
+          grep -q 'href="/spoergsmaal/kollegaer/"' out/lege/julefrokost-lege/index.html || { echo "julefrokost-lege does not link kollegaer"; exit 1; }
           # daily question and generator carry their cards in the HTML
           for p in dagens-spoergsmaal generator; do
             n=$(grep -o 'data-kort="true"' "out/$p/index.html" | wc -l)
