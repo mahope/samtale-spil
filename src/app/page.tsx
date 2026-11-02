@@ -190,9 +190,9 @@ export default function Home() {
         {SHOW_APP_PROMO && (
           <section className="mx-auto mt-20 max-w-3xl px-4 sm:px-6" aria-labelledby="app-overskrift">
             <h2 id="app-overskrift" className="text-3xl font-bold sm:text-4xl">
-              Snakkespil som app
+              Hent appen
             </h2>
-            <p className="mt-3 text-lg text-blaek-2">Til iPhone og Android, også uden internet.</p>
+            <p className="mt-3 text-lg text-blaek-2">Alle kortene i lommen, uden at åbne en browser først.</p>
             <div className="mt-5">
               <StoreButtons />
             </div>

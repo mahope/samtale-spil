@@ -37,7 +37,10 @@ export function liveStoreLinks(live: Record<Store, boolean>, apps: StoreLinks): 
 export const APP_STORE_LINKS: StoreLinks = liveStoreLinks(APPS_LIVE, site.apps);
 
 /** True while at least one store is not live: pages keep the browser fallback ("Add to Home Screen") */
-export const APPS_PENDING = !APP_STORE_LINKS.ios || !APP_STORE_LINKS.android;
+export function appsPending(links: StoreLinks): boolean {
+  return !links.ios || !links.android;
+}
+export const APPS_PENDING = appsPending(APP_STORE_LINKS);
 
 /** The app's own build (APP_BUILD=1) should not advertise the app or link to /app/ */
 export const SHOW_APP_PROMO = process.env.APP_BUILD !== "1";
