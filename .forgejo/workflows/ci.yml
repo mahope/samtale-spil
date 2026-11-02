@@ -54,6 +54,8 @@ jobs:
             n=$(grep -o '<li class="flex gap-4' "$f" | wc -l)
             [ "$n" -ge 20 ] || { echo "$f lists only $n cards"; exit 1; }
           done
+          # JSON-LD on sample pages parses, keeps the breadcrumb and adds CollectionPage + ItemList
+          node scripts/check-jsonld.mjs out/spoergsmaal/parforhold/index.html out/spoergsmaal/kaeresten/index.html out/lege/julelege/index.html
           # daily question and generator carry their cards in the HTML
           for p in dagens-spoergsmaal generator; do
             n=$(grep -o 'data-kort="true"' "out/$p/index.html" | wc -l)

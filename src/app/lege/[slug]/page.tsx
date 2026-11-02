@@ -11,6 +11,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack } from "@/components/deck/DeckParts";
 import { LegeListe } from "./LegeListe";
 import { OG_BASE, SITE_URL } from "@/config/site";
+import { collectionJsonLd } from "@/lib/collectionJsonLd";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -51,6 +52,13 @@ export default async function LegePage({ params }: Props) {
       { "@type": "ListItem", position: 3, name: side.h1.split(":")[0], item: `${SITE_URL}/lege/${slug}/` },
     ],
   };
+
+  const collection = collectionJsonLd({
+    path: `/lege/${slug}/`,
+    name: side.h1,
+    description: side.metaDescription,
+    items: side.kort.map((k) => k.text),
+  });
 
   return (
     <>
@@ -140,6 +148,7 @@ export default async function LegePage({ params }: Props) {
       </main>
       <SiteFooter />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collection) }} />
     </>
   );
 }

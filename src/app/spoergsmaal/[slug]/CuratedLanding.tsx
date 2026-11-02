@@ -6,6 +6,7 @@ import { getDeck } from "@/data/decks";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SITE_URL } from "@/config/site";
+import { collectionJsonLd } from "@/lib/collectionJsonLd";
 
 /** Hand-picked question list on one theme, e.g. "Spørgsmål til kæresten". */
 export function CuratedLanding({ page }: { page: CuratedPage }) {
@@ -23,6 +24,15 @@ export function CuratedLanding({ page }: { page: CuratedPage }) {
       { "@type": "ListItem", position: 3, name: page.h1.split(":")[0], item: `${SITE_URL}/spoergsmaal/${page.slug}/` },
     ],
   };
+
+  const collection = collectionJsonLd({
+    path: `/spoergsmaal/${page.slug}/`,
+    name: page.h1,
+    description: page.metaDescription,
+    items: page.sections
+      .flatMap((s) => [...(s.questionIds ?? []).map((id) => getQuestionById(id)?.question.text ?? ""), ...(s.items ?? [])])
+      .filter((t) => t.trim().endsWith("?")),
+  });
 
   return (
     <>
@@ -125,6 +135,7 @@ export function CuratedLanding({ page }: { page: CuratedPage }) {
       </main>
       <SiteFooter />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collection) }} />
     </>
   );
 }

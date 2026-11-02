@@ -8,6 +8,8 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { DeckBack, DepthPips, deckStyle } from "@/components/deck/DeckParts";
 import { SITE_URL } from "@/config/site";
+import { collectionJsonLd } from "@/lib/collectionJsonLd";
+
 import type { Question } from "@/types";
 import { deckLanguages } from "@/locales/alternates";
 
@@ -36,6 +38,13 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
       { "@type": "ListItem", position: 3, name: category.name, item: `${SITE_URL}/spoergsmaal/${category.id}/` },
     ],
   };
+
+  const collection = collectionJsonLd({
+    path: `/spoergsmaal/${category.id}/`,
+    name: text.seoTitle,
+    description: text.intro,
+    items: category.questions.map((q) => q.text),
+  });
 
   return (
     <>
@@ -190,6 +199,7 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
       </main>
       <SiteFooter englishHref={deckLanguages(category.id)?.en} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collection) }} />
     </>
   );
 }
