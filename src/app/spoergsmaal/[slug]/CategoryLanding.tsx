@@ -43,7 +43,8 @@ export function CategoryLanding({ categoryId }: { categoryId: string }) {
     path: `/spoergsmaal/${category.id}/`,
     name: text.seoTitle,
     description: text.intro,
-    items: category.questions.map((q) => q.text),
+    // Same order as the page: grouped let, medium, dyb
+    items: GROUPS.flatMap((g) => category.questions.filter((q) => q.depth === g.depth).map((q) => q.text)),
   });
 
   return (

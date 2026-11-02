@@ -29,9 +29,13 @@ export function CuratedLanding({ page }: { page: CuratedPage }) {
     path: `/spoergsmaal/${page.slug}/`,
     name: page.h1,
     description: page.metaDescription,
-    items: page.sections
-      .flatMap((s) => [...(s.questionIds ?? []).map((id) => getQuestionById(id)?.question.text ?? ""), ...(s.items ?? [])])
-      .filter((t) => t.trim().endsWith("?")),
+    // Mirror the page: only sections rendered as numbered question lists
+    items: page.sections.flatMap((s) => {
+      const list = [...(s.questionIds ?? []).map((id) => getQuestionById(id)?.question.text ?? ""), ...(s.items ?? [])].filter(
+        (t) => t.trim().length > 0,
+      );
+      return list.filter((t) => t.trim().endsWith("?")).length * 2 >= list.length ? list : [];
+    }),
   });
 
   return (

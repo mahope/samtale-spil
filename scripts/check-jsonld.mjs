@@ -14,7 +14,7 @@ for (const file of process.argv.slice(2)) {
         types.push(node["@type"]);
         if (node["@type"] === "CollectionPage") {
           const list = node.mainEntity?.itemListElement ?? [];
-          if (list.length === 0 || list.some((it, i) => it.position !== i + 1 || !it.name)) throw new Error("bad ItemList");
+          if (list.length === 0 || list.length > 10 || list.some((it, i) => it.position !== i + 1 || !it.name)) throw new Error("bad ItemList");
           if (node.isPartOf?.["@id"] !== "https://snakkespil.dk/#website") throw new Error("bad isPartOf");
         }
       }
