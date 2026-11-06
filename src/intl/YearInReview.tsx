@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { PlayScreen, dealMotion } from "@/components/PlayScreen";
 import { track } from "@/utils/track";
+import { useFavorites } from "@/hooks/useLocalStorage";
 import { ui } from "@/locale/ui";
 import type { Question } from "@/types";
 
@@ -21,6 +22,7 @@ function pick<T>(items: T[]): T | undefined {
 
 /** A fixed run of cards drawn from per-step pools, ending on a closing card (Goodtalk, issue #77) */
 export function YearInReview({ steps }: { steps: YearStep[] }) {
+  const { isFavorite, toggleFavorite } = useFavorites();
   const draw = () => {
     const used = new Set<string>();
     return steps.map((s) => {
@@ -93,8 +95,8 @@ export function YearInReview({ steps }: { steps: YearStep[] }) {
             categoryName="Year in review"
             isFlipped={isFlipped}
             onFlip={() => setIsFlipped((f) => !f)}
-            isFavorite={false}
-            onToggleFavorite={() => {}}
+            isFavorite={isFavorite(card.id)}
+            onToggleFavorite={() => toggleFavorite(card)}
             sharePath="/play/year-in-review/"
           />
         </motion.div>
