@@ -31,6 +31,8 @@ const isAppShell = isAppBuild && !isIntl && variant === '';
 const isIntlApp = isAppBuild && isIntl;
 // In the apps the games go back to the first tab ("/"), which is where /spil/ or /play/ lives on the site
 const appShellAlias = { '@/locale/ui': `./src/locales/${locale}/ui.app.ts` };
+// The Goodtalk app has a Favorites tab, so its cards get the heart the English website leaves out
+const intlAppAlias = { '@/locale/site': `./src/locales/${locale}/site.app.ts` };
 const hasShell = isAppShell || isIntlApp || variant === 'voksen';
 // "@/locale/*" points at src/locales/<locale>/ (tsconfig maps it to Danish for type checks)
 const localeAlias = {
@@ -50,7 +52,7 @@ const nextConfig: NextConfig = {
   ...(variant === 'voksen' && { pageExtensions: ['voksen.tsx', 'voksen.ts'] }),
   ...(isAppShell && { pageExtensions: ['app.tsx', 'app.ts'] }),
   turbopack: {
-    resolveAlias: { ...localeAlias, ...(isAppBuild ? adultAlias : {}), ...(hasShell ? appShellAlias : {}) },
+    resolveAlias: { ...localeAlias, ...(isAppBuild ? adultAlias : {}), ...(hasShell ? appShellAlias : {}), ...(isIntlApp ? intlAppAlias : {}) },
   },
   images: {
     unoptimized: true
