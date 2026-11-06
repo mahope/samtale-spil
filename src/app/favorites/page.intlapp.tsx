@@ -5,7 +5,11 @@ import { intlGames } from "@/intl/games";
 
 export const metadata = { title: "Favorites" };
 
-const deckNames = Object.fromEntries([...intlGames.map((g) => [g.deckId, g.h1.split(":")[0]]), ...intlDecks.map((d) => [d.id, d.name])]);
+const deckNames = Object.fromEntries([
+  ...intlGames.map((g) => [g.deckId, g.h1.split(":")[0]]),
+  ...intlDecks.map((d) => [d.id, d.name]),
+  ["aaret", "Year in review"],
+]);
 
 export default function FavoritesTab() {
   return (
