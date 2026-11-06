@@ -16,7 +16,14 @@ const scrollPositions = new Map<string, number>();
 export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; fullscreen: string[]; children: ReactNode }) {
   const pathname = normalizePath(usePathname() ?? "/");
   const roots = tabs.map((t) => t.href);
-  const isFullscreen = fullscreen.some((p) => pathname.startsWith(p));
+  const isGameRoute = fullscreen.some((p) => pathname.startsWith(p));
+  // A game route hides the tab bar only while it shows the felt board: its setup screen shares
+  // the route with the game, so the shell watches the mounted content instead of the URL, and a
+  // setup screen in AppScreen (paper or felt, issue #108) gets the tab bar and its own insets.
+  // Game routes start on the felt, so the first paint never flashes a tab bar over the board.
+  const [onFelt, setOnFelt] = useState(isGameRoute);
+  const [hasPage, setHasPage] = useState(false);
+  const isFullscreen = isGameRoute && onFelt;
 
   const depth = (path: string) => (roots.includes(path) ? 0 : path.split("/").filter(Boolean).length);
   const [nav, setNav] = useState<{ path: string; dir: Direction; tab: string; restore: boolean }>(() => ({
@@ -38,6 +45,9 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
     // Coming back (also after an edge swipe, which has no slide) or to a tab: restore its scroll
     const restore = isPopping() || dir === "tab";
     setNav({ path: pathname, dir, tab, restore });
+    // Each screen starts from the felt default until the effect below has looked at its content
+    setOnFelt(isGameRoute);
+    setHasPage(false);
   }
 
   const rootsKey = roots.join(" ");
@@ -53,17 +63,28 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
     return () => cancelAnimationFrame(frame);
   }, [pathname, nav.restore]);
 
-  // Games on the felt get a felt strip under the status bar (app-shell.css, NativeBoot)
+  // Games on the felt get a felt strip under the status bar (app-shell.css, NativeBoot), and a
+  // screen that draws its own navigation bar (AppScreen) keeps the shell from padding it twice.
+  // The classes are toggled on the element as well, so a content change inside the same route
+  // (setup screen -> felt board) is dressed correctly before React has rendered the new state.
   const screenRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const el = screenRef.current;
-    if (!el || !isFullscreen) return;
-    const update = () => el.classList.toggle("app-felt", !!el.querySelector(":scope > .filt, :scope > main.filt"));
+    if (!el) return;
+    const update = () => {
+      const feltNow = !!el.querySelector(":scope > .filt, :scope > main.filt");
+      const pageNow = !!el.querySelector(":scope > .app-page");
+      el.classList.toggle("app-felt", isGameRoute && feltNow);
+      el.classList.toggle("app-page-screen", pageNow);
+      setOnFelt(feltNow);
+      setHasPage(pageNow);
+    };
     update();
+    if (!isGameRoute) return;
     const observer = new MutationObserver(update);
     observer.observe(el, { childList: true });
     return () => observer.disconnect();
-  }, [pathname, isFullscreen]);
+  }, [pathname, isGameRoute]);
 
   useEffect(() => {
     // Remember each screen's scroll position as it changes (the router scrolls a new screen to
@@ -105,7 +126,11 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
 
   return (
     <>
-      <div key={pathname} ref={screenRef} className={`app-screen app-${nav.dir}${isFullscreen ? "" : " app-has-tabbar"}`}>
+      <div
+        key={pathname}
+        ref={screenRef}
+        className={`app-screen app-${nav.dir}${isFullscreen ? " app-felt" : " app-has-tabbar"}${hasPage ? " app-page-screen" : ""}`}
+      >
         {children}
       </div>
       {!isFullscreen && <TabBar tabs={tabs} active={nav.tab} pathname={pathname} />}

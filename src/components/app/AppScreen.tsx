@@ -15,6 +15,8 @@ interface AppScreenProps {
   actions?: ReactNode;
   /** data-route on <main>; NativeBoot looks for "forside" */
   route?: string;
+  /** "filt" puts the screen on the games' felt with white navigation (a game's setup screen, issue #108) */
+  tone?: "papir" | "filt";
   children: ReactNode;
 }
 
@@ -24,7 +26,7 @@ interface AppScreenProps {
  * Material medium top app bar). Pushed screens get a compact bar with a back button, and on
  * iOS they can be swiped away from the left edge.
  */
-export function AppScreen({ title, back, actions, route, children }: AppScreenProps) {
+export function AppScreen({ title, back, actions, route, tone = "papir", children }: AppScreenProps) {
   const router = useRouter();
   const pathname = usePathname() ?? "/";
   const isRoot = !back;
@@ -149,15 +151,24 @@ export function AppScreen({ title, back, actions, route, children }: AppScreenPr
   const TitleTag = isRoot ? "div" : "h1";
 
   return (
-    <div ref={pageRef} className="app-page min-h-dvh bg-papir">
-      <header className="app-navbar sticky top-0 z-30 select-none pt-[var(--app-inset-top)]" data-scrolled={scrolled ? "" : undefined} data-under={under ? "" : undefined}>
+    <div ref={pageRef} className={`app-page min-h-dvh ${tone === "filt" ? "filt" : "bg-papir"}`}>
+      <header
+        className="app-navbar sticky top-0 z-30 select-none pt-[var(--app-inset-top)]"
+        data-scrolled={scrolled ? "" : undefined}
+        data-under={under ? "" : undefined}
+        data-tone={tone === "filt" ? "filt" : undefined}
+      >
         <div className="relative flex h-11 items-center gap-1 px-2 android:h-16 android:px-1">
           {back && (
             <button
               type="button"
               onClick={goBack}
               data-ripple
-              className="app-press relative z-10 -ml-0.5 flex min-h-11 min-w-11 max-w-[45%] items-center text-bord dark:text-kridt android:ml-0 android:h-12 android:w-12 android:max-w-none android:justify-center android:overflow-hidden android:rounded-full android:text-blaek android:dark:text-blaek"
+              className={`app-press relative z-10 -ml-0.5 flex min-h-11 min-w-11 max-w-[45%] items-center android:ml-0 android:h-12 android:w-12 android:max-w-none android:justify-center android:overflow-hidden android:rounded-full ${
+                tone === "filt"
+                  ? "text-white android:text-white android:dark:text-white"
+                  : "text-bord dark:text-kridt android:text-blaek android:dark:text-blaek"
+              }`}
               aria-label={ui.shell.backTo(backLabel)}
             >
               <IconChevronVenstre className="h-[1.4rem] w-[1.4rem] shrink-0 android:hidden" />

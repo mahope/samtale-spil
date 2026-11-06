@@ -45,6 +45,14 @@
 .app-screen:not(.app-has-tabbar) .min-h-dvh {
   min-height: calc(100dvh - var(--app-inset-top) - var(--app-inset-bottom));
 }
+/* Screens that draw their own navigation bar (AppScreen) pad the status bar inset in the bar
+   itself, so the shell must not pad them a second time (a game's felt setup screen, issue #108) */
+.app-screen.app-page-screen:not(.app-has-tabbar) {
+  padding-top: 0;
+}
+.app-screen.app-page-screen:not(.app-has-tabbar) .min-h-dvh {
+  min-height: calc(100dvh - var(--app-inset-bottom));
+}
 .app-felt {
   background-color: var(--bord);
 }
@@ -108,6 +116,23 @@
 }
 .app-navbar[data-scrolled] .app-bar-title-fold {
   opacity: 1;
+}
+
+/* Navigation bar on the games' felt (a game's setup screen, issue #108): felt fill instead of paper */
+.app-navbar[data-tone="filt"][data-scrolled],
+.app-navbar[data-tone="filt"][data-under] {
+  background: color-mix(in srgb, var(--bord) 82%, transparent);
+  box-shadow: 0 0.5px 0 rgb(255 255 255 / 0.2);
+}
+[data-platform="android"] .app-navbar[data-tone="filt"] {
+  background: var(--bord);
+}
+[data-platform="android"] .app-navbar[data-tone="filt"][data-scrolled],
+[data-platform="android"] .app-navbar[data-tone="filt"][data-under] {
+  background: var(--bord-dyb);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 /* Screen transitions. iOS: push slides in from the right, pop from a little to the left.
