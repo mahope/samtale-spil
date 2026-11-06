@@ -8,6 +8,6 @@ const PassThePhone = dynamic(() => import("./PassThePhone").then((m) => m.PassTh
   loading: () => <div className="filt min-h-dvh" />,
 });
 
-export function PassThePhoneLoader() {
-  return <PassThePhone />;
+export function PassThePhoneLoader({ variant }: { variant?: "site" | "app" }) {
+  return <PassThePhone variant={variant} />;
 }

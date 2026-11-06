@@ -8,6 +8,6 @@ const Trappen = dynamic(() => import("./Trappen").then((m) => m.Trappen), {
   loading: () => <div className="filt min-h-dvh" />,
 });
 
-export function TrappenLoader() {
-  return <Trappen />;
+export function TrappenLoader({ variant }: { variant?: "site" | "app" }) {
+  return <Trappen variant={variant} />;
 }

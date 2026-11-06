@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CardFace } from "@/components/deck/DeckParts";
+import { AppScreen } from "@/components/app/AppScreen";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { track } from "@/utils/track";
 import { tap } from "@/lib/platform";
@@ -45,7 +46,20 @@ const secondary = `${button} bg-white/10 text-white ring-1 ring-white/30`;
  * answers are shown together. Answers and points stay on the device (localStorage).
  */
 /** The deck comes from the page (server data), so the client bundle only has one language */
-export function GaetSpil({ questions, deckName, backHref }: { questions: Question[]; deckName: string; backHref: string }) {
+export function GaetSpil({
+  questions,
+  deckName,
+  backHref,
+  backLabel,
+  variant = "site",
+}: {
+  questions: Question[];
+  deckName: string;
+  backHref: string;
+  /** Name of the tab back goes to when the screen was opened directly (app only) */
+  backLabel?: string;
+  variant?: "site" | "app";
+}) {
   const [savedPlayers, setSavedPlayers] = useLocalStorage<string[]>(PLAYERS_KEY, ["", ""]);
   const [scores, setScores] = useLocalStorage<Record<string, number>>(SCORES_KEY, {});
   const [mode, setMode] = useState<Mode>("gaet");
@@ -98,6 +112,100 @@ export function GaetSpil({ questions, deckName, backHref }: { questions: Questio
   };
 
   if (!pile) {
+    const form = (
+      <form
+        className="mt-8 space-y-8"
+        onSubmit={(e) => {
+          e.preventDefault();
+          start();
+        }}
+      >
+        <fieldset>
+          <legend className="text-xl font-bold">{T.who}</legend>
+          <div className="mt-3 space-y-2">
+            {players.map((p, i) => (
+              <div key={i} className="flex gap-2">
+                <label className="sr-only" htmlFor={`gaet-spiller-${i}`}>
+                  {T.player(i + 1)}
+                </label>
+                <input
+                  id={`gaet-spiller-${i}`}
+                  value={p}
+                  onChange={(e) => setPlayer(i, e.target.value.slice(0, 24))}
+                  placeholder={T.player(i + 1)}
+                  className="min-h-12 flex-1 rounded-xl bg-white px-4 text-lg text-[#15201b]"
+                />
+                {players.length > 2 && (
+                  <button
+                    type="button"
+                    onClick={() => setSavedPlayers(players.filter((_, j) => j !== i))}
+                    className={secondary}
+                    aria-label={T.removePlayer(i + 1)}
+                  >
+                    {T.remove}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          {players.length < 6 && (
+            <button type="button" onClick={() => setSavedPlayers([...players, ""])} className={`${secondary} mt-3`}>
+              {T.addPlayer}
+            </button>
+          )}
+        </fieldset>
+
+        <fieldset>
+          <legend className="text-xl font-bold">{T.how}</legend>
+          <div className="mt-3 space-y-2">
+            {(
+              [
+                ["gaet", T.modeGuess, T.modeGuessText],
+                ["alle", T.modeAll, T.modeAllText],
+              ] as const
+            ).map(([id, title, text]) => (
+              <label key={id} className={`flex cursor-pointer gap-3 rounded-xl p-3 ring-1 ${mode === id ? "bg-white/15 ring-2 ring-kridt" : "ring-white/30"}`}>
+                <input type="radio" name="tilstand" checked={mode === id} onChange={() => setMode(id)} className="mt-1 h-5 w-5" />
+                <span>
+                  <span className="block font-bold">{title}</span>
+                  <span className="text-white/80">{text}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+          {mode === "gaet" && (
+            <label className="mt-3 flex min-h-11 items-center gap-3">
+              <input type="checkbox" checked={withPoints} onChange={(e) => setWithPoints(e.target.checked)} className="h-5 w-5" />
+              {T.countPoints}
+            </label>
+          )}
+        </fieldset>
+
+        <button type="submit" disabled={named.length < 2 || duplicate} className={`${primary} w-full text-lg`}>
+          {T.start}
+        </button>
+        {named.length < 2 && <p className="text-white/80">{T.needTwo}</p>}
+        {duplicate && <p className="text-white/80">{T.duplicate}</p>}
+        {saved && saved.ids.length > 0 && (
+          <button type="button" onClick={resume} className={`${secondary} w-full`}>
+            {T.resume(saved.round + 1)}
+          </button>
+        )}
+      </form>
+    );
+
+    // I appen er opsætningen en appskærm på filt med navigationsbjælke og tilbage til fanen Spil/Play (issue #108)
+    if (variant === "app") {
+      return (
+        <AppScreen title={T.title} back={{ href: backHref, label: backLabel ?? "" }} tone="filt">
+          <div className="mx-auto max-w-lg px-4 pb-10 text-white">
+            <p className="pt-2 text-lg text-white/85">{T.intro}</p>
+            {form}
+          </div>
+        </AppScreen>
+      );
+    }
+
     return (
       <main id="main-content" className="filt min-h-dvh px-4 pb-16 pt-6 text-white">
         <div className="mx-auto max-w-lg">
@@ -108,85 +216,7 @@ export function GaetSpil({ questions, deckName, backHref }: { questions: Questio
           <p className="mt-3 text-lg text-white/85">
             {T.intro}
           </p>
-          <form
-            className="mt-8 space-y-8"
-            onSubmit={(e) => {
-              e.preventDefault();
-              start();
-            }}
-          >
-            <fieldset>
-              <legend className="text-xl font-bold">{T.who}</legend>
-              <div className="mt-3 space-y-2">
-                {players.map((p, i) => (
-                  <div key={i} className="flex gap-2">
-                    <label className="sr-only" htmlFor={`gaet-spiller-${i}`}>
-                      {T.player(i + 1)}
-                    </label>
-                    <input
-                      id={`gaet-spiller-${i}`}
-                      value={p}
-                      onChange={(e) => setPlayer(i, e.target.value.slice(0, 24))}
-                      placeholder={T.player(i + 1)}
-                      className="min-h-12 flex-1 rounded-xl bg-white px-4 text-lg text-[#15201b]"
-                    />
-                    {players.length > 2 && (
-                      <button
-                        type="button"
-                        onClick={() => setSavedPlayers(players.filter((_, j) => j !== i))}
-                        className={secondary}
-                        aria-label={T.removePlayer(i + 1)}
-                      >
-                        {T.remove}
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-              {players.length < 6 && (
-                <button type="button" onClick={() => setSavedPlayers([...players, ""])} className={`${secondary} mt-3`}>
-                  {T.addPlayer}
-                </button>
-              )}
-            </fieldset>
-
-            <fieldset>
-              <legend className="text-xl font-bold">{T.how}</legend>
-              <div className="mt-3 space-y-2">
-                {(
-                  [
-                    ["gaet", T.modeGuess, T.modeGuessText],
-                    ["alle", T.modeAll, T.modeAllText],
-                  ] as const
-                ).map(([id, title, text]) => (
-                  <label key={id} className={`flex cursor-pointer gap-3 rounded-xl p-3 ring-1 ${mode === id ? "bg-white/15 ring-2 ring-kridt" : "ring-white/30"}`}>
-                    <input type="radio" name="tilstand" checked={mode === id} onChange={() => setMode(id)} className="mt-1 h-5 w-5" />
-                    <span>
-                      <span className="block font-bold">{title}</span>
-                      <span className="text-white/80">{text}</span>
-                    </span>
-                  </label>
-                ))}
-              </div>
-              {mode === "gaet" && (
-                <label className="mt-3 flex min-h-11 items-center gap-3">
-                  <input type="checkbox" checked={withPoints} onChange={(e) => setWithPoints(e.target.checked)} className="h-5 w-5" />
-                  {T.countPoints}
-                </label>
-              )}
-            </fieldset>
-
-            <button type="submit" disabled={named.length < 2 || duplicate} className={`${primary} w-full text-lg`}>
-              {T.start}
-            </button>
-            {named.length < 2 && <p className="text-white/80">{T.needTwo}</p>}
-            {duplicate && <p className="text-white/80">{T.duplicate}</p>}
-            {saved && saved.ids.length > 0 && (
-              <button type="button" onClick={resume} className={`${secondary} w-full`}>
-                {T.resume(saved.round + 1)}
-              </button>
-            )}
-          </form>
+          {form}
         </div>
       </main>
     );

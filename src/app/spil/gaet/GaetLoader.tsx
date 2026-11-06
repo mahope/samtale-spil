@@ -9,6 +9,13 @@ const GaetSpil = dynamic(() => import("./GaetSpil").then((m) => m.GaetSpil), {
   loading: () => <div className="filt min-h-dvh" />,
 });
 
-export function GaetLoader(props: { questions: Question[]; deckName: string; backHref: string }) {
+export function GaetLoader(props: {
+  questions: Question[];
+  deckName: string;
+  backHref: string;
+  /** Name of the tab back goes to when the screen was opened directly (app only) */
+  backLabel?: string;
+  variant?: "site" | "app";
+}) {
   return <GaetSpil {...props} />;
 }
