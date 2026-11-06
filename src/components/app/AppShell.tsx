@@ -72,7 +72,8 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
     const el = screenRef.current;
     if (!el) return;
     const update = () => {
-      const feltNow = !!el.querySelector(":scope > .filt, :scope > main.filt");
+      // A setup screen in AppScreen is felt-toned too (.app-page.filt), but it is not the board
+      const feltNow = !!el.querySelector(":scope > .filt:not(.app-page), :scope > main.filt:not(.app-page)");
       const pageNow = !!el.querySelector(":scope > .app-page");
       el.classList.toggle("app-felt", isGameRoute && feltNow);
       el.classList.toggle("app-page-screen", pageNow);

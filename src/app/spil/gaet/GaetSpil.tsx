@@ -197,7 +197,7 @@ export function GaetSpil({
     // I appen er opsætningen en appskærm på filt med navigationsbjælke og tilbage til fanen Spil/Play (issue #108)
     if (variant === "app") {
       return (
-        <AppScreen title={T.title} back={{ href: backHref, label: backLabel ?? "" }} tone="filt">
+        <AppScreen title={T.title} back={{ href: backHref, label: backLabel ?? T.title }} tone="filt">
           <div className="mx-auto max-w-lg px-4 pb-10 text-white">
             <p className="pt-2 text-lg text-white/85">{T.intro}</p>
             {form}
