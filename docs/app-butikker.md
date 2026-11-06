@@ -127,7 +127,7 @@ Samme native projekt bygget med `SITE_LOCALE=en`: CI sætter app-id og navn (`AP
 **Undertitel** (App Store, max 30): `Cards for better conversations`
 
 **Reklametekst** (max 170):
-`Draw a card, read the question out loud, and let the conversation flow. Nearly 2,500 questions for couples, families, friends and classrooms. Free, no ads.`
+`Draw a card, read the question out loud, and let the conversation flow. Over 2,500 questions for couples, families, friends and classrooms. Free, no ads.`
 
 **Søgeord** (max 100):
 `conversation cards,questions,couples,date night,family,deep questions,would you rather,icebreakers`
@@ -140,7 +140,7 @@ Samme native projekt bygget med `SITE_LOCALE=en`: CI sætter app-id og navn (`AP
 ```
 Goodtalk is conversation cards on your phone. Draw a card, read the question out loud, and let the conversation flow.
 
-Nearly 2,500 questions in decks for whoever you're with:
+Over 2,500 questions in decks for whoever you're with:
 • Couples, intimacy and first dates
 • Family, kids, new parents and family stories
 • School, college and student life
@@ -220,11 +220,11 @@ Lavet i Danmark af Mahope.
 
 **Lært af Ovardos afvisning 27/10 (2.1(a) Sign in with Apple på iPad, 5.1.1(v) kontosletning):** ingen af de tre apps har login eller konto, så kontosletning og Sign in with Apple gælder ikke. iPad testes alligevel på en rigtig iPad eller en iPad-simulator før indsendelse, og iPad-screenshots skal vise den nuværende app.
 
-**Version og build:** ingen af apps'ene er udgivet nogen steder, så versionen bliver 2.0.0. iOS bruger nyeste CI-build fra master (over 1245), Android nyeste versionCode (over 243). Første master-build efter merge af ændringer i `src/` uploades automatisk til TestFlight og Play-alpha.
+**Version og build:** ingen af apperne er udgivet nogen steder, så versionen bliver 2.0.0. iOS bruger nyeste CI-build fra master (over 1245), Android nyeste versionCode (over 243). Første master-build efter merge af ændringer i `src/` uploades automatisk til TestFlight og Play-alpha.
 
 **Klik for Mads, App Store Connect (Snakkespil, app 6825365746):**
 1. Installér nyeste build fra TestFlight på en iPhone med nyeste iOS.
-2. Optag skærmen fra appen åbnes: vælg en bunke, vend to-tre kort, del et kort, gem en favorit, åbn I dag, slå påmindelsen til i Mere, åbn Rapportér på et kort (vis at formularen indlæses), og vis Privatliv under Mere.
+2. Optag skærmen fra appen åbnes: vælg en bunke, vend to-tre kort, del et kort, gem en favorit, åbn I dag, slå påmindelsen til i Mere, åbn Rapportér på et kort (vis at formularen indlæses), og send en rapport med Rapportér (flag-ikonet) på et kort og tjek, at mailen kommer frem, og vis Privatliv under Mere. Kommer rapporten ikke frem, skal Rapportér-sætningen ud af review-noten, før der indsendes.
 3. Under App Review: svar på beskeden i Resolution Center med optagelsen og teksten fra *Notes for review* nedenfor. Lav samme upload som vedhæftning under App Review Information.
 4. Tjek App Privacy: Usage Data (Product Interaction) og User Content (Other User Content), begge "Not linked", ingen tracking.
 5. Skift iPad-screenshots ud (13", 2064×2752).
@@ -234,11 +234,12 @@ Lavet i Danmark af Mahope.
 1. Aldersmærkning i App Store Connect (spørgeskemaet under App Information): Goodtalk som Snakkespil ovenfor; 18+ som beskrevet under Snakkespil 18+.
 2. App Privacy som Snakkespil. Det kan ikke sættes via API.
 3. Resten (beskrivelse, søgeord, kategori, pris, tilgængelighed, review-noter, screenshots) sættes med `new_app_asc.py` på Mac'en. Agenten kan køre den.
-4. Indsend først, når Snakkespil er godkendt, så Apple ikke behandler tre nye apps fra en ny konto på én gang.
+4. Goodtalk skal indsendes med en build bygget efter PR #109 (hjertet på kortene); build 1245 har en Favorites-fane uden måde at gemme på.
+5. Indsend først, når Snakkespil er godkendt, så Apple ikke behandler tre nye apps fra en ny konto på én gang.
 
 **Klik for Mads, Google Play Console:**
 1. Erklær trader-status under Konto > Kontooplysninger > Om dig (frist 1/2-2027). Som trader vises adresse og telefon offentligt i Play.
-2. Tjek under Test > Lukket test, om der er 12 testere, som har været med i 14 dage. Søg derefter om produktionsadgang (spørgeskemaet om testen).
+2. Kontoen er en personlig udviklerkonto, så kravet om 12 testere i 14 dage gælder. Tjek under Test > Lukket test, om det er opfyldt. Søg derefter om produktionsadgang (spørgeskemaet om testen).
 3. Opdatér Datasikkerhed, hvis rapportkommentaren ikke allerede står der (se ovenfor).
 
 ## Notes for review (App Store Connect, engelsk)
@@ -248,7 +249,7 @@ Teksterne ligger i App Store Connect under App Review Information (sat 6/11-2026
 **Snakkespil:**
 
 ```
-Snakkespil is a free Danish conversation card game for couples, families, friends, school classes and scout groups who want better conversations than small talk. The app contains thousands of question cards in more than 30 themed decks (couples, family dinner, friends, school, scouts, deep talks) that people take turns answering, plus game modes such as Trappen (questions that get deeper step by step), Aftensmad (dinner), Gæt svaret (guess the answer) and Året der gik (the year that was). Target audience: Danish-speaking families, couples and teachers; content is suitable for ages 12+. The 18+ deck from the website is NOT included in this app.
+Snakkespil is a free Danish conversation card game for couples, families, friends, school classes and scout groups who want better conversations than small talk. The app contains thousands of question cards in more than 30 themed decks (couples, family dinner, friends, school, scouts, deep talks) that people take turns answering, plus game modes such as Trappen (questions that get deeper step by step), Aftensmad (dinner), Gæt svaret (guess the answer) and Året der gik (the year that was). Target audience: Danish-speaking families, couples and teachers; content is suitable for ages 13+. The 18+ deck from the website is NOT included in this app.
 
 How to use: no account, no login, no setup. Spil tab: pick a deck, tap the card to flip it, tap "Næste kort" for the next card. Heart icon saves a favourite on the device (Favoritter tab). I dag tab: question of the day. Mere tab: settings, how to play, privacy policy, about, and an optional daily reminder (local notification, asked only when the user turns it on). The share button opens the native share sheet. Haptic feedback on card flips.
 
@@ -257,12 +258,12 @@ Offline: all cards and game modes are bundled in the app and work without a netw
 iPad: the app supports iPad in all orientations with the same features as on iPhone.
 
 External services:
-- Cookieless, anonymous usage statistics (which decks are played, number of cards) via self-hosted Plausible Analytics (analytics.holstjensen.eu) and self-hosted Umami (stats.mahoje.dk). No personal data, no device identifiers, no advertising IDs, no tracking across apps or websites.
-- The optional "Rapportér" button on a card sends the card id, a reason and an optional comment to the developer's own server (snakkespil.dk/api), protected against spam by Cloudflare Turnstile. No names, emails or device identifiers are sent.
+- Cookieless, anonymous usage statistics (which decks are played, number of cards) via self-hosted Plausible Analytics (analytics.holstjensen.eu) and self-hosted Umami (stats.mahoje.dk). No personal data, no advertising IDs and no tracking across apps or websites; Umami derives a short-lived anonymous visit ID that cannot be traced to a person.
+- The optional report button on a card (flag icon, labelled "Rapportér") sends the card id, a reason and an optional comment to the developer's own server (snakkespil.dk/api), protected against spam by Cloudflare Turnstile. No names, emails or device identifiers are sent.
 No login provider, payment processor, advertising SDK or AI service is used.
 
 Accounts: none. There is no account creation, so account deletion does not apply. All data (favourites, settings, progress) is stored locally on the device and removed when the app is deleted.
-User-generated content: users can write their own questions, but they are stored only on their own device and are never shown to other users.
+User-generated content: users can write their own questions, but they are stored only on their own device and are never uploaded or shown to other users (they only leave the device if the user shares one via the share sheet).
 Regional differences: none, the app works the same everywhere; content is in Danish.
 Regulated industry / third-party material: not applicable, all questions are written by the developer. Help lines shown in "Sådan spiller I" are public Danish crisis lines.
 In-App Purchase: none. No subscriptions, no ads, no paid content.
@@ -273,7 +274,7 @@ A screen recording from a physical iPhone running the latest iOS is attached to 
 **Goodtalk:**
 
 ```
-Goodtalk is a free conversation card game in English for couples, families and friends who want better conversations than small talk. It is the English edition of the Danish app Snakkespil (same developer). The app contains about 1,800 question cards in 22 themed decks (couples, family dinner, friends, deep talks) that people take turns answering, plus the game modes Guess the answer and Year in review. Target audience: English-speaking families, couples and friends; content is suitable for ages 12+. There is no adult content in this app.
+Goodtalk is a free conversation card game in English for couples, families and friends who want better conversations than small talk. It is the English edition of the Danish app Snakkespil (same developer). The app contains more than 2,600 question cards in 33 themed decks (couples, family dinner, friends, deep talks) that people take turns answering, plus the game modes Guess the answer and Year in review. Target audience: English-speaking families, couples and friends; content is suitable for ages 13+. There is no adult content in this app.
 
 How to use: no account, no login, no setup. Play tab: pick a deck, tap the card to flip it, tap "Next card" for the next one. The heart icon saves a favourite on the device (Favorites tab). Today tab: question of the day. More tab: settings, how to play, party games, about and privacy policy. The share button opens the native share sheet. Haptic feedback on card flips.
 
@@ -282,11 +283,12 @@ Offline: all cards and game modes are bundled in the app and work without a netw
 iPad: the app supports iPad in all orientations with the same features as on iPhone.
 
 External services:
-- Cookieless, anonymous usage statistics (which decks are played, number of cards) via self-hosted Plausible Analytics (analytics.holstjensen.eu) and self-hosted Umami (stats.mahoje.dk). No personal data, no device identifiers, no advertising IDs, no tracking across apps or websites.
-- The optional "Report" button on a card sends the card id, a reason and an optional comment to the developer's own server (goodtalkcards.com/api), protected against spam by Cloudflare Turnstile. No names, emails or device identifiers are sent.
+- Cookieless, anonymous usage statistics (which decks are played, number of cards) via self-hosted Plausible Analytics (analytics.holstjensen.eu) and self-hosted Umami (stats.mahoje.dk). No personal data, no advertising IDs and no tracking across apps or websites; Umami derives a short-lived anonymous visit ID that cannot be traced to a person.
+- The optional report button on a card (flag icon, labelled "Report") sends the card id, a reason and an optional comment to the developer's own server (goodtalkcards.com/api), protected against spam by Cloudflare Turnstile. No names, emails or device identifiers are sent.
 No login provider, payment processor, advertising SDK or AI service is used.
 
 Accounts: none. There is no account creation, so account deletion does not apply. Favourites and settings are stored locally on the device and removed when the app is deleted.
+User-generated content: none.
 Regional differences: none, the app works the same everywhere; content is in English.
 Regulated industry / third-party material: not applicable, all questions are written by the developer.
 In-App Purchase: none. No subscriptions, no ads, no paid content.
@@ -295,7 +297,7 @@ In-App Purchase: none. No subscriptions, no ads, no paid content.
 **Snakkespil 18+:**
 
 ```
-Snakkespil 18+ is a free Danish conversation card game for adult couples (18+). It is the adult companion to the Danish app Snakkespil (same developer), which is rated 12+/13+ and has no adult content. Couples take turns drawing cards: daring questions about attraction, intimacy and their relationship, plus small playful couple tasks such as a kiss or a compliment. Decks: Udfordringer (couple tasks), Kun for voksne, Intimitet, Parforhold, Kend din partner and Første date. Target audience: Danish-speaking adult couples. The content is flirtatious and personal but never explicit: no descriptions of sexual acts or bodies, no nudity, no instructions (guideline 1.1.4). The age rating questionnaire is answered accordingly (frequent/intense mature or suggestive themes, infrequent/mild sexual content).
+Snakkespil 18+ is a free Danish conversation card game for adult couples (18+). It is the adult companion to the Danish app Snakkespil (same developer), which is intended for ages 13+ and has no adult content. Couples take turns drawing cards: daring questions about attraction, intimacy and their relationship, plus small playful couple tasks such as a kiss or a compliment. Decks: Udfordringer (couple tasks), Kun for voksne, Intimitet, Parforhold, Kend din partner and Første date. Target audience: Danish-speaking adult couples. The content is flirtatious and personal but never explicit: no descriptions of sexual acts or bodies, no nudity, no instructions (guideline 1.1.4). The age rating questionnaire is answered accordingly (frequent/intense mature or suggestive themes, infrequent/mild sexual content).
 
 Age gate: on first launch the app asks the user to confirm they are 18 or older before any card is shown.
 
@@ -305,7 +307,7 @@ Offline: all cards are bundled in the app and work without a network connection.
 
 iPad: the app supports iPad in all orientations with the same features as on iPhone.
 
-External services: cookieless, anonymous usage statistics (which decks are played) via self-hosted Plausible Analytics (analytics.holstjensen.eu) and self-hosted Umami (stats.mahoje.dk). No personal data, no device identifiers, no advertising IDs, no tracking. The optional "Rapportér" button on a card sends the card id, a reason and an optional comment to the developer's own server (snakkespil.dk/api), protected against spam by Cloudflare Turnstile; no names, emails or device identifiers are sent. No login provider, payment processor, advertising SDK or AI service is used.
+External services: cookieless, anonymous usage statistics (which decks are played) via self-hosted Plausible Analytics (analytics.holstjensen.eu) and self-hosted Umami (stats.mahoje.dk). No personal data, no advertising IDs, no tracking; Umami derives a short-lived anonymous visit ID that cannot be traced to a person. The optional report button on a card (flag icon, labelled "Rapportér") sends the card id, a reason and an optional comment to the developer's own server (snakkespil.dk/api), protected against spam by Cloudflare Turnstile; no names, emails or device identifiers are sent. No login provider, payment processor, advertising SDK or AI service is used.
 
 Accounts: none. There is no account creation, so account deletion does not apply. Favourites and settings are stored locally on the device and removed when the app is deleted.
 User-generated content: none.
