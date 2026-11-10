@@ -16,16 +16,14 @@ export const OG_BASE = {
   ...(site.lang !== "da" && { images: [{ url: "/og.png", width: 1200, height: 630 }] }),
 };
 
-/**
- * Flip to true when the apps are live in App Store and Google Play. Until then the website says
- * "coming soon" instead of linking to store pages that do not open yet.
- */
-export const APPS_LIVE = false;
+/** Store availability is independent for each locale and platform. */
+export const STORES_LIVE = { ios: site.lang === "da", android: false };
 
-/** Store links to show on the website: null for a store that is not live (yet) */
-export const APP_STORE_LINKS: { ios: string | null; android: string | null } = APPS_LIVE
-  ? site.apps
-  : { ios: null, android: null };
+/** Store links to show on the website: null for a store that is not live (yet). */
+export const APP_STORE_LINKS = {
+  ios: STORES_LIVE.ios ? site.apps.ios : null,
+  android: STORES_LIVE.android ? site.apps.android : null,
+};
 
 /** The app's own build (APP_BUILD=1) should not advertise the app or link to /app/ */
 export const SHOW_APP_PROMO = process.env.APP_BUILD !== "1";

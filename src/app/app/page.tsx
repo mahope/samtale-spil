@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { APPS_LIVE, OG_BASE, QUESTION_COUNT_LABEL } from "@/config/site";
+import { STORES_LIVE, OG_BASE, QUESTION_COUNT_LABEL } from "@/config/site";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { StoreButtons } from "@/components/site/StoreButtons";
@@ -69,7 +69,7 @@ export default function AppPage() {
           ))}
         </ul>
 
-        {!APPS_LIVE && (
+        {!STORES_LIVE.ios && !STORES_LIVE.android && (
           <>
             <h2 className="mt-14 text-2xl font-bold sm:text-3xl">Indtil da</h2>
             <p className="mt-3 leading-relaxed">
