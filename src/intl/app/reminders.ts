@@ -15,7 +15,10 @@ export interface ReminderPoolCard {
   text: string;
 }
 
-/** The notification for a day: the card of that day, opening Today */
+/**
+ * The notification for a day: the card of that day, opening Today on that very card (?card=),
+ * so a notification opened the next morning still shows the card it carried
+ */
 export function englishReminderCard(at: Date, frequency: Reminder["frequency"], pool: ReminderPoolCard[]): ReminderCard {
   const { q } = vaelgForDato(
     danishDateKey(at),
@@ -24,7 +27,7 @@ export function englishReminderCard(at: Date, frequency: Reminder["frequency"], 
   return {
     title: frequency === "uge" ? "Card of the week" : "Question of the day",
     body: q.text,
-    url: `${APP_BASE}/daily-question/`,
+    url: `${APP_BASE}/daily-question/?card=${encodeURIComponent(q.id)}`,
   };
 }
 

@@ -13,16 +13,20 @@ export interface DailyPick {
 }
 
 const noSubscribe = () => () => {};
+const cardParam = () => new URLSearchParams(window.location.search).get("card");
+const noCard = () => null;
 const dayText = (key: string) =>
   new Date(`${key}T12:00:00Z`).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" });
 
 /**
  * Today's card (the same card id as Snakkespil shows that day) and the past week.
- * In the app (app) the past cards open their deck, because the app has no /questions/ pages.
+ * In the app (app) the past cards open their deck, because the app has no /questions/ pages,
+ * and a reminder opens the card it carried (?card=, src/intl/app/reminders.ts) even on a later day.
  */
 export function DailyCard({ buildKey, pool, app = false }: { buildKey: string; pool: DailyPick[]; app?: boolean }) {
   const key = useSyncExternalStore(noSubscribe, () => danishDateKey(new Date()), () => buildKey);
-  const { q, deck } = vaelgForDato(key, pool);
+  const cardId = useSyncExternalStore(noSubscribe, app ? cardParam : noCard, noCard);
+  const { q, deck } = pool.find((p) => p.q.id === cardId) ?? vaelgForDato(key, pool);
   return (
     <>
       <section aria-label="Today's card" className="mt-8">

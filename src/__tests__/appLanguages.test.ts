@@ -26,7 +26,7 @@ describe("reminders in the app's two languages", () => {
     const at = new Date("2026-12-24T18:00:00Z");
     expect(englishReminderCard(at, "dag", pool).title).toBe("Question of the day");
     expect(englishReminderCard(at, "uge", pool).title).toBe("Card of the week");
-    expect(englishReminderCard(at, "dag", pool).url).toBe("/daily-question/");
+    expect(englishReminderCard(at, "dag", pool).url).toMatch(/^\/daily-question\/\?card=/);
   });
 });
 
