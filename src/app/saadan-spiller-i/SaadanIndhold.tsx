@@ -11,7 +11,7 @@ export function SaadanIndhold({ app = false }: { app?: boolean }) {
   return (
     <>
       <h2>Sådan får I mest ud af spillet</h2>
-      <p>Find et roligt øjeblik, hvor I ikke bliver afbrudt. Læg telefonerne væk, undtagen den I spiller på.</p>
+      <p>Find et roligt øjeblik, hvor I ikke bliver afbrudt. Læg telefonerne væk, undtagen den, I spiller på.</p>
       <p>
         Start med de lette kort, og gå først videre til de dybere, når I har lyst. Det er helt normalt, at de første par
         spørgsmål føles lidt kunstige.

@@ -9,7 +9,7 @@ export const researchCategories: Category[] = [
   {
     id: "tak",
     name: "Tak",
-    description: "Sig tak for de små og store ting, og hør hvad de andre sætter pris på",
+    description: "Sig tak for de små og store ting, og hør, hvad de andre sætter pris på",
     emoji: "🙏",
     color: "from-amber-300 to-yellow-500",
     questions: [

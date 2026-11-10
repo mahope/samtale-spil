@@ -143,7 +143,7 @@ export const categoryTexts: Record<string, CategoryText> = {
   },
   "tak": {
     seoTitle: "Taknemmelighed: 70 spørgsmål om at sige tak",
-    metaDescription: "70 spørgsmål om taknemmelighed til par, familier og venner. Sig tak for de små ting, også i parforholdet, og hør hvad de andre sætter pris på.",
+    metaDescription: "70 spørgsmål om taknemmelighed til par, familier og venner. Sig tak for de små ting, også i parforholdet, og hør, hvad de andre sætter pris på.",
     intro: "Det er let at tage de nære for givet. Kortene her handler om de ting, folk gør for hinanden, og om de mennesker, der har gjort en forskel. Et tak, der bliver sagt højt, glæder ofte mere, end man tror. Taknemmelighed i parforholdet handler ofte om de små tak i hverdagen.",
     passerTil: "Par, familier og venner, og en god afslutning på en lang snak.",
     tips: ["Sig tak direkte til den, det handler om, hvis vedkommende sidder ved bordet.", "Vær konkret: sig hvad personen gjorde, og hvad det betød.", "Tag et Tak-kort til sidst, når I har talt om noget svært."],

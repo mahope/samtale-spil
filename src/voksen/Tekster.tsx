@@ -28,21 +28,21 @@ export const PRIVATLIV_LEAD = "Kort fortalt: appen ved ikke, hvem du er. Der er 
 export function PrivatlivTekst() {
   return (
     <>
-      <h2>Det du gemmer, bliver på telefonen</h2>
+      <h2>Det, du gemmer, bliver på telefonen</h2>
       <p>
         Favoritter, indstillinger og dit svar på, om du er fyldt 18, gemmes kun i appen på din telefon. De sendes aldrig til os.
         Sletter du appen, forsvinder de også.
       </p>
       <h2>Hvad vi måler</h2>
       <p>
-        Vi bruger Plausible og Umami, to besøgstal uden cookies, som begge kører på vores egne servere i EU. De tæller, at et spil bliver startet, og
+        Vi bruger Plausible og Umami, to statistikværktøjer uden cookies, som begge kører på vores egne servere i EU. De tæller, at et spil bliver startet, og
         med hvilken bunke. Ingen af dem gemmer IP-adresser eller personoplysninger. Plausible kan ikke følge dig fra dag til dag. Umami giver
         din browser et anonymt besøgs-id, der er regnet ud af IP-adresse og browser med et hemmeligt tal, som skiftes
         jævnligt. Så kan Umami genkende den samme browser inden for samme periode, men ikke hvem du er.
       </p>
       <h2>Når du rapporterer et kort</h2>
       <p>
-        Rapportér-knappen sender kortets nummer, den årsag du vælger, og din kommentar, hvis du skriver en, til os som en mail gennem
+        Rapportér-knappen sender kortets nummer, den årsag, du vælger, og din kommentar, hvis du skriver en, til os som en mail gennem
         mailtjenesten Resend. Vi får ikke dit navn, din mail eller din IP-adresse. Formularen bruger Cloudflare Turnstile til at holde
         spam ude; Cloudflare bruger kortvarigt din IP-adresse til tjekket.
       </p>

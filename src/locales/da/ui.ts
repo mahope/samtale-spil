@@ -145,7 +145,7 @@ export const ui = {
   share: {
     question: "Del spørgsmål",
     copy: "Kopiér spørgsmål til udklipsholder",
-    category: "Del kategori-fremskridt",
+    category: "Del fremskridt i bunken",
     copied: "Kopieret",
     dialogTitle: "Del spørgsmålet",
   },
