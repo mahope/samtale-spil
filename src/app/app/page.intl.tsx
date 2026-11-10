@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { APPS_LIVE, OG_BASE } from "@/config/site";
+import { STORES_LIVE, OG_BASE } from "@/config/site";
 import { site } from "@/locale/site";
 import { IntlHeader, IntlFooter, STORE_TEXTS_EN } from "@/intl/Chrome";
 import { StoreButtons } from "@/components/site/StoreButtons";
@@ -49,7 +49,7 @@ export default function AppPage() {
           ))}
         </ul>
 
-        {!APPS_LIVE && (
+        {!STORES_LIVE.ios && !STORES_LIVE.android && (
           <>
             <h2 className="mt-14 text-2xl font-bold sm:text-3xl">Until then</h2>
             <p className="mt-3 leading-relaxed">

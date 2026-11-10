@@ -84,3 +84,5 @@ After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, 
 ## Licence
 
 Code and questions © Mahope. Bricolage Grotesque is used under the SIL Open Font License (`assets/fonts/OFL-bricolage.txt`).
+
+Store promotion uses per-platform `STORES_LIVE` flags in `src/config/site.ts`: Danish iOS is live, Android and English stores are coming soon. On iOS only the App Store link appears; Android shows its coming-soon notice; desktop shows the live link and Android notice. Native builds omit store promotion. The Danish website also includes Safari’s Smart App Banner.
