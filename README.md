@@ -14,7 +14,7 @@ Live at **https://snakkespil.dk**.
 - "Rapportér" on every card and a public stats page (`/statistik/samlet/`), served by the Cloudflare Worker in `worker/`
 - No accounts and no cookies: favourites, progress and custom questions live in `localStorage`
 - Cookieless analytics with self-hosted Plausible and Umami side by side during a transition period (`src/utils/track.ts` sends every event to both)
-- Installable PWA and native iOS/Android apps (Capacitor) built from the same export; the apps are built with `APP_BUILD=1` and leave out the 18+ deck; `SITE_LOCALE=en` builds the Goodtalk app and `APP_VARIANT=voksen` the separate Snakkespil 18+ app (adult and couple decks only, behind an age check)
+- Installable PWA and native iOS/Android apps (Capacitor) built from the same export; the Snakkespil app holds Danish and English (Goodtalk) in one build and leaves out the 18+ deck; `APP_VARIANT=voksen` builds the separate Snakkespil 18+ app (adult and couple decks only, behind an age check)
 
 ## Stack
 
@@ -75,11 +75,11 @@ After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, 
 
 ## Native apps
 
-`capacitor.config.ts` wraps `out/` as `dk.snakkespil.app`. Native-only code lives in `src/lib/platform.ts` (haptics, share sheet; no-ops on the web), `src/lib/native.ts` ("Dagens spørgsmål" local notifications, loaded on demand) and `src/components/NativeBoot.tsx` (status bar, splash, Android back button, notification taps, deep-reload guard). The service worker is disabled inside the apps.
+`capacitor.config.ts` wraps `out/` as `dk.snakkespil.app`. The app speaks Danish and English: `npm run build:app` (`scripts/build-app.sh`) exports the Danish app shell to `out/da/` (basePath `/da`) and the English one, Goodtalk, to `out/en/`, and writes `out/index.html`, which opens the stored language or else the device language (Danish, Norwegian and Swedish get Danish, everyone else English; `src/lib/appLang.ts`). Users switch under Mere / More. Apple rejected the separate Goodtalk app (`com.goodtalkcards.app`) under guideline 4.3 on 10 November 2026, so it is no longer built. Native-only code lives in `src/lib/platform.ts` (haptics, share sheet; no-ops on the web), `src/lib/native.ts` ("Dagens spørgsmål" local notifications, loaded on demand) and `src/components/NativeBoot.tsx` (status bar, splash, Android back button, notification taps, deep-reload guard). The service worker is disabled inside the apps.
 
 - `android/`: signed `.aab`/`.apk` from `.forgejo/workflows/android.yml` (upload key in repo secrets and in Bitwarden, "Snakkespil: Android upload-keystore"). Google Play App Signing holds the app key.
 - `ios/`: Swift Package Manager project; `.forgejo/workflows/ios.yml` compiles it unsigned on the Mac runner. Signing and TestFlight need the Apple team's certificates.
-- After changing web code for the apps: `npm run cap:sync` (builds with `APP_BUILD=1`, which leaves out the 18+ deck so the apps can carry a 13+ rating). Icons and splash screens: `npm run cap:assets`.
+- After changing web code for the apps: `npm run cap:sync` (runs `scripts/build-app.sh` with `APP_BUILD=1`, which leaves out the 18+ deck so the app can carry a 13+ rating). Icons and splash screens: `npm run cap:assets`.
 
 ## Licence
 
