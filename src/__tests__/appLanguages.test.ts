@@ -5,6 +5,8 @@ vi.mock("@/locale/decks", () => import("@/locales/en/decks"));
 vi.mock("@/locale/games", () => import("@/locales/en/games"));
 
 const { englishReminderCard } = await import("@/intl/app/reminders");
+const { GET } = await import("@/app/reminder-cards.json/route.intlapp");
+const pool = await GET().json();
 const { cardTexts: english } = await import("@/intl/app/cardTexts");
 const { cardTexts: danish } = await import("@/lib/cardTexts");
 const { dagensKort } = await import("@/lib/dagensKort");
@@ -14,7 +16,7 @@ describe("reminders in the app's two languages", () => {
     const start = new Date("2026-11-10T12:00:00Z");
     for (let i = 0; i < 120; i++) {
       const at = new Date(start.getTime() + i * 86_400_000);
-      const card = englishReminderCard(at, "dag");
+      const card = englishReminderCard(at, "dag", pool);
       const { q } = dagensKort(at);
       expect(card.body, at.toISOString()).toBe(english.get(q.id));
     }
@@ -22,9 +24,17 @@ describe("reminders in the app's two languages", () => {
 
   it("are titled and opened in English", () => {
     const at = new Date("2026-12-24T18:00:00Z");
-    expect(englishReminderCard(at, "dag").title).toBe("Question of the day");
-    expect(englishReminderCard(at, "uge").title).toBe("Card of the week");
-    expect(englishReminderCard(at, "dag").url).toBe("/daily-question/");
+    expect(englishReminderCard(at, "dag", pool).title).toBe("Question of the day");
+    expect(englishReminderCard(at, "uge", pool).title).toBe("Card of the week");
+    expect(englishReminderCard(at, "dag", pool).url).toBe("/daily-question/");
+  });
+});
+
+describe("the English reminder cards (/en/reminder-cards.json)", () => {
+  it("are English, light or medium cards from the daily decks", () => {
+    expect(pool.length).toBeGreaterThan(100);
+    for (const c of pool) expect(english.get(c.id), c.id).toBe(c.text);
+    expect(pool.some((c: { text: string }) => /[æøå]/i.test(c.text))).toBe(false);
   });
 });
 

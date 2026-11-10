@@ -117,19 +117,48 @@ jobs:
           # the dares (hot-N) belong to the Snakkespil 18+ app only (issue #57)
           if grep -rqE '"hot-[0-9]+"' out/; then echo "18+-app dares in the web build"; exit 1; fi
           rm -rf out
-          APP_BUILD=1 npm run build >/dev/null
-          if grep -rqE '"adult-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
+          # the Snakkespil app: Danish in out/da, English (Goodtalk) in out/en, out/index.html picks one
+          bash scripts/build-app.sh >/dev/null
+          if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
 
-      - name: App build is the app shell, with no dead links
+      - name: The app's start page picks a language
         run: |
           set -euo pipefail
-          # out/ is still the APP_BUILD=1 export from the step above: the *.app.tsx tree (tabs, no site pages)
-          grep -q 'data-shell="app"' out/index.html || { echo "the app build is not the app shell"; exit 1; }
+          # out/ is still the app export from the step above
+          grep -q 'samtale-spil-app-sprog' out/index.html || { echo "out/index.html is not the language picker"; exit 1; }
+          test "$(ls out)" = "$(printf 'da\nen\nindex.html')" || { echo "out/ holds more than da/, en/ and index.html:"; ls out; exit 1; }
+
+      - name: Danish half of the app is the app shell, with no dead links
+        run: |
+          set -euo pipefail
+          # the *.app.tsx tree under basePath /da: tabs, no site pages
+          grep -q 'data-shell="app"' out/da/index.html || { echo "the Danish half is not the app shell"; exit 1; }
+          grep -q '<html lang="da"' out/da/index.html || { echo "the Danish half is not lang=da"; exit 1; }
           for p in mere indstillinger privatliv favoritter dagens-spoergsmaal spil/parforhold multiplayer; do
-            test -f "out/$p/index.html" || { echo "missing /$p/ in the app"; exit 1; }
+            test -f "out/da/$p/index.html" || { echo "missing /da/$p/ in the app"; exit 1; }
           done
-          test ! -e out/spoergsmaal && test ! -e out/guide || { echo "website pages leaked into the app build"; exit 1; }
-          npm run check:links
+          test ! -e out/da/spoergsmaal && test ! -e out/da/guide || { echo "website pages leaked into the app build"; exit 1; }
+          grep -q '>English<' out/da/mere/index.html || { echo "no language switch on Mere"; exit 1; }
+          npm run check:links -- out/da --base /da
+
+      - name: English half of the app (Goodtalk) is the English app shell, with no dead links
+        run: |
+          set -euo pipefail
+          # the *.intlapp.tsx tree under basePath /en: tabs, no website pages
+          grep -q 'data-shell="app"' out/en/index.html || { echo "the English half is not the app shell"; exit 1; }
+          grep -q '<html lang="en"' out/en/index.html || { echo "the English half is not lang=en"; exit 1; }
+          for p in more settings privacy about how-to-play favorites daily-question games play/questions-for-couples play/guess; do
+            test -f "out/en/$p/index.html" || { echo "missing /en/$p/ in the app"; exit 1; }
+          done
+          test ! -e out/en/questions && test ! -e out/en/guide && test ! -e out/en/print || { echo "website pages leaked into the English half"; exit 1; }
+          grep -q '>Dansk<' out/en/more/index.html || { echo "no language switch on More"; exit 1; }
+          # no Danish UI words, shell texts or cards anywhere in the English half
+          # (public/manifest.json is the Danish site's PWA manifest; every build copies it, no app page links it)
+          if grep -rlqE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/en/; then
+            grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/en/ | head -5
+            echo "Danish text in the English half"; exit 1
+          fi
+          npm run check:links -- out/en --base /en
 
       - name: International build (Goodtalk, SITE_LOCALE=en)
         run: |
@@ -160,27 +189,6 @@ jobs:
           # no Danish cards or UI words in the English client code or pages
           if grep -rlqE 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort' out/; then echo "Danish text in the English build"; exit 1; fi
           if grep -rqE '"adult-[0-9]+"' out/; then echo "adult cards in the English build"; exit 1; fi
-
-      - name: Goodtalk app build is the English app shell, with no dead links
-        run: |
-          set -euo pipefail
-          rm -rf out
-          SITE_LOCALE=en APP_BUILD=1 npm run build >/dev/null
-          # the *.intlapp.tsx tree: tabs, no website pages
-          grep -q 'data-shell="app"' out/index.html || { echo "the Goodtalk app build is not the app shell"; exit 1; }
-          grep -q '<html lang="en"' out/index.html || { echo "the Goodtalk app is not lang=en"; exit 1; }
-          for p in more settings privacy about how-to-play favorites daily-question games play/questions-for-couples play/guess; do
-            test -f "out/$p/index.html" || { echo "missing /$p/ in the Goodtalk app"; exit 1; }
-          done
-          test ! -e out/questions && test ! -e out/guide && test ! -e out/print || { echo "website pages leaked into the Goodtalk app"; exit 1; }
-          # no Danish UI words, shell texts or cards anywhere in the English app
-          # (public/manifest.json is the Danish site's PWA manifest; every build copies it, no app page links it)
-          if grep -rlqE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/; then
-            grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/ | head -5
-            echo "Danish text in the Goodtalk app"; exit 1
-          fi
-          if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"' out/; then echo "adult cards in the Goodtalk app"; exit 1; fi
-          npm run check:links
 
       - name: 18+ app build is the app shell behind the age gate
         run: |

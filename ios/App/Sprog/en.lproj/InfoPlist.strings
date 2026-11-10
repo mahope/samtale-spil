@@ -1,0 +1,3 @@
+/* On an English iPhone the app is called Goodtalk, the name of its English half */
+"CFBundleDisplayName" = "Goodtalk";
+"CFBundleName" = "Goodtalk";

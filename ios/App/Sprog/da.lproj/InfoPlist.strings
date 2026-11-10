@@ -1,0 +1,3 @@
+/* Snakkespil on a Danish iPhone, and wherever English is not the language (CFBundleDevelopmentRegion da) */
+"CFBundleDisplayName" = "Snakkespil";
+"CFBundleName" = "Snakkespil";

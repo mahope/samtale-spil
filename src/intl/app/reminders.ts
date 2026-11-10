@@ -2,17 +2,25 @@
 
 /**
  * The reminder in the app's English half: the same card id as Snakkespil's "Dagens spørgsmål"
- * that day, in English. Loaded on demand like src/lib/native.ts, because it imports the cards.
+ * that day, in English. The cards come from /en/reminder-cards.json (src/app/reminder-cards.json),
+ * because @/intl/daily would pull the Danish cards into the English client code.
  */
-import { dailyPool } from "@/intl/daily";
 import { APP_BASE } from "@/lib/appLang";
 import { danishDateKey, vaelgForDato } from "@/lib/dagDato";
 import type { Reminder } from "@/lib/reminder";
 import { cancelReminders, scheduleReminders, type ReminderCard } from "@/lib/reminderSchedule";
 
+export interface ReminderPoolCard {
+  id: string;
+  text: string;
+}
+
 /** The notification for a day: the card of that day, opening Today */
-export function englishReminderCard(at: Date, frequency: Reminder["frequency"]): ReminderCard {
-  const { q } = vaelgForDato(danishDateKey(at), dailyPool);
+export function englishReminderCard(at: Date, frequency: Reminder["frequency"], pool: ReminderPoolCard[]): ReminderCard {
+  const { q } = vaelgForDato(
+    danishDateKey(at),
+    pool.map((q) => ({ q }))
+  );
   return {
     title: frequency === "uge" ? "Card of the week" : "Question of the day",
     body: q.text,
@@ -20,11 +28,18 @@ export function englishReminderCard(at: Date, frequency: Reminder["frequency"]):
   };
 }
 
+async function loadPool(): Promise<ReminderPoolCard[]> {
+  const res = await fetch(`${APP_BASE}/reminder-cards.json`);
+  if (!res.ok) throw new Error(`reminder cards: ${res.status}`);
+  return res.json();
+}
+
 export async function scheduleDailyQuestion(
   reminder: Pick<Reminder, "hour" | "frequency" | "weekday">,
   options: { ask?: boolean } = {}
 ): Promise<boolean> {
-  return scheduleReminders(reminder, (at) => englishReminderCard(at, reminder.frequency), options);
+  const pool = await loadPool();
+  return scheduleReminders(reminder, (at) => englishReminderCard(at, reminder.frequency, pool), options);
 }
 
 export const cancelDailyQuestion = cancelReminders;
