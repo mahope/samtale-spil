@@ -183,10 +183,10 @@ Made in Denmark by Mahoje.
 
 ### Tjekliste: engelsk i Snakkespil 2.1.0
 
-Kun i hånden eller med Mads' go. Agenten har ikke rørt App Store Connect eller Play.
+Kun i hånden eller med Mads' go. Opdatér listen med, hvad der faktisk er gjort, når 2.1.0 er indsendt.
 
 **App Store Connect (Snakkespil, app 6825365746):**
-1. Frigør navnet: omdøb den afviste Goodtalk-app (6826397017) under App Information, fx til »Goodtalk (udgår)«, eller fjern den (App Information > Remove App). Navnet »Goodtalk: Conversation Cards« kan ikke bruges på Snakkespil, før det er sket.
+1. Frigør navnet: omdøb den afviste Goodtalk-app (6826397017) under App Information, fx til »Goodtalk (old)«, eller fjern den (App Information > Remove App). Navnet »Goodtalk: Conversation Cards« kan ikke bruges på Snakkespil, før det er sket.
 2. Opret version 2.1.0 på Snakkespil og tilføj lokaliseringen English (U.S.) (og evt. English (U.K.)).
 3. Udfyld en-US med Goodtalks metadata fra afsnittet ovenfor: navn, undertitel, reklametekst, søgeord, beskrivelse, privatlivs-, support- og marketing-URL. Teksterne ligger også i Goodtalk-appens felter i App Store Connect og kan kopieres derfra.
 4. Skærmbilleder til en-US: genbrug Goodtalks (iPhone 6,9" og iPad 13"), eller tag dem fra den engelske halvdel af 2.1.0.
@@ -284,11 +284,11 @@ Teksterne ligger i App Store Connect under App Review Information (sat 6/11-2026
 **Snakkespil 2.1.0 (læg foran noten til Snakkespil nedenfor):**
 
 ```
-What's new in 2.1.0: English. On 10 November 2026 App Review rejected our separate English app Goodtalk (Apple ID 6826397017, com.goodtalkcards.app, submission 2798f19f-962b-4dc2-8c3b-8f54f21505fa) under guidelines 4.3 and 4.2.6, and asked whether its functionality could be delivered as a content addition within another app on our account. It can, so as Apple suggested we have done exactly that: Goodtalk's English cards and screens are now the English language of Snakkespil, and the separate Goodtalk app will not be submitted again.
+What's new in 2.1.0: English. On 10 November 2026 App Review rejected our separate English app Goodtalk (Apple ID 6826397017, submission 2798f19f-962b-4dc2-8c3b-8f54f21505fa) under 4.3 and 4.2.6 and suggested delivering it as a content addition within another app on our account. We have done exactly that: Goodtalk's English cards are now the English language of Snakkespil, and Goodtalk will not be submitted again.
 
-How it works: on a device set to Danish, Norwegian or Swedish the app opens in Danish, everywhere else in English. Users can switch at any time on the Mere / More tab ("Dansk / English"). Favourites, settings and the daily reminder carry over, since a card has the same id in both languages. On an English device the home screen name is "Goodtalk", the name of the English edition; elsewhere it is "Snakkespil". The English edition has the same four tabs and 33 of the 34 decks; one Danish-only deck (Efterskolen) and two Danish-only screens (statistics, your own questions) are not translated. The English store listing is named "Goodtalk: Conversation Cards". Neither language contains adult content.
+How it works: on a Danish, Norwegian or Swedish device the app opens in Danish, elsewhere in English. Users can switch at any time on the Mere / More tab ("Dansk / English"); favourites, settings and the reminder carry over. On an English device the home screen name is "Goodtalk", the English edition's name. The English edition has the same four tabs, 33 of the 34 decks, Guess the answer, Year in review and the games. Some parts are Danish only: the Efterskolen deck, Trappen, Aftensmad, pass the phone, shuffle all, statistics and your own questions. The English store listing is "Goodtalk: Conversation Cards". Neither language contains adult content.
 
-Everything below still applies to both languages: no account, no login, no ads, no in-app purchases, and all cards work offline.
+Everything below applies to both languages.
 ```
 
 **Snakkespil:**
@@ -296,7 +296,7 @@ Everything below still applies to both languages: no account, no login, no ads, 
 ```
 Snakkespil is a free Danish conversation card game for couples, families, friends, school classes and scout groups who want better conversations than small talk. The app contains thousands of question cards in more than 30 themed decks (couples, family dinner, friends, school, scouts, deep talks) that people take turns answering, plus game modes such as Trappen (questions that get deeper step by step), Aftensmad (dinner), Gæt svaret (guess the answer) and Året der gik (the year that was). Target audience: Danish-speaking families, couples and teachers; content is suitable for ages 13+. The 18+ deck from the website is NOT included in this app.
 
-How to use: no account, no login, no setup. Spil tab: pick a deck, tap the card to flip it, tap "Næste kort" for the next card. Heart icon saves a favourite on the device (Favoritter tab). I dag tab: question of the day. Mere tab: settings, how to play, privacy policy, about, and an optional daily reminder (local notification, asked only when the user turns it on). The share button opens the native share sheet. Haptic feedback on card flips.
+How to use: Spil tab: pick a deck, tap the card to flip it, tap "Næste kort" for the next card. Heart icon saves a favourite on the device (Favoritter tab). I dag tab: question of the day. Mere tab: settings, how to play, privacy policy, about, and an optional daily reminder (local notification, asked only when the user turns it on). The share button opens the native share sheet.
 
 Offline: all cards and game modes are bundled in the app and work without a network connection.
 

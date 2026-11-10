@@ -19,7 +19,7 @@ export function AboutText() {
       </p>
       <h2>Who makes it</h2>
       <p>
-        Goodtalk is made by Mads Holst Jensen, who runs the small web studio <a href="https://mahoje.dk">Mahope</a> in Denmark. It started
+        Goodtalk is made by Mads Holst Jensen, who runs the small web studio <a href="https://mahoje.dk">Mahoje</a> in Denmark. It started
         in Danish as <a href="https://snakkespil.dk" hrefLang="da">Snakkespil</a>.
       </p>
       <h2>No account, no ads</h2>
