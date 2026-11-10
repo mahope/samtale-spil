@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "re
 import { usePathname } from "next/navigation";
 import { TabBar, type TabSpec } from "./TabBar";
 import { currentPlatform, isPopping, isStill, markPop, normalizePath, recordNavigation, registerTabRoots, slideDirection, type Direction } from "./navState";
+import { withoutBase } from "@/lib/appLang";
 
 /** Where the user had scrolled to on each screen, so a tab comes back where it was left */
 const scrollPositions = new Map<string, number>();
@@ -73,7 +74,7 @@ export function AppShell({ tabs, fullscreen, children }: { tabs: TabSpec[]; full
       if (frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
-        scrollPositions.set(normalizePath(window.location.pathname), window.scrollY);
+        scrollPositions.set(normalizePath(withoutBase(window.location.pathname)), window.scrollY);
       });
     };
     const onPop = () => markPop();

@@ -14,6 +14,8 @@ on:
       - "next.config.ts"
       - "package.json"
       - "package-lock.json"
+      - "scripts/build-app.sh"
+      - "scripts/app-index.mjs"
       - ".forgejo/workflows/android.yml"
       - "scripts/store/play-upload.py"
   pull_request:
@@ -30,8 +32,9 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      # Snakkespil (Danish), Goodtalk (English, issue #74) and Snakkespil 18+ (issue #57)
-      # from the same native project
+      # Snakkespil (Danish and English, with Goodtalk as its English half) and Snakkespil 18+
+      # (issue #57) from the same native project. Goodtalk is no app of its own any more: Apple
+      # rejected it under 4.3, so com.goodtalkcards.app is not built.
       matrix:
         include:
           - site: da
@@ -39,11 +42,6 @@ jobs:
             app_id: dk.snakkespil.app
             app_name: Snakkespil
             artifact: snakkespil
-          - site: en
-            variant: ""
-            app_id: com.goodtalkcards.app
-            app_name: Goodtalk
-            artifact: goodtalk
           - site: da
             variant: voksen
             app_id: dk.snakkespil.voksen
@@ -85,8 +83,10 @@ jobs:
             grep -rqE '"hot-1"' out/ || { echo "udfordringer mangler i 18+-appen"; exit 1; }
             if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "børne-, familie- eller skolekort fundet i 18+-appen"; exit 1; fi
           else
-            APP_BUILD=1 npm run build
-            # The adult cards must not be anywhere in the regular app bundle (issue #54)
+            # Danish in out/da, English in out/en, out/index.html picks one (src/lib/appLang.ts)
+            bash scripts/build-app.sh
+            test -f out/index.html && test -f out/da/index.html && test -f out/en/index.html
+            # The adult cards must not be anywhere in the regular app bundle, in either language (issue #54)
             if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
           fi
       - run: npx cap sync android
@@ -122,6 +122,12 @@ jobs:
           badging=$("$aapt2" dump badging "$apk")
           grep -q "package: name='$APP_ID'" <<< "$badging" || { echo "forkert app-id i $apk:"; grep -E "^package:" <<< "$badging"; exit 1; }
           grep -q "application-label:'$APP_NAME'" <<< "$badging" || { echo "forkert app-navn i $apk:"; grep -E "^application-label" <<< "$badging"; exit 1; }
+          # Snakkespil is "Goodtalk" on an English phone (src/sprog/res); the 18+ app has one name
+          if [ "$APP_ID" = dk.snakkespil.app ]; then
+            grep -q "application-label-en:'Goodtalk'" <<< "$badging" || { echo "engelsk app-navn mangler i $apk:"; grep -E "^application-label" <<< "$badging"; exit 1; }
+          elif grep -q "application-label-en:" <<< "$badging"; then
+            echo "$APP_ID har fået et engelsk app-navn"; exit 1
+          fi
 
       - name: Remove key
         if: always()

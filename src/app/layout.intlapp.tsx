@@ -3,11 +3,13 @@ import { Atkinson_Hyperlegible_Next, Bricolage_Grotesque } from "next/font/googl
 import "./globals.css";
 import "@/components/app/app-shell.css";
 import { NativeBoot } from "@/components/NativeBoot";
+import { NativeReminders } from "@/intl/app/NativeReminders";
 import { AppShell } from "@/components/app/AppShell";
 import { GOODTALK_TABS } from "@/components/app/tabs";
 import { appPlatformScript, plausibleInitScript, themeInitScript, UMAMI_HOST, UMAMI_SRC } from "@/config/headScripts";
 import { intlGames } from "@/intl/games";
 import { site } from "@/locale/site";
+import { stripIndexScript } from "@/lib/appLang";
 import { ui } from "@/locale/ui";
 
 // The Goodtalk app (APP_BUILD=1 with SITE_LOCALE=en, see next.config.ts): an app shell with tabs, not the website.
@@ -37,6 +39,7 @@ export default function GoodtalkAppLayout({ children }: { children: React.ReactN
   return (
     <html lang={site.lang} data-shell="app" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: stripIndexScript }} />
         <script dangerouslySetInnerHTML={{ __html: appPlatformScript }} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src={site.plausibleScript} />
@@ -51,6 +54,7 @@ export default function GoodtalkAppLayout({ children }: { children: React.ReactN
           {children}
         </AppShell>
         <NativeBoot />
+        <NativeReminders />
       </body>
     </html>
   );

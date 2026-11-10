@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- dk.snakkespil.app on an English phone: the app's English half is Goodtalk. The Danish name comes from
+     app_name in build.gradle (resValue). Only added for dk.snakkespil.app, see build.gradle. -->
+<resources>
+    <string name="app_name">Goodtalk</string>
+    <string name="title_activity_main">Goodtalk</string>
+</resources>

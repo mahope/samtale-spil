@@ -1,6 +1,6 @@
 {
   "name": "samtale-spil",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -14,7 +14,8 @@
     "analyze": "ANALYZE=true next build",
     "typecheck": "tsc --noEmit",
     "check:links": "node scripts/check-links.mjs",
-    "cap:sync": "APP_BUILD=1 next build && cap sync",
+    "build:app": "bash scripts/build-app.sh",
+    "cap:sync": "bash scripts/build-app.sh && cap sync",
     "cap:assets": "capacitor-assets generate --iconBackgroundColor '#1d4a38' --splashBackgroundColor '#1d4a38' --splashBackgroundColorDark '#0e1a15'"
   },
   "dependencies": {

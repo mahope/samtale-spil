@@ -3,6 +3,7 @@ import { AppRow, AppSection } from "@/components/app/AppList";
 import { IconBlyant, IconBog, IconFest, IconHaand, IconInfo, IconLaas, IconSoejler, IconTandhjul } from "@/components/app/icons";
 import { version } from "../../../package.json";
 import { AppShareRow, AppVersion } from "@/components/app/AppShareRow";
+import { AppLanguage } from "@/components/app/AppLanguage";
 import { SITE_URL } from "@/config/site";
 
 export const metadata = { title: "Mere" };
@@ -16,6 +17,8 @@ export default function MereTab() {
       <AppSection>
         <AppRow href="/indstillinger/" label="Indstillinger" icon={<IconTandhjul className={icon} />} tone="#66756e" />
       </AppSection>
+
+      <AppLanguage title="Sprog" footer="Favoritter, historik og indstillinger følger med til det andet sprog." />
 
       <AppSection title="Dit spil">
         <AppRow href="/mine-spoergsmaal/" label="Dine egne spørgsmål" icon={<IconBlyant className={icon} />} tone="#c06a1f" />

@@ -6,17 +6,18 @@ Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en l
 
 ## App-skallen
 
-Appene er ikke hjemmesiden i en ramme. Alle tre har en bundmenu med fire faner, navigationsbjælker med tilbage-knap og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere/More, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appene.
+Appene er ikke hjemmesiden i en ramme. Begge har en bundmenu med fire faner, navigationsbjælker med tilbage-knap og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere/More, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appene.
 
-- **Snakkespil** (`APP_BUILD=1`, rutetræet `src/app/**/*.app.tsx`): Spil, I dag, Favoritter og Mere (indstillinger med påmindelse, dine egne spørgsmål, statistik, sådan spiller I, lege, ikke-terapi, om, privatliv, del).
-- **Goodtalk** (`APP_BUILD=1 SITE_LOCALE=en`, `*.intlapp.tsx`): Play, Today, Favorites og More (settings med jokere og udseende, how to play, party games, about, privacy, share). Al tekst er engelsk. Der er endnu ingen påmindelser og ingen egne spørgsmål på engelsk.
+- **Snakkespil** (`dk.snakkespil.app`) taler dansk og engelsk i ét build fra 2.1.0. `scripts/build-app.sh` bygger to Next-eksporter med hver sin `basePath` og lægger dem i `out/da/` og `out/en/`. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget, hvor dansk, norsk og svensk giver dansk og alt andet engelsk. Under Mere/More vælges »Dansk / English«. Begge halvdele har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på begge sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn er Goodtalk på en engelsk telefon og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
+  - Dansk (`src/app/**/*.app.tsx`): Spil, I dag, Favoritter og Mere (indstillinger med påmindelse, sprog, dine egne spørgsmål, statistik, sådan spiller I, lege, ikke-terapi, om, privatliv, del).
+  - Engelsk, det tidligere Goodtalk (`*.intlapp.tsx`): Play, Today, Favorites og More (language, settings med påmindelse, jokere og udseende, how to play, party games, about, privacy, share). Al tekst er engelsk. Der er ingen egne spørgsmål og ingen statistik på engelsk.
 - **Snakkespil 18+** (`APP_VARIANT=voksen`, `*.voksen.tsx`): alderskontrollen ligger foran alt, også fanerne. Bunker, I aften (et tilfældigt kort eller en udfordring), Favoritter og Mere (indstillinger med udseende og »spørg om alder igen«, når det bliver svært, om, privatliv, del). Mørkt tema som standard.
 
 Butiks-screenshots i `assets/store/screenshots/` viser den gamle app og skal tages om fra app-skallen. iPad-billederne i App Store Connect er fra 22/10 og viser fejlene, som PR #93 rettede (klemt titel, usynlig del-knap, tastaturgenveje på touch), så de skal skiftes ud før næste indsendelse (Apple 2.3.3).
 
 ## Automatiske builds til butikkerne
 
-- **Android:** `android.yml` bygger alle tre apps. Builds fra master uploades til det lukkede testspor (`alpha`) med `scripts/store/play-upload.py` og service-kontoen `play-publisher@mahoje.iam.gserviceaccount.com` (repo-secret `PLAY_SERVICE_ACCOUNT_JSON_B64`, Bitwarden "Google Play: service-konto play-publisher"). Apps, der ikke findes i Play Console endnu, springes over. Så længe en app er kladde i Play, oprettes udgivelsen som kladde.
+- **Android:** `android.yml` bygger Snakkespil og Snakkespil 18+. Goodtalk (`com.goodtalkcards.app`) bygges ikke længere, se *Engelsk i Snakkespil* nedenfor. Builds fra master uploades til det lukkede testspor (`alpha`) med `scripts/store/play-upload.py` og service-kontoen `play-publisher@mahoje.iam.gserviceaccount.com` (repo-secret `PLAY_SERVICE_ACCOUNT_JSON_B64`, Bitwarden "Google Play: service-konto play-publisher"). Apps, der ikke findes i Play Console endnu, springes over. Så længe en app er kladde i Play, oprettes udgivelsen som kladde.
 - **iOS:** `ios.yml` kører på `mahope-mac`. Builds fra master signeres med Apple Distribution-certifikatet (team P7698GU4AV, Bitwarden "Apple Distribution-certifikat Mads Holst Jensen") og uploades til App Store Connect med `scripts/store/ios-release.sh` (secrets `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8_B64`, `IOS_DIST_P12_B64`, `IOS_DIST_P12_PASSWORD`). Build-nummer er 1000 + kørselsnummer (over den håndlavede build 300). Apps uden app-post i App Store Connect springes over.
 - Selve app-posterne oprettes én gang i hånden. Indsendelse til review sker stadig med vilje (Apple: `asc review submit`, Play: Udgivelsesoversigt).
 
@@ -112,17 +113,16 @@ Appen indeholder ingen voksenkort. Et par kort i de almindelige bunker nævner d
 
 Ligger i `assets/store/screenshots/` (iPhone 6,9" 1290×2796 og Android 1080×2340). Rækkefølge: forside, valg af spil, et vendt kort, Spørg videre, Trappen.
 
-## Goodtalk (engelsk app, issue #74)
+## Engelsk i Snakkespil (tidligere Goodtalk-appen, issue #74)
 
-Samme native projekt bygget med `SITE_LOCALE=en`: CI sætter app-id og navn (`APP_ID`/`APP_NAME` til Gradle, `PRODUCT_BUNDLE_IDENTIFIER`/`APP_DISPLAY_NAME` til Xcode). Artefaktet hedder `goodtalk-android-<nr>`. Aldersmærkning, datasikkerhed og screenshots-rækkefølge som ovenfor.
+Apple afviste Goodtalk (`com.goodtalkcards.app`, app 6826397017) 10/11-2026 efter 4.3 Spam og 4.2.6 og spurgte, om appen kunne leveres som indhold i en anden app på kontoen. Mads' beslutning samme dag: Goodtalk bliver det engelske sprog i Snakkespil på iOS og Android. Der er ét bundle-id (`dk.snakkespil.app`) og ét build. Goodtalks butikstekster herunder genbruges som en-US-lokalisering af Snakkespil. `com.goodtalkcards.app` bygges og udgives ikke længere.
 
-- **Navn:** Goodtalk
-- **Bundle-/pakke-id:** com.goodtalkcards.app
-- **Kategori:** Lifestyle (sekundær: Games > Card) / Google Play: Games > Card
-- **Privatlivspolitik:** https://goodtalkcards.com/privacy/
-- **Support-URL:** https://goodtalkcards.com/about/
-- **Marketing-URL:** https://goodtalkcards.com/
-- **Sprog:** English (U.S.) og English (U.K.)
+- **Navn i en-US:** Goodtalk: Conversation Cards (optaget af den afviste app 6826397017, se tjeklisten)
+- **Bundle-/pakke-id:** dk.snakkespil.app
+- **Privatlivspolitik (en-US):** https://goodtalkcards.com/privacy/
+- **Support-URL (en-US):** https://goodtalkcards.com/about/
+- **Marketing-URL (en-US):** https://goodtalkcards.com/
+- **Sprog:** English (U.S.) og English (U.K.) ved siden af dansk
 
 **Undertitel** (App Store, max 30): `Cards for better conversations`
 
@@ -165,6 +165,29 @@ And:
 Goodtalk is a conversation game for fun and closeness. It is not therapy.
 Made in Denmark by Mahope.
 ```
+
+**Nyheder i 2.1.0** (da / en-US):
+`Nu også på engelsk. Vælg sprog under Mere, og dine favoritter følger med.`
+`Snakkespil now speaks English too: this is Goodtalk, the English edition. Switch language under More, and your favorites come along.`
+
+### Tjekliste: engelsk i Snakkespil 2.1.0
+
+Kun i hånden eller med Mads' go. Agenten har ikke rørt App Store Connect eller Play.
+
+**App Store Connect (Snakkespil, app 6825365746):**
+1. Frigør navnet: omdøb den afviste Goodtalk-app (6826397017) under App Information, fx til »Goodtalk (udgår)«, eller fjern den (App Information > Remove App). Navnet »Goodtalk: Conversation Cards« kan ikke bruges på Snakkespil, før det er sket.
+2. Opret version 2.1.0 på Snakkespil og tilføj lokaliseringen English (U.S.) (og evt. English (U.K.)).
+3. Udfyld en-US med Goodtalks metadata fra afsnittet ovenfor: navn, undertitel, reklametekst, søgeord, beskrivelse, privatlivs-, support- og marketing-URL. Teksterne ligger også i Goodtalk-appens felter i App Store Connect og kan kopieres derfra.
+4. Skærmbilleder til en-US: genbrug Goodtalks (iPhone 6,9" og iPad 13"), eller tag dem fra den engelske halvdel af 2.1.0.
+5. »What's New« på dansk og engelsk (ovenfor).
+6. Review-note til 2.1.0 (*Notes for review* nederst) under App Review Information.
+7. Vælg build fra master efter merge (over 1261) og send til review.
+8. Goodtalk-appen (6826397017) indsendes ikke igen.
+
+**Google Play (dk.snakkespil.app):**
+1. Tilføj oversættelsen English (United States), en-US, til hovedbutiksopslaget med Goodtalks titel, korte og fulde beskrivelse og skærmbilleder.
+2. Skriv udgivelsesnoter for en-US på 2.1.0-udgivelsen (CI uploader kun dansk: »Nye kort og forbedringer.«).
+3. `com.goodtalkcards.app` udgives ikke. Lad den ligge som kladde/lukket test uden nye builds, eller afpublicér den.
 
 ## Snakkespil 18+ (voksenapp, issue #57)
 
@@ -215,6 +238,7 @@ Lavet i Danmark af Mahope.
 ## Indsendelse til review (status 6/11-2026)
 
 **Status:**
+- 10/11: Snakkespil 2.0.0 (build 1261) er godkendt og live. Goodtalk blev afvist efter 4.3/4.2.6 og bliver det engelske sprog i Snakkespil 2.1.0 (se *Engelsk i Snakkespil*). Punkterne om Goodtalk herunder er forældede.
 - App Store: Snakkespil 2.0.0 blev afvist 22/10 efter 2.1 (Information Needed). Apple vil have en skærmoptagelse fra en fysisk iPhone og svar på syv punkter. Goodtalk og Snakkespil 18+ har app-poster med version 2.0.0, men mangler metadata, aldersmærkning, App Privacy og screenshots. Builds i App Store Connect: 1245 (Snakkespil, Goodtalk) og 1234 (18+, kørsel 245 døde under 18+-buildet).
 - Google Play: alle tre apps har 2.0.0 (243) på lukket test (alpha). Produktion er tom. En personlig udviklerkonto skal have 12 testere i 14 dage, før produktion kan søges.
 
@@ -246,6 +270,16 @@ Lavet i Danmark af Mahope.
 
 Teksterne ligger i App Store Connect under App Review Information (sat 6/11-2026). De dækker Apples syv punkter fra 2.1-afvisningen.
 
+**Snakkespil 2.1.0 (læg foran noten til Snakkespil nedenfor):**
+
+```
+What's new in 2.1.0: English. On 10 November 2026 App Review rejected our separate English app Goodtalk (Apple ID 6826397017, com.goodtalkcards.app) under guidelines 4.3 and 4.2.6, and asked whether its functionality could be delivered as a content addition within another app on our account. It can, so we have done exactly that: Goodtalk's English cards and screens are now the English language of Snakkespil, and the separate Goodtalk app will not be submitted again.
+
+How it works: on a device set to Danish, Norwegian or Swedish the app opens in Danish, everywhere else in English. Users can switch at any time on the Mere / More tab ("Dansk / English"). Favourites, settings and the daily reminder carry over, since a card has the same id in both languages. On an English device the home screen name is "Goodtalk", the name of the English edition; elsewhere it is "Snakkespil". The English edition has the same tabs and game modes as the Danish one, except a few Danish-only decks and screens (statistics, your own questions). Neither language contains adult content.
+
+Everything below still applies to both languages: no account, no login, no ads, no in-app purchases, and all cards work offline.
+```
+
 **Snakkespil:**
 
 ```
@@ -271,7 +305,7 @@ In-App Purchase: none. No subscriptions, no ads, no paid content.
 A screen recording from a physical iPhone running the latest iOS is attached to this submission.
 ```
 
-**Goodtalk:**
+**Goodtalk (app 6826397017, afvist 10/11-2026, sendes ikke igen; teksten genbruges til den engelske del):**
 
 ```
 Goodtalk is a free conversation card game in English for couples, families and friends who want better conversations than small talk. It is the English edition of the Danish app Snakkespil (same developer). The app contains more than 2,600 question cards in 33 themed decks (couples, family dinner, friends, deep talks) that people take turns answering, plus the game modes Guess the answer and Year in review. Target audience: English-speaking families, couples and friends; content is suitable for ages 13+. There is no adult content in this app.

@@ -13,6 +13,8 @@ on:
       - "next.config.ts"
       - "package.json"
       - "package-lock.json"
+      - "scripts/build-app.sh"
+      - "scripts/app-index.mjs"
       - ".forgejo/workflows/ios.yml"
       - "scripts/store/ios-release.sh"
   workflow_dispatch:
@@ -21,8 +23,9 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      # Snakkespil (Danish), Goodtalk (English, issue #74) and Snakkespil 18+ (issue #57)
-      # from the same native project
+      # Snakkespil (Danish and English, with Goodtalk as its English half) and Snakkespil 18+
+      # (issue #57) from the same native project. Goodtalk is no app of its own any more: Apple
+      # rejected it under 4.3, so com.goodtalkcards.app is not built.
       matrix:
         include:
           - site: da
@@ -30,11 +33,6 @@ jobs:
             app_id: dk.snakkespil.app
             app_name: Snakkespil
             artifact: snakkespil
-          - site: en
-            variant: ""
-            app_id: com.goodtalkcards.app
-            app_name: Goodtalk
-            artifact: goodtalk
           - site: da
             variant: voksen
             app_id: dk.snakkespil.voksen
@@ -60,8 +58,10 @@ jobs:
             grep -rqE '"hot-1"' out/ || { echo "udfordringer mangler i 18+-appen"; exit 1; }
             if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "børne-, familie- eller skolekort fundet i 18+-appen"; exit 1; fi
           else
-            APP_BUILD=1 npm run build
-            # The adult cards must not be anywhere in the regular app bundle (issue #54)
+            # Danish in out/da, English in out/en, out/index.html picks one (src/lib/appLang.ts)
+            bash scripts/build-app.sh
+            test -f out/index.html && test -f out/da/index.html && test -f out/en/index.html
+            # The adult cards must not be anywhere in the regular app bundle, in either language (issue #54)
             if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
           fi
       - run: npx cap sync ios
@@ -71,9 +71,20 @@ jobs:
         run: |
           set -euo pipefail
           xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
-            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/dd" \
             PRODUCT_BUNDLE_IDENTIFIER="${{ matrix.app_id }}" APP_DISPLAY_NAME="${{ matrix.app_name }}" APP_DEV_REGION="${{ matrix.site }}" \
             CODE_SIGNING_ALLOWED=NO build | tail -20
+
+      # Snakkespil is "Goodtalk" on an English iPhone (ios/App/Sprog, build phase "Localize the name")
+      - name: Localized name in the app
+        if: github.event_name != 'push' && matrix.app_id == 'dk.snakkespil.app'
+        run: |
+          set -euo pipefail
+          app="$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/App.app"
+          grep -q '"CFBundleDisplayName" = "Goodtalk"' "$app/en.lproj/InfoPlist.strings" || { echo "en.lproj mangler Goodtalk"; exit 1; }
+          grep -q '"CFBundleDisplayName" = "Snakkespil"' "$app/da.lproj/InfoPlist.strings" || { echo "da.lproj mangler Snakkespil"; exit 1; }
+          /usr/libexec/PlistBuddy -c "Print :CFBundleLocalizations" "$app/Info.plist" | grep -qx ' *en' || { echo "CFBundleLocalizations mangler en"; exit 1; }
+          /usr/libexec/PlistBuddy -c "Print :CFBundleDevelopmentRegion" "$app/Info.plist" | grep -qx da
 
       - name: Signed build to App Store Connect
         if: github.event_name == 'push'

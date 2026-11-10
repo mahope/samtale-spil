@@ -12,6 +12,8 @@ import { FavoritePreviewCard } from "@/components/FavoritePreviewCard";
 import { HistoryItemCard } from "@/components/HistoryItemCard";
 import { StatsHeatMap } from "@/components/StatsHeatMap";
 import { useAdvancedStats } from "@/hooks/useAdvancedStats";
+import { useCardTexts } from "@/hooks/useCardTexts";
+import { loadCardTexts } from "@/lib/loadCardTexts";
 
 function Figure({ value, label }: { value: string | number; label: string }) {
   return (
@@ -26,6 +28,7 @@ function Figure({ value, label }: { value: string | number; label: string }) {
 export function Statistik({ site }: { site?: { header: ReactNode; footer: ReactNode } }) {
   const app = !site;
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
+  const inThisLanguage = useCardTexts(loadCardTexts);
   const { progress, isLoaded: progressLoaded } = useProgress();
   const { history, clearHistory, isLoaded: historyLoaded } = useQuestionHistory();
   const { getTopRated, stats: ratingStats, isLoaded: ratingsLoaded } = useQuestionRatings();
@@ -299,7 +302,7 @@ export function Statistik({ site }: { site?: { header: ReactNode; footer: ReactN
               <div className="mt-4 space-y-2">
                 <AnimatePresence>
                   {(showAllFavorites ? favorites : favorites.slice(0, 3)).map((fav, index) => (
-                    <FavoritePreviewCard key={fav.id} favorite={fav} index={index} />
+                    <FavoritePreviewCard key={fav.id} favorite={inThisLanguage(fav)} index={index} />
                   ))}
                 </AnimatePresence>
               </div>

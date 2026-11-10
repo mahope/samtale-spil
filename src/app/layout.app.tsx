@@ -8,6 +8,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { SNAKKESPIL_TABS } from "@/components/app/tabs";
 import { appPlatformScript, PLAUSIBLE_SRC, plausibleInitScript, themeInitScript, UMAMI_HOST, UMAMI_SRC } from "@/config/headScripts";
 import { site } from "@/locale/site";
+import { stripIndexScript } from "@/lib/appLang";
 import { SITE_NAME } from "@/config/site";
 import { legeSider } from "@/data/lege";
 
@@ -38,6 +39,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="da" data-shell="app" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: stripIndexScript }} />
         <script dangerouslySetInnerHTML={{ __html: appPlatformScript }} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script async src={PLAUSIBLE_SRC} />
