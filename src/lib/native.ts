@@ -4,46 +4,28 @@
  * "Dagens spørgsmål" reminders for the apps. Imports the question data, so load it
  * on demand (await import("@/lib/native")) rather than from shared components.
  */
-import { LocalNotifications } from "@capacitor/local-notifications";
 import { dagensKort } from "@/lib/dagensKort";
-import { isNative } from "@/lib/platform";
-import { reminderDates, type Reminder } from "@/lib/reminder";
+import { APP_BASE } from "@/lib/appLang";
+import type { Reminder } from "@/lib/reminder";
+import { cancelReminders, scheduleReminders } from "@/lib/reminderSchedule";
 
-const REMINDER_IDS = Array.from({ length: 14 }, (_, i) => 9100 + i);
-
-/**
- * "Dagens spørgsmål": schedules the next 14 reminders locally, a day or a week apart at the
- * chosen hour (reminderDates). Re-run on every app start so the window keeps rolling.
- * No push server is involved.
- */
+/** "Dagens spørgsmål": the same card as /dagens-spoergsmaal/ shows that day, see scheduleReminders */
 export async function scheduleDailyQuestion(
   reminder: Pick<Reminder, "hour" | "frequency" | "weekday">,
-  { ask = true }: { ask?: boolean } = {}
+  options: { ask?: boolean } = {}
 ): Promise<boolean> {
-  if (!isNative()) return false;
-  // At launch only check; the system dialog is shown when the user turns the reminder on
-  const perm = ask ? await LocalNotifications.requestPermissions() : await LocalNotifications.checkPermissions();
-  if (perm.display !== "granted") return false;
-  await LocalNotifications.cancel({ notifications: REMINDER_IDS.map((id) => ({ id })) });
-  const dates = reminderDates(new Date(), reminder, REMINDER_IDS.length);
-  await LocalNotifications.schedule({
-    notifications: REMINDER_IDS.map((id, i) => {
-      const at = dates[i];
-      // The same card as /dagens-spoergsmaal/ shows that day
+  return scheduleReminders(
+    reminder,
+    (at) => {
       const { q, c } = dagensKort(at);
       return {
-        id,
         title: reminder.frequency === "uge" ? "Ugens kort" : "Dagens spørgsmål",
         body: q.text,
-        schedule: { at },
-        extra: { url: `/spil/${c.id}/?question=${q.id}` },
+        url: `${APP_BASE}/spil/${c.id}/?question=${q.id}`,
       };
-    }),
-  });
-  return true;
+    },
+    options
+  );
 }
 
-export async function cancelDailyQuestion() {
-  if (!isNative()) return;
-  await LocalNotifications.cancel({ notifications: REMINDER_IDS.map((id) => ({ id })) });
-}
+export const cancelDailyQuestion = cancelReminders;

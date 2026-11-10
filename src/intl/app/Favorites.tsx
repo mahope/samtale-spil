@@ -2,6 +2,9 @@
 
 import { AppFavorites, type FavoritesTexts } from "@/components/app/AppFavorites";
 
+// Favourites saved in the app's Danish half are shown in English
+const loadCardTexts = () => import("./cardTexts").then((m) => m.cardTexts);
+
 const texts: FavoritesTexts = {
   loading: "Loading your saved cards",
   empty: "You haven't saved any cards yet.",
@@ -14,7 +17,7 @@ const texts: FavoritesTexts = {
   otherDeck: "Goodtalk",
 };
 
-/** The Goodtalk app's Favorites tab */
+/** The Favorites tab in the app's English half */
 export function Favorites({ deckNames }: { deckNames: Record<string, string> }) {
-  return <AppFavorites deckNames={deckNames} playHref="/" texts={texts} />;
+  return <AppFavorites deckNames={deckNames} playHref="/" texts={texts} cardTexts={loadCardTexts} />;
 }

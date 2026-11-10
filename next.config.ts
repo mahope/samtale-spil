@@ -34,6 +34,11 @@ const appShellAlias = { '@/locale/ui': `./src/locales/${locale}/ui.app.ts` };
 // The Goodtalk app has a Favorites tab, so its cards get the heart the English website leaves out
 const intlAppAlias = { '@/locale/site': `./src/locales/${locale}/site.app.ts` };
 const hasShell = isAppShell || isIntlApp || variant === 'voksen';
+// The Snakkespil app holds both languages (Goodtalk became its English half after Apple's 4.3
+// rejection, 10/11-26): scripts/build-app.sh exports Danish under /da and English under /en,
+// next to an out/index.html that picks one (src/lib/appLang.ts). The websites and the 18+ app
+// keep their root.
+const basePath = isAppShell || isIntlApp ? `/${locale}` : '';
 // "@/locale/*" points at src/locales/<locale>/ (tsconfig maps it to Danish for type checks)
 const localeAlias = {
   '@/locale/ui': `./src/locales/${locale}/ui.ts`,
@@ -47,6 +52,9 @@ const localeAlias = {
 
 const nextConfig: NextConfig = {
   output: 'export',
+  ...(basePath && { basePath }),
+  // Read by src/lib/appLang.ts, which needs the base path outside the router (window.location)
+  env: { APP_BASE_PATH: basePath },
   ...(isIntl && !isAppBuild && { pageExtensions: ['intl.tsx', 'intl.ts'] }),
   ...(isIntlApp && { pageExtensions: ['intlapp.tsx', 'intlapp.ts'] }),
   ...(variant === 'voksen' && { pageExtensions: ['voksen.tsx', 'voksen.ts'] }),

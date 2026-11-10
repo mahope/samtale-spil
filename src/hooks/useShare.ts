@@ -9,12 +9,14 @@ const SITE_URL = site.url;
 const SITE_NAME = site.name;
 import { shareText } from "@/lib/platform";
 import { track } from "@/utils/track";
+import { withoutBase } from "@/lib/appLang";
 
 /** Public link; inside the app the page URL is capacitor://localhost, so it is rebuilt on snakkespil.dk. */
 function publicUrl(path?: string) {
   if (path) return `${SITE_URL}${path}`;
   if (typeof window === "undefined") return `${SITE_URL}/`;
-  return `${SITE_URL}${window.location.pathname}${window.location.search}`;
+  // the app's /da or /en is not part of the public address
+  return `${SITE_URL}${withoutBase(window.location.pathname)}${window.location.search}`;
 }
 
 export function useShare() {

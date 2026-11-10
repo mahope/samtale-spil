@@ -10,6 +10,10 @@ import { getDeck, markColorOnWhite } from "@/data/decks";
 import { ShareButton } from "@/components/ShareButton";
 import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
 import { DepthPips, depthLabel } from "@/components/deck/DeckParts";
+import { useCardTexts } from "@/hooks/useCardTexts";
+
+// Only in the app: favourites saved in its English half are shown in Danish (useCardTexts)
+const loadCardTexts = process.env.APP_BASE_PATH ? () => import("@/lib/cardTexts").then((m) => m.cardTexts) : null;
 
 /** Name of the deck a favourite came from; custom questions have no category */
 function deckFor(categoryId: string) {
@@ -88,6 +92,7 @@ function FavoriteCard({ favorite, onRemove }: { favorite: FavoriteQuestion; onRe
 export function FavoritterIndhold({ spilHref = "/spil/" }: { spilHref?: string }) {
   const { favorites, removeFavorite, isLoaded } = useFavorites();
   const [filter, setFilter] = useState<string | null>(null);
+  const inThisLanguage = useCardTexts(loadCardTexts);
 
   const deckIds = [...new Set(favorites.map((f) => f.categoryId))];
   const filteredFavorites = filter ? favorites.filter((f) => f.categoryId === filter) : favorites;
@@ -146,7 +151,7 @@ export function FavoritterIndhold({ spilHref = "/spil/" }: { spilHref?: string }
         <motion.ul layout className="mt-8 space-y-4">
           <AnimatePresence>
             {sortedFavorites.map((favorite) => (
-              <FavoriteCard key={favorite.id} favorite={favorite} onRemove={() => removeFavorite(favorite.id)} />
+              <FavoriteCard key={favorite.id} favorite={inThisLanguage(favorite)} onRemove={() => removeFavorite(favorite.id)} />
             ))}
           </AnimatePresence>
         </motion.ul>

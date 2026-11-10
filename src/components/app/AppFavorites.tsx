@@ -6,6 +6,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { DepthPips, depthLabel } from "@/components/deck/DeckParts";
 import { getDeck, markColorOnWhite } from "@/data/decks";
 import { useFavorites, type FavoriteQuestion } from "@/hooks/useLocalStorage";
+import { useCardTexts, type CardTextLoader } from "@/hooks/useCardTexts";
 
 /** Every word on the tab, so each app passes its own language */
 export interface FavoritesTexts {
@@ -26,6 +27,8 @@ interface FavoritesProps {
   deckNames: Record<string, string>;
   playHref: string;
   texts: FavoritesTexts;
+  /** The card texts of this app's language, for favourites saved in another one (useCardTexts) */
+  cardTexts?: CardTextLoader | null;
 }
 
 function FavoriteCard({ favorite, name, texts, onRemove }: { favorite: FavoriteQuestion; name: string; texts: FavoritesTexts; onRemove: () => void }) {
@@ -80,8 +83,9 @@ function FavoriteCard({ favorite, name, texts, onRemove }: { favorite: FavoriteQ
  * A Favorites tab for the Goodtalk and 18+ apps: the cards saved with the heart, newest first.
  * (The Snakkespil app shares FavoritterIndhold with the site.)
  */
-export function AppFavorites({ deckNames, playHref, texts }: FavoritesProps) {
+export function AppFavorites({ deckNames, playHref, texts, cardTexts = null }: FavoritesProps) {
   const { favorites, removeFavorite, isLoaded } = useFavorites();
+  const inThisLanguage = useCardTexts(cardTexts);
   const sorted = [...favorites].sort((a, b) => b.savedAt - a.savedAt);
   return (
     <>
@@ -102,7 +106,7 @@ export function AppFavorites({ deckNames, playHref, texts }: FavoritesProps) {
             {sorted.map((f) => (
               <FavoriteCard
                 key={f.id}
-                favorite={f}
+                favorite={inThisLanguage(f)}
                 name={deckNames[f.categoryId] ?? texts.otherDeck}
                 texts={texts}
                 onRemove={() => removeFavorite(f.id)}

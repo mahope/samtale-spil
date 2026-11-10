@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Capacitor } from "@capacitor/core";
 import { isNative } from "@/lib/platform";
 import { androidBack, registeredTabRoots } from "@/components/app/navState";
+import { notificationTarget, withoutBase } from "@/lib/appLang";
 
 /** Every app's root layout marks <html data-shell="app"> and draws the app shell (src/components/app) */
 const hasAppShell = () => document.documentElement.dataset.shell === "app";
@@ -73,13 +74,16 @@ export function NativeBoot() {
 
       // The app's web server answers unknown paths with the front page. If that
       // happened (a reload deep in the app), let the client router render the real page.
-      if (window.location.pathname !== "/" && document.querySelector("[data-route='forside']")) {
-        router.replace(window.location.pathname + window.location.search);
+      // (In the Snakkespil app out/index.html answers and reopens the screen, see src/lib/appLang.ts.)
+      const here = withoutBase(window.location.pathname);
+      if (here !== "/" && document.querySelector("[data-route='forside']")) {
+        router.replace(here + window.location.search);
       }
 
       const back = await App.addListener("backButton", ({ canGoBack }) => {
         if (closeOverlay()) return;
-        const path = window.location.pathname;
+        // The router's path: the app's /da or /en does not count
+        const path = withoutBase(window.location.pathname);
         if (path === "/") return App.exitApp();
         if (!hasAppShell()) {
           // Go back, or leave the app from the front page
@@ -95,10 +99,13 @@ export function NativeBoot() {
       });
       cleanups.push(() => back.remove());
 
-      // Tapping "Dagens spørgsmål" opens that card
+      // Tapping "Dagens spørgsmål" opens that card, also when it was scheduled in the app's other language
       const tap = await LocalNotifications.addListener("localNotificationActionPerformed", (action) => {
         const url = action.notification.extra?.url;
-        if (typeof url === "string" && url.startsWith("/")) router.push(url);
+        const target = typeof url === "string" ? notificationTarget(url) : null;
+        if (!target) return;
+        if ("push" in target) router.push(target.push);
+        else window.location.assign(target.load);
       });
       cleanups.push(() => tap.remove());
     })();

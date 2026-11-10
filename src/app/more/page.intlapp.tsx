@@ -1,6 +1,7 @@
 import { AppScreen } from "@/components/app/AppScreen";
 import { AppRow, AppSection } from "@/components/app/AppList";
 import { AppShareRow, AppVersion } from "@/components/app/AppShareRow";
+import { AppLanguage } from "@/components/app/AppLanguage";
 import { IconBog, IconFest, IconInfo, IconLaas, IconTandhjul } from "@/components/app/icons";
 import { site } from "@/locale/site";
 import { version } from "../../../package.json";
@@ -16,6 +17,8 @@ export default function MoreTab() {
       <AppSection>
         <AppRow href="/settings/" label="Settings" icon={<IconTandhjul className={icon} />} tone="#66756e" />
       </AppSection>
+
+      <AppLanguage title="Language" footer="Your favorites, history and settings come along to the other language." />
 
       <AppSection title="About the game">
         <AppRow href="/how-to-play/" label="How to play" icon={<IconBog className={icon} />} tone="#1d4a38" />
