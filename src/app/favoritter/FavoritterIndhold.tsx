@@ -11,9 +11,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { RatingStars, RatingStarsDisplay } from "@/components/RatingStars";
 import { DepthPips, depthLabel } from "@/components/deck/DeckParts";
 import { useCardTexts } from "@/hooks/useCardTexts";
-
-// Only in the app: favourites saved in its English half are shown in Danish (useCardTexts)
-const loadCardTexts = process.env.APP_BASE_PATH ? () => import("@/lib/cardTexts").then((m) => m.cardTexts) : null;
+import { loadCardTexts } from "@/lib/loadCardTexts";
 
 /** Name of the deck a favourite came from; custom questions have no category */
 function deckFor(categoryId: string) {
