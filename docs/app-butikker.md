@@ -30,6 +30,7 @@ Butiks-screenshots i `assets/store/screenshots/` viser den gamle app og skal tag
 - **Support-URL:** https://snakkespil.dk/om/
 - **Marketing-URL:** https://snakkespil.dk/
 - **Kontakt:** mads@mahoje.dk
+- **Copyright:** 2026 Mahoje (Mads' brandbeslutning 2/11-2026: Mahoje udadtil, ikke Mahope)
 - **Pris:** gratis, ingen køb i appen, ingen reklamer
 
 ## App Store
@@ -37,32 +38,34 @@ Butiks-screenshots i `assets/store/screenshots/` viser den gamle app og skal tag
 **Undertitel** (max 30): `Samtalekort til de gode snakke`
 
 **Reklametekst** (max 170):
-`Træk et kort, læs spørgsmålet højt, og lad snakken gå. Over 2.500 spørgsmål til kæresten, familien, klassen og vennerne. Gratis og uden reklamer.`
+`Træk et kort, læs spørgsmålet højt, og lad snakken gå. Over 2.600 spørgsmål til kæresten, familien, klassen og vennerne. Nu også på engelsk. Gratis og uden reklamer.`
 
 **Søgeord** (max 100, kommasepareret, uden mellemrum efter komma):
 `samtalekort,samtalespil,spørgsmål,par,kæreste,familie,venner,date,dybe spørgsmål,hvad vil du helst`
 
-**Nyheder i denne version:**
-`Første version af Snakkespil som app: alle bunker til par, familie, venner, skole og spejder, spil uden internet og påmindelse om dagens spørgsmål.`
+**Nyheder i denne version:** se *Nyheder i 2.1.0* under *Engelsk i Snakkespil*. (2.0.0: `Første version af Snakkespil som app: alle bunker til par, familie, venner, skole og spejder, spil uden internet og påmindelse om dagens spørgsmål.`)
 
 ## Google Play
 
 **Kort beskrivelse** (max 80):
-`Gratis samtalekort på dansk til par, familie, venner og kolleger.`
+`Gratis samtalekort til par, familie, venner og kolleger. Også på engelsk.`
 
 ## Beskrivelse (begge butikker, max 4.000)
+
+Tallene er talt i app-buildets data uden 18+ (10/11-2026): 2.694 spørgsmål i 34 bunker (skrives »over 2.600«, rundet ned), 120 dilemmaer i Hvad vil du helst og 12 kort i Trappen. Den engelske halvdel har 2.624 kort i 33 bunker (alle undtagen Efterskolen). Tæl igen, før teksten ændres.
 
 ```
 Snakkespil er samtalekort på telefonen. Træk et kort, læs spørgsmålet højt, og lad snakken gå.
 
-Der er over 2.500 spørgsmål fordelt på bunker til hvem I er sammen med:
+Der er over 2.600 spørgsmål fordelt på bunker til dem, I er sammen med:
 • Parforhold, intimitet og første date
 • Familie, børn, nye forældre og familiehistorier
 • Skolen fra indskoling til udskoling, efterskolen, gymnasiet og studielivet
 • Spejder og Gilwell
 • Venner, kolleger og højtider
 • Dybe og filosofiske spørgsmål, drømme, fortid og fremtid
-• Tak, gode nyheder og nyt og ukendt
+• Bunkerne Tak, Gode nyheder og Nyt og ukendt
+• Følelseskort til børn derhjemme og i klassen
 • Hvad vil du helst, med 120 dilemmaer
 • Svære samtaler, med en fast ramme for de vigtige snakke
 
@@ -72,16 +75,20 @@ Spilformer:
 • Trappen: tolv kort fra let til dyb, bygget på Arthur Arons forskning i nærhed
 • Send telefonen rundt: I skiftes, og telefonen holder styr på, hvis tur det er
 • Aftensmad: tre lette kort til familiebordet
+• Gæt svaret: én svarer i hemmelighed, og den næste gætter
+• Året der gik: fire runder til nytår og fødselsdage
 • Spørg videre: få et opfølgende spørgsmål, når snakken skal et lag dybere
+• Lege til festen med færdige kort
 
 Og så:
 • Dagens spørgsmål som påmindelse, hver dag eller én gang om ugen
-• Gem dine favoritter og skriv dine egne kort
+• Gem dine favoritter, og skriv dine egne kort
+• Findes også på engelsk. Vælg sprog under Mere
 • Virker uden internet
-• Ingen konto, ingen reklamer, ingen cookies. Det du gemmer, bliver på telefonen
+• Ingen konto, ingen reklamer, ingen cookies. Det, du gemmer, bliver på telefonen
 
 Snakkespil er et samtalespil til hygge og nærvær. Det er ikke terapi.
-Lavet i Danmark af Mahope.
+Lavet i Danmark af Mahoje.
 ```
 
 ## Aldersmærkning
@@ -123,11 +130,12 @@ Apple afviste Goodtalk (`com.goodtalkcards.app`, app 6826397017) 10/11-2026 efte
 - **Support-URL (en-US):** https://goodtalkcards.com/about/
 - **Marketing-URL (en-US):** https://goodtalkcards.com/
 - **Sprog:** English (U.S.) og English (U.K.) ved siden af dansk
+- **Copyright:** 2026 Mahoje
 
 **Undertitel** (App Store, max 30): `Cards for better conversations`
 
 **Reklametekst** (max 170):
-`Draw a card, read the question out loud, and let the conversation flow. Over 2,500 questions for couples, families, friends and classrooms. Free, no ads.`
+`Draw a card, read the question out loud, and let the conversation flow. Over 2,600 questions for couples, families, friends and classrooms. Free, no ads.`
 
 **Søgeord** (max 100):
 `conversation cards,questions,couples,date night,family,deep questions,would you rather,icebreakers`
@@ -140,12 +148,14 @@ Apple afviste Goodtalk (`com.goodtalkcards.app`, app 6826397017) 10/11-2026 efte
 ```
 Goodtalk is conversation cards on your phone. Draw a card, read the question out loud, and let the conversation flow.
 
-Over 2,500 questions in decks for whoever you're with:
+Over 2,600 questions in decks for whoever you're with:
 • Couples, intimacy and first dates
 • Family, kids, new parents and family stories
 • School, college and student life
+• Scouts and Wood Badge
 • Friends, coworkers and holidays
 • Deep and philosophical questions, dreams, the past and the future
+• Gratitude, Good News and Something New
 • Would you rather, with 120 dilemmas
 • Hard talks, for the conversations that matter
 
@@ -159,16 +169,17 @@ Ways to play:
 
 And:
 • Joker cards now and then, such as "ask a question of your own"
+• Also in Danish as Snakkespil. Switch language under More
 • Works offline
 • No account, no ads, no cookies. What you save stays on your phone
 
 Goodtalk is a conversation game for fun and closeness. It is not therapy.
-Made in Denmark by Mahope.
+Made in Denmark by Mahoje.
 ```
 
-**Nyheder i 2.1.0** (da / en-US):
-`Nu også på engelsk. Vælg sprog under Mere, og dine favoritter følger med.`
-`Snakkespil now speaks English too: this is Goodtalk, the English edition. Switch language under More, and your favorites come along.`
+**Nyheder i 2.1.0** (da / en-US). Sprogvalget ligger på fanen Mere/More, ikke under Indstillinger:
+`Snakkespil findes nu også på engelsk. Vælg sprog under Mere, og dine favoritter og indstillinger følger med. Desuden er en række tekster rettet.`
+`Snakkespil now speaks English too: this is Goodtalk, the English edition. Switch language under More, and your favorites and settings come along. Plus a number of text fixes.`
 
 ### Tjekliste: engelsk i Snakkespil 2.1.0
 
@@ -227,7 +238,7 @@ Bunker:
 Hvert kort er mærket let, medium eller dyb. Ingen konto, ingen reklamer, ingen cookies. Det, du gemmer, bliver på telefonen.
 
 Kun for voksne over 18. Snakkespil 18+ er et samtalespil til par. Det er ikke terapi.
-Lavet i Danmark af Mahope.
+Lavet i Danmark af Mahoje.
 ```
 
 **Aldersmærkning:**
@@ -273,9 +284,9 @@ Teksterne ligger i App Store Connect under App Review Information (sat 6/11-2026
 **Snakkespil 2.1.0 (læg foran noten til Snakkespil nedenfor):**
 
 ```
-What's new in 2.1.0: English. On 10 November 2026 App Review rejected our separate English app Goodtalk (Apple ID 6826397017, com.goodtalkcards.app) under guidelines 4.3 and 4.2.6, and asked whether its functionality could be delivered as a content addition within another app on our account. It can, so we have done exactly that: Goodtalk's English cards and screens are now the English language of Snakkespil, and the separate Goodtalk app will not be submitted again.
+What's new in 2.1.0: English. On 10 November 2026 App Review rejected our separate English app Goodtalk (Apple ID 6826397017, com.goodtalkcards.app, submission 2798f19f-962b-4dc2-8c3b-8f54f21505fa) under guidelines 4.3 and 4.2.6, and asked whether its functionality could be delivered as a content addition within another app on our account. It can, so as Apple suggested we have done exactly that: Goodtalk's English cards and screens are now the English language of Snakkespil, and the separate Goodtalk app will not be submitted again.
 
-How it works: on a device set to Danish, Norwegian or Swedish the app opens in Danish, everywhere else in English. Users can switch at any time on the Mere / More tab ("Dansk / English"). Favourites, settings and the daily reminder carry over, since a card has the same id in both languages. On an English device the home screen name is "Goodtalk", the name of the English edition; elsewhere it is "Snakkespil". The English edition has the same tabs and game modes as the Danish one, except a few Danish-only decks and screens (statistics, your own questions). Neither language contains adult content.
+How it works: on a device set to Danish, Norwegian or Swedish the app opens in Danish, everywhere else in English. Users can switch at any time on the Mere / More tab ("Dansk / English"). Favourites, settings and the daily reminder carry over, since a card has the same id in both languages. On an English device the home screen name is "Goodtalk", the name of the English edition; elsewhere it is "Snakkespil". The English edition has the same four tabs and 33 of the 34 decks; one Danish-only deck (Efterskolen) and two Danish-only screens (statistics, your own questions) are not translated. The English store listing is named "Goodtalk: Conversation Cards". Neither language contains adult content.
 
 Everything below still applies to both languages: no account, no login, no ads, no in-app purchases, and all cards work offline.
 ```
@@ -298,7 +309,7 @@ No login provider, payment processor, advertising SDK or AI service is used.
 
 Accounts: none. There is no account creation, so account deletion does not apply. All data (favourites, settings, progress) is stored locally on the device and removed when the app is deleted.
 User-generated content: users can write their own questions, but they are stored only on their own device and are never uploaded or shown to other users (they only leave the device if the user shares one via the share sheet).
-Regional differences: none, the app works the same everywhere; content is in Danish.
+Regional differences: none, the app works the same everywhere; content is in Danish and English.
 Regulated industry / third-party material: not applicable, all questions are written by the developer. Help lines shown in "Sådan spiller I" are public Danish crisis lines.
 In-App Purchase: none. No subscriptions, no ads, no paid content.
 
