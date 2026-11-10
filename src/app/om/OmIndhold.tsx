@@ -21,7 +21,7 @@ export function OmIndhold() {
       <h2>Hvem laver det</h2>
       <p>
         Snakkespil er lavet af Mads Holst Jensen, der driver det lille webbureau{" "}
-        <a href="https://mahoje.dk">Mahope</a>. Spillet har ingen reklamer og samler ingen persondata, og sådan bliver
+        <a href="https://mahoje.dk">Mahoje</a>. Spillet har ingen reklamer og samler ingen persondata, og sådan bliver
         det ved med at være.
       </p>
 

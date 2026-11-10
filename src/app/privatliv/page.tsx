@@ -5,7 +5,7 @@ import { PrivatlivIndhold, PRIVATLIV_LEAD } from "./PrivatlivIndhold";
 
 export const metadata: Metadata = {
   title: "Privatliv",
-  description: "Snakkespil har ingen konti og ingen cookies. Det du gemmer, bliver på din egen enhed. Læs hvad vi måler, og hvordan.",
+  description: "Snakkespil har ingen konti og ingen cookies. Det, du gemmer, bliver på din egen enhed. Læs, hvad vi måler, og hvordan.",
   alternates: { canonical: "/privatliv/" },
   openGraph: { ...OG_BASE, url: "/privatliv/" },
 };

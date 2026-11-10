@@ -69,7 +69,7 @@ const jsonLd = {
     {
       "@type": "Organization",
       "@id": `${SITE_URL}/#org`,
-      name: "Mahope",
+      name: "Mahoje",
       url: "https://mahoje.dk",
     },
     {

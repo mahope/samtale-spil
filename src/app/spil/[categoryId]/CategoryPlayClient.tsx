@@ -348,7 +348,7 @@ function CategoryPlay({ categoryId }: Props) {
       <CelebrationOverlay
         isVisible={showCelebration}
         message="Hele bunken er spillet"
-        subMessage={`I har været alle ${activeQuestionCount} ${difficultyFilter === "let" ? "lette " : difficultyFilter === "dyb" ? "dybe " : difficultyFilter === "medium" ? "medium-" : ""}kort i ${category.name} igennem. Bunken bliver blandet igen.`}
+        subMessage={`I har været alle ${activeQuestionCount} ${difficultyFilter === "let" ? "lette " : difficultyFilter === "dyb" ? "dybe " : difficultyFilter === "medium" ? "medium" : ""}kort i ${category.name} igennem. Bunken bliver blandet igen.`}
         onDismiss={handleDismissCelebration}
       />
 

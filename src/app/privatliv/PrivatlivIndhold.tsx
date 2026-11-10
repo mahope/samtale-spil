@@ -5,7 +5,7 @@ export const PRIVATLIV_LEAD =
 export function PrivatlivIndhold() {
   return (
     <>
-      <h2>Det du gemmer, bliver hos dig</h2>
+      <h2>Det, du gemmer, bliver hos dig</h2>
       <p>
         Favoritter, fremskridt, statistik og dine egne spørgsmål gemmes kun i din browser eller i appen på din
         telefon. De sendes aldrig til os. Sletter du browserdata eller appen, forsvinder de også.
@@ -13,7 +13,7 @@ export function PrivatlivIndhold() {
 
       <h2>Hvad vi måler</h2>
       <p>
-        Vi bruger Plausible og Umami, to besøgstal uden cookies, som begge kører på vores egne servere i EU. De tæller sidevisninger
+        Vi bruger Plausible og Umami, to statistikværktøjer uden cookies, som begge kører på vores egne servere i EU. De tæller sidevisninger
         og enkelte handlinger, fx at et spil bliver startet, og hvilken kategori det er. Ingen af dem gemmer
         IP-adresser eller personoplysninger. Plausible kan ikke følge dig fra side til side eller fra dag til dag.
         Umami giver din browser et anonymt besøgs-id, der er regnet ud af IP-adresse og browser med et hemmeligt
@@ -29,7 +29,7 @@ export function PrivatlivIndhold() {
 
       <h2>Når du rapporterer et kort</h2>
       <p>
-        Rapportér-knappen sender kortets nummer, den årsag du vælger, og din kommentar, hvis du skriver en, til os som en
+        Rapportér-knappen sender kortets nummer, den årsag, du vælger, og din kommentar, hvis du skriver en, til os som en
         mail. Vi får ikke dit navn, din mail eller din IP-adresse i mailen. Mailen sendes gennem mailtjenesten Resend.
         For at holde spam ude bruger formularen Cloudflare Turnstile, som tjekker, at du er et menneske. Den hentes først,
         når du åbner formularen, og sætter ikke sporings-cookies. Din IP-adresse bruges kortvarigt af Cloudflare til

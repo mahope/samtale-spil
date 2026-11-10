@@ -217,7 +217,7 @@ export default function ShuffleAllClient() {
     return <PlayScreenLoading />;
   }
 
-  const depthWord = difficultyFilter === "let" ? "lette " : difficultyFilter === "dyb" ? "dybe " : difficultyFilter === "medium" ? "medium-" : "";
+  const depthWord = difficultyFilter === "let" ? "lette " : difficultyFilter === "dyb" ? "dybe " : difficultyFilter === "medium" ? "medium" : "";
 
   return (
     <>
