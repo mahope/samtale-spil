@@ -16,7 +16,7 @@ export function OmTekst() {
       </p>
       <h2>Hvem står bag</h2>
       <p>
-        Snakkespil 18+ er lavet af Mads Holst Jensen fra webstudiet <a href="https://mahoje.dk">Mahope</a>. Der er ingen reklamer og ingen
+        Snakkespil 18+ er lavet af Mads Holst Jensen fra webstudiet <a href="https://mahoje.dk">Mahoje</a>. Der er ingen reklamer og ingen
         konto. Skriv til <a href="mailto:mads@mahoje.dk">mads@mahoje.dk</a>, hvis du har et forslag til et kort.
       </p>
     </>

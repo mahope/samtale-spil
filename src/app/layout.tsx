@@ -34,9 +34,9 @@ export const metadata: Metadata = {
   ...(site.lang === "da" && process.env.APP_BUILD !== "1" && process.env.APP_VARIANT !== "voksen"
     ? { itunes: { appId: "6825365746" } }
     : {}),
-  authors: [{ name: "Mahope", url: "https://mahoje.dk" }],
-  creator: "Mahope",
-  publisher: "Mahope",
+  authors: [{ name: "Mahoje", url: "https://mahoje.dk" }],
+  creator: "Mahoje",
+  publisher: "Mahoje",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

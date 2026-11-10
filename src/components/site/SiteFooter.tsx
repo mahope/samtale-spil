@@ -96,7 +96,7 @@ export function SiteFooter({ englishHref }: { englishHref?: string }) {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-streg py-6 text-sm text-blaek-2">
           <p>
-            Lavet af <a href="https://mahoje.dk" className="underline hover:text-blaek">Mahope</a> i Danmark.
+            Lavet af <a href="https://mahoje.dk" className="underline hover:text-blaek">Mahoje</a> i Danmark.
           </p>
           <p>
             <span lang="en">In English: </span>

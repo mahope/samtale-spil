@@ -140,7 +140,7 @@ export function IntlFooter({ danishHref }: { danishHref?: string }) {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-streg py-6 text-sm text-blaek-2">
           <p>
-            Made by <a href="https://mahoje.dk" className="underline hover:text-blaek">Mahope</a> in Denmark.
+            Made by <a href="https://mahoje.dk" className="underline hover:text-blaek">Mahoje</a> in Denmark.
           </p>
           <p>
             <span lang="da">På dansk: </span>
