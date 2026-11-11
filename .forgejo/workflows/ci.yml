@@ -113,12 +113,15 @@ jobs:
       - name: App build leaves out the 18+ deck
         run: |
           set -euo pipefail
+          grep -q 'href="https://natsnak.dk/" rel="noopener"' out/index.html || { echo "Danish website misses Natsnak link"; exit 1; }
+          grep -q 'samtalekort og ønsker for to (18+)' out/index.html || { echo "Natsnak age label missing"; exit 1; }
           grep -rqE '"adult-[0-9]+"' out/ || { echo "guard finds no adult cards in the web build"; exit 1; }
           # the dares (hot-N) belong to the Snakkespil 18+ app only (issue #57)
           if grep -rqE '"hot-[0-9]+"' out/; then echo "18+-app dares in the web build"; exit 1; fi
           rm -rf out
           # the Snakkespil app: Danish in out/da, English (Goodtalk) in out/en, out/index.html picks one
           bash scripts/build-app.sh >/dev/null
+          if grep -riq 'natsnak' out/; then echo "Natsnak leaked into the 12+ app build"; exit 1; fi
           if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
 
       - name: The app's start page picks a language
@@ -165,6 +168,7 @@ jobs:
           set -euo pipefail
           rm -rf out
           SITE_LOCALE=en npm run build >/dev/null
+          if grep -riq 'natsnak' out/; then echo "Natsnak leaked into the English website"; exit 1; fi
           grep -q '<html lang="en"' out/index.html || { echo "English build is not lang=en"; exit 1; }
           if grep -q 'content="noindex' out/index.html; then echo "the English home page must be indexable"; exit 1; fi
           grep -qi 'hreflang="da"' out/questions/questions-for-couples/index.html || { echo "missing hreflang to the Danish deck"; exit 1; }
