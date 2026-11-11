@@ -55,6 +55,8 @@ npm run build      # static export to out/
 
 CI (`.forgejo/workflows/ci.yml`) runs typecheck, lint, tests, build, checks the export (noindex on play screens, questions in landing-page HTML, canonical URLs) and validates the nginx config.
 
+The Danish website footer links to Natsnak (18+). It uses the existing `APP_BUILD` flag to omit the link from native builds; the English website uses its own footer. CI requires the link and age label in the Danish web export and checks that no `natsnak` text exists anywhere in the bilingual app export or English web export.
+
 ## Deploy
 
 Every push to `master` triggers a Dokploy deploy through a Forgejo webhook. Dokploy builds the Dockerfile and serves the export on port 3000 behind Traefik and Cloudflare.

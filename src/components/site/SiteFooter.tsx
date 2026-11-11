@@ -94,6 +94,11 @@ export function SiteFooter({ englishHref }: { englishHref?: string }) {
         </div>
       </div>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        {process.env.APP_BUILD !== "1" && (
+          <p className="pb-6 text-sm text-blaek-2">
+            For voksne par: <a href="https://natsnak.dk/" rel="noopener" className="inline-flex min-h-8 items-center underline hover:text-blaek">Natsnak</a>, samtalekort og ønsker for to (18+).
+          </p>
+        )}
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-streg py-6 text-sm text-blaek-2">
           <p>
             Lavet af <a href="https://mahoje.dk" className="underline hover:text-blaek">Mahoje</a> i Danmark.
