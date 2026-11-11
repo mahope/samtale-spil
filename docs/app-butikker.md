@@ -185,6 +185,8 @@ Made in Denmark by Mahoje.
 
 Kun i hånden eller med Mads' go. Opdatér listen med, hvad der faktisk er gjort, når 2.1.0 er indsendt.
 
+**Gjort 11/11-2026 (agent, med Mads' go):** punkt 1-7 i App Store Connect. Goodtalk-appen hedder nu »Goodtalk (old)«. 2.1.0 med build 1284 er sendt til review (WAITING_FOR_REVIEW) med da og en-US. Den danske undertitel var ved en fejl sat til »**Reklametekst** (max 170):« og er rettet. En-US-skærmbillederne (iPhone 6,9" og iPad 13", 5 af hver) er taget fra `out/en/` i 2.1.0. Review-noten er sendt uden sidste sætning om en vedhæftet skærmoptagelse, fordi 2.1.0 ikke har nogen. Google Play mangler: `android.yml` fejler på master (kørsel 277, 280, 282), så der er ingen 2.1.0-AAB endnu.
+
 **App Store Connect (Snakkespil, app 6825365746):**
 1. Frigør navnet: omdøb den afviste Goodtalk-app (6826397017) under App Information, fx til »Goodtalk (old)«, eller fjern den (App Information > Remove App). Navnet »Goodtalk: Conversation Cards« kan ikke bruges på Snakkespil, før det er sket.
 2. Opret version 2.1.0 på Snakkespil og tilføj lokaliseringen English (U.S.) (og evt. English (U.K.)).
