@@ -103,7 +103,10 @@ const DANISH_EXCEPTIONS: Record<string, { danish: RegExp; letters: RegExp }> = {
  * No alcohol anywhere (as Goodtalk, src/__tests__/localeEn.test.ts), and nothing adult outside the
  * couples' decks. A new app language must add its words here; the test fails until it does.
  */
-const CONTENT_RULES: Record<string, { alcohol: RegExp; adult: RegExp }> = {
+type Rule = Pick<RegExp, "test">;
+const anyOf = (...rules: Rule[]): Rule => ({ test: (t) => rules.some((r) => r.test(t)) });
+
+const CONTENT_RULES: Record<string, { alcohol: Rule; adult: Rule }> = {
   sv: {
     // not "full" or "fylla": full lön, fylla år, fylla i
     alcohol: word("öl|vin|vinet|sprit|snaps|nubbe|skål|skåla|berusad|packad|bakfull|fyllan|drinkar?|shots?|krogrunda|alkohol\\p{L}*|cider|champagne|bubbel"),
@@ -115,8 +118,61 @@ const CONTENT_RULES: Record<string, { alcohol: RegExp; adult: RegExp }> = {
     alcohol: word("øl|vin|vinen|sprit|brennevin|akevitt|dram|skål|skåle|beruset|bakfull|fyllesyk|fylla|fyllekule|drinker?|shots?|pils|vors|nachspiel|alkohol\\p{L}*|cider|champagne|musserende"),
     adult: word("sex|sexy|sexuell\\p{L}*|seksuell\\p{L}*|naken|nakne|kåt|kåte|orgasme\\p{L}*"),
   },
+  de: {
+    alcohol: anyOf(
+      // German glues words together (Feierabendbier, Glühweine, Stammkneipe), so most words match inside
+      // compounds too. Not "Kater" (also a tomcat), not verbs on -bieren (probieren, buchstabieren, absorbieren), "Schwein" or "Insekt".
+      word(
+        "\\p{L}*(?<!pro|sta|sor)bier\\p{L}*|\\p{L}+(?<!sch|be)wein(?:e|es|s)?|sekt(?:e?s|glas|gläser|flaschen?|empfang|laune)?|" +
+          "\\p{L}*schn[aä]ps\\p{L}*|\\p{L}*likör\\p{L}*|\\p{L}*cocktail\\p{L}*|\\p{L}*champagner\\p{L}*|\\p{L}*alkohol\\p{L}*|" +
+          "\\p{L}*kneipe\\p{L}*|kneipentour|prost|zuprosten|zugeprostet|betrunken\\p{L}*|besoffen\\p{L}*|beschwipst\\p{L}*|verkatert|" +
+          "(?:be|ver)?sauf\\p{L}*|gesoffen|\\p{L}*säufer\\p{L}*|bowle|schampus|aperol\\p{L}*|wodka|whiske?y|gin|tequila|cognac|shots?|drinks?",
+      ),
+      // the noun is capitalised; lower-case "weine", "weinen" and "weinte" are crying
+      /(?<!\p{L})Wein(?!en|end|t)\p{L}*/u,
+    ),
+    // "geil" is also youth slang for cool, which the cards never use
+    adult: word("sex|sexy|sexuell\\p{L}*|nackt\\p{L}*|geil\\p{L}*|erotisch\\p{L}*|orgasmus|orgasmen"),
+  },
 };
 const ADULT_OK = new Set(["intimitet", "parforhold", "foerste-date", "kend-din-partner", "nyt-og-ukendt"]);
+
+describe("the German alcohol check", () => {
+  const { alcohol } = CONTENT_RULES.de;
+
+  it("catches inflected words and compounds", () => {
+    for (const t of [
+      "Magst du Bier?",
+      "Welche Weine magst du?",
+      "Was ist dein liebstes Feierabendbier?",
+      "Wo gibt es den besten Biergarten?",
+      "Trinkst du Glühwein auf dem Weihnachtsmarkt?",
+      "Rotweine oder Weißweine?",
+      "Welcher Wein passt zu Pizza?",
+      "Gehst du oft in deine Stammkneipe?",
+      "Wann hast du zuletzt Sektgläser gespült?",
+      "Wer hat am meisten gesoffen?",
+    ])
+      expect(alcohol.test(t), t).toBe(true);
+  });
+
+  it("lets crying, trying and pigs through", () => {
+    for (const t of [
+      "Wann hast du zuletzt geweint?",
+      "Ich weine bei jedem Film.",
+      "Weinen ist okay.",
+      "Was würdest du gern ausprobieren?",
+      "Probierst du gern Neues?",
+      "Buchstabiere deinen Namen rückwärts.",
+      "Welches Tier magst du lieber: Schwein oder Kuh?",
+      "Hast du Angst vor Insekten?",
+      "Was machst du nach den Hausaufgaben?",
+      "Wann hast du zuletzt gestaunt?",
+      "Weihnachten mit Adventskalender",
+    ])
+      expect(alcohol.test(t), t).toBe(false);
+  });
+});
 
 describe("the list of app languages", () => {
   it("has unique codes, Danish and English first, and English as the fallback", () => {

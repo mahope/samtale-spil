@@ -13,6 +13,8 @@ import { localeDecks as svDecks } from "../src/locales/sv/decks";
 import { localeGames as svGames } from "../src/locales/sv/games";
 import { localeDecks as nbDecks } from "../src/locales/nb/decks";
 import { localeGames as nbGames } from "../src/locales/nb/games";
+import { localeDecks as deDecks } from "../src/locales/de/decks";
+import { localeGames as deGames } from "../src/locales/de/games";
 
 /**
  * App-only languages (web: false in src/locales/appLocales.ts): their reports reach the worker on
@@ -21,6 +23,7 @@ import { localeGames as nbGames } from "../src/locales/nb/games";
 const APP_ONLY: Record<string, { decks: Record<string, { name: string; cards: Record<string, string> }>; games: Record<string, { h1: string; kort: Record<string, string> }> }> = {
   sv: { decks: svDecks, games: svGames },
   nb: { decks: nbDecks, games: nbGames },
+  de: { decks: deDecks, games: deGames },
 };
 for (const l of APP_LOCALES) if (!l.web && !APP_ONLY[l.code]) throw new Error(`export-cards: add ${l.code} to APP_ONLY`);
 
