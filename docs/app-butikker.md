@@ -8,7 +8,7 @@ Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en l
 
 Appene er ikke hjemmesiden i en ramme. Begge har en bundmenu med fire faner, navigationsbjælker med tilbage-knap og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere/More, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appene.
 
-- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 af *Flere sprog* nedenfor. `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/` osv. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk og norsk giver dansk, svensk giver svensk, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk, Pratspel på svensk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
+- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 af *Flere sprog* nedenfor og spansk (Charlando) fra fase 2. `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/` osv. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk og norsk giver dansk, svensk giver svensk, spansk giver spansk, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk, Pratspel på svensk, Charlando på spansk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
   - Dansk (`src/app/**/*.app.tsx`): Spil, I dag, Favoritter og Mere (indstillinger med påmindelse, sprog, dine egne spørgsmål, statistik, sådan spiller I, lege, ikke-terapi, om, privatliv, del).
   - Engelsk, det tidligere Goodtalk, og de øvrige sprog (`*.intlapp.tsx`, tekster fra `src/locales/<kode>/screens.ts`): Play, Today, Favorites og More (language, settings med påmindelse, jokere og udseende, how to play, party games, about, privacy, share). Al tekst er på sproget. Der er ingen egne spørgsmål og ingen statistik på disse sprog.
 - **Snakkespil 18+** (`APP_VARIANT=voksen`, `*.voksen.tsx`): alderskontrollen ligger foran alt, også fanerne. Bunker, I aften (et tilfældigt kort eller en udfordring), Favoritter og Mere (indstillinger med udseende og »spørg om alder igen«, når det bliver svært, om, privatliv, del). Mørkt tema som standard.
@@ -226,7 +226,7 @@ Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/
 | Tysk (fase 2) | forslag: **Goodtalk** | Engelske appnavne er almindelige i Tyskland, og et lokalt navn som »Gesprächsspiel« er mest beskrivende. »Redezeit« er et alternativ; tjek navnene |
 | Hollandsk (fase 2) | forslag: **Praatspel** | Hollandsk for snakkespil. Tjek navnet |
 | Fransk (fase 2) | forslag: **Goodtalk** | Et fransk navn (»Jeu de parole«) er langt og generisk |
-| Spansk (fase 2) | forslag: **Goodtalk** | Samme grund; alternativ »Charla«, tjek navnet |
+| Spansk | **Charlando** (butik: »Charlando: cartas para hablar«) | »Charlando« betyder »mens man snakker«: varmt og hverdagsagtigt, forstås i Spanien og hele Latinamerika. Tjekket 16/11-2026 med iTunes Search API (ES, MX, AR, CO, CL, US) og Google Plays søgning (ES, MX): ingen app hedder Charlando. Goodtalk blev fravalgt, fordi »GoodTalk: AI Couples Therapy« og »GoodTalk: Personal Development« ligger i de spanske og latinamerikanske App Stores og »GoodTalk« i Google Play, og et engelsk navn virker fremmed. Også fravalgt, fordi de er taget: Charla (App Store), Charlemos (»Charlemos: Juego de Cartas« i Google Play), Charlamos (App Store ES), Sobremesa (»Sobremesa: Dinner Questions«), Hablemos, Cuéntame og Conversa |
 
 ### Svensk (sv)
 
@@ -286,7 +286,65 @@ Gjort i Danmark av Mahoje.
 
 Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Swedish i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/sv/` i appen) og sv-SE i Google Play (titel »Pratspel: samtalskort«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter).
 
-### Et nyt sprog i appen (fase 2: nb, de, nl, fr, es)
+### Spansk (es)
+
+Charlando har samme 2.624 kort i 33 bunker som Goodtalk, de samme 9 sider med lege (71 lege) og 540 legekort, El año que pasó (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk og tilpasset Spanien, men på neutral spansk med tú og uden vosotros, så det også virker i Latinamerika: Nochebuena, Reyes Magos med roscón og carta a los Reyes, amigo invisible, villancicos, Nochevieja med campanadas og de tolv druer, Semana Santa, noche de San Juan, Primaria/ESO/Bachillerato og selectividad, grupo scout og Insignia de Madera, euro og kilometer. Ingen alkohol (heller ikke »vino« som datid af venir eller »copa« som pokal, fordi testen fanger ordene). Nødnumre i Cómo se juega: 112 og 024 (Línea de atención a la conducta suicida), ellers findahelpline.com.
+
+- **Navn i es** (App Store, max 30): `Charlando: cartas para hablar` (29)
+- **Sprog i butikkerne:** Spanish (Spain) (es-ES) i App Store og es-ES i Google Play. Mexico og resten af Latinamerika (es-MX, es-419) kan få samme tekster senere
+- **Privatlivspolitik, support og marketing (es):** som engelsk (goodtalkcards.com). Charlando har ingen hjemmeside.
+
+**Undertitel** (App Store, max 30): `Preguntas para conversar mejor` (30)
+
+**Reklametekst** (max 170):
+`Saca una carta, lee la pregunta en voz alta y deja que la charla fluya. Más de 2600 preguntas para parejas, familia, clase y amigos. Gratis y sin anuncios.` (155)
+
+**Søgeord** (max 100):
+`preguntas,pareja,cita,familia,amigos,preguntas profundas,qué prefieres,rompehielos,conversación` (95)
+
+**Kort beskrivelse** (Google Play, max 80):
+`Cartas de conversación gratis para parejas, familia, amigos y colegas.` (70)
+
+**Beskrivelse** (max 4.000, her 1359):
+
+```
+Charlando son cartas de conversación en el teléfono. Saca una carta, lee la pregunta en voz alta y deja que la charla fluya.
+
+Más de 2600 preguntas en barajas para cada momento:
+• Pareja, intimidad y primera cita
+• Familia, niños, padres primerizos e historias de familia
+• El cole: Primaria, Secundaria, Bachillerato y vida universitaria
+• Scouts e Insignia de Madera
+• Amigos, colegas y fiestas
+• Preguntas profundas y filosóficas, sueños, recuerdos y futuro
+• Gratitud, buenas noticias y algo nuevo
+• ¿Qué prefieres?, con 120 dilemas
+• Temas difíciles, para las conversaciones que importan
+
+Cada carta está marcada como ligera, media o profunda, así eliges hasta dónde llegar.
+
+Formas de jugar:
+• Adivina la respuesta: uno responde en secreto y el siguiente adivina, con puntos si apetece
+• El año que pasó: cuatro rondas para Nochevieja y cumpleaños
+• Juegos de grupo con cartas listas, para Navidad, Nochevieja, la sobremesa y las bodas
+• La pregunta del día, la misma para todos ese día
+
+Y además:
+• Comodines de vez en cuando, por ejemplo «haz tu propia pregunta»
+• También en danés, inglés y sueco. Cambia de idioma en Más
+• Funciona sin internet
+• Sin cuenta, sin anuncios, sin cookies. Lo que guardas se queda en el teléfono
+
+Charlando es un juego de conversación para pasarlo bien y sentirse cerca. No es una terapia.
+Hecho en Dinamarca por Mahoje.
+```
+
+**Nyheder** (es, til versionen der indeholder spansk):
+`Snakkespil ya está en español con el nombre Charlando. Elige el idioma en Más, y tus favoritos y ajustes te acompañan.` (118)
+
+Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Spanish (Spain) i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/es/` i appen) og es-ES i Google Play (titel »Charlando: cartas para hablar«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Deploy worker'en, så rapporter fra `/es/` viser den spanske tekst.
+
+### Et nyt sprog i appen (fase 2: nb, de, nl, fr; es er færdigt)
 
 For hvert sprog, i sin egen PR:
 
