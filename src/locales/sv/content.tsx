@@ -10,11 +10,11 @@ export function AboutText() {
   return (
     <>
       <p>
-        Idén kommer från lådan med samtalskort som många har liggande i en byrålåda: frågor som får människor att berätta sådant de
+        Idén kommer från asken med samtalskort som många har liggande i en byrålåda: frågor som får människor att berätta sådant de
         annars inte skulle ha sagt. Pratspel gör samma sak i telefonen, helt gratis.
       </p>
       <p>
-        Det finns {INTL_CARD_COUNT.toLocaleString("sv-SE")} frågor i {intlDecks.length} lekar. Varje fråga är märkt som lätt, mellan
+        Det finns {INTL_CARD_COUNT.toLocaleString("sv-SE")} frågor i {intlDecks.length} kortlekar. Varje fråga är märkt som lätt, mellan
         eller djup, så att du kan välja hur djupt du vill gå.
       </p>
       <h2>Vem ligger bakom</h2>
@@ -90,7 +90,7 @@ export function HowToPlayText({ app = false }: { app?: boolean }) {
         eller chatta på mind.se. Utanför Sverige hittar du en kostnadsfri och konfidentiell hjälplinje i ditt land på <a href="https://findahelpline.com/">findahelpline.com</a>.
       </p>
       <p>
-        Redo? <Link href={app ? "/" : "/play/"}>Välj en lek</Link>.
+        Redo? <Link href={app ? "/" : "/play/"}>Välj en kortlek</Link>.
       </p>
     </>
   );

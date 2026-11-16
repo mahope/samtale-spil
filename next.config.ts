@@ -37,8 +37,8 @@ const appShellAlias = { '@/locale/ui': `./src/locales/${locale}/ui.app.ts` };
 // The app's international languages have a Favorites tab, so their cards get the heart the English website leaves out
 const intlAppAlias = { '@/locale/site': `./src/locales/${locale}/site.app.ts` };
 const hasShell = isAppShell || isIntlApp || variant === 'voksen';
-// The Snakkespil app holds both languages (Goodtalk became its English half after Apple's 4.3
-// rejection, 10/11-26): scripts/build-app.sh exports Danish under /da and English under /en,
+// The Snakkespil app holds all its languages (Goodtalk became its English half after Apple's 4.3
+// rejection, 10/11-26): scripts/build-app.sh exports each language under /<code> (/da, /en, /sv ...),
 // next to an out/index.html that picks one (src/lib/appLang.ts). The websites and the 18+ app
 // keep their root.
 const basePath = isAppShell || isIntlApp ? `/${locale}` : '';

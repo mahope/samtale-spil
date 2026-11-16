@@ -119,7 +119,10 @@ jobs:
           # the dares (hot-N) belong to the Snakkespil 18+ app only (issue #57)
           if grep -rqE '"hot-[0-9]+"' out/; then echo "18+-app dares in the web build"; exit 1; fi
           rm -rf out
-          # the Snakkespil app: Danish in out/da, English (Goodtalk) in out/en, out/index.html picks one
+          # an app-only language (src/locales/appLocales.ts, web: false) must never build as a website
+          if SITE_LOCALE=sv npx next build >/dev/null 2>&1; then echo "SITE_LOCALE=sv built a website"; exit 1; fi
+          rm -rf out
+          # the Snakkespil app: one folder per app language (out/da, out/en = Goodtalk, out/sv = Pratspel, ...), out/index.html picks one
           bash scripts/build-app.sh >/dev/null
           if grep -riq 'natsnak' out/; then echo "Natsnak leaked into the 12+ app build"; exit 1; fi
           if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
@@ -129,7 +132,8 @@ jobs:
           set -euo pipefail
           # out/ is still the app export from the step above
           grep -q 'samtale-spil-app-sprog' out/index.html || { echo "out/index.html is not the language picker"; exit 1; }
-          test "$(ls out)" = "$(printf 'da\nen\nindex.html')" || { echo "out/ holds more than da/, en/ and index.html:"; ls out; exit 1; }
+          langs=$(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module -e 'import { APP_LOCALE_CODES } from "./src/locales/appLocales.ts"; console.log(APP_LOCALE_CODES.join("\n"))')
+          test "$(ls out)" = "$(printf '%s\nindex.html' "$langs" | sort)" || { echo "out/ is not one folder per app language and index.html:"; ls out; exit 1; }
 
       - name: Danish half of the app is the app shell, with no dead links
         run: |
@@ -162,6 +166,27 @@ jobs:
             echo "Danish text in the English half"; exit 1
           fi
           npm run check:links -- out/en --base /en
+
+      - name: The app's other languages (Swedish, ...) are the international app shell, with no dead links
+        run: |
+          set -euo pipefail
+          others=$(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module -e 'import { APP_LOCALES } from "./src/locales/appLocales.ts"; console.log(APP_LOCALES.filter((l) => !["da", "en"].includes(l.code)).map((l) => l.code).join(" "))')
+          for lang in $others; do
+            echo "== $lang"
+            grep -q 'data-shell="app"' "out/$lang/index.html" || { echo "out/$lang is not the app shell"; exit 1; }
+            grep -q "<html lang=\"$lang\"" "out/$lang/index.html" || { echo "out/$lang is not lang=$lang"; exit 1; }
+            for p in more settings privacy about how-to-play favorites daily-question games play/questions-for-couples play/guess play/year-in-review; do
+              test -f "out/$lang/$p/index.html" || { echo "missing /$lang/$p/ in the app"; exit 1; }
+            done
+            test ! -e "out/$lang/questions" && test ! -e "out/$lang/guide" && test ! -e "out/$lang/print" && test ! -e "out/$lang/sitemap.xml" || { echo "website pages leaked into out/$lang"; exit 1; }
+            grep -q '>Dansk<' "out/$lang/more/index.html" && grep -q '>English<' "out/$lang/more/index.html" || { echo "no language list on /$lang/more/"; exit 1; }
+            # no Danish or English UI words or cards (the language list names Dansk and English, on purpose)
+            if grep -rlqE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Spring til indholdet|Indstillinger|Favoritter|Tap to flip|Next card|Skip to content|"Tabs"|Keep playing|Choose a deck' "out/$lang/"; then
+              grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Spring til indholdet|Indstillinger|Favoritter|Tap to flip|Next card|Skip to content|"Tabs"|Keep playing|Choose a deck' "out/$lang/" | head -5
+              echo "Danish or English text in out/$lang"; exit 1
+            fi
+            npm run check:links -- "out/$lang" --base "/$lang"
+          done
 
       - name: International build (Goodtalk, SITE_LOCALE=en)
         run: |

@@ -5,7 +5,7 @@ import { isNative } from "@/lib/platform";
 import { readReminder } from "@/lib/reminder";
 
 /**
- * Keeps the reminder window rolling in the app's English half, in English (the Danish half has
+ * Keeps the reminder window rolling in the app's international languages, in the language (Danish has
  * src/components/NativeReminders.tsx). The setting is shared, so switching language reschedules.
  */
 export function NativeReminders() {
