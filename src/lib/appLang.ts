@@ -1,26 +1,30 @@
 /**
- * The Snakkespil app speaks Danish and English (Goodtalk became its English half after Apple's
- * 4.3 rejection, 10/11-26). scripts/build-app.sh exports the Danish app shell under out/da/ and
- * the English one under out/en/ (basePath, next.config.ts) and writes out/index.html from
- * appIndexHtml(), which picks a half at start. Both halves share one origin, so favourites,
- * history and settings in localStorage are shared too; the card ids are the same in both.
+ * The Snakkespil app speaks every language in src/locales/appLocales.ts (Goodtalk became its
+ * English half after Apple's 4.3 rejection, 10/11-26). scripts/build-app.sh exports one app shell
+ * per language under out/<code>/ (basePath, next.config.ts) and writes out/index.html from
+ * appIndexHtml(), which picks a language at start. All languages share one origin, so favourites,
+ * history and settings in localStorage are shared too; the card ids are the same in all of them.
  *
  * The app's web server (Capacitor on iOS and Android) answers every path without a file
  * extension with out/index.html. So moving between the halves always goes to a file
  * (/en/more/index.html), and the app layouts strip "index.html" from the address before the
  * router starts (stripIndexScript).
  */
-export type AppLang = "da" | "en";
+// Relative with .ts: scripts/app-index.mjs runs this file in plain Node, which knows no "@/" alias
+import { APP_LOCALES, APP_LOCALE_CODES, FALLBACK_APP_LOCALE } from "../locales/appLocales.ts";
+
+/** A code from src/locales/appLocales.ts: "da", "en", "sv" */
+export type AppLang = string;
 
 /** The language picked under Mere / More. Without it the device language decides. */
 export const APP_LANG_KEY = "samtale-spil-app-sprog";
 
-/** "/da" or "/en" in the app, "" on the websites and in the 18+ app */
+/** "/da", "/en", "/sv" ... in the app, "" on the websites and in the 18+ app */
 export const APP_BASE: string = process.env.APP_BASE_PATH || "";
 
-/** The half of the app this code runs in, or null outside the Snakkespil app */
+/** The language of the app this code runs in, or null outside the Snakkespil app */
 export function currentAppLang(base: string = APP_BASE): AppLang | null {
-  return base === "/da" ? "da" : base === "/en" ? "en" : null;
+  return APP_LOCALE_CODES.find((code) => base === `/${code}`) ?? null;
 }
 
 /** A browser path (window.location.pathname) as the router sees it, without the base path */
@@ -30,10 +34,10 @@ export function withoutBase(path: string, base: string = APP_BASE): string {
   return path.startsWith(`${base}/`) ? path.slice(base.length) : path;
 }
 
-/** Where switching language lands: the other half's More tab, where the switch is */
-export const LANG_SWITCH_TARGET: Record<AppLang, string> = { da: "/da/mere/index.html", en: "/en/more/index.html" };
+/** Where switching language lands: that language's More tab, where the switch is */
+export const LANG_SWITCH_TARGET: Record<AppLang, string> = Object.fromEntries(APP_LOCALES.map((l) => [l.code, `/${l.code}${l.more}index.html`]));
 
-/** Stores the choice and loads the other half. replace(): no way back into the old language. */
+/** Stores the choice and loads that language. replace(): no way back into the old language. */
 export function switchAppLang(lang: AppLang) {
   try {
     window.localStorage.setItem(APP_LANG_KEY, lang);
@@ -50,14 +54,16 @@ export function asFile(url: string): string {
   return `${path}index.html${m[2]}`;
 }
 
+const LANG_PREFIX = new RegExp(`^/(${APP_LOCALE_CODES.join("|")})(/|$)`);
+
 /**
  * What tapping a reminder does. Reminders carry the full path with the language ("/en/daily-question/").
- * In the same half the router opens it; a reminder from the other half (scheduled before a
- * language switch) loads that half. Reminders from 2.0.0 have no language and are Danish.
+ * In the same language the router opens it; a reminder from another language (scheduled before a
+ * language switch) loads that language. Reminders from 2.0.0 have no language and are Danish.
  */
 export function notificationTarget(url: string, base: string = APP_BASE): { push: string } | { load: string } | null {
   if (!url.startsWith("/") || url.startsWith("//")) return null;
-  const full = /^\/(da|en)(\/|$)/.test(url) ? url : `/da${url}`;
+  const full = LANG_PREFIX.test(url) ? url : `/da${url}`;
   if (!base) return { push: url };
   if (full.startsWith(`${base}/`)) return { push: full.slice(base.length) };
   return { load: asFile(full) };
@@ -69,34 +75,43 @@ interface StartWindow {
   navigator: { language?: string; languages?: readonly string[] };
 }
 
+/** What appStart needs to know about each language */
+export interface StartLocale {
+  code: string;
+  device: string[];
+}
+
 /**
  * The script in out/index.html. Runs as a string in the web view, so it must not use anything
- * outside itself. At the root it opens the stored language, or else the device language:
- * Danish for Danish, Norwegian and Swedish, English for everyone else. On a deeper path (the
- * web view reloaded a screen, and the server answered with this file) it reopens that screen.
+ * outside itself: the languages come in as an argument. At the root it opens the stored language,
+ * or else the language that lists the device language (Danish for Danish and Norwegian, Swedish
+ * for Swedish), or else the fallback (English). On a deeper path (the web view reloaded a screen,
+ * and the server answered with this file) it reopens that screen.
  */
-export function appStart(w: StartWindow, key: string) {
-  const langs = ["da", "en"];
+export function appStart(w: StartWindow, key: string, locales: StartLocale[], fallback: string) {
+  const codes: string[] = [];
+  for (let i = 0; i < locales.length; i++) codes.push(locales[i].code);
   let stored: string | null = null;
   try {
     stored = w.localStorage.getItem(key);
   } catch {
     stored = null;
   }
-  let lang = stored && langs.indexOf(stored) >= 0 ? stored : "";
+  let lang = stored && codes.indexOf(stored) >= 0 ? stored : "";
   if (!lang) {
     const nav = w.navigator;
     const first = String((nav.languages && nav.languages[0]) || nav.language || "").toLowerCase().split(/[-_]/)[0];
-    lang = ["da", "nb", "nn", "no", "sv"].indexOf(first) >= 0 ? "da" : "en";
+    for (let i = 0; i < locales.length && !lang; i++) if (locales[i].device.indexOf(first) >= 0) lang = locales[i].code;
+    if (!lang) lang = fallback;
   }
   const loc = w.location;
-  const deep = /^\/(da|en)(\/.*)?$/.exec(loc.pathname);
+  const deep = /^\/([a-z]+)(\/.*)?$/.exec(loc.pathname);
   let path = deep && deep[1] === lang ? loc.pathname : "/" + lang + "/";
   if (path.charAt(path.length - 1) !== "/") path += "/";
   loc.replace(path + "index.html" + loc.search + loc.hash);
 }
 
-/** out/index.html: nothing to see, it only opens one of the halves */
+/** out/index.html: nothing to see, it only opens one of the languages */
 export function appIndexHtml(): string {
   return `<!doctype html>
 <html lang="da">
@@ -106,7 +121,7 @@ export function appIndexHtml(): string {
 <meta name="robots" content="noindex">
 <title>Snakkespil</title>
 <style>html,body{margin:0;height:100%;background:#1d4a38}</style>
-<script>(${appStart.toString()})(window, ${JSON.stringify(APP_LANG_KEY)});</script>
+<script>(${appStart.toString()})(window, ${JSON.stringify(APP_LANG_KEY)}, ${JSON.stringify(APP_LOCALES.map(({ code, device }) => ({ code, device })))}, ${JSON.stringify(FALLBACK_APP_LOCALE)});</script>
 </head>
 <body></body>
 </html>

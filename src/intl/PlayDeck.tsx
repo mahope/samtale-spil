@@ -9,6 +9,7 @@ import { track } from "@/utils/track";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { JOKER_KEY, jokerAt, stepDeck, type DeckTurn } from "@/lib/joker";
 import type { Question } from "@/types";
+import { ui } from "@/locale/ui";
 
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
@@ -56,7 +57,7 @@ export function PlayDeck({ deckId, name, sharePath, backHref, questions, jokers 
         <motion.div key={`${card.id}-${at.turn}-${at.pos}`} {...dealMotion} className="w-full">
           <QuestionCard
             question={card}
-            categoryName={joker ? "Joker" : name}
+            categoryName={joker ? ui.cardType.label.joker : name}
             isFlipped={isFlipped}
             onFlip={() => setIsFlipped((f) => !f)}
             isFavorite={isFavorite(card.id)}

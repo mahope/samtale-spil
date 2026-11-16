@@ -2,11 +2,9 @@ import type { Metadata } from "next";
 import { appScreenMetadata } from "@/config/site";
 import { intlDeckById } from "@/intl/data";
 import { GaetLoader } from "@/app/spil/gaet/GaetLoader";
+import { screens } from "@/locale/screens";
 
-export const metadata: Metadata = appScreenMetadata(
-  "Guess the answer: Know Your Partner with points",
-  "One answers in secret, the other guesses. Or everyone answers in secret and you reveal together."
-);
+export const metadata: Metadata = appScreenMetadata(screens.guess.metaTitle, screens.guess.metaDescription);
 
 export default function GuessPage() {
   const deck = intlDeckById.get("kend-din-partner")!;

@@ -9,7 +9,10 @@ import {
   rememberTitle,
   slideDirection,
 } from "@/components/app/navState";
-import { GOODTALK_TABS, SNAKKESPIL_TABS, VOKSEN_TABS } from "@/components/app/tabs";
+import { intlTabs, SNAKKESPIL_TABS, VOKSEN_TABS } from "@/components/app/tabs";
+import { screens } from "@/locales/en/screens";
+
+const GOODTALK_TABS = intlTabs(screens.tabs);
 
 describe("app shell navigation stack", () => {
   it("knows the screen below, before and after the shell records the new one", () => {

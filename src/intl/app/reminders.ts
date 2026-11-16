@@ -9,6 +9,7 @@ import { APP_BASE } from "@/lib/appLang";
 import { danishDateKey, vaelgForDato } from "@/lib/dagDato";
 import type { Reminder } from "@/lib/reminder";
 import { cancelReminders, scheduleReminders, type ReminderCard } from "@/lib/reminderSchedule";
+import { screens } from "@/locale/screens";
 
 export interface ReminderPoolCard {
   id: string;
@@ -25,7 +26,7 @@ export function englishReminderCard(at: Date, frequency: Reminder["frequency"], 
     pool.map((q) => ({ q }))
   );
   return {
-    title: frequency === "uge" ? "Card of the week" : "Question of the day",
+    title: frequency === "uge" ? screens.reminders.weekly : screens.reminders.daily,
     body: q.text,
     url: `${APP_BASE}/daily-question/?card=${encodeURIComponent(q.id)}`,
   };

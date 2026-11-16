@@ -11,6 +11,7 @@ import {
   switchAppLang,
   withoutBase,
 } from "@/lib/appLang";
+import { APP_LOCALES, FALLBACK_APP_LOCALE } from "@/locales/appLocales";
 
 /** Runs appStart like out/index.html does and returns where it sends the web view */
 function start({ path = "/", search = "", hash = "", stored = null as string | null, languages = [] as string[], language = "", storageThrows = false }) {
@@ -26,20 +27,28 @@ function start({ path = "/", search = "", hash = "", stored = null as string | n
       },
       navigator: { languages, language },
     },
-    APP_LANG_KEY
+    APP_LANG_KEY,
+    APP_LOCALES,
+    FALLBACK_APP_LOCALE
   );
   return went;
 }
 
 describe("the app's start page (out/index.html)", () => {
-  it("opens Danish for Danish, Norwegian and Swedish devices, English for everyone else", () => {
-    for (const lang of ["da", "da-DK", "nb-NO", "nn-NO", "no", "sv-SE", "sv-FI", "NB_no"]) expect(start({ languages: [lang] }), lang).toBe("/da/index.html");
+  it("opens Danish for Danish and Norwegian devices, Swedish for Swedish, English for everyone else", () => {
+    for (const lang of ["da", "da-DK", "nb-NO", "nn-NO", "no", "NB_no"]) expect(start({ languages: [lang] }), lang).toBe("/da/index.html");
+    for (const lang of ["sv", "sv-SE", "sv-FI", "SV_se"]) expect(start({ languages: [lang] }), lang).toBe("/sv/index.html");
     for (const lang of ["en-US", "en-GB", "de-DE", "fi-FI", "is-IS", "fo-FO", ""]) expect(start({ languages: [lang] }), lang).toBe("/en/index.html");
+  });
+
+  it("opens every app language from the device languages it lists", () => {
+    for (const l of APP_LOCALES) for (const lang of l.device) expect(start({ languages: [lang] }), lang).toBe(`/${l.code}/index.html`);
   });
 
   it("goes by the device's first language", () => {
     expect(start({ languages: ["en-GB", "da-DK"] })).toBe("/en/index.html");
-    expect(start({ languages: ["sv-SE", "en-US"] })).toBe("/da/index.html");
+    expect(start({ languages: ["sv-SE", "en-US"] })).toBe("/sv/index.html");
+    expect(start({ languages: ["nb-NO", "sv-SE"] })).toBe("/da/index.html");
     // older web views only have navigator.language
     expect(start({ language: "da-DK" })).toBe("/da/index.html");
   });
@@ -47,6 +56,7 @@ describe("the app's start page (out/index.html)", () => {
   it("puts a stored choice before the device language", () => {
     expect(start({ stored: "en", languages: ["da-DK"] })).toBe("/en/index.html");
     expect(start({ stored: "da", languages: ["en-US"] })).toBe("/da/index.html");
+    expect(start({ stored: "sv", languages: ["da-DK"] })).toBe("/sv/index.html");
   });
 
   it("ignores a stored value that is not a language, and storage that throws", () => {
@@ -69,10 +79,12 @@ describe("the app's start page (out/index.html)", () => {
   it("goes to the chosen language's start when an old screen of the other language reloads", () => {
     expect(start({ path: "/da/mere/", stored: "en" })).toBe("/en/index.html");
     expect(start({ path: "/en/more/", stored: "da" })).toBe("/da/index.html");
+    expect(start({ path: "/sv/more/", stored: "en" })).toBe("/en/index.html");
+    expect(start({ path: "/sv/favorites/", languages: ["sv-SE"] })).toBe("/sv/favorites/index.html");
   });
 
   it("never loops back to itself: every target is a file, which the app's server serves as it is", () => {
-    for (const path of ["/", "/da/", "/en/x/", "/fr/", "/da"]) expect(start({ path, languages: ["da"] })).toMatch(/^\/(da|en)\/(.+\/)?index\.html/);
+    for (const path of ["/", "/da/", "/en/x/", "/fr/", "/da", "/sv/x/"]) expect(start({ path, languages: ["da"] })).toMatch(/^\/(da|en)\/(.+\/)?index\.html/);
   });
 
   it("ships appStart as a self-contained script", () => {
@@ -106,6 +118,8 @@ describe("base path helpers", () => {
   it("know which half of the app they run in", () => {
     expect(currentAppLang("/da")).toBe("da");
     expect(currentAppLang("/en")).toBe("en");
+    expect(currentAppLang("/sv")).toBe("sv");
+    expect(currentAppLang("/s")).toBeNull();
     expect(currentAppLang("")).toBeNull();
     // the websites and the tests have no base path
     expect(currentAppLang()).toBeNull();
@@ -132,6 +146,9 @@ describe("base path helpers", () => {
     expect(localStorage.getItem(APP_LANG_KEY)).toBe("en");
     expect(replace).toHaveBeenCalledWith("/en/more/index.html");
     expect(LANG_SWITCH_TARGET.da).toBe("/da/mere/index.html");
+    switchAppLang("sv");
+    expect(replace).toHaveBeenLastCalledWith("/sv/more/index.html");
+    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(["da", "en", "sv"]);
   });
 
   afterEach(() => {
@@ -149,6 +166,8 @@ describe("reminder taps", () => {
   it("load the other half for a reminder scheduled before a language switch", () => {
     expect(notificationTarget("/da/spil/parforhold/?question=par-1", "/en")).toEqual({ load: "/da/spil/parforhold/index.html?question=par-1" });
     expect(notificationTarget("/en/daily-question/", "/da")).toEqual({ load: "/en/daily-question/index.html" });
+    expect(notificationTarget("/sv/daily-question/?card=par-1", "/en")).toEqual({ load: "/sv/daily-question/index.html?card=par-1" });
+    expect(notificationTarget("/sv/daily-question/", "/sv")).toEqual({ push: "/daily-question/" });
   });
 
   it("treat reminders from 2.0.0 (no language in the path) as Danish", () => {

@@ -18,7 +18,7 @@ export default function MereTab() {
         <AppRow href="/indstillinger/" label="Indstillinger" icon={<IconTandhjul className={icon} />} tone="#66756e" />
       </AppSection>
 
-      <AppLanguage title="Sprog" footer="Favoritter, historik og indstillinger følger med til det andet sprog." />
+      <AppLanguage title="Sprog" footer="Favoritter, historik og indstillinger følger med, når du skifter sprog." />
 
       <AppSection title="Dit spil">
         <AppRow href="/mine-spoergsmaal/" label="Dine egne spørgsmål" icon={<IconBlyant className={icon} />} tone="#c06a1f" />

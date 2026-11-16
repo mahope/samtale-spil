@@ -19,9 +19,12 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      '@/locale': resolve(__dirname, './src/locales/da'),
-      '@': resolve(__dirname, './src'),
-    },
+    // "@/locale/*" is Danish in the tests; the files only international languages have (screens,
+    // content, aaret) fall back to English, like tsconfig.json's paths
+    alias: [
+      { find: /^@\/locale\/(screens|content|aaret)$/, replacement: resolve(__dirname, './src/locales/en/$1') },
+      { find: '@/locale', replacement: resolve(__dirname, './src/locales/da') },
+      { find: '@', replacement: resolve(__dirname, './src') },
+    ],
   },
 });

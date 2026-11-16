@@ -4,6 +4,7 @@ import { AppScreen } from "@/components/app/AppScreen";
 import { getDeck } from "@/data/decks";
 import { IntlGameList } from "@/intl/GameList";
 import { intlGames, intlGameBySlug } from "@/intl/games";
+import { screens } from "@/locale/screens";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -16,7 +17,7 @@ export function generateStaticParams() {
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: Props) {
-  return { title: intlGameBySlug.get((await params).slug)?.h1.split(":")[0] ?? "Games" };
+  return { title: intlGameBySlug.get((await params).slug)?.h1.split(":")[0] ?? screens.games.fallbackTitle };
 }
 
 /** One page of party games in the app: the games, and the cards to play on the phone */
@@ -25,7 +26,7 @@ export default async function GameScreen({ params }: Props) {
   if (!game) notFound();
   const deck = getDeck(game.deckId);
   return (
-    <AppScreen title={game.h1.split(":")[0]} back={{ href: "/games/", label: "Party games" }}>
+    <AppScreen title={game.h1.split(":")[0]} back={{ href: "/games/", label: screens.games.title }}>
       <div className="px-4 pt-1">
         <p className="leading-relaxed">{game.intro}</p>
         <Link
@@ -34,9 +35,9 @@ export default async function GameScreen({ params }: Props) {
           style={{ background: deck.bg, color: deck.ink }}
           data-ripple
         >
-          Play the {game.cards.length} cards
+          {screens.games.playCards(game.cards.length)}
         </Link>
-        <h2 className="mt-8 text-xl font-bold">The games</h2>
+        <h2 className="mt-8 text-xl font-bold">{screens.games.theGames}</h2>
         <IntlGameList game={game} />
       </div>
     </AppScreen>

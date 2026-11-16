@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { appScreenMetadata } from "@/config/site";
 import { intlDecks, intlDeckBySlug } from "@/intl/data";
 import { PlayDeckLoader } from "@/intl/PlayDeckLoader";
+import { screens } from "@/locale/screens";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -16,7 +17,7 @@ export const dynamicParams = false;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const deck = intlDeckBySlug.get((await params).slug);
-  return appScreenMetadata(deck ? `${deck.name}: play the cards` : "Play");
+  return appScreenMetadata(deck ? screens.play.deckMeta(deck.name) : screens.play.title);
 }
 
 export default async function PlayDeckPage({ params }: Props) {

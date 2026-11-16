@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import bundleAnalyzer from '@next/bundle-analyzer';
+import { assertBuildLocale, WEB_LOCALE_CODES } from './src/locales/appLocales.ts';
 
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -10,11 +11,13 @@ const isProd = process.env.NODE_ENV === 'production';
 // The native apps (APP_BUILD=1) ship without the 18+ deck, so they can be rated 12+ (issue #54)
 const isAppBuild = process.env.APP_BUILD === '1';
 // Any SITE_LOCALE other than "da" builds an international site (Goodtalk on goodtalkcards.com for "en")
-// from the shared *.intl.tsx route tree (issue #30). Unknown values fail the build, so a typo can
-// never turn snakkespil.dk into the international site.
-const LOCALES = ['da', 'en'];
+// from the shared *.intl.tsx route tree (issue #30), or with APP_BUILD=1 that language's half of the
+// app. The languages live in src/locales/appLocales.ts. Unknown values fail the build, so a typo can
+// never turn snakkespil.dk into the international site, and app-only languages (Swedish, ...) fail
+// without APP_BUILD, so they never become a website.
 const locale = process.env.SITE_LOCALE || 'da';
-if (!LOCALES.includes(locale)) throw new Error(`SITE_LOCALE must be one of ${LOCALES.join(', ')}, got "${locale}"`);
+assertBuildLocale(locale, isAppBuild);
+const isWebLocale = WEB_LOCALE_CODES.includes(locale);
 const isIntl = locale !== 'da';
 // APP_VARIANT=voksen builds the separate 18+ app (issue #57) from the *.voksen.tsx route tree:
 // only adult and couple decks, behind an age gate. It needs the adult deck, so not with APP_BUILD.
@@ -31,7 +34,7 @@ const isAppShell = isAppBuild && !isIntl && variant === '';
 const isIntlApp = isAppBuild && isIntl;
 // In the apps the games go back to the first tab ("/"), which is where /spil/ or /play/ lives on the site
 const appShellAlias = { '@/locale/ui': `./src/locales/${locale}/ui.app.ts` };
-// The Goodtalk app has a Favorites tab, so its cards get the heart the English website leaves out
+// The app's international languages have a Favorites tab, so their cards get the heart the English website leaves out
 const intlAppAlias = { '@/locale/site': `./src/locales/${locale}/site.app.ts` };
 const hasShell = isAppShell || isIntlApp || variant === 'voksen';
 // The Snakkespil app holds both languages (Goodtalk became its English half after Apple's 4.3
@@ -46,8 +49,15 @@ const localeAlias = {
   '@/locale/decks': locale === 'da' ? './src/locales/da/decks.ts' : `./src/locales/${locale}/decks/index.ts`,
   '@/locale/marks': `./src/locales/${locale}/marks.ts`,
   '@/locale/games': `./src/locales/${locale}/games.ts`,
-  '@/locale/guides': `./src/locales/${locale}/guides.ts`,
-  ...(locale !== 'da' && { '@/data/followUps': `./src/locales/${locale}/followUps.ts` }),
+  // The guides are website pages; app-only languages have none
+  ...(isWebLocale && { '@/locale/guides': `./src/locales/${locale}/guides.ts` }),
+  // Texts of the international screens (src/intl, *.intl.tsx, *.intlapp.tsx); Danish uses its own pages
+  ...(isIntl && {
+    '@/data/followUps': `./src/locales/${locale}/followUps.ts`,
+    '@/locale/screens': `./src/locales/${locale}/screens.ts`,
+    '@/locale/content': `./src/locales/${locale}/content.tsx`,
+    '@/locale/aaret': `./src/locales/${locale}/aaret.ts`,
+  }),
 };
 
 const nextConfig: NextConfig = {
