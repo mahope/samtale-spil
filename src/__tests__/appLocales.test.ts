@@ -81,11 +81,23 @@ function texts(l: Locale): string[] {
 }
 
 const word = (alternatives: string) => new RegExp(`(?<!\\p{L})(?:${alternatives})(?!\\p{L})`, "iu");
-// Simple leftovers checks: words that only English or only Danish has. Norwegian (phase 2) shares the
-// Danish words and letters, so it gets its own list there.
+// Simple leftovers checks: words that only English or only Danish has.
 const ENGLISH = word("the|and|you|your|what|which|would|with|have|about|this|that|from|when|where|card|cards|play");
 const DANISH = word("hvad|hvordan|hvem|hvilken|hvilke|ikke|jeg|og|noget|nogen|også|være|spørgsmål");
 const DANISH_LETTERS = /[æøÆØ]/;
+
+/**
+ * Languages that share words and letters with Danish, so the check above would flag every card.
+ * Norwegian Bokmål writes hvordan, hvem, ikke, jeg, og, også and være exactly as Danish, and uses æ and ø:
+ * it is checked against the Danish spellings Bokmål does not have (hva, noe, noen, spørsmål, etter,
+ * mye, meg/deg/seg, av, nå, gøy, beste, når ...) and against Swedish ä/ö instead.
+ */
+const DANISH_EXCEPTIONS: Record<string, { danish: RegExp; letters: RegExp }> = {
+  nb: {
+    danish: word("hvad|noget|nogen|nogle|spørgsmål|efter|meget|mig|dig|sig|af|nu|sjov|sjovt|sjoveste|bedste|kunne lide|hvornår|købe|børn|forældre|bedsteforældre|igennem|blevet|tit|lidt"),
+    letters: /[äöÄÖ]/,
+  },
+};
 
 /**
  * No alcohol anywhere (as Goodtalk, src/__tests__/localeEn.test.ts), and nothing adult outside the
@@ -97,6 +109,11 @@ const CONTENT_RULES: Record<string, { alcohol: RegExp; adult: RegExp }> = {
     alcohol: word("öl|vin|vinet|sprit|snaps|nubbe|skål|skåla|berusad|packad|bakfull|fyllan|drinkar?|shots?|krogrunda|alkohol\\p{L}*|cider|champagne|bubbel"),
     // "sex" is also six in Swedish, so the cards write the digit
     adult: word("sex|sexig\\p{L}*|naken|nakna|kåt|orgasm\\p{L}*"),
+  },
+  nb: {
+    // "skål" is also a bowl, which the cards call "bolle"; not "full" (full fart, full av) or "fylle" (fylle år)
+    alcohol: word("øl|vin|vinen|sprit|brennevin|akevitt|dram|skål|skåle|beruset|bakfull|fyllesyk|fylla|fyllekule|drinker?|shots?|pils|vors|nachspiel|alkohol\\p{L}*|cider|champagne|musserende"),
+    adult: word("sex|sexy|sexuell\\p{L}*|seksuell\\p{L}*|naken|nakne|kåt|kåte|orgasme\\p{L}*"),
   },
 };
 const ADULT_OK = new Set(["intimitet", "parforhold", "foerste-date", "kend-din-partner", "nyt-og-ukendt"]);
@@ -221,7 +238,8 @@ describe.each(OTHERS.map((l) => l.code))("app language %s", (code) => {
   });
 
   it("has no English or Danish words left", () => {
-    const left = texts(l).filter((t) => ENGLISH.test(t) || DANISH.test(t) || DANISH_LETTERS.test(t));
+    const { danish, letters } = DANISH_EXCEPTIONS[code] ?? { danish: DANISH, letters: DANISH_LETTERS };
+    const left = texts(l).filter((t) => ENGLISH.test(t) || danish.test(t) || letters.test(t));
     expect(left).toEqual([]);
   });
 

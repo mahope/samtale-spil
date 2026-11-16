@@ -13,7 +13,7 @@
 // Relative with .ts: scripts/app-index.mjs runs this file in plain Node, which knows no "@/" alias
 import { APP_LOCALES, APP_LOCALE_CODES, FALLBACK_APP_LOCALE } from "../locales/appLocales.ts";
 
-/** A code from src/locales/appLocales.ts: "da", "en", "sv" */
+/** A code from src/locales/appLocales.ts: "da", "en", "sv", "nb" */
 export type AppLang = string;
 
 /** The language picked under Mere / More. Without it the device language decides. */
@@ -84,9 +84,9 @@ export interface StartLocale {
 /**
  * The script in out/index.html. Runs as a string in the web view, so it must not use anything
  * outside itself: the languages come in as an argument. At the root it opens the stored language,
- * or else the language that lists the device language (Danish for Danish and Norwegian, Swedish
- * for Swedish), or else the fallback (English). On a deeper path (the web view reloaded a screen,
- * and the server answered with this file) it reopens that screen.
+ * or else the language that lists the device language (Danish for Danish, Norwegian for Norwegian,
+ * Swedish for Swedish), or else the fallback (English). On a deeper path (the web view reloaded a
+ * screen, and the server answered with this file) it reopens that screen.
  */
 export function appStart(w: StartWindow, key: string, locales: StartLocale[], fallback: string) {
   const codes: string[] = [];

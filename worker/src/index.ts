@@ -28,7 +28,7 @@ interface RateLimit {
 
 /**
  * t/c: Danish text and deck; e/ce: English text and deck on Goodtalk, when it has the card;
- * l: text and deck per app-only language (Pratspel = sv), which reports on goodtalkcards.com name with `sprog`
+ * l: text and deck per app-only language (Pratspel = sv, Pratespill = nb), which reports on goodtalkcards.com name with `sprog`
  */
 type Card = { t: string; c: string; d: string; a?: 1; e?: string; ce?: string; l?: Record<string, { t: string; c: string }> };
 const CARDS = cards as Record<string, Card>;
@@ -92,11 +92,27 @@ const TEXT = {
     error: "Något gick fel. Försök igen senare.",
     notFound: "Hittades inte.",
   },
+  nb: {
+    tooMany: "For mange rapporter akkurat nå. Prøv igjen om litt.",
+    tooBig: "Meldingen er for lang.",
+    invalid: "Ugyldig forespørsel.",
+    unknown: "Ukjent kort eller årsak.",
+    tooLong: "Kommentaren kan være på høyst 300 tegn.",
+    links: "Kommentaren kan ikke inneholde lenker.",
+    human: "Vi kunne ikke bekrefte at du er et menneske. Prøv igjen.",
+    sendFailed: "Rapporten kunne ikke sendes. Prøv igjen senere.",
+    statsFailed: "Tallene kunne ikke hentes akkurat nå.",
+    error: "Noe gikk galt. Prøv igjen senere.",
+    notFound: "Finnes ikke.",
+  },
 };
 
 /** App-only languages (no website of their own): their reports go to goodtalkcards.com with `sprog` */
-type AppLang = "sv";
-const APP_LANGS: Record<AppLang, { brand: string; name: string }> = { sv: { brand: "Pratspel", name: "Svensk" } };
+type AppLang = "sv" | "nb";
+const APP_LANGS: Record<AppLang, { brand: string; name: string }> = {
+  sv: { brand: "Pratspel", name: "Svensk" },
+  nb: { brand: "Pratespill", name: "Norsk" },
+};
 const appLangOf = (value: unknown): AppLang | undefined =>
   typeof value === "string" && Object.hasOwn(APP_LANGS, value) ? (value as AppLang) : undefined;
 

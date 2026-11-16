@@ -33,10 +33,11 @@ export interface AppLocale {
 }
 
 export const APP_LOCALES: AppLocale[] = [
-  // Norwegian reads Danish until Norwegian Bokmål (nb) has its own folder (phase 2)
-  { code: "da", label: "Dansk", appName: "Snakkespil", device: ["da", "nb", "nn", "no"], web: true, more: "/mere/" },
+  { code: "da", label: "Dansk", appName: "Snakkespil", device: ["da"], web: true, more: "/mere/" },
   { code: "en", label: "English", appName: "Goodtalk", device: ["en"], web: true, more: "/more/" },
   { code: "sv", label: "Svenska", appName: "Pratspel", device: ["sv"], web: false, more: "/more/" },
+  // Norwegian Bokmål also opens on Nynorsk and plain "no" phones: closer than Danish or English
+  { code: "nb", label: "Norsk", appName: "Pratespill", device: ["nb", "nn", "no"], web: false, more: "/more/" },
 ];
 
 /** The language a device language that no entry lists opens */
