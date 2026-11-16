@@ -35,8 +35,9 @@ function start({ path = "/", search = "", hash = "", stored = null as string | n
 }
 
 describe("the app's start page (out/index.html)", () => {
-  it("opens Danish for Danish and Norwegian devices, Swedish for Swedish, English for everyone else", () => {
-    for (const lang of ["da", "da-DK", "nb-NO", "nn-NO", "no", "NB_no"]) expect(start({ languages: [lang] }), lang).toBe("/da/index.html");
+  it("opens Danish for Danish, Swedish for Swedish, Norwegian for Norwegian devices, English for everyone else", () => {
+    for (const lang of ["da", "da-DK"]) expect(start({ languages: [lang] }), lang).toBe("/da/index.html");
+    for (const lang of ["nb-NO", "nn-NO", "no", "NB_no", "nb"]) expect(start({ languages: [lang] }), lang).toBe("/nb/index.html");
     for (const lang of ["sv", "sv-SE", "sv-FI", "SV_se"]) expect(start({ languages: [lang] }), lang).toBe("/sv/index.html");
     for (const lang of ["en-US", "en-GB", "de-DE", "fi-FI", "is-IS", "fo-FO", ""]) expect(start({ languages: [lang] }), lang).toBe("/en/index.html");
   });
@@ -48,7 +49,8 @@ describe("the app's start page (out/index.html)", () => {
   it("goes by the device's first language", () => {
     expect(start({ languages: ["en-GB", "da-DK"] })).toBe("/en/index.html");
     expect(start({ languages: ["sv-SE", "en-US"] })).toBe("/sv/index.html");
-    expect(start({ languages: ["nb-NO", "sv-SE"] })).toBe("/da/index.html");
+    expect(start({ languages: ["nb-NO", "sv-SE"] })).toBe("/nb/index.html");
+    expect(start({ languages: ["fi-FI", "nb-NO"] })).toBe("/en/index.html");
     // older web views only have navigator.language
     expect(start({ language: "da-DK" })).toBe("/da/index.html");
   });
@@ -148,7 +150,9 @@ describe("base path helpers", () => {
     expect(LANG_SWITCH_TARGET.da).toBe("/da/mere/index.html");
     switchAppLang("sv");
     expect(replace).toHaveBeenLastCalledWith("/sv/more/index.html");
-    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(["da", "en", "sv"]);
+    switchAppLang("nb");
+    expect(replace).toHaveBeenLastCalledWith("/nb/more/index.html");
+    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(["da", "en", "sv", "nb"]);
   });
 
   afterEach(() => {

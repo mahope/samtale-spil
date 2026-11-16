@@ -182,7 +182,7 @@ export const deep: Record<string, AppLocaleDeck> = {
     slug: "deep-questions",
     name: "Dype",
     description: "Spørsmål om liv, kjærlighet, frykt og mening til lange samtaler",
-    mark: "Dj",
+    mark: "Dy",
     cards: {
       "dyb-1": "Hva er meningen med livet, for deg?",
       "dyb-2": "Hva er du mest redd for i livet?",
@@ -446,7 +446,7 @@ export const deep: Record<string, AppLocaleDeck> = {
     slug: "self-reflection-questions",
     name: "Selvinnsikt",
     description: "Spørsmål til deg selv, til dagboka eller en nær venn",
-    mark: "Sj",
+    mark: "Se",
     cards: {
       "selv-1": "Hva var dagens beste øyeblikk?",
       "selv-2": "Hvilken sang passer humøret ditt akkurat nå?",
