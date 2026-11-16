@@ -246,7 +246,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
       "jha-12": "Ik heb nog nooit een vis gevangen.",
       "jha-13": "Ik heb nog nooit in een achtbaan met een looping gezeten.",
       "jha-14": "Ik heb nog nooit mijn broodtrommel thuis laten liggen.",
-      "jha-15": "Ik ben nog nooit in een boom geklommen en kon er daarna niet meer uit.",
+      "jha-15": "Ik ben nog nooit in een boom geklommen waar ik daarna niet meer uit kon.",
       "jha-16": "Ik heb nog nooit geholpen een dier te redden.",
       "jha-17": "Ik heb nog nooit in oktober in zee gezwommen.",
       "jha-18": "Ik ben nog nooit op school een tand kwijtgeraakt.",
