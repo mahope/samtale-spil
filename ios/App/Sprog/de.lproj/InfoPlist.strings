@@ -1,0 +1,3 @@
+/* On a German iPhone the app is called Plauderspiel, the name of its German language (src/locales/appLocales.ts) */
+"CFBundleDisplayName" = "Plauderspiel";
+"CFBundleName" = "Plauderspiel";
