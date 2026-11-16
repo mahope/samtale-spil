@@ -9,7 +9,7 @@ export const gamesD: Record<string, AppLocaleGamePage> = {
       {
         navn: "Saca y haz",
         antal: "4-20",
-        tid: "Todo el tiempo que quieran",
+        tid: "El tiempo que quieras",
         alder: "Adultos",
         saadan: [
           "Pon el teléfono en el centro de la mesa.",
@@ -182,7 +182,7 @@ export const gamesD: Record<string, AppLocaleGamePage> = {
         variant: "Pide preguntas a los padrinos y a la familia, así salen historias bonitas que los novios quizá habían olvidado. Los padrinos descartan las que dejen en vergüenza.",
       },
       {
-        navn: "Descubre qué tenéis en común",
+        navn: "Descubre qué tienen en común",
         antal: "6-10 por mesa",
         tid: "10 min",
         alder: "Desde 10 años",

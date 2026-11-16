@@ -13,8 +13,8 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         alder: "Desde 5 años",
         saadan: [
           "Cada uno trae un regalo pequeño envuelto para un montón común.",
-          "Lanzad el dado por turnos. Si sale un seis, tomas un regalo del montón.",
-          "Cuando el montón se vacía, poned un temporizador de cinco minutos. Seguid lanzando, y cada seis te deja quitarle un regalo a otro jugador.",
+          "Por turnos, cada uno lanza el dado. Si sale un seis, tomas un regalo del montón.",
+          "Cuando el montón se vacía, pon un temporizador de cinco minutos. Se sigue lanzando, y cada seis te deja quitarle un regalo a otro jugador.",
           "Cuando suena el temporizador, cada uno se queda con el regalo que tiene en las manos.",
           "Al final, todos adivinan de quién es su regalo y por qué.",
         ],
@@ -26,12 +26,12 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         tid: "15-20 min",
         alder: "Desde 6 años",
         saadan: [
-          "Dividid el grupo en dos equipos.",
+          "Divide al grupo en dos equipos.",
           "Un jugador tararea un villancico sin palabras, o dice tres palabras de la letra.",
           "Su equipo tiene 30 segundos para adivinar el título.",
           "El equipo con más aciertos elige el villancico que cantan todos juntos, por ejemplo «Los peces en el río».",
         ],
-        variant: "Para los más pequeños: en lugar de tararear, marcad el ritmo con palmas.",
+        variant: "Para los más pequeños: en lugar de tararear, se marca el ritmo con palmas.",
       },
       {
         navn: "Recuerdos de Navidad en la mesa",
@@ -51,7 +51,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         tid: "Todo diciembre",
         alder: "Desde 6 años",
         saadan: [
-          "Escribid el nombre de cada uno en un papelito y que cada persona saque uno en secreto.",
+          "Escribe el nombre de cada uno en un papelito y que cada persona saque uno en secreto.",
           "Durante todo diciembre, haces pequeños detalles amables y anónimos para la persona que te tocó.",
           "En Nochebuena, todos adivinan quién era su amigo invisible.",
         ],
@@ -90,7 +90,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
           "La siguiente persona añade una frase, y el cuento da la vuelta a la mesa.",
           "Después de tres rondas, el cuento necesita un final.",
         ],
-        variant: "Escribid el cuento y volved a leerlo la próxima Navidad.",
+        variant: "Escribe el cuento y vuelve a leerlo la próxima Navidad.",
       },
       {
         navn: "La figurita del roscón",
@@ -98,7 +98,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         tid: "5 min",
         alder: "Todas las edades",
         saadan: [
-          "Tomad prestada una tradición de los Reyes Magos: esconded una figurita en el roscón y repartid un trozo a cada uno. Quien encuentre la figurita en su trozo gana un premio pequeño.",
+          "Toma prestada una tradición de los Reyes Magos: esconde una figurita en el roscón y reparte un trozo a cada uno. Quien encuentre la figurita en su trozo gana un premio pequeño.",
           "Quien gane saca también una carta de reto y la cumple delante de la mesa.",
           "Que los retos sean pequeños: una canción, un cumplido, un recuerdo.",
         ],
@@ -110,7 +110,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         alder: "Desde 7 años",
         saadan: [
           "Cada uno escribe lo que más quería por Navidad o por Reyes cuando tenía siete años.",
-          "Mezclad los papelitos y leedlos de uno en uno.",
+          "Se mezclan los papelitos y se leen de uno en uno.",
           "La mesa adivina de quién es cada papelito, y su dueño cuenta si el deseo se cumplió.",
         ],
       },
@@ -120,7 +120,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         tid: "10 min",
         alder: "Todas las edades",
         saadan: [
-          "Apagad las luces del techo y dejad solo el brillo del árbol y de las velas.",
+          "Apaga las luces del techo y deja solo el brillo del árbol y de las velas.",
           "Por turnos, cada uno comparte una cosa del año que le alegra.",
           "Está bien pasar y limitarse a escuchar.",
         ],
@@ -139,7 +139,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
       "jul-9": "¿Cómo celebraban la Navidad tus abuelos cuando eran pequeños?",
       "jul-10": "¿Qué harías si fuera Navidad todo el año?",
       "jul-11": "¿Qué plato de la mesa de Navidad no echarías de menos en absoluto?",
-      "jul-12": "¿A quién de los que estáis en la mesa te gustaría dar las gracias antes de que acabe el año?",
+      "jul-12": "¿A quién de la mesa te gustaría dar las gracias antes de que acabe el año?",
       "jul-13": "¿Cuándo dejaste de creer en Papá Noel y cómo lo descubriste?",
       "jul-14": "¿Qué tradición nueva deberíamos probar la próxima Navidad?",
       "jul-15": "¿Qué es lo mejor que te ha pasado este año?",
@@ -329,7 +329,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         saadan: [
           "Cada uno escribe tres predicciones para el año que viene: una sobre sí mismo, otra sobre la familia y otra sobre el mundo.",
           "Los papelitos van a un sobre que se cierra y se fecha.",
-          "La próxima Nochevieja abrís el sobre y leéis las predicciones en voz alta.",
+          "La próxima Nochevieja se abre el sobre y se leen las predicciones en voz alta.",
         ],
         variant: "Guarda el sobre en un sitio donde lo vayas a encontrar. La caja de los adornos de Navidad es una buena apuesta.",
       },
@@ -363,7 +363,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         alder: "Desde 10 años",
         saadan: [
           "Cada uno elige una foto de este año en su teléfono.",
-          "Por turnos las enseñáis, y su dueño cuenta la historia que hay detrás en un minuto o menos.",
+          "Por turnos se enseñan, y su dueño cuenta la historia que hay detrás en un minuto o menos.",
           "El grupo vota la foto del año.",
         ],
       },
@@ -373,7 +373,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         tid: "10 min antes de medianoche",
         alder: "Todas las edades",
         saadan: [
-          "Diez minutos antes de medianoche, dad una vuelta por la sala.",
+          "Diez minutos antes de medianoche, se hace una ronda por la sala.",
           "Cada uno dice una cosa del año que quiere llevarse consigo y otra que quiere dejar atrás.",
           "Cuando todos han hablado, toca preparar las doce uvas de la suerte, una por cada campanada y cada una con un deseo, y un vaso de zumo con burbujas.",
         ],
@@ -385,7 +385,7 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         alder: "Desde 12 años",
         saadan: [
           "Cada uno escribe un propósito en un papelito sin firmarlo.",
-          "Mezclad los papelitos y leedlos en voz alta.",
+          "Se mezclan los papelitos y se leen en voz alta.",
           "El grupo adivina de quién es cada propósito, y su dueño puede explicar por qué lo eligió.",
         ],
       },
@@ -396,18 +396,18 @@ export const gamesA: Record<string, AppLocaleGamePage> = {
         alder: "Desde 8 años",
         saadan: [
           "Cada uno elige una palabra que resuma su año.",
-          "Escribid todas las palabras en una misma hoja.",
+          "Se escriben todas las palabras en una misma hoja.",
           "Entre todos, el grupo elige una palabra para el año que empieza.",
         ],
       },
       {
-        navn: "Cartas de conversación mientras esperáis",
+        navn: "Cartas de conversación para la espera",
         antal: "2-12",
         tid: "El tiempo que quieras",
         alder: "Todas las edades",
         saadan: [
           "Pon el teléfono en el centro de la mesa.",
-          "Quien haya agarrado hace menos algo de picar saca la carta.",
+          "Quien haya picado algo más recientemente saca la carta.",
           "Todos responden, y siempre se puede pasar.",
         ],
       },

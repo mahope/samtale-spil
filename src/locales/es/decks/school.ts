@@ -271,7 +271,7 @@ export const school: Record<string, AppLocaleDeck> = {
       "spejder-27": "¿Qué te gusta de estar al aire libre cuando ya es de noche?",
       "spejder-28": "¿Qué constelación sabes encontrar en el cielo, y cómo la encuentras?",
       "spejder-29": "¿Cómo te orientas en una excursión sin teléfono?",
-      "spejder-30": "¿Qué ha hecho un responsable en una excursión de lo que todavía habláis?",
+      "spejder-30": "¿Qué hizo un responsable en una excursión que todavía se recuerda en el grupo?",
       "spejder-31": "¿Qué tradición tiene tu grupo que otros scouts probablemente no conocen?",
       "spejder-32": "¿Qué te gustaría probar en el escultismo que nunca has probado?",
       "spejder-33": "Si tu patrulla pudiera hacer un viaje soñado, ¿adónde iría?",

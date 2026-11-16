@@ -417,7 +417,7 @@ export const more: Record<string, AppLocaleDeck> = {
       "studieliv-35": "Si pudieras darte un solo consejo el primer día, ¿cuál sería?",
       "studieliv-36": "¿Qué estudiarías si no existieran las notas ni las salidas laborales?",
       "studieliv-37": "¿Qué hace que un grupo de estudio sea bueno?",
-      "studieliv-38": "¿Qué necesitas de los demás cuando trabajáis juntos en un proyecto?",
+      "studieliv-38": "¿Qué necesitas de los demás cuando trabajas en equipo en un proyecto?",
       "studieliv-39": "¿Qué haces cuando te quedas atascado en un trabajo y no puedes avanzar?",
       "studieliv-40": "¿Cuándo te sentiste de verdad orgulloso de algo que hiciste para la universidad?",
       "studieliv-41": "¿Qué crees que piensan muchos estudiantes nuevos y no dicen en voz alta?",

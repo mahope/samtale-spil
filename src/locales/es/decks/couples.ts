@@ -5,7 +5,7 @@ export const couples: Record<string, AppLocaleDeck> = {
   "parforhold": {
     slug: "questions-for-couples",
     name: "Pareja",
-    description: "Para cuando queréis hablar de algo más que de la rutina diaria",
+    description: "Para cuando apetece hablar de algo más que de la rutina diaria",
     mark: "Pa",
     cards: {
       "par-1": "¿Qué fue lo primero que notaste de mí?",
@@ -397,7 +397,7 @@ export const couples: Record<string, AppLocaleDeck> = {
   "nyt-og-ukendt": {
     slug: "new-things-to-try-as-a-couple",
     name: "Algo nuevo",
-    description: "Preguntas sobre lo que aún no habéis probado juntos, grande y pequeño",
+    description: "Preguntas sobre lo que aún no han probado juntos, grande y pequeño",
     mark: "An",
     cards: {
       "ukendt-1": "¿Qué no hemos probado ninguno de los dos y podríamos hacer el próximo fin de semana?",

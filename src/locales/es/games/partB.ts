@@ -47,7 +47,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
         alder: "Desde 8 años",
         saadan: [
           "Cada uno escribe en un papelito un dato pequeño y poco conocido sobre sí mismo.",
-          "Mezclad los papelitos y leedlos de uno en uno.",
+          "Se mezclan los papelitos y se leen de uno en uno.",
           "La mesa adivina de quién es cada papelito.",
         ],
       },
@@ -102,7 +102,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
         tid: "10 min",
         alder: "Desde 8 años",
         saadan: [
-          "Por parejas, buscad tres cosas en común que no sean evidentes.",
+          "Por parejas, cada uno busca con su compañero tres cosas en común que no sean evidentes.",
           "Cada pareja comparte sus tres cosas con la mesa.",
           "Gana la pareja con la coincidencia más sorprendente.",
         ],
@@ -134,7 +134,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
       "selsk-12": "¿Qué harías con un martes completamente libre?",
       "selsk-13": "¿Qué norma de tu infancia sigues cumpliendo todavía?",
       "selsk-14": "¿Sobre qué has cambiado de opinión en los últimos años?",
-      "selsk-15": "¿A quién de la mesa conoces desde hace más tiempo y cómo os conocisteis?",
+      "selsk-15": "¿A quién de la mesa conoces desde hace más tiempo y cómo se conocieron?",
       "selsk-16": "Cuenta la historia más graciosa de tu infancia en un minuto o menos.",
       "selsk-17": "Describe tu domingo perfecto en cinco palabras.",
       "selsk-18": "Di tres cosas en las que eres bueno, sin ponerte tímido.",
@@ -178,7 +178,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
         saadan: [
           "Todos empiezan en cero, con lápiz y papel.",
           "Si has hecho lo que dice la carta, te apuntas un punto.",
-          "Después de 20 cartas, sumad los puntos.",
+          "Después de 20 cartas, se suman los puntos.",
           "La persona con más puntos cuenta la mejor historia de su lista.",
         ],
         variant: "Dale la vuelta para que gane quien menos puntos tenga. Así da gusto ser quien nunca ha probado nada.",
@@ -193,7 +193,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
           "Si has hecho lo que dice la carta, bajas un dedo.",
           "Gana quien tenga más dedos levantados cuando se acaben las cartas.",
         ],
-        variant: "Jugad con cinco dedos si vais cortos de tiempo.",
+        variant: "Se juega con cinco dedos si hay poco tiempo.",
       },
       {
         navn: "Escribe las tuyas",
@@ -202,7 +202,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
         alder: "Desde 10 años",
         saadan: [
           "Cada uno escribe una frase sobre algo que nunca ha hecho, pero que cree que los demás sí.",
-          "Mezclad los papelitos y leedlos de uno en uno.",
+          "Se mezclan los papelitos y se leen de uno en uno.",
           "Quien la escribió se lleva un punto por cada mano que se levante.",
           "Al final, la mesa adivina quién escribió cada papelito.",
         ],
@@ -306,7 +306,7 @@ export const gamesB: Record<string, AppLocaleGamePage> = {
       "jha-72": "Yo nunca he hecho una tarta de varios pisos desde cero.",
       "jha-73": "Yo nunca me he olvidado de mi propio número de teléfono.",
       "jha-74": "Yo nunca me he tirado del trampolín más alto.",
-      "jha-75": "Yo nunca me he dado un ataque de risa donde tenía que estar en silencio.",
+      "jha-75": "Yo nunca me he partido de risa en un sitio donde había que estar en silencio.",
       "jha-76": "Yo nunca he llevado un diario más de un mes.",
       "jha-77": "Yo nunca he salido en el periódico o en la tele.",
       "jha-78": "Yo nunca he conocido a una persona famosa.",

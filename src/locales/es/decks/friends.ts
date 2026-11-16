@@ -54,7 +54,7 @@ export const friends: Record<string, AppLocaleDeck> = {
       "ven-44": "¿Qué es lo más difícil de ser amigo mío?",
       "ven-45": "¿Cuándo te has sentido más orgulloso de un amigo?",
       "ven-46": "¿Qué crees que deberíamos hacer más a menudo juntos?",
-      "ven-47": "¿Cuál de tus amigos se parece menos a ti, y por qué sois amigos?",
+      "ven-47": "¿Cuál de tus amigos se parece menos a ti, y por qué son amigos?",
       "ven-48": "¿Cada cuánto tiempo necesitan verse los amigos para seguir estando cerca?",
       "ven-49": "¿Qué has aprendido de mí que usas en tu propia vida?",
       "ven-50": "¿Qué convierte a un buen amigo en un mejor amigo?",
@@ -377,7 +377,7 @@ export const friends: Record<string, AppLocaleDeck> = {
       "tak-43": "¿Qué tradición de tu infancia te alegras de que alguien haya mantenido viva?",
       "tak-44": "¿Quién te enseñó a ser un buen adulto?",
       "tak-45": "¿Qué te ha enseñado a valorar una época difícil?",
-      "tak-46": "¿Quién es tu amigo más antiguo, y qué es lo que más aprecias de vuestra amistad?",
+      "tak-46": "¿Quién es tu amigo más antiguo, y qué es lo que más aprecias de esa amistad?",
       "tak-47": "¿Cuándo dijo alguien algo bonito de ti que todavía recuerdas palabra por palabra?",
       "tak-48": "¿A quién podrías escribirle esta noche una carta de agradecimiento?",
       "tak-49": "¿Qué te han dado tus padres que el dinero no puede comprar?",
@@ -407,7 +407,7 @@ export const friends: Record<string, AppLocaleDeck> = {
   "gode-nyheder": {
     slug: "good-news-questions",
     name: "Buenas noticias",
-    description: "Compartid lo que va bien y celebrad los logros de cada uno, grandes y pequeños",
+    description: "Comparte lo que va bien y celebra los logros de los demás, grandes y pequeños",
     mark: "Bn",
     cards: {
       "nyt-1": "¿Qué salió mejor de lo esperado esta semana?",
