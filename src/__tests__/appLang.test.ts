@@ -35,9 +35,10 @@ function start({ path = "/", search = "", hash = "", stored = null as string | n
 }
 
 describe("the app's start page (out/index.html)", () => {
-  it("opens Danish for Danish and Norwegian devices, Swedish for Swedish, English for everyone else", () => {
+  it("opens Danish for Danish and Norwegian devices, Swedish for Swedish, French for French, English for everyone else", () => {
     for (const lang of ["da", "da-DK", "nb-NO", "nn-NO", "no", "NB_no"]) expect(start({ languages: [lang] }), lang).toBe("/da/index.html");
     for (const lang of ["sv", "sv-SE", "sv-FI", "SV_se"]) expect(start({ languages: [lang] }), lang).toBe("/sv/index.html");
+    for (const lang of ["fr", "fr-FR", "fr-BE", "fr-CH", "fr-CA"]) expect(start({ languages: [lang] }), lang).toBe("/fr/index.html");
     for (const lang of ["en-US", "en-GB", "de-DE", "fi-FI", "is-IS", "fo-FO", ""]) expect(start({ languages: [lang] }), lang).toBe("/en/index.html");
   });
 
@@ -60,7 +61,7 @@ describe("the app's start page (out/index.html)", () => {
   });
 
   it("ignores a stored value that is not a language, and storage that throws", () => {
-    expect(start({ stored: "fr", languages: ["da-DK"] })).toBe("/da/index.html");
+    expect(start({ stored: "xx", languages: ["da-DK"] })).toBe("/da/index.html");
     expect(start({ stored: "", languages: ["en-US"] })).toBe("/en/index.html");
     expect(start({ storageThrows: true, languages: ["da-DK"] })).toBe("/da/index.html");
   });
@@ -148,7 +149,7 @@ describe("base path helpers", () => {
     expect(LANG_SWITCH_TARGET.da).toBe("/da/mere/index.html");
     switchAppLang("sv");
     expect(replace).toHaveBeenLastCalledWith("/sv/more/index.html");
-    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(["da", "en", "sv"]);
+    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(APP_LOCALES.map((l) => l.code));
   });
 
   afterEach(() => {
