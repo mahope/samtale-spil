@@ -28,7 +28,7 @@ interface RateLimit {
 
 /**
  * t/c: Danish text and deck; e/ce: English text and deck on Goodtalk, when it has the card;
- * l: text and deck per app-only language (Pratspel = sv, Pratespill = nb, Plauderspiel = de, Praatspel = nl), which reports on goodtalkcards.com name with `sprog`
+ * l: text and deck per app-only language (Pratspel = sv, Pratespill = nb, Plauderspiel = de, Praatspel = nl, French Goodtalk = fr), which reports on goodtalkcards.com name with `sprog`
  */
 type Card = { t: string; c: string; d: string; a?: 1; e?: string; ce?: string; l?: Record<string, { t: string; c: string }> };
 const CARDS = cards as Record<string, Card>;
@@ -131,15 +131,29 @@ const TEXT = {
     error: "Er ging iets mis. Probeer het later nog eens.",
     notFound: "Niet gevonden.",
   },
+  fr: {
+    tooMany: "Trop de signalements en ce moment. Réessaie dans un instant.",
+    tooBig: "Le message est trop long.",
+    invalid: "Requête invalide.",
+    unknown: "Carte ou motif inconnu.",
+    tooLong: "Le commentaire ne doit pas dépasser 300 caractères.",
+    links: "Le commentaire ne doit pas contenir de liens.",
+    human: "Nous n'avons pas pu confirmer que tu es un humain. Réessaie.",
+    sendFailed: "Le signalement n'a pas pu être envoyé. Réessaie plus tard.",
+    statsFailed: "Impossible de charger les chiffres pour le moment.",
+    error: "Une erreur s'est produite. Réessaie plus tard.",
+    notFound: "Introuvable.",
+  },
 };
 
 /** App-only languages (no website of their own): their reports go to goodtalkcards.com with `sprog` */
-type AppLang = "sv" | "nb" | "de" | "nl";
+type AppLang = "sv" | "nb" | "de" | "nl" | "fr";
 const APP_LANGS: Record<AppLang, { brand: string; name: string }> = {
   sv: { brand: "Pratspel", name: "Svensk" },
   nb: { brand: "Pratespill", name: "Norsk" },
   de: { brand: "Plauderspiel", name: "Tysk" },
   nl: { brand: "Praatspel", name: "Hollandsk" },
+  fr: { brand: "Goodtalk (fransk)", name: "Fransk" },
 };
 const appLangOf = (value: unknown): AppLang | undefined =>
   typeof value === "string" && Object.hasOwn(APP_LANGS, value) ? (value as AppLang) : undefined;

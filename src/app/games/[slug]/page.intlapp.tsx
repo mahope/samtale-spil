@@ -17,7 +17,7 @@ export function generateStaticParams() {
 export const dynamicParams = false;
 
 export async function generateMetadata({ params }: Props) {
-  return { title: intlGameBySlug.get((await params).slug)?.h1.split(":")[0] ?? screens.games.fallbackTitle };
+  return { title: intlGameBySlug.get((await params).slug)?.h1.split(":")[0].trim() ?? screens.games.fallbackTitle };
 }
 
 /** One page of party games in the app: the games, and the cards to play on the phone */
@@ -26,7 +26,7 @@ export default async function GameScreen({ params }: Props) {
   if (!game) notFound();
   const deck = getDeck(game.deckId);
   return (
-    <AppScreen title={game.h1.split(":")[0]} back={{ href: "/games/", label: screens.games.title }}>
+    <AppScreen title={game.h1.split(":")[0].trim()} back={{ href: "/games/", label: screens.games.title }}>
       <div className="px-4 pt-1">
         <p className="leading-relaxed">{game.intro}</p>
         <Link

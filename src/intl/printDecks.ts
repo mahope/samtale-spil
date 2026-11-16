@@ -16,7 +16,7 @@ export const intlPrintDecks: PrintDeck[] = [
   })),
   ...intlGames.map((g) => ({
     fil: `goodtalk-${g.slug}`,
-    title: g.h1.split(":")[0],
+    title: g.h1.split(":")[0].trim(),
     deckId: g.deckId,
     cards: g.cards.map((c) => ({ text: c.text, label: label(c.type) })),
     href: `/games/${g.slug}/`,

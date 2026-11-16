@@ -139,6 +139,12 @@ const CONTENT_RULES: Record<string, { alcohol: Rule; adult: Rule }> = {
     alcohol: word("bier|biertjes?|wijn|wijntjes?|wijnen|drank|drankjes?|sterke drank|borrel\\p{L}*|proost|dronken|aangeschoten|alcohol\\p{L}*|champagne|cava|prosecco|jenever|shots?|shotjes?|cocktails?|kroeg|kroegentocht"),
     adult: word("seks|seksu\\p{L}*|sexy|naakt|naakte|geil|geile|orgasme\\p{L}*|vrijen|vrijpartij"),
   },
+  fr: {
+    // not "verre" or "boire" alone: un verre d'eau, boire du chocolat chaud
+    alcohol: word("vins?|bières?|alcool\\p{L}*|apéro\\p{L}*|apéritifs?|champagne|cidre|ivres?|ivresse|soûls?|saoûls?|bourrée?s?|cuite|gueule de bois|cocktails?|shots?|pintes?|rosé|whisky|vodka|digestifs?|trinqu\\p{L}*|tchin|boire un (?:verre|coup)|bars?"),
+    // "nu" also covers "pieds nus": the cards outside the couples' decks say it another way
+    adult: word("sexe|sexy|sexuel\\p{L}*|sexualité|nue?s?|à poil|excitée?s?|orgasme\\p{L}*|coquin\\p{L}*|érotique\\p{L}*"),
+  },
 };
 const ADULT_OK = new Set(["intimitet", "parforhold", "foerste-date", "kend-din-partner", "nyt-og-ukendt"]);
 

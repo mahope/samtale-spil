@@ -215,7 +215,7 @@ Mads 16/11-2026: seks sprog mere i samme app (svensk, norsk bokmål, tysk, holla
 
 ### Navne pr. sprog
 
-Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/11-2026, hollandsk mod NL og BE.
+Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/11-2026, hollandsk mod NL og BE, fransk i FR, BE, CH og CA.
 
 | Sprog | Hjemmeskærm og navn i butikken | Begrundelse |
 |---|---|---|
@@ -225,7 +225,7 @@ Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/
 | Norsk bokmål | **Pratespill** (butik: »Pratespill: samtalekort«) | Norsk for snakkespil (prate = snakke, spill = spil) og samme familie som Pratspel. Tjekket 16/11-2026: ingen app hedder Pratespill i App Store (iTunes Search API, NO) eller Google Play (søgning med gl=NO, hl=no); nærmeste træffere er generiske kortspil. Goodtalk og Snakkespil blev fravalgt af samme grund som på svensk, og »Samtalespill« er for generisk (flere samtaleapps dukker op på ordet) |
 | Tysk | **Plauderspiel** (butik: »Plauderspiel: Gesprächskarten«) | Samme idé som Snakkespil (plaudern = snakke, sludre; Spiel = spil), varmt og forstået i Tyskland, Østrig og Schweiz. Tjekket 16/11-2026 med iTunes Search API (DE, AT, CH) og Google Plays søgning (DE): ingen app hedder Plauderspiel. Goodtalk blev fravalgt, fordi tre apps i de tysktalende App Stores allerede hedder næsten det samme (»Good Talk, better conversation«, »GoodTalk: Personal Development«, »GoodTalk: AI Couples Therapy«), og fordi et engelsk navn virker fremmed ved siden af tyske kort. »Redespiel« og »Schnackspiel« var også ledige, men »Redespiel« lyder som taletræning, og »Schnack« er nordtysk og forstås dårligt i Sydtyskland, Østrig og Schweiz. »Gesprächsspiel« er generisk og indgår i navnene på tre andre apps |
 | Hollandsk | **Praatspel** (butik: »Praatspel: gesprekskaarten«) | Hollandsk for snakkespil (praten = snakke, spel = spil) og samme familie som Pratspel. Tjekket 16/11-2026 med iTunes Search API (NL, BE) og Google Plays søgning (NL): ingen app hedder Praatspel. Ordet står kun inde i én fremmed apps hollandske titel (»Lesbian Praatspel & Dating«, com.xystudio.LesbianGame), som ikke er et navn, men et søgeord. Goodtalk blev fravalgt af samme grund som på svensk |
-| Fransk (fase 2) | forslag: **Goodtalk** | Et fransk navn (»Jeu de parole«) er langt og generisk |
+| Fransk | **Goodtalk** (butik: »Goodtalk : jeu de conversation«) | Se »Fransk (fr)« nedenfor: samme navn som på engelsk, fordi de franske navne er taget af lignende apps |
 | Spansk (fase 2) | forslag: **Goodtalk** | Samme grund; alternativ »Charla«, tjek navnet |
 
 ### Svensk (sv)
@@ -461,6 +461,71 @@ Gemaakt in Denemarken door Mahoje.
 `Snakkespil is er nu in het Nederlands als Praatspel. Kies je taal onder Meer, je favorieten en instellingen gaan mee.` (117)
 
 Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Dutch i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/nl/` i appen) og nl-NL i Google Play (titel »Praatspel: gesprekskaarten«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Kortrapporter på hollandsk kræver, at worker'en deployes med den nye `worker/src/index.ts` og en frisk `cards.json`.
+
+### Fransk (fr)
+
+Fransk har samme 2.624 kort i 33 bunker som Goodtalk, de samme 9 sider med lege (71 lege, 540 legekort), L'année écoulée (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk med tu-form og tilpasset Frankrig: Noël med réveillon, bûche og Père Noël, galette des rois med fève og krone, la Chandeleur, le 14 juillet, la Toussaint, la rentrée og les grandes vacances, skoletrinene CP-CE2, CM1-6e, collège (brevet) og lycée (bac), fac og partiels, Scouts et Guides de France med patrouille og veillée, Badge de bois for Gilwell, euro og kilometer. Ingen alkohol, heller ikke ved mariage og fête de fin d'année (ordet »vin« undgås, så »vin d'honneur« hedder »la réception«). Fransk typografi: hårdt mellemrum (U+00A0) før ? ! : ; og inden for « ». Nødnumre i Comment jouer: 112, 15 (SAMU) og 3114 (numéro national de prévention du suicide). Spillenes titler deles ved kolon, så de internationale app-skærme trimmer titlen (`split(":")[0].trim()`).
+
+**Navnetjek** (iTunes Search API i FR, BE, CH og CA og Google Plays søgning i FR, 16/11-2026):
+
+- **Goodtalk** er valgt. Det er allerede appens navn på engelsk, og i FR, BE, CH og CA viser App Store i dag dk.snakkespil.app som »Goodtalk: Conversation Cards« (BE, CA) eller »Snakkespil« (FR, CH). Et fransk sprog med samme navn giver ét brand i hele den fransktalende verden, også i Belgien, Schweiz og Québec, hvor folk skifter mellem fransk og engelsk. De andre Goodtalk-apps er fra andre kategorier: »GoodTalk: Personal Development« (com.goodtalk), »GoodTalk: AI Couples Therapy«, »Good Talk, better conversation« og i Google Play »Good Talk« (com.chummasoft.goodtalk) og »GoodTalk« (com.coach.goodtalk). Den kollision fandtes allerede for engelsk.
+- **Causette** blev fravalgt: »Causette : Cartes Questions« er en app med spørgekort på fransk, altså en direkte konkurrent.
+- **Papote** blev fravalgt: »Papote: Learn French by Video« findes i alle fire lande.
+- »Parlons-en« gav ingen app i App Store, men er en almindelig vending (svær at finde og at eje), og Google Play har »Parlons Jeu« (com.parlons.jeu).
+
+- **Navn i fr** (App Store, max 30, og Google Play-titel, max 30): `Goodtalk : jeu de conversation` (30)
+- **Sprog i butikkerne:** French (fr-FR) ved siden af dansk, engelsk og svensk. Fransk-canadisk (fr-CA) kan få samme tekster.
+- **Privatlivspolitik, support og marketing (fr):** som engelsk (goodtalkcards.com). Fransk har ingen hjemmeside.
+
+**Undertitel** (App Store, max 30): `Cartes pour mieux se parler` (27)
+
+**Reklametekst** (max 170):
+`Tire une carte, lis la question tout haut et laisse venir la conversation. Plus de 2 600 questions pour le couple, la famille, la classe et les amis. Gratuit, sans pub.` (168)
+
+**Søgeord** (max 100; »Goodtalk« og »conversation« står i navnet og gentages ikke):
+`cartes questions,couple,rendez-vous,famille,amis,tu préfères,brise-glace,discussion,jeu de société` (98)
+
+**Kort beskrivelse** (Google Play, max 80):
+`Cartes de conversation gratuites pour couples, familles, amis et collègues.` (75)
+
+**Beskrivelse** (max 4.000, 1581 tegn):
+
+```
+Goodtalk, ce sont des cartes de conversation dans ton téléphone. Tire une carte, lis la question à voix haute et laisse la conversation venir.
+
+Plus de 2 600 questions, en jeux de cartes pour chaque moment :
+• Le couple, l'intimité et le premier rendez-vous
+• La famille, les enfants, les jeunes parents et les histoires de famille
+• L'école : du CP au CE2, du CM1 à la 6e, le collège, le lycée et la vie étudiante
+• Les scouts et le Badge de bois
+• Les amis, les collègues et les fêtes
+• Des questions profondes et philosophiques, les rêves, les souvenirs et l'avenir
+• La gratitude, les bonnes nouvelles et les nouveautés à deux
+• Tu préfères, avec 120 dilemmes
+• Les sujets difficiles, pour les conversations qui comptent
+
+Chaque carte est marquée légère, moyenne ou profonde : à vous de choisir jusqu'où aller.
+
+Des façons de jouer :
+• Devine la réponse : l'un répond en secret, le suivant devine, avec des points si vous voulez
+• L'année écoulée : quatre manches pour le Nouvel An et les anniversaires
+• Des jeux de groupe avec leurs cartes, pour Noël, le réveillon, le repas en famille et le mariage
+• La question du jour, la même pour tout le monde ce jour-là
+
+Et aussi :
+• Des cartes joker de temps en temps, comme « pose ta propre question »
+• Existe aussi en danois, en anglais et en suédois. Change de langue dans Plus
+• Fonctionne sans internet
+• Pas de compte, pas de pub, pas de cookies. Ce que tu enregistres reste dans ton téléphone
+
+Goodtalk est un jeu de conversation, pour le plaisir et pour se rapprocher. Ce n'est pas une thérapie.
+Créé au Danemark par Mahoje.
+```
+
+**Nyheder** (fr, til versionen der indeholder fransk):
+`Snakkespil parle maintenant français, sous le nom de Goodtalk. Choisis la langue dans Plus : tes favoris et tes réglages te suivent.` (132)
+
+Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj French i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/fr/` i appen) og fr-FR i Google Play (titel, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Kør `npx tsx scripts/export-cards.ts` og deploy worker'en, så rapporter fra fransk viser den franske tekst.
 
 ### Et nyt sprog i appen (fase 2: nb, de, nl, fr, es)
 

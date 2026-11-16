@@ -35,12 +35,13 @@ function start({ path = "/", search = "", hash = "", stored = null as string | n
 }
 
 describe("the app's start page (out/index.html)", () => {
-  it("opens Danish for Danish, Swedish for Swedish, Norwegian for Norwegian, German for German, Dutch for Dutch and Flemish devices, English for everyone else", () => {
+  it("opens Danish for Danish, Swedish for Swedish, Norwegian for Norwegian, German for German, Dutch for Dutch and Flemish, French for French devices, English for everyone else", () => {
     for (const lang of ["da", "da-DK"]) expect(start({ languages: [lang] }), lang).toBe("/da/index.html");
     for (const lang of ["nb-NO", "nn-NO", "no", "NB_no", "nb"]) expect(start({ languages: [lang] }), lang).toBe("/nb/index.html");
     for (const lang of ["sv", "sv-SE", "sv-FI", "SV_se"]) expect(start({ languages: [lang] }), lang).toBe("/sv/index.html");
     for (const lang of ["de", "de-DE", "de-AT", "de-CH", "DE_de"]) expect(start({ languages: [lang] }), lang).toBe("/de/index.html");
     for (const lang of ["nl", "nl-NL", "nl-BE", "NL_be"]) expect(start({ languages: [lang] }), lang).toBe("/nl/index.html");
+    for (const lang of ["fr", "fr-FR", "fr-BE", "fr-CH", "fr-CA"]) expect(start({ languages: [lang] }), lang).toBe("/fr/index.html");
     for (const lang of ["en-US", "en-GB", "fi-FI", "is-IS", "fo-FO", ""]) expect(start({ languages: [lang] }), lang).toBe("/en/index.html");
   });
 
@@ -64,7 +65,7 @@ describe("the app's start page (out/index.html)", () => {
   });
 
   it("ignores a stored value that is not a language, and storage that throws", () => {
-    expect(start({ stored: "fr", languages: ["da-DK"] })).toBe("/da/index.html");
+    expect(start({ stored: "xx", languages: ["da-DK"] })).toBe("/da/index.html");
     expect(start({ stored: "", languages: ["en-US"] })).toBe("/en/index.html");
     expect(start({ storageThrows: true, languages: ["da-DK"] })).toBe("/da/index.html");
   });
@@ -154,7 +155,7 @@ describe("base path helpers", () => {
     expect(replace).toHaveBeenLastCalledWith("/sv/more/index.html");
     switchAppLang("nb");
     expect(replace).toHaveBeenLastCalledWith("/nb/more/index.html");
-    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(["da", "en", "sv", "nb", "de", "nl"]);
+    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(APP_LOCALES.map((l) => l.code));
   });
 
   afterEach(() => {
