@@ -34,7 +34,7 @@ export const yearInReview: Record<string, string> = {
   "aar-32": "Raad eens: wat wil ik in het nieuwe jaar leren?",
   "aar-33": "Raad eens: waar zou ik in het nieuwe jaar het liefst naartoe reizen?",
   "aar-34": "Raad eens: wat hoop ik dat er in het nieuwe jaar verandert?",
-  "aar-35": "Raad eens: wat denk ik dat ik er nooit van ga komen?",
+  "aar-35": "Raad eens: waar denk ik dat ik nooit aan toe zal komen?",
   "aar-36": "Raad eens: hoe zou ik een vrije dag in het nieuwe jaar doorbrengen?",
   "aar-37": "Raad eens: wie zou ik beter willen leren kennen?",
   "aar-38": "Raad eens: wat is mijn grootste wens voor het nieuwe jaar?",
