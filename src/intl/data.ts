@@ -5,8 +5,10 @@ import type { LocaleDeck } from "@/locales/types";
 import type { Question } from "@/types";
 
 /**
- * Decks for an international site: the Danish deck's ids, depths and types with the
+ * Decks for an international site or app language: the Danish deck's ids, depths and types with the
  * locale's words (src/locales/<locale>/decks). Only decks that have a translation are shown.
+ * App-only languages give AppLocaleDeck, without the website's SEO texts; only *.intl.tsx pages
+ * read those, and next.config.ts never builds them for an app-only language.
  */
 export interface IntlDeck extends Omit<LocaleDeck, "cards"> {
   /** Danish deck id: colours, card ids and favourites are shared across sites */

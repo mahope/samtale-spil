@@ -8,6 +8,7 @@ import { PlayScreen, dealMotion } from "@/components/PlayScreen";
 import { track } from "@/utils/track";
 import { useFavorites } from "@/hooks/useLocalStorage";
 import { ui } from "@/locale/ui";
+import { screens } from "@/locale/screens";
 import type { Question } from "@/types";
 
 export interface YearStep {
@@ -15,6 +16,8 @@ export interface YearStep {
   hint?: string;
   from: Question[];
 }
+
+const t = screens.year;
 
 function pick<T>(items: T[]): T | undefined {
   return items[Math.floor(Math.random() * items.length)];
@@ -41,9 +44,9 @@ export function YearInReview({ steps }: { steps: YearStep[] }) {
       <div className="filt flex min-h-dvh items-center justify-center px-6 text-white">
         <main id="main-content" className="max-w-sm text-center">
           <h1 ref={(el) => el?.focus()} tabIndex={-1} className="text-4xl font-extrabold outline-none" style={{ fontStretch: "88%" }}>
-            Thanks for the talk
+            {t.thanks}
           </h1>
-          <p className="mt-4 text-lg text-white/85">Write a few of the answers down, and bring them out again a year from now.</p>
+          <p className="mt-4 text-lg text-white/85">{t.thanksText}</p>
           <div className="mt-8 flex flex-col gap-3">
             <button
               type="button"
@@ -55,10 +58,10 @@ export function YearInReview({ steps }: { steps: YearStep[] }) {
               }}
               className="min-h-14 rounded-full bg-kridt px-6 text-lg font-bold text-kridt-blaek"
             >
-              One more round
+              {t.again}
             </button>
             <Link href={ui.play.backHref} className="inline-flex min-h-12 items-center justify-center rounded-full font-semibold text-white underline underline-offset-4">
-              Pick another deck
+              {t.otherDeck}
             </Link>
           </div>
         </main>
@@ -70,7 +73,7 @@ export function YearInReview({ steps }: { steps: YearStep[] }) {
   return (
     <PlayScreen
       deckId="aaret"
-      title="Year in review"
+      title={t.title}
       answered={index}
       total={steps.length}
       onReset={() => {
@@ -85,14 +88,14 @@ export function YearInReview({ steps }: { steps: YearStep[] }) {
         setIsFlipped(false);
         setIndex((i) => i + 1);
       }}
-      nextLabel={index + 1 >= steps.length ? "Finish" : "Next card"}
-      hint={steps[index].hint ?? "Everyone answers, and feel free to ask more"}
+      nextLabel={index + 1 >= steps.length ? t.finish : t.next}
+      hint={steps[index].hint ?? t.hint}
     >
       <AnimatePresence mode="wait">
         <motion.div key={`${round}-${card.id}-${index}`} {...dealMotion} className="w-full">
           <QuestionCard
             question={card}
-            categoryName="Year in review"
+            categoryName={t.title}
             isFlipped={isFlipped}
             onFlip={() => setIsFlipped((f) => !f)}
             isFavorite={isFavorite(card.id)}

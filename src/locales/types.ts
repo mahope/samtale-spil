@@ -32,3 +32,13 @@ export interface LocaleDeck {
   /** Danish card id -> text in this language */
   cards: Record<string, string>;
 }
+
+/**
+ * A deck in an app-only language (src/locales/appLocales.ts, web: false): only what the app shows,
+ * none of the website's SEO texts. The slug is the English one, so the app's routes (/sv/play/<slug>/)
+ * and shared links (goodtalkcards.com/questions/<slug>/) are Goodtalk's.
+ */
+export type AppLocaleDeck = Pick<LocaleDeck, "slug" | "name" | "description" | "mark" | "cards">;
+
+/** A party-game page in an app-only language: what the app's Party games screens show (slug as in English) */
+export type AppLocaleGamePage = Pick<LocaleGamePage, "slug" | "h1" | "intro" | "lege" | "kort">;

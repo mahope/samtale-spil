@@ -43,9 +43,11 @@ interface RowProps {
   onClick?: () => void;
   /** Use for rows that open something outside the list (share sheet) */
   chevron?: boolean;
+  /** For a row with onClick that is one choice of several: the chosen one (aria-pressed) */
+  pressed?: boolean;
 }
 
-export function AppRow({ label, detail, icon, media, tone = "var(--bord)", value, control, href, onClick, chevron }: RowProps) {
+export function AppRow({ label, detail, icon, media, tone = "var(--bord)", value, control, href, onClick, chevron, pressed }: RowProps) {
   const showChevron = chevron ?? !!href;
   const body = (
     <>
@@ -90,7 +92,7 @@ export function AppRow({ label, detail, icon, media, tone = "var(--bord)", value
   if (onClick) {
     return (
       <li>
-        <button type="button" className={cls} data-ripple onClick={onClick}>
+        <button type="button" className={cls} data-ripple onClick={onClick} aria-pressed={pressed}>
           {body}
         </button>
       </li>

@@ -5,14 +5,16 @@ import "@/components/app/app-shell.css";
 import { NativeBoot } from "@/components/NativeBoot";
 import { NativeReminders } from "@/intl/app/NativeReminders";
 import { AppShell } from "@/components/app/AppShell";
-import { GOODTALK_TABS } from "@/components/app/tabs";
+import { intlTabs } from "@/components/app/tabs";
 import { appPlatformScript, plausibleInitScript, themeInitScript, UMAMI_HOST, UMAMI_SRC } from "@/config/headScripts";
 import { intlGames } from "@/intl/games";
 import { site } from "@/locale/site";
 import { stripIndexScript } from "@/lib/appLang";
 import { ui } from "@/locale/ui";
+import { screens } from "@/locale/screens";
 
-// The Goodtalk app (APP_BUILD=1 with SITE_LOCALE=en, see next.config.ts): an app shell with tabs, not the website.
+// The app's international languages (APP_BUILD=1 with SITE_LOCALE=en, sv, ..., see next.config.ts):
+// an app shell with tabs, not the website.
 const display = Bricolage_Grotesque({ variable: "--font-display", subsets: ["latin"], axes: ["opsz", "wdth"] });
 const body = Atkinson_Hyperlegible_Next({ variable: "--font-body", subsets: ["latin"] });
 
@@ -35,7 +37,7 @@ export const viewport: Viewport = {
 // The table with the card fills the screen: no tab bar there
 const fullscreen = ["/play/", ...intlGames.map((g) => `/games/${g.slug}/play/`)];
 
-export default function GoodtalkAppLayout({ children }: { children: React.ReactNode }) {
+export default function IntlAppLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang={site.lang} data-shell="app" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
       <head>
@@ -50,7 +52,7 @@ export default function GoodtalkAppLayout({ children }: { children: React.ReactN
         <a href="#main-content" className="skip-link">
           {ui.shell.skip}
         </a>
-        <AppShell tabs={GOODTALK_TABS} fullscreen={fullscreen}>
+        <AppShell tabs={intlTabs(screens.tabs)} fullscreen={fullscreen}>
           {children}
         </AppShell>
         <NativeBoot />

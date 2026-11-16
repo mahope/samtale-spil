@@ -1,14 +1,16 @@
 "use client";
 
 /**
- * The reminder in the app's English half: the same card id as Snakkespil's "Dagens spørgsmål"
- * that day, in English. The cards come from /en/reminder-cards.json (src/app/reminder-cards.json),
- * because @/intl/daily would pull the Danish cards into the English client code.
+ * The reminder in the app's international languages (English, Swedish ...): the same card id as
+ * Snakkespil's "Dagens spørgsmål" that day, in the language. The cards come from
+ * /<code>/reminder-cards.json (src/app/reminder-cards.json), because @/intl/daily would pull the
+ * Danish cards into the client code.
  */
 import { APP_BASE } from "@/lib/appLang";
 import { danishDateKey, vaelgForDato } from "@/lib/dagDato";
 import type { Reminder } from "@/lib/reminder";
 import { cancelReminders, scheduleReminders, type ReminderCard } from "@/lib/reminderSchedule";
+import { screens } from "@/locale/screens";
 
 export interface ReminderPoolCard {
   id: string;
@@ -25,7 +27,7 @@ export function englishReminderCard(at: Date, frequency: Reminder["frequency"], 
     pool.map((q) => ({ q }))
   );
   return {
-    title: frequency === "uge" ? "Card of the week" : "Question of the day",
+    title: frequency === "uge" ? screens.reminders.weekly : screens.reminders.daily,
     body: q.text,
     url: `${APP_BASE}/daily-question/?card=${encodeURIComponent(q.id)}`,
   };

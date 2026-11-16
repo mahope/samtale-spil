@@ -102,6 +102,15 @@ export function IconChevronHoejre({ className = "h-4 w-4" }: { className?: strin
   );
 }
 
+/** The tick on the chosen row of a list (the language) */
+export function IconFlueben({ className = "h-[18px] w-[18px]" }: { className?: string }) {
+  return (
+    <Svg className={className}>
+      <path d="m5 12.5 4.5 4.5L19 7.5" strokeWidth={2.4} />
+    </Svg>
+  );
+}
+
 /* Row icons for the Mere list */
 export function IconTandhjul({ className }: IconProps) {
   return (

@@ -7,18 +7,21 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { JOKER_KEY } from "@/lib/joker";
 import { DEFAULT_REMINDER, normalizeReminder, REMINDER_KEY, type Reminder } from "@/lib/reminder";
 import { track } from "@/utils/track";
+import { screens } from "@/locale/screens";
+
+const t = screens.settings;
 
 const THEMES: { value: Theme; label: string }[] = [
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-  { value: "system", label: "Automatic" },
+  { value: "light", label: t.themes.light },
+  { value: "dark", label: t.themes.dark },
+  { value: "system", label: t.themes.system },
 ];
 
 const HOURS = [7, 8, 12, 16, 17, 18, 19, 20, 21];
-const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const WEEKDAYS = t.weekdays;
 
 /**
- * The reminder, shared with the Danish half of the app (the same setting in localStorage):
+ * The reminder, shared with the other languages of the app (the same setting in localStorage):
  * whichever language is open schedules it in its own language (src/intl/app/reminders.ts).
  */
 function useReminder() {
@@ -33,32 +36,32 @@ function useReminder() {
       const { scheduleDailyQuestion, cancelDailyQuestion } = await import("./reminders");
       if (!next.enabled) {
         await cancelDailyQuestion();
-        setMessage("The reminder is off.");
+        setMessage(t.reminderOff);
         return;
       }
       ok = await scheduleDailyQuestion(next);
     } catch {
       setReminder({ ...next, enabled: false });
-      setMessage("The reminder could not be set up. Try again in a moment.");
+      setMessage(t.reminderFailed);
       return;
     }
     if (ok) {
       setMessage(
         next.frequency === "uge"
-          ? `You will get the card of the week every ${WEEKDAYS[next.weekday]} at ${next.hour}:00.`
-          : `You will get the question of the day at ${next.hour}:00.`
+          ? t.reminderWeekly(WEEKDAYS[next.weekday], next.hour)
+          : t.reminderDaily(next.hour)
       );
       track("Påmindelse slået til", { time: next.hour, rytme: next.frequency });
     } else {
       setReminder({ ...next, enabled: false });
-      setMessage("Your phone does not allow notifications from this app. Turn them on in your phone's settings.");
+      setMessage(t.notificationsBlocked);
     }
   };
 
   return { reminder, message, apply };
 }
 
-/** Settings in the app's English half: the reminder, jokers and the look, as native lists */
+/** Settings in the app's international languages: the reminder, jokers and the look, as native lists */
 export function Settings() {
   const { reminder, message, apply } = useReminder();
   const [jokerOn, setJokerOn] = useLocalStorage<boolean>(JOKER_KEY, true);
@@ -66,19 +69,19 @@ export function Settings() {
   return (
     <>
       <AppSection
-        title="Question of the day"
+        title={t.daily}
         footer={
           <p role="status">
-            {message || "A new question every day, or one card a week. The reminder is set up on your phone, with no server involved."}
+            {message || t.dailyFooter}
           </p>
         }
       >
         <AppRow
-          label="Send me the question of the day"
+          label={t.sendMe}
           control={<AppSwitch checked={reminder.enabled} onChange={(on) => apply({ ...reminder, enabled: on })} />}
         />
         <AppRow
-          label="How often"
+          label={t.howOften}
           control={
             <select
               className="app-select min-h-10"
@@ -93,13 +96,13 @@ export function Settings() {
                 })
               }
             >
-              <option value="dag">Every day</option>
-              <option value="uge">Once a week</option>
+              <option value="dag">{t.everyDay}</option>
+              <option value="uge">{t.onceAWeek}</option>
             </select>
           }
         />
         <AppRow
-          label="At"
+          label={t.at}
           control={
             <select
               className="app-select min-h-10"
@@ -117,12 +120,12 @@ export function Settings() {
         />
       </AppSection>
 
-      <AppSection title="The game" footer="About every tenth card is a joker, such as “ask a question of your own”.">
-        <AppRow label="Joker cards" control={<AppSwitch checked={jokerOn ?? true} onChange={setJokerOn} />} />
+      <AppSection title={t.game} footer={t.jokerFooter}>
+        <AppRow label={t.jokers} control={<AppSwitch checked={jokerOn ?? true} onChange={setJokerOn} />} />
       </AppSection>
-      <AppSection title="Appearance" footer="Settings are saved on this phone only.">
+      <AppSection title={t.appearance} footer={t.appearanceFooter}>
         <li className="px-4 py-3 android:py-2">
-          {mounted ? <AppSegmented label="Appearance" options={THEMES} value={theme} onChange={setTheme} /> : <div className="h-9 android:h-10" />}
+          {mounted ? <AppSegmented label={t.appearance} options={THEMES} value={theme} onChange={setTheme} /> : <div className="h-9 android:h-10" />}
         </li>
       </AppSection>
     </>

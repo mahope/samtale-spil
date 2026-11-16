@@ -10,6 +10,7 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -24,7 +25,8 @@
     ],
     "paths": {
       "@/locale/*": [
-        "./src/locales/da/*"
+        "./src/locales/da/*",
+        "./src/locales/en/*"
       ],
       "@/*": [
         "./src/*"

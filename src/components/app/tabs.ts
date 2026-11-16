@@ -13,13 +13,15 @@ export const SNAKKESPIL_TABS: TabSpec[] = [
   },
 ];
 
-/** The Goodtalk app's tabs (layout.intlapp.tsx) */
-export const GOODTALK_TABS: TabSpec[] = [
-  { href: "/", label: "Play", icon: "kort", owns: ["/play/"] },
-  { href: "/daily-question/", label: "Today", icon: "kalender" },
-  { href: "/favorites/", label: "Favorites", icon: "hjerte" },
-  { href: "/more/", label: "More", icon: "mere", owns: ["/settings/", "/how-to-play/", "/games/", "/about/", "/privacy/"] },
-];
+/** The tabs of the app's international languages (layout.intlapp.tsx), with labels from screens.ts */
+export function intlTabs(labels: { play: string; today: string; favorites: string; more: string }): TabSpec[] {
+  return [
+    { href: "/", label: labels.play, icon: "kort", owns: ["/play/"] },
+    { href: "/daily-question/", label: labels.today, icon: "kalender" },
+    { href: "/favorites/", label: labels.favorites, icon: "hjerte" },
+    { href: "/more/", label: labels.more, icon: "mere", owns: ["/settings/", "/how-to-play/", "/games/", "/about/", "/privacy/"] },
+  ];
+}
 
 /** The Snakkespil 18+ app's tabs (layout.voksen.tsx) */
 export const VOKSEN_TABS: TabSpec[] = [

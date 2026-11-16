@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { API_BASE, TURNSTILE_SITEKEY } from "@/config/api";
 import { track } from "@/utils/track";
 import { ui } from "@/locale/ui";
+import { site } from "@/locale/site";
 
 type TurnstileApi = {
   render: (el: HTMLElement, opts: Record<string, unknown>) => string;
@@ -104,7 +105,8 @@ export function ReportCard({ questionId }: { questionId: string }) {
         signal: controller.signal,
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: questionId, aarsag: reason, kommentar: comment, token, website: honeypot }),
+        // sprog: app-only languages (Pratspel) report to goodtalkcards.com, whose worker then shows their text
+        body: JSON.stringify({ id: questionId, aarsag: reason, kommentar: comment, token, website: honeypot, sprog: site.lang }),
       });
       const data = (await res.json()) as { ok?: boolean; fejl?: string };
       if (res.ok && data.ok) {

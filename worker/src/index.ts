@@ -26,8 +26,11 @@ interface RateLimit {
   limit(options: { key: string }): Promise<{ success: boolean }>;
 }
 
-/** t/c: Danish text and deck; e/ce: English text and deck on Goodtalk, when it has the card */
-type Card = { t: string; c: string; d: string; a?: 1; e?: string; ce?: string };
+/**
+ * t/c: Danish text and deck; e/ce: English text and deck on Goodtalk, when it has the card;
+ * l: text and deck per app-only language (Pratspel = sv), which reports on goodtalkcards.com name with `sprog`
+ */
+type Card = { t: string; c: string; d: string; a?: 1; e?: string; ce?: string; l?: Record<string, { t: string; c: string }> };
 const CARDS = cards as Record<string, Card>;
 const DECK_IDS = new Set(Object.values(CARDS).map((c) => c.d));
 /** Decks Goodtalk shows: those with English cards */
@@ -76,7 +79,26 @@ const TEXT = {
     error: "Something went wrong. Please try again later.",
     notFound: "Not found.",
   },
+  sv: {
+    tooMany: "För många rapporter just nu. Försök igen om en stund.",
+    tooBig: "Meddelandet är för långt.",
+    invalid: "Ogiltig förfrågan.",
+    unknown: "Okänt kort eller orsak.",
+    tooLong: "Kommentaren får vara högst 300 tecken.",
+    links: "Kommentaren får inte innehålla länkar.",
+    human: "Vi kunde inte bekräfta att du är en människa. Försök igen.",
+    sendFailed: "Rapporten kunde inte skickas. Försök igen senare.",
+    statsFailed: "Siffrorna kunde inte hämtas just nu.",
+    error: "Något gick fel. Försök igen senare.",
+    notFound: "Hittades inte.",
+  },
 };
+
+/** App-only languages (no website of their own): their reports go to goodtalkcards.com with `sprog` */
+type AppLang = "sv";
+const APP_LANGS: Record<AppLang, { brand: string; name: string }> = { sv: { brand: "Pratspel", name: "Svensk" } };
+const appLangOf = (value: unknown): AppLang | undefined =>
+  typeof value === "string" && Object.hasOwn(APP_LANGS, value) ? (value as AppLang) : undefined;
 
 const ALLOWED_ORIGINS = new Set([
   "https://snakkespil.dk",
@@ -118,7 +140,7 @@ async function verifyTurnstile(token: string, ip: string, secret: string) {
 
 async function handleFlag(request: Request, env: Env): Promise<Response> {
   const site = siteOf(request);
-  const T = TEXT[site];
+  let T = TEXT[site];
   const ip = request.headers.get("CF-Connecting-IP") ?? "";
   const { success: underLimit } = await env.FLAG_LIMIT.limit({ key: ip || "ukendt" });
   if (!underLimit) return json(request, 429, { fejl: T.tooMany });
@@ -133,6 +155,10 @@ async function handleFlag(request: Request, env: Env): Promise<Response> {
     return json(request, 400, { fejl: T.invalid });
   }
 
+  // Only on goodtalkcards.com: the app-only languages share its worker and card ids
+  const lang = site === "en" ? appLangOf(body.sprog) : undefined;
+  if (lang) T = TEXT[lang];
+
   // Honeypot: a hidden field real people never fill in. Pretend success.
   if (typeof body.website === "string" && body.website.trim() !== "") return json(request, 200, { ok: true });
 
@@ -142,20 +168,21 @@ async function handleFlag(request: Request, env: Env): Promise<Response> {
   const token = typeof body.token === "string" ? body.token : "";
   const card = cardFor(id);
 
-  if (!card || !REASONS[reason] || (site === "en" && !card.e)) return json(request, 400, { fejl: T.unknown });
+  const local = lang ? card?.l?.[lang] : undefined;
+  if (!card || !REASONS[reason] || (site === "en" && !card.e) || (lang && !local)) return json(request, 400, { fejl: T.unknown });
   if (comment.length > 300) return json(request, 400, { fejl: T.tooLong });
   if (/https?:\/\/|www\.|\b[a-z0-9-]+\.(dk|com|net|org|io|ru|xyz|info|biz|top|site|online|shop|app|me|co|eu|de|se|no|uk)\b/i.test(comment)) return json(request, 400, { fejl: T.links });
   if (!token || !(await verifyTurnstile(token, ip, env.TURNSTILE_SECRET))) {
     return json(request, 403, { fejl: T.human });
   }
 
-  const brand = site === "en" ? "Goodtalk" : "Snakkespil";
+  const brand = lang ? APP_LANGS[lang].brand : site === "en" ? "Goodtalk" : "Snakkespil";
   const subject = `${brand}: ${REASONS[reason].toLowerCase()} (${id})`;
   const html = `<p><strong>Kort:</strong> ${escapeHtml(id)} i bunken ${escapeHtml(site === "en" ? `${card.ce} (dansk: ${card.c})` : card.c)}</p>
-${site === "en" ? `<p><strong>Engelsk tekst:</strong> ${escapeHtml(card.e ?? "")}</p>\n` : ""}<p><strong>${site === "en" ? "Dansk tekst" : "Tekst"}:</strong> ${escapeHtml(card.t)}</p>
+${local ? `<p><strong>${APP_LANGS[lang!].name} tekst:</strong> ${escapeHtml(local.t)} (bunken ${escapeHtml(local.c)})</p>\n` : ""}${site === "en" ? `<p><strong>Engelsk tekst:</strong> ${escapeHtml(card.e ?? "")}</p>\n` : ""}<p><strong>${site === "en" ? "Dansk tekst" : "Tekst"}:</strong> ${escapeHtml(card.t)}</p>
 <p><strong>Årsag:</strong> ${escapeHtml(REASONS[reason])}</p>
 ${comment ? `<p><strong>Kommentar:</strong> ${escapeHtml(comment)}</p>` : "<p>Ingen kommentar.</p>"}
-<p style="color:#666">Sendt fra rapportér-knappen på ${site === "en" ? "goodtalkcards.com" : "snakkespil.dk"}. Afsenderen er anonym.</p>`;
+<p style="color:#666">Sendt fra rapportér-knappen på ${lang ? `${brand} i appen` : site === "en" ? "goodtalkcards.com" : "snakkespil.dk"}. Afsenderen er anonym.</p>`;
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
