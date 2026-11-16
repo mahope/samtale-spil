@@ -99,6 +99,8 @@ type AppLang = "sv";
 const APP_LANGS: Record<AppLang, { brand: string; name: string }> = { sv: { brand: "Pratspel", name: "Svensk" } };
 const appLangOf = (value: unknown): AppLang | undefined =>
   typeof value === "string" && Object.hasOwn(APP_LANGS, value) ? (value as AppLang) : undefined;
+const requestAppLang = (request: Request): AppLang | undefined =>
+  siteOf(request) === "en" ? appLangOf(new URL(request.url).searchParams.get("sprog")) : undefined;
 
 const ALLOWED_ORIGINS = new Set([
   "https://snakkespil.dk",
@@ -140,7 +142,7 @@ async function verifyTurnstile(token: string, ip: string, secret: string) {
 
 async function handleFlag(request: Request, env: Env): Promise<Response> {
   const site = siteOf(request);
-  let T = TEXT[site];
+  let T = TEXT[requestAppLang(request) ?? site];
   const ip = request.headers.get("CF-Connecting-IP") ?? "";
   const { success: underLimit } = await env.FLAG_LIMIT.limit({ key: ip || "ukendt" });
   if (!underLimit) return json(request, 429, { fejl: T.tooMany });
@@ -151,12 +153,13 @@ async function handleFlag(request: Request, env: Env): Promise<Response> {
     const raw = await request.text();
     if (raw.length > 4000) return json(request, 413, { fejl: T.tooBig });
     body = JSON.parse(raw);
+    if (!body || typeof body !== "object" || Array.isArray(body)) return json(request, 400, { fejl: T.invalid });
   } catch {
     return json(request, 400, { fejl: T.invalid });
   }
 
   // Only on goodtalkcards.com: the app-only languages share its worker and card ids
-  const lang = site === "en" ? appLangOf(body.sprog) : undefined;
+  const lang = requestAppLang(request) ?? (site === "en" ? appLangOf(body.sprog) : undefined);
   if (lang) T = TEXT[lang];
 
   // Honeypot: a hidden field real people never fill in. Pretend success.
@@ -283,7 +286,7 @@ export default {
         }
       }
     } catch {
-      return json(request, 500, { fejl: TEXT[siteOf(request)].error });
+      return json(request, 500, { fejl: TEXT[url.pathname === "/api/flag" ? requestAppLang(request) ?? siteOf(request) : siteOf(request)].error });
     }
     return json(request, 404, { fejl: TEXT[siteOf(request)].notFound });
   },

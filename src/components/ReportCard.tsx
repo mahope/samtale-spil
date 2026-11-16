@@ -101,7 +101,8 @@ export function ReportCard({ questionId }: { questionId: string }) {
     const controller = new AbortController();
     abortRef.current = controller;
     try {
-      const res = await fetch(`${API_BASE}/flag`, {
+      // Also send the locale before the body, so rate-limit and parsing errors use it.
+      const res = await fetch(`${API_BASE}/flag?sprog=${encodeURIComponent(site.lang)}`, {
         signal: controller.signal,
         method: "POST",
         headers: { "Content-Type": "application/json" },

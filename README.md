@@ -67,6 +67,8 @@ After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, 
 
 `worker/` is a Cloudflare Worker on `snakkespil.dk/api/*`: `POST /api/flag` mails reports to the owner via Resend (Turnstile, honeypot, rate limit, known card ids only) and `GET /api/stats` serves cached Plausible totals. `scripts/export-cards.ts` generates the card list it validates against. Deploy with wrangler from agent-worker; secrets live in Bitwarden and as worker secrets.
 
+App-only languages report through `goodtalkcards.com/api/flag` with `sprog` in both the query string and JSON body. The query lets even rate-limit, parsing and upstream errors use the app language; the body remains compatible with older app builds. The worker includes the reported language's card text and deck in the mail. New languages must register their card data in `scripts/export-cards.ts` and their brand and error translations in `APP_LANGS` and `TEXT` in `worker/src/index.ts` (see `docs/app-butikker.md`). Tests generate the worker's card list from the real decks before running.
+
 ## Research
 
 `docs/forskning.md` (relationship and conversation research behind decks, game modes and guidance) and `docs/butik-og-seo.md` (store-bought conversation games and SEO page plan).
