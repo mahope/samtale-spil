@@ -75,15 +75,20 @@ jobs:
             PRODUCT_BUNDLE_IDENTIFIER="${{ matrix.app_id }}" APP_DISPLAY_NAME="${{ matrix.app_name }}" APP_DEV_REGION="${{ matrix.site }}" \
             CODE_SIGNING_ALLOWED=NO build | tail -20
 
-      # Snakkespil is "Goodtalk" on an English iPhone (ios/App/Sprog, build phase "Localize the name")
+      # Snakkespil has its home screen name in every app language: Goodtalk on an English iPhone,
+      # Pratspel on a Swedish one ... (ios/App/Sprog/<code>.lproj, build phase "Localize the name")
       - name: Localized name in the app
         if: github.event_name != 'push' && matrix.app_id == 'dk.snakkespil.app'
         run: |
           set -euo pipefail
           app="$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/App.app"
-          grep -q '"CFBundleDisplayName" = "Goodtalk"' "$app/en.lproj/InfoPlist.strings" || { echo "en.lproj mangler Goodtalk"; exit 1; }
-          grep -q '"CFBundleDisplayName" = "Snakkespil"' "$app/da.lproj/InfoPlist.strings" || { echo "da.lproj mangler Snakkespil"; exit 1; }
-          /usr/libexec/PlistBuddy -c "Print :CFBundleLocalizations" "$app/Info.plist" | grep -qx ' *en' || { echo "CFBundleLocalizations mangler en"; exit 1; }
+          locs=$(/usr/libexec/PlistBuddy -c "Print :CFBundleLocalizations" "$app/Info.plist")
+          for dir in ios/App/Sprog/*.lproj; do
+            lang=$(basename "$dir" .lproj)
+            name=$(sed -n 's/^"CFBundleDisplayName" = "\(.*\)";$/\1/p' "$dir/InfoPlist.strings")
+            grep -q "\"CFBundleDisplayName\" = \"$name\"" "$app/$lang.lproj/InfoPlist.strings" || { echo "$lang.lproj mangler $name"; exit 1; }
+            grep -qx " *$lang" <<< "$locs" || { echo "CFBundleLocalizations mangler $lang"; exit 1; }
+          done
           /usr/libexec/PlistBuddy -c "Print :CFBundleDevelopmentRegion" "$app/Info.plist" | grep -qx da
 
       - name: Signed build to App Store Connect

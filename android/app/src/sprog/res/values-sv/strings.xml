@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- dk.snakkespil.app on a Swedish phone: the app's Swedish language is Pratspel (src/locales/appLocales.ts).
+     Only added for dk.snakkespil.app, see build.gradle. -->
+<resources>
+    <string name="app_name">Pratspel</string>
+    <string name="title_activity_main">Pratspel</string>
+</resources>
