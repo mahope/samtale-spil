@@ -145,6 +145,11 @@ const CONTENT_RULES: Record<string, { alcohol: Rule; adult: Rule }> = {
     // "nu" also covers "pieds nus": the cards outside the couples' decks say it another way
     adult: word("sexe|sexy|sexuel\\p{L}*|sexualité|nue?s?|à poil|excitée?s?|orgasme\\p{L}*|coquin\\p{L}*|érotique\\p{L}*"),
   },
+  es: {
+    // "vino" is also "came" (venir) and "copa" a trophy: the cards avoid both, so the words stay on the list
+    alcohol: word("cervezas?|vinos?|vinito|cava|champán|champaña|sidra|chupitos?|copas?|copita|cubatas?|borrach\\p{L}*|resacas?|alcohol\\p{L}*|brindis|brind(?:ar|amos|emos)|sangría|tequila|ron|whisky|vodka|ginebra|licor\\p{L}*|botellón|tragos?|mojito|calimocho"),
+    adult: word("sexo|sexy|sexual\\p{L}*|desnud\\p{L}*|orgasm\\p{L}*|cachond\\p{L}*|erótic\\p{L}*|excitad\\p{L}*"),
+  },
 };
 const ADULT_OK = new Set(["intimitet", "parforhold", "foerste-date", "kend-din-partner", "nyt-og-ukendt"]);
 

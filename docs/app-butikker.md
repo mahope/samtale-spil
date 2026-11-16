@@ -8,7 +8,7 @@ Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en l
 
 Appene er ikke hjemmesiden i en ramme. Begge har en bundmenu med fire faner, navigationsbjælker med tilbage-knap og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere/More, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appene.
 
-- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 og norsk bokmål (Pratespill), tysk (Plauderspiel) og hollandsk (Praatspel) fra fase 2 af *Flere sprog* nedenfor. `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/`, `out/nb/` osv. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk giver dansk, svensk svensk, norsk (nb, nn, no) norsk bokmål, tysk tysk, hollandsk hollandsk, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk, Pratspel på svensk, Pratespill på norsk, Plauderspiel på tysk, Praatspel på hollandsk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
+- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 og norsk bokmål (Pratespill), tysk (Plauderspiel), hollandsk (Praatspel), fransk (Goodtalk) og spansk (Charlando) fra fase 2 af *Flere sprog* nedenfor (2.1.2). `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/`, `out/nb/`, `out/de/`, `out/nl/`, `out/fr/` og `out/es/`. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk giver dansk, svensk svensk, norsk (nb, nn, no) norsk bokmål, tysk tysk, hollandsk hollandsk, fransk fransk, spansk spansk, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk og fransk, Pratspel på svensk, Pratespill på norsk, Plauderspiel på tysk, Praatspel på hollandsk, Charlando på spansk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
   - Dansk (`src/app/**/*.app.tsx`): Spil, I dag, Favoritter og Mere (indstillinger med påmindelse, sprog, dine egne spørgsmål, statistik, sådan spiller I, lege, ikke-terapi, om, privatliv, del).
   - Engelsk, det tidligere Goodtalk, og de øvrige sprog (`*.intlapp.tsx`, tekster fra `src/locales/<kode>/screens.ts`): Play, Today, Favorites og More (language, settings med påmindelse, jokere og udseende, how to play, party games, about, privacy, share). Al tekst er på sproget. Der er ingen egne spørgsmål og ingen statistik på disse sprog.
 - **Snakkespil 18+** (`APP_VARIANT=voksen`, `*.voksen.tsx`): alderskontrollen ligger foran alt, også fanerne. Bunker, I aften (et tilfældigt kort eller en udfordring), Favoritter og Mere (indstillinger med udseende og »spørg om alder igen«, når det bliver svært, om, privatliv, del). Mørkt tema som standard.
@@ -200,9 +200,9 @@ Kun i hånden eller med Mads' go. Opdatér listen med, hvad der faktisk er gjort
 2. Skriv udgivelsesnoter for en-US på 2.1.0-udgivelsen (CI uploader kun dansk: »Nye kort og forbedringer.«).
 3. `com.goodtalkcards.app` udgives ikke. Lad den ligge som kladde/lukket test uden nye builds, eller afpublicér den.
 
-## Flere sprog i Snakkespil (fase 1: svensk, 16/11-2026)
+## Flere sprog i Snakkespil (16/11-2026: fase 1 svensk, fase 2 norsk bokmål, tysk, hollandsk, fransk og spansk)
 
-Mads 16/11-2026: seks sprog mere i samme app (svensk, norsk bokmål, tysk, hollandsk, fransk og spansk). Det skal være én app, fordi Apple afviste næsten ens apps efter 4.3. Fase 1 gjorde sprogmotoren generisk og tilføjede svensk. Fase 2 tilføjer resten, ét sprog ad gangen.
+Mads 16/11-2026: seks sprog mere i samme app (svensk, norsk bokmål, tysk, hollandsk, fransk og spansk). Det skal være én app, fordi Apple afviste næsten ens apps efter 4.3. Fase 1 gjorde sprogmotoren generisk og tilføjede svensk. Fase 2 tilføjede resten, hvert sprog på sin egen branch, og kom med i 2.1.2.
 
 ### Sådan virker det
 
@@ -226,7 +226,7 @@ Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/
 | Tysk | **Plauderspiel** (butik: »Plauderspiel: Gesprächskarten«) | Samme idé som Snakkespil (plaudern = snakke, sludre; Spiel = spil), varmt og forstået i Tyskland, Østrig og Schweiz. Tjekket 16/11-2026 med iTunes Search API (DE, AT, CH) og Google Plays søgning (DE): ingen app hedder Plauderspiel. Goodtalk blev fravalgt, fordi tre apps i de tysktalende App Stores allerede hedder næsten det samme (»Good Talk, better conversation«, »GoodTalk: Personal Development«, »GoodTalk: AI Couples Therapy«), og fordi et engelsk navn virker fremmed ved siden af tyske kort. »Redespiel« og »Schnackspiel« var også ledige, men »Redespiel« lyder som taletræning, og »Schnack« er nordtysk og forstås dårligt i Sydtyskland, Østrig og Schweiz. »Gesprächsspiel« er generisk og indgår i navnene på tre andre apps |
 | Hollandsk | **Praatspel** (butik: »Praatspel: gesprekskaarten«) | Hollandsk for snakkespil (praten = snakke, spel = spil) og samme familie som Pratspel. Tjekket 16/11-2026 med iTunes Search API (NL, BE) og Google Plays søgning (NL): ingen app hedder Praatspel. Ordet står kun inde i én fremmed apps hollandske titel (»Lesbian Praatspel & Dating«, com.xystudio.LesbianGame), som ikke er et navn, men et søgeord. Goodtalk blev fravalgt af samme grund som på svensk |
 | Fransk | **Goodtalk** (butik: »Goodtalk : jeu de conversation«) | Se »Fransk (fr)« nedenfor: samme navn som på engelsk, fordi de franske navne er taget af lignende apps |
-| Spansk (fase 2) | forslag: **Goodtalk** | Samme grund; alternativ »Charla«, tjek navnet |
+| Spansk | **Charlando** (butik: »Charlando: cartas para hablar«) | »Charlando« betyder »mens man snakker«: varmt og hverdagsagtigt, forstås i Spanien og hele Latinamerika. Tjekket 16/11-2026 med iTunes Search API (ES, MX, AR, CO, CL, US) og Google Plays søgning (ES, MX): ingen app hedder Charlando. Goodtalk blev fravalgt, fordi »GoodTalk: AI Couples Therapy« og »GoodTalk: Personal Development« ligger i de spanske og latinamerikanske App Stores og »GoodTalk« i Google Play, og et engelsk navn virker fremmed. Også fravalgt, fordi de er taget: Charla (App Store), Charlemos (»Charlemos: Juego de Cartas« i Google Play), Charlamos (App Store ES), Sobremesa (»Sobremesa: Dinner Questions«), Hablemos, Cuéntame og Conversa |
 
 ### Svensk (sv)
 
@@ -273,7 +273,7 @@ Sätt att spela:
 
 Och:
 • Jokerkort då och då, till exempel ”ställ en egen fråga”
-• Finns också på danska, engelska och tyska. Byt språk under Mer
+• Finns också på danska, engelska, norska, tyska, nederländska, franska och spanska. Byt språk under Mer
 • Fungerar utan internet
 • Inget konto, ingen reklam, inga kakor. Det du sparar stannar i telefonen
 
@@ -293,7 +293,7 @@ Pratespill har samme 2.624 kort i 33 bunker som Goodtalk og Pratspel (alle undta
 Norsk skriver mange af de ord, testen bruger til at finde danske rester (hvordan, hvem, ikke, jeg, og, også, være), og bruger æ og ø. `DANISH_EXCEPTIONS` i `src/__tests__/appLocales.test.ts` tjekker derfor norsk mod de danske stavemåder, bokmål ikke har (hvad, noget, nogen, spørgsmål, efter, meget, mig/dig/sig, af, nu, sjov, bedste, hvornår ...), og mod svensk ä/ö.
 
 - **Navn i nb** (App Store, max 30): `Pratespill: samtalekort` (23)
-- **Sprog i butikkerne:** Norwegian Bokmål (App Store: Norwegian, Google Play: no-NO) ved siden af dansk, engelsk og svensk
+- **Sprog i butikkerne:** Norwegian Bokmål (App Store: Norwegian, Google Play: no-NO) ved siden af appens øvrige sprog
 - **Privatlivspolitik, support og marketing (nb):** som engelsk (goodtalkcards.com). Pratespill har ingen hjemmeside.
 
 **Undertitel** (App Store, max 30): `Kort for bedre samtaler` (23)
@@ -307,7 +307,7 @@ Norsk skriver mange af de ord, testen bruger til at finde danske rester (hvordan
 **Kort beskrivelse** (Google Play, max 80):
 `Gratis samtalekort for par, familie, venner og kolleger.` (56)
 
-**Beskrivelse** (max 4.000, 1273 tegn):
+**Beskrivelse** (max 4.000, 1308 tegn):
 
 ```
 Pratespill er samtalekort på telefonen. Trekk et kort, les spørsmålet høyt og la praten gå.
@@ -333,7 +333,7 @@ Måter å spille på:
 
 Og:
 • Jokerkort innimellom, for eksempel «still et eget spørsmål»
-• Finnes også på dansk, engelsk og svensk. Bytt språk under Mer
+• Finnes også på dansk, engelsk, svensk, tysk, nederlandsk, fransk og spansk. Bytt språk under Mer
 • Virker uten internett
 • Ingen konto, ingen reklame, ingen informasjonskapsler. Det du lagrer, blir på telefonen
 
@@ -344,14 +344,14 @@ Laget i Danmark av Mahoje.
 **Nyheder** (nb, til versionen der indeholder norsk):
 `Snakkespil finnes nå på norsk som Pratespill. Velg språk under Mer, så blir favorittene og innstillingene dine med.` (115)
 
-Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Norwegian i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/nb/` i appen) og no-NO i Google Play (titel »Pratespill: samtalekort«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Den svenske beskrivelse siger »Finns också på danska och engelska« og kan få norsk med i samme omgang. Worker'en skal deployes, før rapporter fra Pratespill viser den norske tekst (indtil da får de engelske svar og mailen uden norsk tekst).
+Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Norwegian i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/nb/` i appen) og no-NO i Google Play (titel »Pratespill: samtalekort«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Den svenske beskrivelse har fået norsk med, ligesom de andre sprogs beskrivelser nævner alle appens sprog. Worker'en skal deployes, før rapporter fra Pratespill viser den norske tekst (indtil da får de engelske svar og mailen uden norsk tekst).
 
 ### Tysk (de)
 
 Plauderspiel har samme 2.624 kort i 33 bunker som Goodtalk og Pratspel, de samme 9 sider med lege og 540 legekort, Jahresrückblick (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk med du-form og tilpasset Tyskland: Advent med Adventskalender og Nikolaus, Heiligabend med Bescherung, Wichteln, Weihnachtsfeier uden alkohol, Silvester med Wachsgießen og »Dinner for One«, Einschulung med Schultüte, Grundschule/Unterstufe/Mittelstufe/Oberstufe, Abitur og Abiball, Erstiwoche og WG, Pfadfinder (Stamm, Gruppenstunde, Zeltlager) og Woodbadge, euro og kilometer. Kønsneutralt, hvor det kan lade sig gøre uden stjerner (»Lehrkraft«, »die andere Person«), ellers begge former (»Freund oder Freundin«). Nødnumre i So spielt ihr: 112 og TelefonSeelsorge 0800 111 0 111 / 0800 111 0 222 (telefonseelsorge.de). Enhedssproget `de` dækker også Østrig og Schweiz.
 
 - **Navn i de** (App Store, max 30): `Plauderspiel: Gesprächskarten` (29)
-- **Sprog i butikkerne:** German (de-DE) ved siden af dansk, engelsk og svensk
+- **Sprog i butikkerne:** German (de-DE) ved siden af appens øvrige sprog
 - **Privatlivspolitik, support og marketing (de):** som engelsk (goodtalkcards.com), indtil der evt. kommer tyske sider. Plauderspiel har ingen hjemmeside.
 
 **Undertitel** (App Store, max 30): `Karten für bessere Gespräche` (28)
@@ -365,7 +365,7 @@ Plauderspiel har samme 2.624 kort i 33 bunker som Goodtalk og Pratspel, de samme
 **Kort beskrivelse** (Google Play, max 80):
 `Kostenlose Gesprächskarten für Paare, Familie, Freunde und Kollegen.` (68)
 
-**Beskrivelse** (max 4.000; 1.466 tegn):
+**Beskrivelse** (max 4.000; 1.517 tegn):
 
 ```
 Plauderspiel bringt Gesprächskarten aufs Handy. Zieh eine Karte, lies die Frage laut vor und lass das Gespräch fließen.
@@ -391,7 +391,7 @@ So könnt ihr spielen:
 
 Außerdem:
 • Ab und zu eine Jokerkarte, zum Beispiel „Stell eine eigene Frage“
-• Auch auf Dänisch, Englisch und Schwedisch. Die Sprache wechselst du unter Mehr
+• Auch auf Dänisch, Englisch, Schwedisch, Norwegisch, Niederländisch, Französisch und Spanisch. Die Sprache wechselst du unter Mehr
 • Funktioniert ohne Internet
 • Kein Konto, keine Werbung, keine Cookies. Was du speicherst, bleibt auf deinem Handy
 
@@ -409,7 +409,7 @@ Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj German i Ap
 Praatspel har samme 2.624 kort i 33 bunker som Goodtalk (alle undtagen Efterskolen), de samme 9 sider med lege og 540 legekort, Het jaar dat was (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk med je-form og tilpasset Holland (og læseligt i Flandern): Sinterklaas med pakjesavond, surprises og gedichten, kerst, oud en nieuw med oliebollen, Koningsdag med vrijmarkt, basisskolens groep 3-8, onderbouw og bovenbouw på middelbare school, studentenleven, Scouting Nederland (opkomst, patrouille, insigne), Expeditie Robinson, euro og kilometer. Ingen alkohol, heller ikke ved kerstfeest og bryllup (»borrel« er undgået). Nødnumre i Zo speel je: 112, 113 Zelfmoordpreventie (113 eller 0800-0113, chat på 113.nl) og Zelfmoordlijn 1813 i Belgien. Telefoner på `nl` (også `nl-BE`) åbner hollandsk.
 
 - **Navn i nl** (App Store, max 30): `Praatspel: gesprekskaarten` (26)
-- **Sprog i butikkerne:** Dutch (nl-NL) ved siden af dansk, engelsk og svensk
+- **Sprog i butikkerne:** Dutch (nl-NL) ved siden af appens øvrige sprog
 - **Privatlivspolitik, support og marketing (nl):** som engelsk (goodtalkcards.com). Praatspel har ingen hjemmeside.
 
 **Undertitel** (App Store, max 30): `Kaarten voor betere gesprekken` (30)
@@ -423,7 +423,7 @@ Praatspel har samme 2.624 kort i 33 bunker som Goodtalk (alle undtagen Efterskol
 **Kort beskrivelse** (Google Play, max 80):
 `Gratis gesprekskaarten voor stellen, gezinnen, vrienden en collega's.` (69)
 
-**Beskrivelse** (max 4.000, her 1.406):
+**Beskrivelse** (max 4.000, her 1.435):
 
 ```
 Praatspel is gesprekskaarten op je telefoon. Trek een kaart, lees de vraag hardop voor en laat het gesprek vanzelf gaan.
@@ -449,7 +449,7 @@ Manieren om te spelen:
 
 En verder:
 • Af en toe een jokerkaart, zoals “stel een eigen vraag”
-• Ook in het Deens, Engels en Zweeds. Wissel van taal onder Meer
+• Ook in het Deens, Engels, Zweeds, Noors, Duits, Frans en Spaans. Wissel van taal onder Meer
 • Werkt zonder internet
 • Geen account, geen reclame, geen cookies. Wat je bewaart, blijft op je telefoon
 
@@ -474,7 +474,7 @@ Fransk har samme 2.624 kort i 33 bunker som Goodtalk, de samme 9 sider med lege 
 - »Parlons-en« gav ingen app i App Store, men er en almindelig vending (svær at finde og at eje), og Google Play har »Parlons Jeu« (com.parlons.jeu).
 
 - **Navn i fr** (App Store, max 30, og Google Play-titel, max 30): `Goodtalk : jeu de conversation` (30)
-- **Sprog i butikkerne:** French (fr-FR) ved siden af dansk, engelsk og svensk. Fransk-canadisk (fr-CA) kan få samme tekster.
+- **Sprog i butikkerne:** French (fr-FR) ved siden af appens øvrige sprog. Fransk-canadisk (fr-CA) kan få samme tekster.
 - **Privatlivspolitik, support og marketing (fr):** som engelsk (goodtalkcards.com). Fransk har ingen hjemmeside.
 
 **Undertitel** (App Store, max 30): `Cartes pour mieux se parler` (27)
@@ -488,7 +488,7 @@ Fransk har samme 2.624 kort i 33 bunker som Goodtalk, de samme 9 sider med lege 
 **Kort beskrivelse** (Google Play, max 80):
 `Cartes de conversation gratuites pour couples, familles, amis et collègues.` (75)
 
-**Beskrivelse** (max 4.000, 1581 tegn):
+**Beskrivelse** (max 4.000, 1619 tegn):
 
 ```
 Goodtalk, ce sont des cartes de conversation dans ton téléphone. Tire une carte, lis la question à voix haute et laisse la conversation venir.
@@ -514,7 +514,7 @@ Des façons de jouer :
 
 Et aussi :
 • Des cartes joker de temps en temps, comme « pose ta propre question »
-• Existe aussi en danois, en anglais et en suédois. Change de langue dans Plus
+• Existe aussi en danois, anglais, suédois, norvégien, allemand, néerlandais et espagnol. Change de langue dans Plus
 • Fonctionne sans internet
 • Pas de compte, pas de pub, pas de cookies. Ce que tu enregistres reste dans ton téléphone
 
@@ -527,7 +527,65 @@ Créé au Danemark par Mahoje.
 
 Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj French i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/fr/` i appen) og fr-FR i Google Play (titel, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Kør `npx tsx scripts/export-cards.ts` og deploy worker'en, så rapporter fra fransk viser den franske tekst.
 
-### Et nyt sprog i appen (fase 2: nb, de, nl, fr, es)
+### Spansk (es)
+
+Charlando har samme 2.624 kort i 33 bunker som Goodtalk, de samme 9 sider med lege (71 lege) og 540 legekort, El año que pasó (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk og tilpasset Spanien, men på neutral spansk med tú og uden vosotros, så det også virker i Latinamerika: Nochebuena, Reyes Magos med roscón og carta a los Reyes, amigo invisible, villancicos, Nochevieja med campanadas og de tolv druer, Semana Santa, noche de San Juan, Primaria/ESO/Bachillerato og selectividad, grupo scout og Insignia de Madera, euro og kilometer. Ingen alkohol (heller ikke »vino« som datid af venir eller »copa« som pokal, fordi testen fanger ordene). Nødnumre i Cómo se juega: 112 og 024 (Línea de atención a la conducta suicida), ellers findahelpline.com.
+
+- **Navn i es** (App Store, max 30): `Charlando: cartas para hablar` (29)
+- **Sprog i butikkerne:** Spanish (Spain) (es-ES) i App Store og es-ES i Google Play. Mexico og resten af Latinamerika (es-MX, es-419) kan få samme tekster senere
+- **Privatlivspolitik, support og marketing (es):** som engelsk (goodtalkcards.com). Charlando har ingen hjemmeside.
+
+**Undertitel** (App Store, max 30): `Preguntas para conversar mejor` (30)
+
+**Reklametekst** (max 170):
+`Saca una carta, lee la pregunta en voz alta y deja que la charla fluya. Más de 2600 preguntas para parejas, familia, clase y amigos. Gratis y sin anuncios.` (155)
+
+**Søgeord** (max 100):
+`preguntas,pareja,cita,familia,amigos,preguntas profundas,qué prefieres,rompehielos,conversación` (95)
+
+**Kort beskrivelse** (Google Play, max 80):
+`Cartas de conversación gratis para parejas, familia, amigos y colegas.` (70)
+
+**Beskrivelse** (max 4.000, her 1397):
+
+```
+Charlando son cartas de conversación en el teléfono. Saca una carta, lee la pregunta en voz alta y deja que la charla fluya.
+
+Más de 2600 preguntas en barajas para cada momento:
+• Pareja, intimidad y primera cita
+• Familia, niños, padres primerizos e historias de familia
+• El cole: Primaria, Secundaria, Bachillerato y vida universitaria
+• Scouts e Insignia de Madera
+• Amigos, colegas y fiestas
+• Preguntas profundas y filosóficas, sueños, recuerdos y futuro
+• Gratitud, buenas noticias y algo nuevo
+• ¿Qué prefieres?, con 120 dilemas
+• Temas difíciles, para las conversaciones que importan
+
+Cada carta está marcada como ligera, media o profunda, así eliges hasta dónde llegar.
+
+Formas de jugar:
+• Adivina la respuesta: uno responde en secreto y el siguiente adivina, con puntos si apetece
+• El año que pasó: cuatro rondas para Nochevieja y cumpleaños
+• Juegos de grupo con cartas listas, para Navidad, Nochevieja, la sobremesa y las bodas
+• La pregunta del día, la misma para todos ese día
+
+Y además:
+• Comodines de vez en cuando, por ejemplo «haz tu propia pregunta»
+• También en danés, inglés, sueco, noruego, alemán, neerlandés y francés. Cambia de idioma en Más
+• Funciona sin internet
+• Sin cuenta, sin anuncios, sin cookies. Lo que guardas se queda en el teléfono
+
+Charlando es un juego de conversación para pasarlo bien y sentirse cerca. No es una terapia.
+Hecho en Dinamarca por Mahoje.
+```
+
+**Nyheder** (es, til versionen der indeholder spansk):
+`Snakkespil ya está en español con el nombre Charlando. Elige el idioma en Más, y tus favoritos y ajustes te acompañan.` (118)
+
+Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Spanish (Spain) i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/es/` i appen) og es-ES i Google Play (titel »Charlando: cartas para hablar«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Deploy worker'en, så rapporter fra `/es/` viser den spanske tekst.
+
+### Et nyt sprog i appen
 
 For hvert sprog, i sin egen PR:
 

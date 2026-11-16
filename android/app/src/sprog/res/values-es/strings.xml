@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- dk.snakkespil.app on a Spanish phone: the app's Spanish language is Charlando (src/locales/appLocales.ts).
+     Only added for dk.snakkespil.app, see build.gradle. -->
+<resources>
+    <string name="app_name">Charlando</string>
+    <string name="title_activity_main">Charlando</string>
+</resources>
