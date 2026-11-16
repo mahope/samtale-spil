@@ -1,0 +1,3 @@
+/* On a Dutch iPhone the app is called Praatspel, the name of its Dutch language (src/locales/appLocales.ts) */
+"CFBundleDisplayName" = "Praatspel";
+"CFBundleName" = "Praatspel";

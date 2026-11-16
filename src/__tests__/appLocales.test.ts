@@ -134,6 +134,11 @@ const CONTENT_RULES: Record<string, { alcohol: Rule; adult: Rule }> = {
     // "geil" is also youth slang for cool, which the cards never use
     adult: word("sex|sexy|sexuell\\p{L}*|nackt\\p{L}*|geil\\p{L}*|erotisch\\p{L}*|orgasmus|orgasmen"),
   },
+  nl: {
+    // not "zat" (also "sat"), "kater" (also a tomcat) or "opgewonden" (also excited)
+    alcohol: word("bier|biertjes?|wijn|wijntjes?|wijnen|drank|drankjes?|sterke drank|borrel\\p{L}*|proost|dronken|aangeschoten|alcohol\\p{L}*|champagne|cava|prosecco|jenever|shots?|shotjes?|cocktails?|kroeg|kroegentocht"),
+    adult: word("seks|seksu\\p{L}*|sexy|naakt|naakte|geil|geile|orgasme\\p{L}*|vrijen|vrijpartij"),
+  },
 };
 const ADULT_OK = new Set(["intimitet", "parforhold", "foerste-date", "kend-din-partner", "nyt-og-ukendt"]);
 

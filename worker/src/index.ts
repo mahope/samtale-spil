@@ -28,7 +28,7 @@ interface RateLimit {
 
 /**
  * t/c: Danish text and deck; e/ce: English text and deck on Goodtalk, when it has the card;
- * l: text and deck per app-only language (Pratspel = sv, Pratespill = nb, Plauderspiel = de), which reports on goodtalkcards.com name with `sprog`
+ * l: text and deck per app-only language (Pratspel = sv, Pratespill = nb, Plauderspiel = de, Praatspel = nl), which reports on goodtalkcards.com name with `sprog`
  */
 type Card = { t: string; c: string; d: string; a?: 1; e?: string; ce?: string; l?: Record<string, { t: string; c: string }> };
 const CARDS = cards as Record<string, Card>;
@@ -118,14 +118,28 @@ const TEXT = {
     error: "Etwas ist schiefgelaufen. Versuch es später noch einmal.",
     notFound: "Nicht gefunden.",
   },
+  nl: {
+    tooMany: "Te veel meldingen op dit moment. Probeer het zo nog eens.",
+    tooBig: "Het bericht is te lang.",
+    invalid: "Ongeldig verzoek.",
+    unknown: "Onbekende kaart of reden.",
+    tooLong: "De opmerking mag maximaal 300 tekens zijn.",
+    links: "De opmerking mag geen links bevatten.",
+    human: "We konden niet bevestigen dat je een mens bent. Probeer het opnieuw.",
+    sendFailed: "De melding kon niet worden verstuurd. Probeer het later nog eens.",
+    statsFailed: "De cijfers konden nu niet worden opgehaald.",
+    error: "Er ging iets mis. Probeer het later nog eens.",
+    notFound: "Niet gevonden.",
+  },
 };
 
 /** App-only languages (no website of their own): their reports go to goodtalkcards.com with `sprog` */
-type AppLang = "sv" | "nb" | "de";
+type AppLang = "sv" | "nb" | "de" | "nl";
 const APP_LANGS: Record<AppLang, { brand: string; name: string }> = {
   sv: { brand: "Pratspel", name: "Svensk" },
   nb: { brand: "Pratespill", name: "Norsk" },
   de: { brand: "Plauderspiel", name: "Tysk" },
+  nl: { brand: "Praatspel", name: "Hollandsk" },
 };
 const appLangOf = (value: unknown): AppLang | undefined =>
   typeof value === "string" && Object.hasOwn(APP_LANGS, value) ? (value as AppLang) : undefined;

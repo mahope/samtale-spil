@@ -8,7 +8,7 @@ Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en l
 
 Appene er ikke hjemmesiden i en ramme. Begge har en bundmenu med fire faner, navigationsbjælker med tilbage-knap og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere/More, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appene.
 
-- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 og norsk bokmål (Pratespill) og tysk (Plauderspiel) fra fase 2 af *Flere sprog* nedenfor. `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/`, `out/nb/` osv. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk giver dansk, svensk svensk, norsk (nb, nn, no) norsk bokmål, tysk tysk, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk, Pratspel på svensk, Pratespill på norsk, Plauderspiel på tysk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
+- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 og norsk bokmål (Pratespill), tysk (Plauderspiel) og hollandsk (Praatspel) fra fase 2 af *Flere sprog* nedenfor. `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/`, `out/nb/` osv. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk giver dansk, svensk svensk, norsk (nb, nn, no) norsk bokmål, tysk tysk, hollandsk hollandsk, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk, Pratspel på svensk, Pratespill på norsk, Plauderspiel på tysk, Praatspel på hollandsk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
   - Dansk (`src/app/**/*.app.tsx`): Spil, I dag, Favoritter og Mere (indstillinger med påmindelse, sprog, dine egne spørgsmål, statistik, sådan spiller I, lege, ikke-terapi, om, privatliv, del).
   - Engelsk, det tidligere Goodtalk, og de øvrige sprog (`*.intlapp.tsx`, tekster fra `src/locales/<kode>/screens.ts`): Play, Today, Favorites og More (language, settings med påmindelse, jokere og udseende, how to play, party games, about, privacy, share). Al tekst er på sproget. Der er ingen egne spørgsmål og ingen statistik på disse sprog.
 - **Snakkespil 18+** (`APP_VARIANT=voksen`, `*.voksen.tsx`): alderskontrollen ligger foran alt, også fanerne. Bunker, I aften (et tilfældigt kort eller en udfordring), Favoritter og Mere (indstillinger med udseende og »spørg om alder igen«, når det bliver svært, om, privatliv, del). Mørkt tema som standard.
@@ -215,7 +215,7 @@ Mads 16/11-2026: seks sprog mere i samme app (svensk, norsk bokmål, tysk, holla
 
 ### Navne pr. sprog
 
-Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/11-2026.
+Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/11-2026, hollandsk mod NL og BE.
 
 | Sprog | Hjemmeskærm og navn i butikken | Begrundelse |
 |---|---|---|
@@ -223,10 +223,8 @@ Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/
 | Engelsk | Goodtalk | Lanceret navn med goodtalkcards.com. Bemærk: »GoodTalk: Personal Development« (com.goodtalk) findes allerede i App Store |
 | Svensk | **Pratspel** (butik: »Pratspel: samtalskort«) | Samme idé som Snakkespil (prata = snakke, spel = spil), lyder svensk og naturligt. Ingen app hedder Pratspel i App Store (SE, DK, NO, US) eller Google Play (SE). Goodtalk blev fravalgt, fordi et engelsk navn på en svensk telefon virker fremmed, og fordi navnet allerede kolliderer med en anden app |
 | Norsk bokmål | **Pratespill** (butik: »Pratespill: samtalekort«) | Norsk for snakkespil (prate = snakke, spill = spil) og samme familie som Pratspel. Tjekket 16/11-2026: ingen app hedder Pratespill i App Store (iTunes Search API, NO) eller Google Play (søgning med gl=NO, hl=no); nærmeste træffere er generiske kortspil. Goodtalk og Snakkespil blev fravalgt af samme grund som på svensk, og »Samtalespill« er for generisk (flere samtaleapps dukker op på ordet) |
-
-
 | Tysk | **Plauderspiel** (butik: »Plauderspiel: Gesprächskarten«) | Samme idé som Snakkespil (plaudern = snakke, sludre; Spiel = spil), varmt og forstået i Tyskland, Østrig og Schweiz. Tjekket 16/11-2026 med iTunes Search API (DE, AT, CH) og Google Plays søgning (DE): ingen app hedder Plauderspiel. Goodtalk blev fravalgt, fordi tre apps i de tysktalende App Stores allerede hedder næsten det samme (»Good Talk, better conversation«, »GoodTalk: Personal Development«, »GoodTalk: AI Couples Therapy«), og fordi et engelsk navn virker fremmed ved siden af tyske kort. »Redespiel« og »Schnackspiel« var også ledige, men »Redespiel« lyder som taletræning, og »Schnack« er nordtysk og forstås dårligt i Sydtyskland, Østrig og Schweiz. »Gesprächsspiel« er generisk og indgår i navnene på tre andre apps |
-| Hollandsk (fase 2) | forslag: **Praatspel** | Hollandsk for snakkespil. Tjek navnet |
+| Hollandsk | **Praatspel** (butik: »Praatspel: gesprekskaarten«) | Hollandsk for snakkespil (praten = snakke, spel = spil) og samme familie som Pratspel. Tjekket 16/11-2026 med iTunes Search API (NL, BE) og Google Plays søgning (NL): ingen app hedder Praatspel. Ordet står kun inde i én fremmed apps hollandske titel (»Lesbian Praatspel & Dating«, com.xystudio.LesbianGame), som ikke er et navn, men et søgeord. Goodtalk blev fravalgt af samme grund som på svensk |
 | Fransk (fase 2) | forslag: **Goodtalk** | Et fransk navn (»Jeu de parole«) er langt og generisk |
 | Spansk (fase 2) | forslag: **Goodtalk** | Samme grund; alternativ »Charla«, tjek navnet |
 
@@ -348,7 +346,6 @@ Laget i Danmark av Mahoje.
 
 Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Norwegian i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/nb/` i appen) og no-NO i Google Play (titel »Pratespill: samtalekort«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Den svenske beskrivelse siger »Finns också på danska och engelska« og kan få norsk med i samme omgang. Worker'en skal deployes, før rapporter fra Pratespill viser den norske tekst (indtil da får de engelske svar og mailen uden norsk tekst).
 
-
 ### Tysk (de)
 
 Plauderspiel har samme 2.624 kort i 33 bunker som Goodtalk og Pratspel, de samme 9 sider med lege og 540 legekort, Jahresrückblick (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk med du-form og tilpasset Tyskland: Advent med Adventskalender og Nikolaus, Heiligabend med Bescherung, Wichteln, Weihnachtsfeier uden alkohol, Silvester med Wachsgießen og »Dinner for One«, Einschulung med Schultüte, Grundschule/Unterstufe/Mittelstufe/Oberstufe, Abitur og Abiball, Erstiwoche og WG, Pfadfinder (Stamm, Gruppenstunde, Zeltlager) og Woodbadge, euro og kilometer. Kønsneutralt, hvor det kan lade sig gøre uden stjerner (»Lehrkraft«, »die andere Person«), ellers begge former (»Freund oder Freundin«). Nødnumre i So spielt ihr: 112 og TelefonSeelsorge 0800 111 0 111 / 0800 111 0 222 (telefonseelsorge.de). Enhedssproget `de` dækker også Østrig og Schweiz.
@@ -406,6 +403,64 @@ Gemacht in Dänemark von Mahoje.
 `Snakkespil gibt es jetzt auf Deutsch als Plauderspiel. Wähle die Sprache unter Mehr, deine Favoriten und Einstellungen kommen mit.` (130)
 
 Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj German i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/de/` i appen) og de-DE i Google Play (titel »Plauderspiel: Gesprächskarten«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Kortrapporter på tysk kræver, at worker'en deployes med `de` i `APP_LANGS` (trin 6 nedenfor).
+
+### Hollandsk (nl)
+
+Praatspel har samme 2.624 kort i 33 bunker som Goodtalk (alle undtagen Efterskolen), de samme 9 sider med lege og 540 legekort, Het jaar dat was (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk med je-form og tilpasset Holland (og læseligt i Flandern): Sinterklaas med pakjesavond, surprises og gedichten, kerst, oud en nieuw med oliebollen, Koningsdag med vrijmarkt, basisskolens groep 3-8, onderbouw og bovenbouw på middelbare school, studentenleven, Scouting Nederland (opkomst, patrouille, insigne), Expeditie Robinson, euro og kilometer. Ingen alkohol, heller ikke ved kerstfeest og bryllup (»borrel« er undgået). Nødnumre i Zo speel je: 112, 113 Zelfmoordpreventie (113 eller 0800-0113, chat på 113.nl) og Zelfmoordlijn 1813 i Belgien. Telefoner på `nl` (også `nl-BE`) åbner hollandsk.
+
+- **Navn i nl** (App Store, max 30): `Praatspel: gesprekskaarten` (26)
+- **Sprog i butikkerne:** Dutch (nl-NL) ved siden af dansk, engelsk og svensk
+- **Privatlivspolitik, support og marketing (nl):** som engelsk (goodtalkcards.com). Praatspel har ingen hjemmeside.
+
+**Undertitel** (App Store, max 30): `Kaarten voor betere gesprekken` (30)
+
+**Reklametekst** (max 170):
+`Trek een kaart, lees de vraag hardop voor en laat het gesprek vanzelf gaan. Ruim 2.600 vragen voor stellen, het gezin, de klas en vrienden. Gratis en zonder reclame.` (165)
+
+**Søgeord** (max 100):
+`gesprekskaarten,vragen,stel,date,gezin,vrienden,diepe vragen,wat zou je liever,ijsbreker,praatspel` (98)
+
+**Kort beskrivelse** (Google Play, max 80):
+`Gratis gesprekskaarten voor stellen, gezinnen, vrienden en collega's.` (69)
+
+**Beskrivelse** (max 4.000, her 1.406):
+
+```
+Praatspel is gesprekskaarten op je telefoon. Trek een kaart, lees de vraag hardop voor en laat het gesprek vanzelf gaan.
+
+Ruim 2.600 vragen in stapels voor de mensen met wie je bent:
+• Stellen, intimiteit en de eerste date
+• Familie, kinderen, net ouders en familieverhalen
+• School: groep 3 tot 8, onderbouw, bovenbouw en het studentenleven
+• Scouting en Gilwell
+• Vrienden, collega's en feestdagen, van Sinterklaas tot Koningsdag
+• Diepe en filosofische vragen, dromen, herinneringen en de toekomst
+• Dankbaarheid, goed nieuws en iets nieuws
+• Wat zou je liever, met 120 dilemma's
+• Moeilijke gesprekken, voor de gesprekken die ertoe doen
+
+Elke kaart is licht, midden of diep, zodat je zelf kiest hoe diep jullie gaan.
+
+Manieren om te spelen:
+• Raad het antwoord: één antwoordt in het geheim, de volgende raadt, met punten als je wilt
+• Het jaar dat was: vier rondes voor oud en nieuw en verjaardagen
+• Gezelschapsspellen met kant-en-klare kaarten, voor kerst, oud en nieuw, aan tafel en op de bruiloft
+• Vraag van de dag, voor iedereen dezelfde
+
+En verder:
+• Af en toe een jokerkaart, zoals “stel een eigen vraag”
+• Ook in het Deens, Engels en Zweeds. Wissel van taal onder Meer
+• Werkt zonder internet
+• Geen account, geen reclame, geen cookies. Wat je bewaart, blijft op je telefoon
+
+Praatspel is een gespreksspel voor plezier en verbondenheid. Het is geen therapie.
+Gemaakt in Denemarken door Mahoje.
+```
+
+**Nyheder** (nl, til versionen der indeholder hollandsk):
+`Snakkespil is er nu in het Nederlands als Praatspel. Kies je taal onder Meer, je favorieten en instellingen gaan mee.` (117)
+
+Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Dutch i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/nl/` i appen) og nl-NL i Google Play (titel »Praatspel: gesprekskaarten«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Kortrapporter på hollandsk kræver, at worker'en deployes med den nye `worker/src/index.ts` og en frisk `cards.json`.
 
 ### Et nyt sprog i appen (fase 2: nb, de, nl, fr, es)
 

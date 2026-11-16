@@ -39,6 +39,7 @@ export const APP_LOCALES: AppLocale[] = [
   // Norwegian Bokmål also opens on Nynorsk and plain "no" phones: closer than Danish or English
   { code: "nb", label: "Norsk", appName: "Pratespill", device: ["nb", "nn", "no"], web: false, more: "/more/" },
   { code: "de", label: "Deutsch", appName: "Plauderspiel", device: ["de"], web: false, more: "/more/" },
+  { code: "nl", label: "Nederlands", appName: "Praatspel", device: ["nl"], web: false, more: "/more/" },
 ];
 
 /** The language a device language that no entry lists opens */
