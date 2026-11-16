@@ -3,7 +3,7 @@
 # after `npm run build` and `npx cap sync ios`.
 #   scripts/store/ios-release.sh <bundle_id> <display_name> <locale> <build_number>
 # Needs env: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8_B64, IOS_DIST_P12_B64, IOS_DIST_P12_PASSWORD.
-# An app without an App Store Connect record is skipped (records are created by hand once). Prints no secrets.
+# An app without an App Store Connect record, or whose version is already approved, is skipped. Prints no secrets.
 set -euo pipefail
 BUNDLE="$1"; NAME="$2"; LOCALE="$3"; BUILD="$4"
 TEAM=P7698GU4AV
@@ -18,6 +18,22 @@ export ASC_PRIVATE_KEY_PATH="$WORK/AuthKey.p8"
 
 APP_ID=$(asc apps list --bundle-id "$BUNDLE" --output json | python3 -c "import json,sys;d=json.load(sys.stdin).get('data',[]);print(d[0]['id'] if d else '')")
 if [ -z "$APP_ID" ]; then echo "$BUNDLE har ingen app i App Store Connect endnu, springer over"; exit 0; fi
+
+# Apple closes a version train once that version is approved (ITMS-90186/90062), so uploading the same
+# marketing version again only produces a rejection mail. Skip until the version is bumped.
+VERSION=$(sed -n 's/.*MARKETING_VERSION = \([0-9.]*\);.*/\1/p' ios/App/App.xcodeproj/project.pbxproj | head -1)
+[ -n "$VERSION" ] || { echo "MARKETING_VERSION ikke fundet i project.pbxproj"; exit 1; }
+CLOSED=$(asc versions list --app "$APP_ID" --platform IOS --output json | python3 -c "
+import json,sys
+closed={'READY_FOR_DISTRIBUTION','PENDING_APPLE_RELEASE','PENDING_DEVELOPER_RELEASE','PROCESSING_FOR_DISTRIBUTION','REPLACED_WITH_NEW_VERSION','READY_FOR_SALE','PROCESSING_FOR_APP_STORE','REMOVED_FROM_SALE','DEVELOPER_REMOVED_FROM_SALE'}
+for v in json.load(sys.stdin).get('data',[]):
+    a=v['attributes']
+    if a.get('versionString')==sys.argv[1] and (a.get('appVersionState') in closed or a.get('appStoreState') in closed):
+        print(a.get('appVersionState') or a.get('appStoreState')); break" "$VERSION")
+if [ -n "$CLOSED" ]; then
+  echo "::warning::$BUNDLE $VERSION er allerede godkendt ($CLOSED); hæv versionen (package.json, project.pbxproj, build.gradle) for at uploade. Springer over."
+  exit 0
+fi
 
 # signing identity in a throwaway keychain
 KC="$WORK/ci.keychain-db"; KP=$(openssl rand -hex 16)
