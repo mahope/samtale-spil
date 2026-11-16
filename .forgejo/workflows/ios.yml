@@ -58,10 +58,13 @@ jobs:
             grep -rqE '"hot-1"' out/ || { echo "udfordringer mangler i 18+-appen"; exit 1; }
             if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "børne-, familie- eller skolekort fundet i 18+-appen"; exit 1; fi
           else
-            # Danish in out/da, English in out/en, out/index.html picks one (src/lib/appLang.ts)
+            # One folder per language in src/locales/appLocales.ts, out/index.html picks one (src/lib/appLang.ts)
             bash scripts/build-app.sh
-            test -f out/index.html && test -f out/da/index.html && test -f out/en/index.html
-            # The adult cards must not be anywhere in the regular app bundle, in either language (issue #54)
+            test -f out/index.html
+            for lang in $(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module -e 'import { APP_LOCALE_CODES } from "./src/locales/appLocales.ts"; console.log(APP_LOCALE_CODES.join(" "))'); do
+              test -f "out/$lang/index.html" || { echo "out/$lang mangler i app-buildet"; exit 1; }
+            done
+            # The adult cards must not be anywhere in the regular app bundle, in any language (issue #54)
             if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
           fi
       - run: npx cap sync ios

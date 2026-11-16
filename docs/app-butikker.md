@@ -210,7 +210,7 @@ Mads 16/11-2026: seks sprog mere i samme app (svensk, norsk bokmål, tysk, holla
 - Dansk bygger `*.app.tsx` fra `src/data`. Alle andre sprog bygger det fælles `*.intlapp.tsx`-træ fra `src/locales/<kode>/`. Skærmenes tekster ligger i `screens.ts` og `content.tsx` (Om, Privatliv, Sådan spiller I) pr. sprog; der er ingen hårdkodet engelsk tekst i det fælles træ.
 - Sprog med `web: false` findes kun i appen. `next.config.ts` nægter at bygge dem uden `APP_BUILD=1` (`assertBuildLocale`), så de får aldrig domæne, sitemap eller hreflang. `src/__tests__/appLocales.test.ts` beviser det ved at indlæse `next.config.ts` med `SITE_LOCALE=sv`, og CI prøver selv at bygge websitet på svensk og forventer, at det fejler.
 - Kortbunkerne i et app-sprog har kun det, appen viser (`AppLocaleDeck`: navn, kort beskrivelse, bagsidebogstaver og kort) og engelske slugs, så ruterne (`/sv/play/questions-for-couples/`) og delte links (goodtalkcards.com) er Goodtalks. Lege har `AppLocaleGamePage` (titel, intro, lege og kort).
-- Delte links og rapporter om kort fra et app-sprog går til goodtalkcards.com, og besøg tælles med Goodtalks Plausible- og Umami-id under `/sv/` (`src/locales/sv/site.ts`).
+- Delte links og rapporter om kort fra et app-sprog går til goodtalkcards.com, og besøg tælles med Goodtalks Plausible- og Umami-id under `/sv/` (`src/locales/sv/site.ts`). Rapporten sender sproget med (`sprog`), så worker'en svarer på sproget, og mailen viser kortets tekst på sproget over den engelske og den danske (`l.<kode>` i `worker/src/cards.json` fra `scripts/export-cards.ts`).
 - Testene kræver for hvert app-sprog: samme bunker, kort-id'er, lege, trin pr. leg og skærmnøgler som engelsk; ingen tomme tekster, tankestreger eller emoji; ingen engelske eller danske ord tilbage (simpel ordliste); ingen alkohol nogen steder og intet voksent uden for parbunkerne (ordlister pr. sprog i `CONTENT_RULES`); entydige bagsidebogstaver; hjemmeskærmsnavn på iOS og Android.
 
 ### Navne pr. sprog
@@ -295,7 +295,8 @@ For hvert sprog, i sin egen PR:
 3. Tilføj sprogets ord i `CONTENT_RULES` i `src/__tests__/appLocales.test.ts` (alkohol og voksenord på sproget). Norsk deler danske ord og bogstaver, så heuristikken mod dansk tekst skal have en norsk undtagelse.
 4. Hjemmeskærmens navn: `ios/App/Sprog/<kode>.lproj/InfoPlist.strings` og `android/app/src/sprog/res/values-<kode>/strings.xml` (`nb` hedder `values-nb` og `nb.lproj`).
 5. Butikstekster på sproget i denne fil, med tegnantal, og et navnetjek mod App Store og Google Play.
-6. `npm run test:run` og `bash scripts/build-app.sh`; CI-trinnet »The app's other languages« tjekker den nye mappe af sig selv.
+6. Kortrapporter: tilføj sproget i `APP_ONLY` i `scripts/export-cards.ts` (scriptet fejler ellers) og i `APP_LANGS` og `TEXT` i `worker/src/index.ts`, kør `npx tsx scripts/export-cards.ts` og deploy worker'en.
+7. `npm run test:run` og `bash scripts/build-app.sh`; CI-trinnet »The app's other languages« tjekker den nye mappe af sig selv.
 
 ## Snakkespil 18+ (voksenapp, issue #57)
 
