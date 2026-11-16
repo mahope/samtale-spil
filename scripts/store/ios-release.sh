@@ -23,9 +23,9 @@ if [ -z "$APP_ID" ]; then echo "$BUNDLE har ingen app i App Store Connect endnu,
 # marketing version again only produces a rejection mail. Skip until the version is bumped.
 VERSION=$(sed -n 's/.*MARKETING_VERSION = \([0-9.]*\);.*/\1/p' ios/App/App.xcodeproj/project.pbxproj | head -1)
 [ -n "$VERSION" ] || { echo "MARKETING_VERSION ikke fundet i project.pbxproj"; exit 1; }
-CLOSED=$(asc versions list --app "$APP_ID" --platform IOS --output json | python3 -c "
+CLOSED=$(asc versions list --app "$APP_ID" --platform IOS --limit 200 --paginate --output json | python3 -c "
 import json,sys
-closed={'READY_FOR_DISTRIBUTION','PENDING_APPLE_RELEASE','PENDING_DEVELOPER_RELEASE','PROCESSING_FOR_DISTRIBUTION','REPLACED_WITH_NEW_VERSION','READY_FOR_SALE','PROCESSING_FOR_APP_STORE','REMOVED_FROM_SALE','DEVELOPER_REMOVED_FROM_SALE'}
+closed={'ACCEPTED','READY_FOR_DISTRIBUTION','PENDING_APPLE_RELEASE','PENDING_DEVELOPER_RELEASE','PROCESSING_FOR_DISTRIBUTION','REPLACED_WITH_NEW_VERSION','READY_FOR_SALE','PROCESSING_FOR_APP_STORE','REMOVED_FROM_SALE','DEVELOPER_REMOVED_FROM_SALE'}
 for v in json.load(sys.stdin).get('data',[]):
     a=v['attributes']
     if a.get('versionString')==sys.argv[1] and (a.get('appVersionState') in closed or a.get('appStoreState') in closed):
