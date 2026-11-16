@@ -148,7 +148,7 @@ export const ui: typeof da = {
     dialogTitle: "Frage teilen",
   },
   shell: {
-    tabs: "Tabs",
+    tabs: "Hauptnavigation",
     backTo: (label: string) => `Zurück zu ${label}`,
     more: "Mehr",
     moreHref: "/more/",
