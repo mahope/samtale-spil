@@ -98,6 +98,11 @@ const CONTENT_RULES: Record<string, { alcohol: RegExp; adult: RegExp }> = {
     // "sex" is also six in Swedish, so the cards write the digit
     adult: word("sex|sexig\\p{L}*|naken|nakna|kåt|orgasm\\p{L}*"),
   },
+  nl: {
+    // not "zat" (also "sat"), "kater" (also a tomcat) or "opgewonden" (also excited)
+    alcohol: word("bier|biertjes?|wijn|wijntjes?|wijnen|drank|drankjes?|sterke drank|borrel\\p{L}*|proost|dronken|aangeschoten|alcohol\\p{L}*|champagne|cava|prosecco|jenever|shots?|shotjes?|cocktails?|kroeg|kroegentocht"),
+    adult: word("seks|seksu\\p{L}*|sexy|naakt|naakte|geil|geile|orgasme\\p{L}*|vrijen|vrijpartij"),
+  },
 };
 const ADULT_OK = new Set(["intimitet", "parforhold", "foerste-date", "kend-din-partner", "nyt-og-ukendt"]);
 

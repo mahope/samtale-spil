@@ -35,9 +35,10 @@ function start({ path = "/", search = "", hash = "", stored = null as string | n
 }
 
 describe("the app's start page (out/index.html)", () => {
-  it("opens Danish for Danish and Norwegian devices, Swedish for Swedish, English for everyone else", () => {
+  it("opens Danish for Danish and Norwegian devices, Swedish for Swedish, Dutch for Dutch and Flemish, English for everyone else", () => {
     for (const lang of ["da", "da-DK", "nb-NO", "nn-NO", "no", "NB_no"]) expect(start({ languages: [lang] }), lang).toBe("/da/index.html");
     for (const lang of ["sv", "sv-SE", "sv-FI", "SV_se"]) expect(start({ languages: [lang] }), lang).toBe("/sv/index.html");
+    for (const lang of ["nl", "nl-NL", "nl-BE", "NL_be"]) expect(start({ languages: [lang] }), lang).toBe("/nl/index.html");
     for (const lang of ["en-US", "en-GB", "de-DE", "fi-FI", "is-IS", "fo-FO", ""]) expect(start({ languages: [lang] }), lang).toBe("/en/index.html");
   });
 
@@ -148,7 +149,7 @@ describe("base path helpers", () => {
     expect(LANG_SWITCH_TARGET.da).toBe("/da/mere/index.html");
     switchAppLang("sv");
     expect(replace).toHaveBeenLastCalledWith("/sv/more/index.html");
-    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(["da", "en", "sv"]);
+    expect(Object.keys(LANG_SWITCH_TARGET)).toEqual(["da", "en", "sv", "nl"]);
   });
 
   afterEach(() => {
