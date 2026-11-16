@@ -8,7 +8,7 @@ Appen bygges uden voksen-bunken (`APP_BUILD=1`, issue #54), så den kan få en l
 
 Appene er ikke hjemmesiden i en ramme. Begge har en bundmenu med fire faner, navigationsbjælker med tilbage-knap og indstillinger som lister. Udseendet følger platformen (iOS: store titler, gennemsigtig fanebjælke, swipe fra venstre kant; Android: Material 3 med pille om den aktive fane, ripple og systemets tilbage-knap). Privatlivspolitikken ligger under Mere/More, som Apple kræver. Hjemmesidens forside, FAQ, sidefod og SEO-sider findes ikke i appene.
 
-- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 af *Flere sprog* nedenfor. `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/` osv. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk og norsk giver dansk, svensk giver svensk, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk, Pratspel på svensk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
+- **Snakkespil** (`dk.snakkespil.app`) taler alle sprogene i `src/locales/appLocales.ts` i ét build: dansk og engelsk fra 2.1.0, svensk (Pratspel) fra fase 1 og norsk bokmål (Pratespill) fra fase 2 af *Flere sprog* nedenfor. `scripts/build-app.sh` bygger én Next-eksport pr. sprog med hver sin `basePath` og lægger dem i `out/da/`, `out/en/`, `out/sv/`, `out/nb/` osv. `out/index.html` vælger sprog ved start (`src/lib/appLang.ts`): et gemt valg kommer først, ellers enhedssproget (dansk giver dansk, svensk svensk, norsk (nb, nn, no) norsk bokmål, alt andet engelsk). Under Mere/More vælges sprog i en liste. Alle sprog har samme origin, så favoritter, historik og indstillinger følger med, og kortene har samme id på alle sprog. Påmindelsen planlægges på det sprog, appen sidst blev åbnet på. Hjemmeskærmens navn følger telefonens sprog: Goodtalk på engelsk, Pratspel på svensk, Pratespill på norsk og ellers Snakkespil (iOS: `ios/App/Sprog`, Android: `android/app/src/sprog`).
   - Dansk (`src/app/**/*.app.tsx`): Spil, I dag, Favoritter og Mere (indstillinger med påmindelse, sprog, dine egne spørgsmål, statistik, sådan spiller I, lege, ikke-terapi, om, privatliv, del).
   - Engelsk, det tidligere Goodtalk, og de øvrige sprog (`*.intlapp.tsx`, tekster fra `src/locales/<kode>/screens.ts`): Play, Today, Favorites og More (language, settings med påmindelse, jokere og udseende, how to play, party games, about, privacy, share). Al tekst er på sproget. Der er ingen egne spørgsmål og ingen statistik på disse sprog.
 - **Snakkespil 18+** (`APP_VARIANT=voksen`, `*.voksen.tsx`): alderskontrollen ligger foran alt, også fanerne. Bunker, I aften (et tilfældigt kort eller en udfordring), Favoritter og Mere (indstillinger med udseende og »spørg om alder igen«, når det bliver svært, om, privatliv, del). Mørkt tema som standard.
@@ -222,7 +222,7 @@ Tjekket med iTunes Search API (SE, DK, NO, US) og Google Plays søgning (SE) 16/
 | Dansk | Snakkespil | Originalen |
 | Engelsk | Goodtalk | Lanceret navn med goodtalkcards.com. Bemærk: »GoodTalk: Personal Development« (com.goodtalk) findes allerede i App Store |
 | Svensk | **Pratspel** (butik: »Pratspel: samtalskort«) | Samme idé som Snakkespil (prata = snakke, spel = spil), lyder svensk og naturligt. Ingen app hedder Pratspel i App Store (SE, DK, NO, US) eller Google Play (SE). Goodtalk blev fravalgt, fordi et engelsk navn på en svensk telefon virker fremmed, og fordi navnet allerede kolliderer med en anden app |
-| Norsk bokmål (fase 2) | forslag: **Pratespill** | Norsk for snakkespil. Tjek navnet, før det bruges |
+| Norsk bokmål | **Pratespill** (butik: »Pratespill: samtalekort«) | Norsk for snakkespil (prate = snakke, spill = spil) og samme familie som Pratspel. Tjekket 16/11-2026: ingen app hedder Pratespill i App Store (iTunes Search API, NO) eller Google Play (søgning med gl=NO, hl=no); nærmeste træffere er generiske kortspil. Goodtalk og Snakkespil blev fravalgt af samme grund som på svensk, og »Samtalespill« er for generisk (flere samtaleapps dukker op på ordet) |
 | Tysk (fase 2) | forslag: **Goodtalk** | Engelske appnavne er almindelige i Tyskland, og et lokalt navn som »Gesprächsspiel« er mest beskrivende. »Redezeit« er et alternativ; tjek navnene |
 | Hollandsk (fase 2) | forslag: **Praatspel** | Hollandsk for snakkespil. Tjek navnet |
 | Fransk (fase 2) | forslag: **Goodtalk** | Et fransk navn (»Jeu de parole«) er langt og generisk |
@@ -286,13 +286,73 @@ Gjort i Danmark av Mahoje.
 
 Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Swedish i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/sv/` i appen) og sv-SE i Google Play (titel »Pratspel: samtalskort«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter).
 
+### Norsk bokmål (nb)
+
+Pratespill har samme 2.624 kort i 33 bunker som Goodtalk og Pratspel (alle undtagen Efterskolen), de samme 9 sider med lege og 540 legekort, Året som gikk (40 kort) og 20 opfølgningsspørgsmål. Oversat fra engelsk og tilpasset Norge: 17. mai, jul med nissen, risgrøt med mandel og pinnekjøtt, julebord uden alkohol, påske på fjellet, hytteliv og matpakke, barneskole (småtrinnet, mellomtrinnet), ungdomsskole og videregående, russetid og fadderuke uden alkohol, speidere og Gilwell, kroner. Nødnumre i Slik spiller du: 113 (ambulance) og 112 (politi), og Mental Helses hjelpetelefon 116 123. Telefoner på bokmål, nynorsk og »no« åbner norsk; nynorsk har ingen egen oversættelse.
+
+Norsk skriver mange af de ord, testen bruger til at finde danske rester (hvordan, hvem, ikke, jeg, og, også, være), og bruger æ og ø. `DANISH_EXCEPTIONS` i `src/__tests__/appLocales.test.ts` tjekker derfor norsk mod de danske stavemåder, bokmål ikke har (hvad, noget, nogen, spørgsmål, efter, meget, mig/dig/sig, af, nu, sjov, bedste, hvornår ...), og mod svensk ä/ö.
+
+- **Navn i nb** (App Store, max 30): `Pratespill: samtalekort` (23)
+- **Sprog i butikkerne:** Norwegian Bokmål (App Store: Norwegian, Google Play: no-NO) ved siden af dansk, engelsk og svensk
+- **Privatlivspolitik, support og marketing (nb):** som engelsk (goodtalkcards.com). Pratespill har ingen hjemmeside.
+
+**Undertitel** (App Store, max 30): `Kort for bedre samtaler` (23)
+
+**Reklametekst** (max 170):
+`Trekk et kort, les spørsmålet høyt og la praten gå. Over 2 600 spørsmål for par, familien, klassen og vennene. Gratis og uten reklame.` (134)
+
+**Søgeord** (max 100):
+`samtalekort,spørsmål,par,date,familie,venner,dype spørsmål,vil du heller,isbryter,samtalespill` (94)
+
+**Kort beskrivelse** (Google Play, max 80):
+`Gratis samtalekort for par, familie, venner og kolleger.` (56)
+
+**Beskrivelse** (max 4.000, 1273 tegn):
+
+```
+Pratespill er samtalekort på telefonen. Trekk et kort, les spørsmålet høyt og la praten gå.
+
+Over 2 600 spørsmål i kortstokker for dem du er sammen med:
+• Par, nærhet og første date
+• Familie, barn, nybakte foreldre og familiehistorier
+• Skolen: småtrinnet, mellomtrinnet, ungdomsskolen, videregående og studentlivet
+• Speidere og Gilwell
+• Venner, kolleger og høytider
+• Dype og filosofiske spørsmål, drømmer, minner og framtiden
+• Takknemlighet, gode nyheter og noe nytt
+• Vil du heller, med 120 dilemmaer
+• Vanskelige samtaler, for samtalene som betyr noe
+
+Hvert kort er merket lett, middels eller dypt, så du velger selv hvor dypt dere går.
+
+Måter å spille på:
+• Gjett svaret: én svarer i hemmelighet, nestemann gjetter, med poeng om dere vil
+• Året som gikk: fire runder til nyttår og bursdager
+• Selskapsleker med ferdige kort, til jul, julebord, nyttår, middagen og bryllupet
+• Dagens spørsmål, det samme for alle den dagen
+
+Og:
+• Jokerkort innimellom, for eksempel «still et eget spørsmål»
+• Finnes også på dansk, engelsk og svensk. Bytt språk under Mer
+• Virker uten internett
+• Ingen konto, ingen reklame, ingen informasjonskapsler. Det du lagrer, blir på telefonen
+
+Pratespill er et samtalespill for moro og nærhet. Det er ikke terapi.
+Laget i Danmark av Mahoje.
+```
+
+**Nyheder** (nb, til versionen der indeholder norsk):
+`Snakkespil finnes nå på norsk som Pratespill. Velg språk under Mer, så blir favorittene og innstillingene dine med.` (115)
+
+Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj Norwegian i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/nb/` i appen) og no-NO i Google Play (titel »Pratespill: samtalekort«, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Den svenske beskrivelse siger »Finns också på danska och engelska« og kan få norsk med i samme omgang. Worker'en skal deployes, før rapporter fra Pratespill viser den norske tekst (indtil da får de engelske svar og mailen uden norsk tekst).
+
 ### Et nyt sprog i appen (fase 2: nb, de, nl, fr, es)
 
 For hvert sprog, i sin egen PR:
 
-1. Tilføj sproget i `src/locales/appLocales.ts` (`web: false`, `more: "/more/"`, navn og enhedssprog). Norsk bokmål tager `nb`, `nn` og `no` fra dansk.
+1. Tilføj sproget i `src/locales/appLocales.ts` (`web: false`, `more: "/more/"`, navn og enhedssprog). Norsk bokmål (`nb`, `nn` og `no`) er tilføjet.
 2. Opret `src/locales/<kode>/` som en kopi af `src/locales/sv/` og oversæt fra engelsk: `ui.ts`, `ui.app.ts`, `site.ts`, `site.app.ts`, `screens.ts`, `content.tsx` (nødnumre og hjælpelinjer for landet), `aaret.ts`, `followUps.ts`, `decks/*.ts`, `games/*.ts`, `games.ts`, `marks.ts` (entydige bagsidebogstaver). Tilpas kulturelt (helligdage, mad, skoletrin, spejderkorps, navne, valuta).
-3. Tilføj sprogets ord i `CONTENT_RULES` i `src/__tests__/appLocales.test.ts` (alkohol og voksenord på sproget). Norsk deler danske ord og bogstaver, så heuristikken mod dansk tekst skal have en norsk undtagelse.
+3. Tilføj sprogets ord i `CONTENT_RULES` i `src/__tests__/appLocales.test.ts` (alkohol og voksenord på sproget). Sprog, der deler danske ord og bogstaver, får en undtagelse i `DANISH_EXCEPTIONS` (som norsk).
 4. Hjemmeskærmens navn: `ios/App/Sprog/<kode>.lproj/InfoPlist.strings` og `android/app/src/sprog/res/values-<kode>/strings.xml` (`nb` hedder `values-nb` og `nb.lproj`).
 5. Butikstekster på sproget i denne fil, med tegnantal, og et navnetjek mod App Store og Google Play.
 6. Kortrapporter: tilføj sproget i `APP_ONLY` i `scripts/export-cards.ts` (scriptet fejler ellers) og i `APP_LANGS` og `TEXT` i `worker/src/index.ts`, kør `npx tsx scripts/export-cards.ts` og deploy worker'en.
