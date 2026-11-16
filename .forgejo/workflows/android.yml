@@ -32,9 +32,10 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      # Snakkespil (Danish and English, with Goodtalk as its English half) and Snakkespil 18+
-      # (issue #57) from the same native project. Goodtalk is no app of its own any more: Apple
-      # rejected it under 4.3, so com.goodtalkcards.app is not built.
+      # Snakkespil, one app with every app language (Goodtalk is its English half). Goodtalk is no
+      # app of its own any more: Apple rejected it under 4.3, so com.goodtalkcards.app is not built.
+      # Snakkespil 18+ (dk.snakkespil.voksen, issue #57) is replaced by Natsnak and is no longer
+      # built or uploaded; the APP_VARIANT=voksen code paths stay for local builds.
       matrix:
         include:
           - site: da
@@ -42,11 +43,6 @@ jobs:
             app_id: dk.snakkespil.app
             app_name: Snakkespil
             artifact: snakkespil
-          - site: da
-            variant: voksen
-            app_id: dk.snakkespil.voksen
-            app_name: Snakkespil 18+
-            artifact: snakkespil-voksen
     runs-on: ubuntu-latest
     env:
       VERSION_CODE: ${{ github.run_number }}
