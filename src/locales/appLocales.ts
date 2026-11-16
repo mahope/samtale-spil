@@ -37,6 +37,7 @@ export const APP_LOCALES: AppLocale[] = [
   { code: "da", label: "Dansk", appName: "Snakkespil", device: ["da", "nb", "nn", "no"], web: true, more: "/mere/" },
   { code: "en", label: "English", appName: "Goodtalk", device: ["en"], web: true, more: "/more/" },
   { code: "sv", label: "Svenska", appName: "Pratspel", device: ["sv"], web: false, more: "/more/" },
+  { code: "fr", label: "Français", appName: "Goodtalk", device: ["fr"], web: false, more: "/more/" },
 ];
 
 /** The language a device language that no entry lists opens */

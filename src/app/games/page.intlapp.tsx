@@ -17,7 +17,7 @@ export default function PartyGamesScreen() {
           <AppRow
             key={g.slug}
             href={`/games/${g.slug}/`}
-            label={<span className="font-semibold">{g.h1.split(":")[0]}</span>}
+            label={<span className="font-semibold">{g.h1.split(":")[0].trim()}</span>}
             detail={t.count(g.lege.length, g.cards.length)}
             media={<DeckBack categoryId={g.deckId} className="h-[52px] w-[38px] rounded-md ring-1 ring-black/10" />}
           />

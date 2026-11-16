@@ -11,6 +11,8 @@ import { localeGames } from "../src/locales/en/games";
 import { APP_LOCALES } from "../src/locales/appLocales";
 import { localeDecks as svDecks } from "../src/locales/sv/decks";
 import { localeGames as svGames } from "../src/locales/sv/games";
+import { localeDecks as frDecks } from "../src/locales/fr/decks";
+import { localeGames as frGames } from "../src/locales/fr/games";
 
 /**
  * App-only languages (web: false in src/locales/appLocales.ts): their reports reach the worker on
@@ -18,6 +20,7 @@ import { localeGames as svGames } from "../src/locales/sv/games";
  */
 const APP_ONLY: Record<string, { decks: Record<string, { name: string; cards: Record<string, string> }>; games: Record<string, { h1: string; kort: Record<string, string> }> }> = {
   sv: { decks: svDecks, games: svGames },
+  fr: { decks: frDecks, games: frGames },
 };
 for (const l of APP_LOCALES) if (!l.web && !APP_ONLY[l.code]) throw new Error(`export-cards: add ${l.code} to APP_ONLY`);
 
@@ -39,7 +42,7 @@ for (const [code, { decks, games }] of Object.entries(APP_ONLY)) {
     if (cards[id]) cards[id].l = { ...cards[id].l, [code]: text };
   };
   for (const deck of Object.values(decks)) for (const [id, t] of Object.entries(deck.cards)) add(id, { t, c: deck.name });
-  for (const page of Object.values(games)) for (const [id, t] of Object.entries(page.kort)) add(id, { t, c: page.h1.split(":")[0] });
+  for (const page of Object.values(games)) for (const [id, t] of Object.entries(page.kort)) add(id, { t, c: page.h1.split(":")[0].trim() });
 }
 writeFileSync(new URL("../worker/src/cards.json", import.meta.url), JSON.stringify(cards));
 console.log(`cards: ${Object.keys(cards).length}`);
