@@ -1,5 +1,5 @@
 // Writes worker/src/cards.json: every card id with its text and deck, so the
-// worker only accepts reports for cards that exist. Run: npx tsx scripts/export-cards.ts
+// worker only accepts reports for cards that exist. Run: bun x tsx scripts/export-cards.ts
 import { writeFileSync } from "node:fs";
 import { categories } from "../src/data/categories";
 import { adultQuestions } from "../src/data/questions/voksne";

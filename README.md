@@ -45,12 +45,12 @@ scripts/generate-icons.mjs  renders favicon, PWA and store icons from assets/ico
 The repo lives on Forgejo (`git.mahoje.dk/mahope/samtale-spil`); GitHub is a push mirror.
 
 ```bash
-npm ci
-npm run dev        # local dev server
-npm run typecheck
-npm run lint
-npm run test:run
-npm run build      # static export to out/
+bun install --frozen-lockfile
+bun run dev        # local dev server
+bun run typecheck
+bun run lint
+bun run test:run
+bun run build      # static export to out/
 ```
 
 CI (`.forgejo/workflows/ci.yml`) runs typecheck, lint, tests, build, checks the export (noindex on play screens, questions in landing-page HTML, canonical URLs) and validates the nginx config.
@@ -73,15 +73,15 @@ After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, 
 
 ## International sites
 
-`SITE_LOCALE=en npm run build` builds Goodtalk (goodtalkcards.com) from the `*.intl.tsx` route files only; the Danish site is unchanged. Unknown locales fail the build. See issue #30.
+`SITE_LOCALE=en bun run build` builds Goodtalk (goodtalkcards.com) from the `*.intl.tsx` route files only; the Danish site is unchanged. Unknown locales fail the build. See issue #30.
 
 ## Native apps
 
-`capacitor.config.ts` wraps `out/` as `dk.snakkespil.app`. The app speaks every language in `src/locales/appLocales.ts` (Danish, English as Goodtalk, Swedish as Pratspel, Norwegian Bokmål as Pratespill, German as Plauderspiel, Dutch as Praatspel, French as Goodtalk, Spanish as Charlando): `npm run build:app` (`scripts/build-app.sh`) exports one app shell per language to `out/<code>/` (basePath `/<code>`) and writes `out/index.html`, which opens the stored language or else the device language (Danish gets Danish, Swedish gets Swedish, Norwegian `nb`/`nn`/`no` gets Norwegian Bokmål, German gets German, Dutch gets Dutch, French gets French, Spanish gets Spanish, everyone else English; `src/lib/appLang.ts`). Users pick a language from the list under Mere / More. Languages with `web: false` exist in the app only and cannot be built as a website. Adding a language: `docs/app-butikker.md`, "Et nyt sprog i appen". Apple rejected the separate Goodtalk app (`com.goodtalkcards.app`) under guideline 4.3 on 10 November 2026, so it is no longer built. Native-only code lives in `src/lib/platform.ts` (haptics, share sheet; no-ops on the web), `src/lib/native.ts` ("Dagens spørgsmål" local notifications, loaded on demand) and `src/components/NativeBoot.tsx` (status bar, splash, Android back button, notification taps, deep-reload guard). The service worker is disabled inside the apps.
+`capacitor.config.ts` wraps `out/` as `dk.snakkespil.app`. The app speaks every language in `src/locales/appLocales.ts` (Danish, English as Goodtalk, Swedish as Pratspel, Norwegian Bokmål as Pratespill, German as Plauderspiel, Dutch as Praatspel, French as Goodtalk, Spanish as Charlando): `bun run build:app` (`scripts/build-app.sh`) exports one app shell per language to `out/<code>/` (basePath `/<code>`) and writes `out/index.html`, which opens the stored language or else the device language (Danish gets Danish, Swedish gets Swedish, Norwegian `nb`/`nn`/`no` gets Norwegian Bokmål, German gets German, Dutch gets Dutch, French gets French, Spanish gets Spanish, everyone else English; `src/lib/appLang.ts`). Users pick a language from the list under Mere / More. Languages with `web: false` exist in the app only and cannot be built as a website. Adding a language: `docs/app-butikker.md`, "Et nyt sprog i appen". Apple rejected the separate Goodtalk app (`com.goodtalkcards.app`) under guideline 4.3 on 10 November 2026, so it is no longer built. Native-only code lives in `src/lib/platform.ts` (haptics, share sheet; no-ops on the web), `src/lib/native.ts` ("Dagens spørgsmål" local notifications, loaded on demand) and `src/components/NativeBoot.tsx` (status bar, splash, Android back button, notification taps, deep-reload guard). The service worker is disabled inside the apps.
 
 - `android/`: signed `.aab`/`.apk` from `.forgejo/workflows/android.yml` (upload key in repo secrets and in Bitwarden, "Snakkespil: Android upload-keystore"). Google Play App Signing holds the app key.
 - `ios/`: Swift Package Manager project; `.forgejo/workflows/ios.yml` compiles it unsigned on the Mac runner. Signing and TestFlight need the Apple team's certificates.
-- After changing web code for the apps: `npm run cap:sync` (runs `scripts/build-app.sh` with `APP_BUILD=1`, which leaves out the 18+ deck so the app can carry a 13+ rating). Icons and splash screens: `npm run cap:assets`.
+- After changing web code for the apps: `bun run cap:sync` (runs `scripts/build-app.sh` with `APP_BUILD=1`, which leaves out the 18+ deck so the app can carry a 13+ rating). Icons and splash screens: `bun run cap:assets`.
 
 ## Licence
 

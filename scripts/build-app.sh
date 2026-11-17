@@ -2,7 +2,7 @@
 # Builds the web content of the Snakkespil app (iOS and Android, dk.snakkespil.app) into out/:
 # one app shell per language in src/locales/appLocales.ts (out/da/, out/en/ = Goodtalk, out/sv/, ...)
 # and out/index.html, which opens one of them (src/lib/appLang.ts). Each language is its own Next
-# export with its own basePath (next.config.ts). The 18+ app is not built here (APP_VARIANT=voksen npm run build).
+# export with its own basePath (next.config.ts). The 18+ app is not built here (APP_VARIANT=voksen bun run build).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 langs=$(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module \
@@ -13,7 +13,7 @@ rm -rf out "$tmp"
 mkdir -p "$tmp"
 for lang in $langs; do
   echo "== app, $lang"
-  APP_BUILD=1 SITE_LOCALE="$lang" npx next build
+  APP_BUILD=1 SITE_LOCALE="$lang" bun x next build
   mv out "$tmp/$lang"
 done
 mkdir out

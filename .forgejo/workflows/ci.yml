@@ -17,19 +17,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
+      # Bun (fixed version) installs the dependencies from bun.lock; node still runs next, eslint, tsc and vitest
+      - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.4"
 
-      - run: npm ci
+      - run: bun install --frozen-lockfile
       - name: Audit (high and critical)
-        run: npm audit --audit-level=high --omit=dev
+        run: bun audit --audit-level=high --prod
       - name: Typecheck
-        run: npx tsc --noEmit
+        run: bun run typecheck
       - name: Lint
-        run: npm run lint
+        run: bun run lint
       - name: Tests
-        run: npm run test:run
+        run: bun run test:run
       - name: Build
-        run: npm run build
+        run: bun run build
 
       - name: Verify static export
         run: |
@@ -120,7 +123,7 @@ jobs:
           if grep -rqE '"hot-[0-9]+"' out/; then echo "18+-app dares in the web build"; exit 1; fi
           rm -rf out
           # an app-only language (src/locales/appLocales.ts, web: false) must never build as a website
-          if SITE_LOCALE=sv npx next build >/dev/null 2>&1; then echo "SITE_LOCALE=sv built a website"; exit 1; fi
+          if SITE_LOCALE=sv bun x next build >/dev/null 2>&1; then echo "SITE_LOCALE=sv built a website"; exit 1; fi
           rm -rf out
           # the Snakkespil app: one folder per app language (out/da, out/en = Goodtalk, out/sv = Pratspel, ...), out/index.html picks one
           bash scripts/build-app.sh >/dev/null
@@ -146,7 +149,7 @@ jobs:
           done
           test ! -e out/da/spoergsmaal && test ! -e out/da/guide || { echo "website pages leaked into the app build"; exit 1; }
           grep -q '>English<' out/da/mere/index.html || { echo "no language switch on Mere"; exit 1; }
-          npm run check:links -- out/da --base /da
+          bun run check:links out/da --base /da
 
       - name: English half of the app (Goodtalk) is the English app shell, with no dead links
         run: |
@@ -165,7 +168,7 @@ jobs:
             grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/en/ | head -5
             echo "Danish text in the English half"; exit 1
           fi
-          npm run check:links -- out/en --base /en
+          bun run check:links out/en --base /en
 
       - name: The app's other languages (Swedish, Norwegian, ...) are the international app shell, with no dead links
         run: |
@@ -189,14 +192,14 @@ jobs:
               grep -rlE --exclude=manifest.json "$leftovers" "out/$lang/" | head -5
               echo "Danish or English text in out/$lang"; exit 1
             fi
-            npm run check:links -- "out/$lang" --base "/$lang"
+            bun run check:links "out/$lang" --base "/$lang"
           done
 
       - name: International build (Goodtalk, SITE_LOCALE=en)
         run: |
           set -euo pipefail
           rm -rf out
-          SITE_LOCALE=en npm run build >/dev/null
+          SITE_LOCALE=en bun run build >/dev/null
           if grep -riq 'natsnak' out/; then echo "Natsnak leaked into the English website"; exit 1; fi
           grep -q '<html lang="en"' out/index.html || { echo "English build is not lang=en"; exit 1; }
           if grep -q 'content="noindex' out/index.html; then echo "the English home page must be indexable"; exit 1; fi
@@ -227,7 +230,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf out
-          APP_VARIANT=voksen npm run build >/dev/null
+          APP_VARIANT=voksen bun run build >/dev/null
           grep -q 'data-shell="app"' out/index.html || { echo "the 18+ app is not the app shell"; exit 1; }
           grep -q 'Er du fyldt 18?' out/index.html || { echo "the age gate is missing in front of the 18+ app"; exit 1; }
           for p in i-aften favoritter mere indstillinger om privatliv ikke-terapi spil/udfordringer; do
@@ -236,7 +239,7 @@ jobs:
           done
           grep -rqE '"adult-1"' out/ && grep -rqE '"hot-1"' out/ || { echo "adult cards or dares missing in the 18+ app"; exit 1; }
           if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "kids, family or school cards in the 18+ app"; exit 1; fi
-          npm run check:links
+          bun run check:links
 
       - name: Verify nginx config
         run: |
