@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  checks:
     # Independent checks run at the same time inside each job and the three jobs run side by side
     # (check: typecheck, lint, tests, audit and the website; app: the app export; variants: Goodtalk and 18+).
     runs-on: ubuntu-latest
@@ -293,3 +293,18 @@ jobs:
           grep -rqE '"adult-1"' out/ && grep -rqE '"hot-1"' out/ || { echo "adult cards or dares missing in the 18+ app"; exit 1; }
           if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "kids, family or school cards in the 18+ app"; exit 1; fi
           bun run check:links
+
+  # Gate for the required status check "CI / check (pull_request)": it waits for all three jobs, so a red app or
+  # variants job blocks the merge. if: always() makes it run (and fail) when a needed job fails instead of being skipped.
+  check:
+    needs: [checks, app, variants]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: All three jobs must have succeeded
+        run: |
+          echo "checks=${{ needs.checks.result }} app=${{ needs.app.result }} variants=${{ needs.variants.result }}"
+          test "${{ needs.checks.result }}" = success
+          test "${{ needs.app.result }}" = success
+          test "${{ needs.variants.result }}" = success

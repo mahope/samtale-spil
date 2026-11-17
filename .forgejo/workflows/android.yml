@@ -66,8 +66,22 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-          # The Gradle distribution (gradle-wrapper.properties) and the dependencies, keyed on the Gradle files
-          cache: gradle
+
+      # Gradle distribution and dependencies: lower-case week key, so each runner saves at most once a week per Gradle
+      # change (setup-java's own cache key has an upper-case "Linux" and is saved again on every run)
+      - name: Week for the Gradle cache key
+        id: uge
+        run: echo "uge=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        timeout-minutes: 5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}-${{ steps.uge.outputs.uge }}
+          restore-keys: |
+            gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}-
+            gradle-
 
       # The default package list asks for "tools", which cmdline-tools 16 no longer has
       - uses: android-actions/setup-android@v3

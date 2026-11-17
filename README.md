@@ -53,7 +53,7 @@ bun run test:run
 bun run build      # static export to out/
 ```
 
-CI (`.forgejo/workflows/ci.yml`) runs as three parallel jobs (`scripts/ci-parallel.sh` runs independent checks side by side; `scripts/build-in-tree.sh` and `APP_BUILD_JOBS` run the differently configured builds in private copies of the tree) and runs typecheck, lint, tests, build, checks the export (noindex on play screens, questions in landing-page HTML, canonical URLs) and validates the nginx config.
+CI (`.forgejo/workflows/ci.yml`) runs as three parallel jobs (`checks`, `app`, `variants`) plus a gate job named `check`, which is the required status check and fails unless all three succeeded (`scripts/ci-parallel.sh` runs independent checks side by side; `scripts/build-in-tree.sh` and `APP_BUILD_JOBS` run the differently configured builds in private copies of the tree) and runs typecheck, lint, tests, build, checks the export (noindex on play screens, questions in landing-page HTML, canonical URLs) and validates the nginx config.
 
 The Danish website footer links to Natsnak (18+). It uses the existing `APP_BUILD` flag to omit the link from native builds; the English website uses its own footer. CI requires the link and age label in the Danish web export and checks that no `natsnak` text exists anywhere in the bilingual app export or English web export.
 
