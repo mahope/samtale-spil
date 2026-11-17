@@ -13,7 +13,7 @@ on:
       - "capacitor.config.ts"
       - "next.config.ts"
       - "package.json"
-      - "package-lock.json"
+      - "bun.lock"
       - "scripts/build-app.sh"
       - "scripts/app-index.mjs"
       - ".forgejo/workflows/android.yml"
@@ -44,6 +44,7 @@ jobs:
             app_name: Snakkespil
             artifact: snakkespil
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       VERSION_CODE: ${{ github.run_number }}
       SITE_LOCALE: ${{ matrix.site }}
@@ -56,31 +57,77 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
+      # Bun (fixed version) installs the dependencies from bun.lock; node still runs next, eslint, tsc and vitest
+      - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.4"
+          # setup-bun's own cache has a post step without a timeout; on a runner whose cache server cannot be reached
+          # it hangs until the job times out. The binary downloads in under a second.
+          no-cache: true
 
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
 
+      # Gradle distribution and dependencies: lower-case week key, so each runner saves at most once a week per Gradle
+      # change (setup-java's own cache key has an upper-case "Linux" and is saved again on every run)
+      # Is the runner's cache server reachable from this container? One-shot VM runners (192.168.122.x) cannot reach it,
+      # and every cache step then waits almost 5 minutes for a connection. The cache steps below are skipped in that case.
+      - name: Cache server reachable
+        id: cacheprobe
+        timeout-minutes: 1
+        run: |
+          url="${ACTIONS_CACHE_URL:-}"
+          hostport=$(printf '%s' "$url" | sed -E 's#^[a-z]+://([^/]+).*#\1#')
+          ok=true
+          if [ -n "$hostport" ]; then
+            case "$hostport" in *:*) host=${hostport%%:*}; port=${hostport##*:};; *) host=$hostport; port=80;; esac
+            timeout 3 bash -c "exec 3<>/dev/tcp/$host/$port" 2>/dev/null || ok=false
+          fi
+          echo "ok=$ok" >> "$GITHUB_OUTPUT"
+          echo "cache server ${hostport:-unknown} reachable: $ok"
+
+      - name: Week for the Gradle cache key
+        id: uge
+        run: echo "uge=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+      # Explicit restore and save steps (not the combined actions/cache): its post step has no timeout of its own, and on a
+      # runner whose cache server cannot be reached each restore and save takes almost 5 minutes. Here they are skipped
+      # when the server cannot be reached (step above), may fail without failing the job, and the save is only tried when
+      # the restore reached the server. No timeout-minutes on cache steps: an expired step timeout turns the job red
+      # even with continue-on-error (measured 17/11-26).
+      - name: Restore the Gradle cache
+        id: cache
+        if: steps.cacheprobe.outputs.ok == 'true'
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}-${{ steps.uge.outputs.uge }}
+          restore-keys: |
+            gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}-
+            gradle-
+
       # The default package list asks for "tools", which cmdline-tools 16 no longer has
       - uses: android-actions/setup-android@v3
         with:
           packages: "platform-tools platforms;android-36 build-tools;36.0.0"
 
-      - run: npm ci
+      - run: bun install --frozen-lockfile
       - name: Build the web content
         run: |
           set -euo pipefail
           if [ "$APP_VARIANT" = voksen ]; then
-            npm run build
+            bun run build
             # The 18+ app has the adult cards and dares, and nothing for families, kids or school (issue #57)
             grep -rqE '"adult-1"' out/ || { echo "voksenkort mangler i 18+-appen"; exit 1; }
             grep -rqE '"hot-1"' out/ || { echo "udfordringer mangler i 18+-appen"; exit 1; }
             if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "børne-, familie- eller skolekort fundet i 18+-appen"; exit 1; fi
           else
             # One folder per language in src/locales/appLocales.ts, out/index.html picks one (src/lib/appLang.ts)
-            bash scripts/build-app.sh
+            APP_BUILD_JOBS=4 bash scripts/build-app.sh
             test -f out/index.html
             for lang in $(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module -e 'import { APP_LOCALE_CODES } from "./src/locales/appLocales.ts"; console.log(APP_LOCALE_CODES.join(" "))'); do
               test -f "out/$lang/index.html" || { echo "out/$lang mangler i app-buildet"; exit 1; }
@@ -88,7 +135,7 @@ jobs:
             # The adult cards must not be anywhere in the regular app bundle, in any language (issue #54)
             if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "Voksenkort fundet i app-buildet"; exit 1; fi
           fi
-      - run: npx cap sync android
+      - run: bun x cap sync android
 
       - name: Upload key
         if: github.event_name != 'pull_request'
@@ -132,6 +179,17 @@ jobs:
           elif grep -q "application-label-en:" <<< "$badging"; then
             echo "$APP_ID har fået et engelsk app-navn"; exit 1
           fi
+
+      - name: Save the Gradle cache
+        if: success() && steps.cache.outcome == 'success' && steps.cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          # The restore step's own key: android/ is changed by `cap sync` in between, so a hash computed here would differ.
+          key: ${{ steps.cache.outputs.cache-primary-key }}
 
       - name: Remove key
         if: always()

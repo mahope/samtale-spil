@@ -9,28 +9,37 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  checks:
+    # Independent checks run at the same time inside each job and the three jobs run side by side
+    # (check: typecheck, lint, tests, audit and the website; app: the app export; variants: Goodtalk and 18+).
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
+      # Bun (fixed version) installs the dependencies from bun.lock; node still runs next, eslint, tsc and vitest
+      - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.4"
+          # setup-bun's own cache has a post step without a timeout; on a runner whose cache server cannot be reached
+          # it hangs until the job times out. The binary downloads in under a second.
+          no-cache: true
 
-      - run: npm ci
-      - name: Audit (high and critical)
-        run: npm audit --audit-level=high --omit=dev
-      - name: Typecheck
-        run: npx tsc --noEmit
-      - name: Lint
-        run: npm run lint
-      - name: Tests
-        run: npm run test:run
-      - name: Build
-        run: npm run build
-
+      - run: bun install --frozen-lockfile
+      - name: Audit, typecheck, lint, tests, website build and nginx install, side by side
+        run: |
+          set -euo pipefail
+          S=""; command -v sudo >/dev/null && S="sudo"
+          bash scripts/ci-parallel.sh \
+            "audit::bun audit --audit-level=high --prod" \
+            "typecheck::bun run typecheck" \
+            "lint::bun run lint" \
+            "tests::bun run test:run" \
+            "build::bash scripts/build-in-tree.sh web-da out" \
+            "nginx::$S apt-get update -qq && $S apt-get install -y -qq nginx-light >/dev/null"
       - name: Verify static export
         run: |
           set -euo pipefail
@@ -110,7 +119,7 @@ jobs:
           grep -qi 'hreflang="en"' out/index.html || { echo "Danish home page has no hreflang=en"; exit 1; }
           grep -qi 'hreflang="en"' out/spoergsmaal/parforhold/index.html || { echo "Danish deck page has no hreflang=en"; exit 1; }
 
-      - name: App build leaves out the 18+ deck
+      - name: Website leaves out the 18+ deck and the dares
         run: |
           set -euo pipefail
           grep -q 'href="https://natsnak.dk/" rel="noopener"' out/index.html || { echo "Danish website misses Natsnak link"; exit 1; }
@@ -118,12 +127,43 @@ jobs:
           grep -rqE '"adult-[0-9]+"' out/ || { echo "guard finds no adult cards in the web build"; exit 1; }
           # the dares (hot-N) belong to the Snakkespil 18+ app only (issue #57)
           if grep -rqE '"hot-[0-9]+"' out/; then echo "18+-app dares in the web build"; exit 1; fi
+      - name: Verify nginx config
+        run: |
+          set -euo pipefail
+          S=""; command -v sudo >/dev/null && S="sudo"
+          $S mkdir -p /etc/nginx/snippets
+          $S cp deploy/security-headers.conf /etc/nginx/snippets/security-headers.conf
+          $S rm -f /etc/nginx/sites-enabled/default
+          $S cp deploy/nginx.conf /etc/nginx/conf.d/default.conf
+          $S nginx -t
+
+  app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # Bun (fixed version) installs the dependencies from bun.lock; node still runs next, eslint, tsc and vitest
+      - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.4"
+          # setup-bun's own cache has a post step without a timeout; on a runner whose cache server cannot be reached
+          # it hangs until the job times out. The binary downloads in under a second.
+          no-cache: true
+
+      - run: bun install --frozen-lockfile
+      - name: App build leaves out the 18+ deck
+        run: |
+          set -euo pipefail
           rm -rf out
           # an app-only language (src/locales/appLocales.ts, web: false) must never build as a website
-          if SITE_LOCALE=sv npx next build >/dev/null 2>&1; then echo "SITE_LOCALE=sv built a website"; exit 1; fi
+          if SITE_LOCALE=sv bun x next build >/dev/null 2>&1; then echo "SITE_LOCALE=sv built a website"; exit 1; fi
           rm -rf out
           # the Snakkespil app: one folder per app language (out/da, out/en = Goodtalk, out/sv = Pratspel, ...), out/index.html picks one
-          bash scripts/build-app.sh >/dev/null
+          APP_BUILD_JOBS=4 bash scripts/build-app.sh >/dev/null
           if grep -riq 'natsnak' out/; then echo "Natsnak leaked into the 12+ app build"; exit 1; fi
           if grep -rqE '"adult-[0-9]+"|"hot-[0-9]+"|et helt upassende sted' out/; then echo "adult cards in the app build"; exit 1; fi
 
@@ -146,7 +186,7 @@ jobs:
           done
           test ! -e out/da/spoergsmaal && test ! -e out/da/guide || { echo "website pages leaked into the app build"; exit 1; }
           grep -q '>English<' out/da/mere/index.html || { echo "no language switch on Mere"; exit 1; }
-          npm run check:links -- out/da --base /da
+          bun run check:links out/da --base /da
 
       - name: English half of the app (Goodtalk) is the English app shell, with no dead links
         run: |
@@ -165,7 +205,7 @@ jobs:
             grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Tilbage til|Spring til indholdet|Indstillinger|Favoritter|"Faner"' out/en/ | head -5
             echo "Danish text in the English half"; exit 1
           fi
-          npm run check:links -- out/en --base /en
+          bun run check:links out/en --base /en
 
       - name: The app's other languages (Swedish, Norwegian, ...) are the international app shell, with no dead links
         run: |
@@ -189,14 +229,39 @@ jobs:
               grep -rlE --exclude=manifest.json "$leftovers" "out/$lang/" | head -5
               echo "Danish or English text in out/$lang"; exit 1
             fi
-            npm run check:links -- "out/$lang" --base "/$lang"
+            bun run check:links "out/$lang" --base "/$lang"
           done
 
+
+  variants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # Bun (fixed version) installs the dependencies from bun.lock; node still runs next, eslint, tsc and vitest
+      - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.4.4"
+          # setup-bun's own cache has a post step without a timeout; on a runner whose cache server cannot be reached
+          # it hangs until the job times out. The binary downloads in under a second.
+          no-cache: true
+
+      - run: bun install --frozen-lockfile
+      - name: Build the English website and the 18+ app side by side
+        run: |
+          set -euo pipefail
+          bash scripts/ci-parallel.sh \
+            "web-en::bash scripts/build-in-tree.sh web-en .ci-out/en SITE_LOCALE=en" \
+            "app-voksen::bash scripts/build-in-tree.sh app-voksen .ci-out/voksen APP_VARIANT=voksen"
       - name: International build (Goodtalk, SITE_LOCALE=en)
         run: |
           set -euo pipefail
           rm -rf out
-          SITE_LOCALE=en npm run build >/dev/null
+          mv .ci-out/en out
           if grep -riq 'natsnak' out/; then echo "Natsnak leaked into the English website"; exit 1; fi
           grep -q '<html lang="en"' out/index.html || { echo "English build is not lang=en"; exit 1; }
           if grep -q 'content="noindex' out/index.html; then echo "the English home page must be indexable"; exit 1; fi
@@ -227,7 +292,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf out
-          APP_VARIANT=voksen npm run build >/dev/null
+          mv .ci-out/voksen out
           grep -q 'data-shell="app"' out/index.html || { echo "the 18+ app is not the app shell"; exit 1; }
           grep -q 'Er du fyldt 18?' out/index.html || { echo "the age gate is missing in front of the 18+ app"; exit 1; }
           for p in i-aften favoritter mere indstillinger om privatliv ikke-terapi spil/udfordringer; do
@@ -236,15 +301,19 @@ jobs:
           done
           grep -rqE '"adult-1"' out/ && grep -rqE '"hot-1"' out/ || { echo "adult cards or dares missing in the 18+ app"; exit 1; }
           if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "kids, family or school cards in the 18+ app"; exit 1; fi
-          npm run check:links
+          bun run check:links
 
-      - name: Verify nginx config
+  # Gate for the required status check "CI / check (pull_request)": it waits for all three jobs, so a red app or
+  # variants job blocks the merge. if: always() makes it run (and fail) when a needed job fails instead of being skipped.
+  check:
+    needs: [checks, app, variants]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: All three jobs must have succeeded
         run: |
-          set -euo pipefail
-          S=""; command -v sudo >/dev/null && S="sudo"
-          $S apt-get update -qq && $S apt-get install -y -qq nginx-light >/dev/null
-          $S mkdir -p /etc/nginx/snippets
-          $S cp deploy/security-headers.conf /etc/nginx/snippets/security-headers.conf
-          $S rm -f /etc/nginx/sites-enabled/default
-          $S cp deploy/nginx.conf /etc/nginx/conf.d/default.conf
-          $S nginx -t
+          echo "checks=${{ needs.checks.result }} app=${{ needs.app.result }} variants=${{ needs.variants.result }}"
+          test "${{ needs.checks.result }}" = success
+          test "${{ needs.app.result }}" = success
+          test "${{ needs.variants.result }}" = success

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Signed App Store build of one app variant, uploaded to App Store Connect. Runs on the mahope-mac runner
-# after `npm run build` and `npx cap sync ios`.
+# after `bun run build` and `bun x cap sync ios`.
 #   scripts/store/ios-release.sh <bundle_id> <display_name> <locale> <build_number>
 # Needs env: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8_B64, IOS_DIST_P12_B64, IOS_DIST_P12_PASSWORD.
 # An app without an App Store Connect record, or whose version is already approved, is skipped. Prints no secrets.

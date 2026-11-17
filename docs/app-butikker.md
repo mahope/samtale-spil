@@ -525,7 +525,7 @@ Créé au Danemark par Mahoje.
 **Nyheder** (fr, til versionen der indeholder fransk):
 `Snakkespil parle maintenant français, sous le nom de Goodtalk. Choisis la langue dans Plus : tes favoris et tes réglages te suivent.` (132)
 
-Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj French i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/fr/` i appen) og fr-FR i Google Play (titel, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Kør `npx tsx scripts/export-cards.ts` og deploy worker'en, så rapporter fra fransk viser den franske tekst.
+Tjekliste til udgivelsen (kun i hånden eller med Mads' go): tilføj French i App Store Connect (navn, undertitel, reklametekst, søgeord, beskrivelse, What's New, skærmbilleder fra `/fr/` i appen) og fr-FR i Google Play (titel, kort og fuld beskrivelse, skærmbilleder, udgivelsesnoter). Kør `bun x tsx scripts/export-cards.ts` og deploy worker'en, så rapporter fra fransk viser den franske tekst.
 
 ### Spansk (es)
 
@@ -594,8 +594,8 @@ For hvert sprog, i sin egen PR:
 3. Tilføj sprogets ord i `CONTENT_RULES` i `src/__tests__/appLocales.test.ts` (alkohol og voksenord på sproget). Sprog, der deler danske ord og bogstaver, får en undtagelse i `DANISH_EXCEPTIONS` (som norsk).
 4. Hjemmeskærmens navn: `ios/App/Sprog/<kode>.lproj/InfoPlist.strings` og `android/app/src/sprog/res/values-<kode>/strings.xml` (`nb` hedder `values-nb` og `nb.lproj`).
 5. Butikstekster på sproget i denne fil, med tegnantal, og et navnetjek mod App Store og Google Play.
-6. Kortrapporter: tilføj sproget i `APP_ONLY` i `scripts/export-cards.ts` (scriptet fejler ellers) og i `APP_LANGS` og `TEXT` i `worker/src/index.ts`, kør `npx tsx scripts/export-cards.ts` og deploy worker'en.
-7. `npm run test:run` og `bash scripts/build-app.sh`; CI-trinnet »The app's other languages« tjekker den nye mappe af sig selv.
+6. Kortrapporter: tilføj sproget i `APP_ONLY` i `scripts/export-cards.ts` (scriptet fejler ellers) og i `APP_LANGS` og `TEXT` i `worker/src/index.ts`, kør `bun x tsx scripts/export-cards.ts` og deploy worker'en.
+7. `bun run test:run` og `bash scripts/build-app.sh`; CI-trinnet »The app's other languages« tjekker den nye mappe af sig selv.
 
 ## Snakkespil 18+ (voksenapp, issue #57)
 
