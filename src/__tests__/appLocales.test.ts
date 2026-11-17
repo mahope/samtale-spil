@@ -348,6 +348,8 @@ describe("home screen names", () => {
     for (const l of INTL) {
       expect(android(l.code), l.code).toContain(`<string name="app_name">${l.appName}</string>`);
       expect(android(l.code), l.code).toContain(`<string name="title_activity_main">${l.appName}</string>`);
+      // app_name comes from resValue in build.gradle, so Android lint sees no default to translate
+      expect(android(l.code), l.code).toContain('tools:ignore="ExtraTranslation"');
     }
     expect(readFileSync(join(ROOT, "android/app/build.gradle"), "utf8")).toContain(`?: "${APP_LOCALES[0].appName}"`);
   });

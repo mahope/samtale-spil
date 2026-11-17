@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- dk.snakkespil.app on a Norwegian phone: the app's Norwegian language is Pratespill (src/locales/appLocales.ts).
      Only added for dk.snakkespil.app, see build.gradle. -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="app_name">Pratespill</string>
     <string name="title_activity_main">Pratespill</string>
 </resources>
