@@ -188,7 +188,8 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}-${{ steps.uge.outputs.uge }}
+          # The restore step's own key: android/ is changed by `cap sync` in between, so a hash computed here would differ.
+          key: ${{ steps.cache.outputs.cache-primary-key }}
 
       - name: Remove key
         if: always()
