@@ -72,6 +72,22 @@ jobs:
 
       # Gradle distribution and dependencies: lower-case week key, so each runner saves at most once a week per Gradle
       # change (setup-java's own cache key has an upper-case "Linux" and is saved again on every run)
+      # Is the runner's cache server reachable from this container? One-shot VM runners (192.168.122.x) cannot reach it,
+      # and every cache step then waits almost 5 minutes for a connection. The cache steps below are skipped in that case.
+      - name: Cache server reachable
+        id: cacheprobe
+        timeout-minutes: 1
+        run: |
+          url="${ACTIONS_CACHE_URL:-}"
+          hostport=$(printf '%s' "$url" | sed -E 's#^[a-z]+://([^/]+).*#\1#')
+          ok=true
+          if [ -n "$hostport" ]; then
+            case "$hostport" in *:*) host=${hostport%%:*}; port=${hostport##*:};; *) host=$hostport; port=80;; esac
+            timeout 3 bash -c "exec 3<>/dev/tcp/$host/$port" 2>/dev/null || ok=false
+          fi
+          echo "ok=$ok" >> "$GITHUB_OUTPUT"
+          echo "cache server ${hostport:-unknown} reachable: $ok"
+
       - name: Week for the Gradle cache key
         id: uge
         run: echo "uge=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
@@ -80,6 +96,7 @@ jobs:
       # may fail without failing the job, and the save is only tried when the restore reached the server.
       - name: Restore the Gradle cache
         id: cache
+        if: steps.cacheprobe.outputs.ok == 'true'
         timeout-minutes: 2
         continue-on-error: true
         uses: actions/cache/restore@v4
