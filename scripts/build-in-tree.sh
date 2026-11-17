@@ -19,7 +19,11 @@ work=$(mktemp -d "$base/$name.XXXXXX")
 trap 'rm -rf "$work"' EXIT
 (cd "$root" && tar -cf - --exclude=./.git --exclude=./node_modules --exclude=./android --exclude=./ios \
   --exclude=./out --exclude=./.next --exclude=./.app-build .) | tar -xf - -C "$work"
-cp -al "$root/node_modules" "$work/node_modules" 2>/dev/null || cp -a "$root/node_modules" "$work/node_modules"
+if ! cp -al "$root/node_modules" "$work/node_modules" 2>/dev/null; then
+  # Another filesystem: the failed link attempt leaves a partial directory, which must go before the real copy
+  rm -rf "$work/node_modules"
+  cp -a "$root/node_modules" "$work/node_modules"
+fi
 cd "$work"
 env "$@" ./node_modules/.bin/next build 2>&1 | sed -u "s/^/[$name] /"
 test -f out/index.html
