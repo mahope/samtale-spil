@@ -92,12 +92,13 @@ jobs:
         id: uge
         run: echo "uge=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
       # Explicit restore and save steps (not the combined actions/cache): its post step has no timeout of its own, and on a
-      # runner whose cache server cannot be reached each restore and save takes almost 5 minutes. Here both are bounded and
-      # may fail without failing the job, and the save is only tried when the restore reached the server.
+      # runner whose cache server cannot be reached each restore and save takes almost 5 minutes. Here they are skipped
+      # when the server cannot be reached (step above), may fail without failing the job, and the save is only tried when
+      # the restore reached the server. No timeout-minutes on cache steps: an expired step timeout turns the job red
+      # even with continue-on-error (measured 17/11-26).
       - name: Restore the Gradle cache
         id: cache
         if: steps.cacheprobe.outputs.ok == 'true'
-        timeout-minutes: 2
         continue-on-error: true
         uses: actions/cache/restore@v4
         with:
@@ -181,7 +182,6 @@ jobs:
 
       - name: Save the Gradle cache
         if: success() && steps.cache.outcome == 'success' && steps.cache.outputs.cache-hit != 'true'
-        timeout-minutes: 2
         continue-on-error: true
         uses: actions/cache/save@v4
         with:
