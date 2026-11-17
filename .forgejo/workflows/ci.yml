@@ -167,7 +167,7 @@ jobs:
           fi
           npm run check:links -- out/en --base /en
 
-      - name: The app's other languages (Swedish, ...) are the international app shell, with no dead links
+      - name: The app's other languages (Swedish, Norwegian, ...) are the international app shell, with no dead links
         run: |
           set -euo pipefail
           others=$(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module -e 'import { APP_LOCALES } from "./src/locales/appLocales.ts"; console.log(APP_LOCALES.filter((l) => !["da", "en"].includes(l.code)).map((l) => l.code).join(" "))')
@@ -180,9 +180,13 @@ jobs:
             done
             test ! -e "out/$lang/questions" && test ! -e "out/$lang/guide" && test ! -e "out/$lang/print" && test ! -e "out/$lang/sitemap.xml" || { echo "website pages leaked into out/$lang"; exit 1; }
             grep -q '>Dansk<' "out/$lang/more/index.html" && grep -q '>English<' "out/$lang/more/index.html" || { echo "no language list on /$lang/more/"; exit 1; }
-            # no Danish or English UI words or cards (the language list names Dansk and English, on purpose)
-            if grep -rlqE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Spring til indholdet|Indstillinger|Favoritter|Tap to flip|Next card|Skip to content|"Tabs"|Keep playing|Choose a deck' "out/$lang/"; then
-              grep -rlE --exclude=manifest.json 'categoryId:"dybe",text:"Hvis|Tryk for at vende|Næste kort|Spring til indholdet|Indstillinger|Favoritter|Tap to flip|Next card|Skip to content|"Tabs"|Keep playing|Choose a deck' "out/$lang/" | head -5
+            # no Danish or English UI words or cards (the language list names Dansk and English, on purpose).
+            # Norwegian writes "Favoritter" too, so nb is checked for the Danish "Dagens spørgsmål" instead
+            danish='Favoritter'
+            [ "$lang" = nb ] && danish='Dagens spørgsmål'
+            leftovers="categoryId:\"dybe\",text:\"Hvis|Tryk for at vende|Næste kort|Spring til indholdet|Indstillinger|$danish|Tap to flip|Next card|Skip to content|\"Tabs\"|Keep playing|Choose a deck"
+            if grep -rlqE --exclude=manifest.json "$leftovers" "out/$lang/"; then
+              grep -rlE --exclude=manifest.json "$leftovers" "out/$lang/" | head -5
               echo "Danish or English text in out/$lang"; exit 1
             fi
             npm run check:links -- "out/$lang" --base "/$lang"

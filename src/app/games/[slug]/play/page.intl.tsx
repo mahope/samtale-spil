@@ -17,12 +17,12 @@ export const dynamicParams = false;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const game = intlGameBySlug.get((await params).slug);
-  return appScreenMetadata(game ? screens.play.gameMeta(game.h1.split(":")[0]) : screens.play.title);
+  return appScreenMetadata(game ? screens.play.gameMeta(game.h1.split(":")[0].trim()) : screens.play.title);
 }
 
 export default async function GamePlayPage({ params }: Props) {
   const game = intlGameBySlug.get((await params).slug);
   if (!game) notFound();
   const path = `/games/${game.slug}/`;
-  return <PlayDeckLoader deckId={game.deckId} name={game.h1.split(":")[0]} sharePath={path} backHref={path} questions={game.cards} />;
+  return <PlayDeckLoader deckId={game.deckId} name={game.h1.split(":")[0].trim()} sharePath={path} backHref={path} questions={game.cards} />;
 }

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- dk.snakkespil.app on a Dutch phone: the app's Dutch language is Praatspel (src/locales/appLocales.ts).
+     Only added for dk.snakkespil.app, see build.gradle. -->
+<resources>
+    <string name="app_name">Praatspel</string>
+    <string name="title_activity_main">Praatspel</string>
+</resources>

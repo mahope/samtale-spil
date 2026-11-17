@@ -1,0 +1,3 @@
+/* On a Spanish iPhone the app is called Charlando, the name of its Spanish language (src/locales/appLocales.ts) */
+"CFBundleDisplayName" = "Charlando";
+"CFBundleName" = "Charlando";

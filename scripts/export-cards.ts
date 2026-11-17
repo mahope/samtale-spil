@@ -11,6 +11,16 @@ import { localeGames } from "../src/locales/en/games";
 import { APP_LOCALES } from "../src/locales/appLocales";
 import { localeDecks as svDecks } from "../src/locales/sv/decks";
 import { localeGames as svGames } from "../src/locales/sv/games";
+import { localeDecks as nbDecks } from "../src/locales/nb/decks";
+import { localeGames as nbGames } from "../src/locales/nb/games";
+import { localeDecks as deDecks } from "../src/locales/de/decks";
+import { localeGames as deGames } from "../src/locales/de/games";
+import { localeDecks as nlDecks } from "../src/locales/nl/decks";
+import { localeGames as nlGames } from "../src/locales/nl/games";
+import { localeDecks as frDecks } from "../src/locales/fr/decks";
+import { localeGames as frGames } from "../src/locales/fr/games";
+import { localeDecks as esDecks } from "../src/locales/es/decks";
+import { localeGames as esGames } from "../src/locales/es/games";
 
 /**
  * App-only languages (web: false in src/locales/appLocales.ts): their reports reach the worker on
@@ -18,6 +28,11 @@ import { localeGames as svGames } from "../src/locales/sv/games";
  */
 const APP_ONLY: Record<string, { decks: Record<string, { name: string; cards: Record<string, string> }>; games: Record<string, { h1: string; kort: Record<string, string> }> }> = {
   sv: { decks: svDecks, games: svGames },
+  nb: { decks: nbDecks, games: nbGames },
+  de: { decks: deDecks, games: deGames },
+  nl: { decks: nlDecks, games: nlGames },
+  fr: { decks: frDecks, games: frGames },
+  es: { decks: esDecks, games: esGames },
 };
 for (const l of APP_LOCALES) if (!l.web && !APP_ONLY[l.code]) throw new Error(`export-cards: add ${l.code} to APP_ONLY`);
 
@@ -39,7 +54,7 @@ for (const [code, { decks, games }] of Object.entries(APP_ONLY)) {
     if (cards[id]) cards[id].l = { ...cards[id].l, [code]: text };
   };
   for (const deck of Object.values(decks)) for (const [id, t] of Object.entries(deck.cards)) add(id, { t, c: deck.name });
-  for (const page of Object.values(games)) for (const [id, t] of Object.entries(page.kort)) add(id, { t, c: page.h1.split(":")[0] });
+  for (const page of Object.values(games)) for (const [id, t] of Object.entries(page.kort)) add(id, { t, c: page.h1.split(":")[0].trim() });
 }
 writeFileSync(new URL("../worker/src/cards.json", import.meta.url), JSON.stringify(cards));
 console.log(`cards: ${Object.keys(cards).length}`);

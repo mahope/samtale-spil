@@ -7,7 +7,7 @@ import { screens } from "@/locale/screens";
 export const metadata = { title: screens.favorites.title };
 
 const deckNames = Object.fromEntries([
-  ...intlGames.map((g) => [g.deckId, g.h1.split(":")[0]]),
+  ...intlGames.map((g) => [g.deckId, g.h1.split(":")[0].trim()]),
   ...intlDecks.map((d) => [d.id, d.name]),
   ["aaret", screens.year.title],
 ]);

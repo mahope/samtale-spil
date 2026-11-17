@@ -81,25 +81,114 @@ function texts(l: Locale): string[] {
 }
 
 const word = (alternatives: string) => new RegExp(`(?<!\\p{L})(?:${alternatives})(?!\\p{L})`, "iu");
-// Simple leftovers checks: words that only English or only Danish has. Norwegian (phase 2) shares the
-// Danish words and letters, so it gets its own list there.
+// Simple leftovers checks: words that only English or only Danish has.
 const ENGLISH = word("the|and|you|your|what|which|would|with|have|about|this|that|from|when|where|card|cards|play");
 const DANISH = word("hvad|hvordan|hvem|hvilken|hvilke|ikke|jeg|og|noget|nogen|også|være|spørgsmål");
 const DANISH_LETTERS = /[æøÆØ]/;
 
 /**
+ * Languages that share words and letters with Danish, so the check above would flag every card.
+ * Norwegian Bokmål writes hvordan, hvem, ikke, jeg, og, også and være exactly as Danish, and uses æ and ø:
+ * it is checked against the Danish spellings Bokmål does not have (hva, noe, noen, spørsmål, etter,
+ * mye, meg/deg/seg, av, nå, gøy, beste, når ...) and against Swedish ä/ö instead.
+ */
+const DANISH_EXCEPTIONS: Record<string, { danish: RegExp; letters: RegExp }> = {
+  nb: {
+    danish: word("hvad|noget|nogen|nogle|spørgsmål|efter|meget|mig|dig|sig|af|nu|sjov|sjovt|sjoveste|bedste|kunne lide|hvornår|købe|børn|forældre|bedsteforældre|igennem|blevet|tit|lidt"),
+    letters: /[äöÄÖ]/,
+  },
+};
+
+/**
  * No alcohol anywhere (as Goodtalk, src/__tests__/localeEn.test.ts), and nothing adult outside the
  * couples' decks. A new app language must add its words here; the test fails until it does.
  */
-const CONTENT_RULES: Record<string, { alcohol: RegExp; adult: RegExp }> = {
+type Rule = Pick<RegExp, "test">;
+const anyOf = (...rules: Rule[]): Rule => ({ test: (t) => rules.some((r) => r.test(t)) });
+
+const CONTENT_RULES: Record<string, { alcohol: Rule; adult: Rule }> = {
   sv: {
     // not "full" or "fylla": full lön, fylla år, fylla i
     alcohol: word("öl|vin|vinet|sprit|snaps|nubbe|skål|skåla|berusad|packad|bakfull|fyllan|drinkar?|shots?|krogrunda|alkohol\\p{L}*|cider|champagne|bubbel"),
     // "sex" is also six in Swedish, so the cards write the digit
     adult: word("sex|sexig\\p{L}*|naken|nakna|kåt|orgasm\\p{L}*"),
   },
+  nb: {
+    // "skål" is also a bowl, which the cards call "bolle"; not "full" (full fart, full av) or "fylle" (fylle år)
+    alcohol: word("øl|vin|vinen|sprit|brennevin|akevitt|dram|skål|skåle|beruset|bakfull|fyllesyk|fylla|fyllekule|drinker?|shots?|pils|vors|nachspiel|alkohol\\p{L}*|cider|champagne|musserende"),
+    adult: word("sex|sexy|sexuell\\p{L}*|seksuell\\p{L}*|naken|nakne|kåt|kåte|orgasme\\p{L}*"),
+  },
+  de: {
+    alcohol: anyOf(
+      // German glues words together (Feierabendbier, Glühweine, Stammkneipe), so most words match inside
+      // compounds too. Not "Kater" (also a tomcat), not verbs on -bieren (probieren, buchstabieren, absorbieren), "Schwein" or "Insekt".
+      word(
+        "\\p{L}*(?<!pro|sta|sor)bier\\p{L}*|\\p{L}+(?<!sch|be)wein(?:e|es|s)?|sekt(?:e?s|glas|gläser|flaschen?|empfang|laune)?|" +
+          "\\p{L}*schn[aä]ps\\p{L}*|\\p{L}*likör\\p{L}*|\\p{L}*cocktail\\p{L}*|\\p{L}*champagner\\p{L}*|\\p{L}*alkohol\\p{L}*|" +
+          "\\p{L}*kneipe\\p{L}*|kneipentour|prost|zuprosten|zugeprostet|betrunken\\p{L}*|besoffen\\p{L}*|beschwipst\\p{L}*|verkatert|" +
+          "(?:be|ver)?sauf\\p{L}*|gesoffen|\\p{L}*säufer\\p{L}*|bowle|schampus|aperol\\p{L}*|wodka|whiske?y|gin|tequila|cognac|shots?|drinks?",
+      ),
+      // the noun is capitalised; lower-case "weine", "weinen" and "weinte" are crying
+      /(?<!\p{L})Wein(?!en|end|t)\p{L}*/u,
+    ),
+    // "geil" is also youth slang for cool, which the cards never use
+    adult: word("sex|sexy|sexuell\\p{L}*|nackt\\p{L}*|geil\\p{L}*|erotisch\\p{L}*|orgasmus|orgasmen"),
+  },
+  nl: {
+    // not "zat" (also "sat"), "kater" (also a tomcat) or "opgewonden" (also excited)
+    alcohol: word("bier|biertjes?|wijn|wijntjes?|wijnen|drank|drankjes?|sterke drank|borrel\\p{L}*|proost|dronken|aangeschoten|alcohol\\p{L}*|champagne|cava|prosecco|jenever|shots?|shotjes?|cocktails?|kroeg|kroegentocht"),
+    adult: word("seks|seksu\\p{L}*|sexy|naakt|naakte|geil|geile|orgasme\\p{L}*|vrijen|vrijpartij"),
+  },
+  fr: {
+    // not "verre" or "boire" alone: un verre d'eau, boire du chocolat chaud
+    alcohol: word("vins?|bières?|alcool\\p{L}*|apéro\\p{L}*|apéritifs?|champagne|cidre|ivres?|ivresse|soûls?|saoûls?|bourrée?s?|cuite|gueule de bois|cocktails?|shots?|pintes?|rosé|whisky|vodka|digestifs?|trinqu\\p{L}*|tchin|boire un (?:verre|coup)|bars?"),
+    // "nu" also covers "pieds nus": the cards outside the couples' decks say it another way
+    adult: word("sexe|sexy|sexuel\\p{L}*|sexualité|nue?s?|à poil|excitée?s?|orgasme\\p{L}*|coquin\\p{L}*|érotique\\p{L}*"),
+  },
+  es: {
+    // "vino" is also "came" (venir) and "copa" a trophy: the cards avoid both, so the words stay on the list
+    alcohol: word("cervezas?|vinos?|vinito|cava|champán|champaña|sidra|chupitos?|copas?|copita|cubatas?|borrach\\p{L}*|resacas?|alcohol\\p{L}*|brindis|brind(?:ar|amos|emos)|sangría|tequila|ron|whisky|vodka|ginebra|licor\\p{L}*|botellón|tragos?|mojito|calimocho"),
+    adult: word("sexo|sexy|sexual\\p{L}*|desnud\\p{L}*|orgasm\\p{L}*|cachond\\p{L}*|erótic\\p{L}*|excitad\\p{L}*"),
+  },
 };
 const ADULT_OK = new Set(["intimitet", "parforhold", "foerste-date", "kend-din-partner", "nyt-og-ukendt"]);
+
+describe("the German alcohol check", () => {
+  const { alcohol } = CONTENT_RULES.de;
+
+  it("catches inflected words and compounds", () => {
+    for (const t of [
+      "Magst du Bier?",
+      "Welche Weine magst du?",
+      "Was ist dein liebstes Feierabendbier?",
+      "Wo gibt es den besten Biergarten?",
+      "Trinkst du Glühwein auf dem Weihnachtsmarkt?",
+      "Rotweine oder Weißweine?",
+      "Welcher Wein passt zu Pizza?",
+      "Gehst du oft in deine Stammkneipe?",
+      "Wann hast du zuletzt Sektgläser gespült?",
+      "Wer hat am meisten gesoffen?",
+    ])
+      expect(alcohol.test(t), t).toBe(true);
+  });
+
+  it("lets crying, trying and pigs through", () => {
+    for (const t of [
+      "Wann hast du zuletzt geweint?",
+      "Ich weine bei jedem Film.",
+      "Weinen ist okay.",
+      "Was würdest du gern ausprobieren?",
+      "Probierst du gern Neues?",
+      "Buchstabiere deinen Namen rückwärts.",
+      "Welches Tier magst du lieber: Schwein oder Kuh?",
+      "Hast du Angst vor Insekten?",
+      "Was machst du nach den Hausaufgaben?",
+      "Wann hast du zuletzt gestaunt?",
+      "Weihnachten mit Adventskalender",
+    ])
+      expect(alcohol.test(t), t).toBe(false);
+  });
+});
 
 describe("the list of app languages", () => {
   it("has unique codes, Danish and English first, and English as the fallback", () => {
@@ -221,7 +310,8 @@ describe.each(OTHERS.map((l) => l.code))("app language %s", (code) => {
   });
 
   it("has no English or Danish words left", () => {
-    const left = texts(l).filter((t) => ENGLISH.test(t) || DANISH.test(t) || DANISH_LETTERS.test(t));
+    const { danish, letters } = DANISH_EXCEPTIONS[code] ?? { danish: DANISH, letters: DANISH_LETTERS };
+    const left = texts(l).filter((t) => ENGLISH.test(t) || danish.test(t) || letters.test(t));
     expect(left).toEqual([]);
   });
 

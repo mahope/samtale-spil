@@ -28,7 +28,7 @@ interface RateLimit {
 
 /**
  * t/c: Danish text and deck; e/ce: English text and deck on Goodtalk, when it has the card;
- * l: text and deck per app-only language (Pratspel = sv), which reports on goodtalkcards.com name with `sprog`
+ * l: text and deck per app-only language (Pratspel = sv, Pratespill = nb, Plauderspiel = de, Praatspel = nl, French Goodtalk = fr, Charlando = es), which reports on goodtalkcards.com name with `sprog`
  */
 type Card = { t: string; c: string; d: string; a?: 1; e?: string; ce?: string; l?: Record<string, { t: string; c: string }> };
 const CARDS = cards as Record<string, Card>;
@@ -92,11 +92,83 @@ const TEXT = {
     error: "Något gick fel. Försök igen senare.",
     notFound: "Hittades inte.",
   },
+  nb: {
+    tooMany: "For mange rapporter akkurat nå. Prøv igjen om litt.",
+    tooBig: "Meldingen er for lang.",
+    invalid: "Ugyldig forespørsel.",
+    unknown: "Ukjent kort eller årsak.",
+    tooLong: "Kommentaren kan være på høyst 300 tegn.",
+    links: "Kommentaren kan ikke inneholde lenker.",
+    human: "Vi kunne ikke bekrefte at du er et menneske. Prøv igjen.",
+    sendFailed: "Rapporten kunne ikke sendes. Prøv igjen senere.",
+    statsFailed: "Tallene kunne ikke hentes akkurat nå.",
+    error: "Noe gikk galt. Prøv igjen senere.",
+    notFound: "Finnes ikke.",
+  },
+  de: {
+    tooMany: "Gerade kommen zu viele Meldungen. Versuch es gleich noch einmal.",
+    tooBig: "Die Nachricht ist zu lang.",
+    invalid: "Ungültige Anfrage.",
+    unknown: "Unbekannte Karte oder unbekannter Grund.",
+    tooLong: "Der Kommentar darf höchstens 300 Zeichen lang sein.",
+    links: "Der Kommentar darf keine Links enthalten.",
+    human: "Wir konnten nicht bestätigen, dass du ein Mensch bist. Versuch es noch einmal.",
+    sendFailed: "Die Meldung konnte nicht gesendet werden. Versuch es später noch einmal.",
+    statsFailed: "Die Zahlen konnten gerade nicht geladen werden.",
+    error: "Etwas ist schiefgelaufen. Versuch es später noch einmal.",
+    notFound: "Nicht gefunden.",
+  },
+  nl: {
+    tooMany: "Te veel meldingen op dit moment. Probeer het zo nog eens.",
+    tooBig: "Het bericht is te lang.",
+    invalid: "Ongeldig verzoek.",
+    unknown: "Onbekende kaart of reden.",
+    tooLong: "De opmerking mag maximaal 300 tekens zijn.",
+    links: "De opmerking mag geen links bevatten.",
+    human: "We konden niet bevestigen dat je een mens bent. Probeer het opnieuw.",
+    sendFailed: "De melding kon niet worden verstuurd. Probeer het later nog eens.",
+    statsFailed: "De cijfers konden nu niet worden opgehaald.",
+    error: "Er ging iets mis. Probeer het later nog eens.",
+    notFound: "Niet gevonden.",
+  },
+  fr: {
+    tooMany: "Trop de signalements en ce moment. Réessaie dans un instant.",
+    tooBig: "Le message est trop long.",
+    invalid: "Requête invalide.",
+    unknown: "Carte ou motif inconnu.",
+    tooLong: "Le commentaire ne doit pas dépasser 300 caractères.",
+    links: "Le commentaire ne doit pas contenir de liens.",
+    human: "Nous n'avons pas pu confirmer que tu es un humain. Réessaie.",
+    sendFailed: "Le signalement n'a pas pu être envoyé. Réessaie plus tard.",
+    statsFailed: "Impossible de charger les chiffres pour le moment.",
+    error: "Une erreur s'est produite. Réessaie plus tard.",
+    notFound: "Introuvable.",
+  },
+  es: {
+    tooMany: "Demasiados avisos ahora mismo. Inténtalo de nuevo dentro de un momento.",
+    tooBig: "El mensaje es demasiado largo.",
+    invalid: "Solicitud no válida.",
+    unknown: "Carta o motivo desconocido.",
+    tooLong: "El comentario puede tener como máximo 300 caracteres.",
+    links: "El comentario no puede contener enlaces.",
+    human: "No hemos podido confirmar que eres una persona. Inténtalo de nuevo.",
+    sendFailed: "No se ha podido enviar el aviso. Inténtalo de nuevo más tarde.",
+    statsFailed: "No se han podido cargar las cifras ahora mismo.",
+    error: "Algo ha fallado. Inténtalo de nuevo más tarde.",
+    notFound: "No encontrado.",
+  },
 };
 
 /** App-only languages (no website of their own): their reports go to goodtalkcards.com with `sprog` */
-type AppLang = "sv";
-const APP_LANGS: Record<AppLang, { brand: string; name: string }> = { sv: { brand: "Pratspel", name: "Svensk" } };
+type AppLang = "sv" | "nb" | "de" | "nl" | "fr" | "es";
+const APP_LANGS: Record<AppLang, { brand: string; name: string }> = {
+  sv: { brand: "Pratspel", name: "Svensk" },
+  nb: { brand: "Pratespill", name: "Norsk" },
+  de: { brand: "Plauderspiel", name: "Tysk" },
+  nl: { brand: "Praatspel", name: "Hollandsk" },
+  fr: { brand: "Goodtalk (fransk)", name: "Fransk" },
+  es: { brand: "Charlando", name: "Spansk" },
+};
 const appLangOf = (value: unknown): AppLang | undefined =>
   typeof value === "string" && Object.hasOwn(APP_LANGS, value) ? (value as AppLang) : undefined;
 
