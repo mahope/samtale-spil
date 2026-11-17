@@ -24,6 +24,9 @@ jobs:
       - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: "1.4.4"
+          # setup-bun's own cache has a post step without a timeout; on a runner whose cache server cannot be reached
+          # it hangs until the job times out. The binary downloads in under a second.
+          no-cache: true
 
       - run: bun install --frozen-lockfile
       - name: Audit, typecheck, lint, tests, website build and nginx install, side by side
@@ -147,6 +150,9 @@ jobs:
       - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: "1.4.4"
+          # setup-bun's own cache has a post step without a timeout; on a runner whose cache server cannot be reached
+          # it hangs until the job times out. The binary downloads in under a second.
+          no-cache: true
 
       - run: bun install --frozen-lockfile
       - name: App build leaves out the 18+ deck
@@ -240,6 +246,9 @@ jobs:
       - uses: https://github.com/oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: "1.4.4"
+          # setup-bun's own cache has a post step without a timeout; on a runner whose cache server cannot be reached
+          # it hangs until the job times out. The binary downloads in under a second.
+          no-cache: true
 
       - run: bun install --frozen-lockfile
       - name: Build the English website and the 18+ app side by side
