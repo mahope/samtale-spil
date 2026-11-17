@@ -42,3 +42,4 @@ next-env.d.ts
 worker/src/cards.json
 worker/.wrangler/
 worker/node_modules/
+/.ci-out/

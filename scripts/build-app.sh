@@ -11,11 +11,19 @@ langs=$(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module 
 tmp=.app-build
 rm -rf out "$tmp"
 mkdir -p "$tmp"
-for lang in $langs; do
-  echo "== app, $lang"
-  APP_BUILD=1 SITE_LOCALE="$lang" bun x next build
-  mv out "$tmp/$lang"
-done
+# APP_BUILD_JOBS=N builds up to N languages at once, each in its own copy of the tree
+# (scripts/build-in-tree.sh); the default, 1, builds them one after the other in this tree.
+jobs=${APP_BUILD_JOBS:-1}
+if [ "$jobs" -gt 1 ]; then
+  printf '%s\n' $langs | xargs -P "$jobs" -I{} bash scripts/build-in-tree.sh "app-{}" "$tmp/{}" APP_BUILD=1 SITE_LOCALE={}
+else
+  for lang in $langs; do
+    echo "== app, $lang"
+    APP_BUILD=1 SITE_LOCALE="$lang" bun x next build
+    mv out "$tmp/$lang"
+  done
+fi
+for lang in $langs; do test -f "$tmp/$lang/index.html" || { echo "no export for $lang"; exit 1; }; done
 mkdir out
 for lang in $langs; do mv "$tmp/$lang" "out/$lang"; done
 rmdir "$tmp"
