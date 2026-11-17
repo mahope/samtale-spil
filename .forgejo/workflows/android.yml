@@ -44,6 +44,7 @@ jobs:
             app_name: Snakkespil
             artifact: snakkespil
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       VERSION_CODE: ${{ github.run_number }}
       SITE_LOCALE: ${{ matrix.site }}
@@ -65,6 +66,8 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+          # The Gradle distribution (gradle-wrapper.properties) and the dependencies, keyed on the Gradle files
+          cache: gradle
 
       # The default package list asks for "tools", which cmdline-tools 16 no longer has
       - uses: android-actions/setup-android@v3
@@ -83,7 +86,7 @@ jobs:
             if grep -rqE '"(boern|fam|barn|ven|kol|hoej|indskolingen|mellemtrinnet|udskolingen|studieliv|gymnasiet|efterskolen|spejder|gilwell)-[0-9]+"' out/; then echo "børne-, familie- eller skolekort fundet i 18+-appen"; exit 1; fi
           else
             # One folder per language in src/locales/appLocales.ts, out/index.html picks one (src/lib/appLang.ts)
-            bash scripts/build-app.sh
+            APP_BUILD_JOBS=4 bash scripts/build-app.sh
             test -f out/index.html
             for lang in $(node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --input-type=module -e 'import { APP_LOCALE_CODES } from "./src/locales/appLocales.ts"; console.log(APP_LOCALE_CODES.join(" "))'); do
               test -f "out/$lang/index.html" || { echo "out/$lang mangler i app-buildet"; exit 1; }
