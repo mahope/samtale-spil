@@ -65,7 +65,7 @@ jobs:
           # it hangs until the job times out. The binary downloads in under a second.
           no-cache: true
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
