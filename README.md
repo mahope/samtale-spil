@@ -55,6 +55,18 @@ bun run build      # static export to out/
 
 CI (`.forgejo/workflows/ci.yml`) runs as three parallel jobs (`checks`, `app`, `variants`) plus a gate job named `check`, which is the required status check and fails unless all three succeeded (`scripts/ci-parallel.sh` runs independent checks side by side; `scripts/build-in-tree.sh` and `APP_BUILD_JOBS` run the differently configured builds in private copies of the tree) and runs typecheck, lint, tests, build, checks the export (noindex on play screens, questions in landing-page HTML, canonical URLs) and validates the nginx config.
 
+### Secrets
+
+The repo is public, so nothing secret is committed: signing keys, store credentials and worker secrets live in Bitwarden, Forgejo repo secrets and Cloudflare worker secrets, and the code reads them from the environment. `.gitignore` covers `.env*` and `*.pem`. The `checks` job runs `scripts/secret-scan.py` (and its tests) first and fails on any finding in tracked files; it prints only `path:line:rule`, never the matched value.
+
+```bash
+python3 scripts/secret-scan.py            # tracked files (what CI runs)
+python3 scripts/secret-scan.py --history  # every blob in all branches and tags
+python3 -m unittest discover -s scripts -p 'test_*.py'
+```
+
+It covers AWS, Anthropic and OpenAI key formats, private keys, JWTs, database URLs with a password, `password`/`secret`/`token` assignments and high-entropy `*key` values. Harmless matches (public keys, examples, test data) are allowlisted in `.gitleaks.toml` (gitleaks format, so `gitleaks detect` reads the same list), one exact path and rule per entry with the reason.
+
 The Danish website footer links to Natsnak (18+). It uses the existing `APP_BUILD` flag to omit the link from native builds; the English website uses its own footer. CI requires the link and age label in the Danish web export and checks that no `natsnak` text exists anywhere in the bilingual app export or English web export.
 
 ## Deploy

@@ -18,7 +18,6 @@ import math
 import re
 import subprocess
 import sys
-import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -73,10 +72,38 @@ class Allow:
         return any(p.search(path) for p in self.paths)
 
 
+def parse_toml(text: str) -> dict:
+    """tomllib on Python 3.11+; older runners get a parser for the subset .gitleaks.toml uses."""
+    try:
+        import tomllib
+    except ImportError:
+        pass
+    else:
+        return tomllib.loads(text)
+    return parse_allowlist_subset(text)
+
+
+def parse_allowlist_subset(text: str) -> dict:
+    data: dict = {"allowlists": []}
+    current: dict | None = None
+    for line in text.splitlines():
+        line = line.strip()
+        if line == "[[allowlists]]":
+            current = {}
+            data["allowlists"].append(current)
+        elif line.startswith("["):
+            current = None
+        elif current is not None and re.match(r"(paths|targetRules)\s*=", line):
+            key, _, value = line.partition("=")
+            current[key.strip()] = re.findall(r"'''(.*?)'''|\"((?:[^\"\\]|\\.)*)\"", value)
+            current[key.strip()] = [a or b for a, b in current[key.strip()]]
+    return data
+
+
 def load_allowlist(config: Path) -> list[Allow]:
     if not config.exists():
         return []
-    data = tomllib.loads(config.read_text(encoding="utf-8"))
+    data = parse_toml(config.read_text(encoding="utf-8"))
     out = []
     for entry in data.get("allowlists", []):
         paths = tuple(re.compile(p) for p in entry.get("paths", []))

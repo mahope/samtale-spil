@@ -17,6 +17,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The repo is public: no secrets in tracked files. Uses only the runner's python3 (nothing downloaded);
+      # prints path:line:rule, never the value. Harmless matches are allowlisted per file in .gitleaks.toml.
+      - name: Secret scan
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s scripts -p 'test_*.py'
+          python3 scripts/secret-scan.py
+
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
