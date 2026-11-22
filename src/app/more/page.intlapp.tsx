@@ -3,6 +3,7 @@ import { AppRow, AppSection } from "@/components/app/AppList";
 import { AppShareRow, AppVersion } from "@/components/app/AppShareRow";
 import { AppLanguage } from "@/components/app/AppLanguage";
 import { IconBog, IconFest, IconInfo, IconLaas, IconTandhjul } from "@/components/app/icons";
+import { AppRateRow } from "@/components/app/AppRateRow";
 import { site } from "@/locale/site";
 import { screens } from "@/locale/screens";
 import { version } from "../../../package.json";
@@ -37,6 +38,7 @@ export default function MoreTab() {
           url={`${site.url}/`}
           copied={t.copied}
         />
+        <AppRateRow label={t.rate} />
       </AppSection>
 
       <p className="mt-8 text-center text-[13px] text-blaek-2">

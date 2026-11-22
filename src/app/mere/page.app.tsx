@@ -5,6 +5,7 @@ import { version } from "../../../package.json";
 import { AppShareRow, AppVersion } from "@/components/app/AppShareRow";
 import { AppLanguage } from "@/components/app/AppLanguage";
 import { SITE_URL } from "@/config/site";
+import { AppRateRow } from "@/components/app/AppRateRow";
 
 export const metadata = { title: "Mere" };
 
@@ -40,6 +41,7 @@ export default function MereTab() {
           url={`${SITE_URL}/`}
           copied="Linket er kopieret"
         />
+        <AppRateRow label="Bedøm appen" />
       </AppSection>
 
       <p className="mt-8 text-center text-[13px] text-blaek-2">

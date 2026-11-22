@@ -10,6 +10,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { JOKER_KEY, jokerAt, stepDeck, type DeckTurn } from "@/lib/joker";
 import type { Question } from "@/types";
 import { ui } from "@/locale/ui";
+import { noteGameCompleted } from "@/lib/review";
 
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
@@ -35,7 +36,10 @@ export function PlayDeck({ deckId, name, sharePath, backHref, questions, jokers 
     if (at.turn === 0) track("Spil startet", { kategori: deckId });
     setIsFlipped(false);
     const step = stepDeck(at, pile.length, jokerOn, deckId);
-    if (step.wrapped) setPile(shuffle(questions));
+    if (step.wrapped) {
+      setPile(shuffle(questions));
+      noteGameCompleted();
+    }
     setAt({ pos: step.pos, turn: step.turn });
   };
 

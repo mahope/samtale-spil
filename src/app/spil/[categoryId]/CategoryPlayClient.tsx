@@ -21,6 +21,7 @@ import { TIMING } from "@/constants";
 import { getDeck } from "@/data/decks";
 import { track } from "@/utils/track";
 import { tap } from "@/lib/platform";
+import { noteGameCompleted } from "@/lib/review";
 import { HardTalkFrame } from "@/components/HardTalkFrame";
 import { JOKER_KEY, jokerCard } from "@/lib/joker";
 
@@ -230,6 +231,7 @@ function CategoryPlay({ categoryId }: Props) {
       const isComplete = newAskedIds.length >= filteredQuestionCount;
       if (isComplete && newAskedIds.length > 0) {
         track("Spil gennemført", { kategori: categoryId, dybde: difficultyFilter });
+        noteGameCompleted();
         triggerConfetti();
         setShowCelebration(true);
         setTimeout(() => setShowCelebration(false), TIMING.CELEBRATION_SHORT);

@@ -51,6 +51,7 @@ export const screens: Screens = {
     share: "Plauderspiel teilen",
     shareText: "Plauderspiel: kostenlose Gesprächskarten für Paare, Familien und Freunde.",
     copied: "Link kopiert",
+    rate: "Plauderspiel bewerten",
     free: "Kostenlos, ohne Werbung und ohne Konto.",
   },
   games: {

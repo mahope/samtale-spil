@@ -51,6 +51,7 @@ export const screens: Screens = {
     share: "Partager Goodtalk",
     shareText: "Goodtalk : des cartes de conversation gratuites pour les couples, les familles et les amis.",
     copied: "Lien copié",
+    rate: "Noter Goodtalk",
     free: "Gratuit, sans publicité et sans compte.",
   },
   games: {

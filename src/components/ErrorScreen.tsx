@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { logger } from "@/utils/logger";
+import { noteError } from "@/lib/review";
 
 interface ErrorScreenProps {
   error: Error & { digest?: string };
@@ -17,6 +18,7 @@ interface ErrorScreenProps {
 export function ErrorScreen({ error, reset, what = "siden", note }: ErrorScreenProps) {
   useEffect(() => {
     logger.error("Route error:", error);
+    noteError();
   }, [error]);
 
   return (

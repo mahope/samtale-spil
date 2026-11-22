@@ -193,6 +193,14 @@ export function IconDel({ className }: IconProps) {
   );
 }
 
+export function IconStjerne({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 3.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" />
+    </Svg>
+  );
+}
+
 export function IconSoeg({ className = "h-[1.15rem] w-[1.15rem]" }: { className?: string }) {
   return (
     <Svg className={className}>

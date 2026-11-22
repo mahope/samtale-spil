@@ -9,6 +9,7 @@ import { track } from "@/utils/track";
 import { useFavorites } from "@/hooks/useLocalStorage";
 import { ui } from "@/locale/ui";
 import { screens } from "@/locale/screens";
+import { noteGameCompleted } from "@/lib/review";
 import type { Question } from "@/types";
 
 export interface YearStep {
@@ -84,7 +85,10 @@ export function YearInReview({ steps }: { steps: YearStep[] }) {
       aboveProgress={<p className="mb-2 text-center text-sm font-semibold text-white/85">{steps[index].label}</p>}
       onNext={() => {
         if (index === 0 && round === 0) track("Spil startet", { tilstand: "aaret-der-gik" });
-        if (index + 1 >= steps.length) track("Spil gennemført", { tilstand: "aaret-der-gik" });
+        if (index + 1 >= steps.length) {
+          track("Spil gennemført", { tilstand: "aaret-der-gik" });
+          noteGameCompleted();
+        }
         setIsFlipped(false);
         setIndex((i) => i + 1);
       }}

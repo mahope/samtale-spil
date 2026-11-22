@@ -51,6 +51,7 @@ export const screens: Screens = {
     share: "Compartir Charlando",
     shareText: "Charlando: cartas de conversación gratis para parejas, familias y amigos.",
     copied: "Enlace copiado",
+    rate: "Valorar Charlando",
     free: "Gratis, sin anuncios y sin cuenta.",
   },
   games: {

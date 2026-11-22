@@ -51,6 +51,7 @@ export const screens: Screens = {
     share: "Del Pratespill",
     shareText: "Pratespill: gratis samtalekort for par, familier og venner.",
     copied: "Lenken er kopiert",
+    rate: "Gi Pratespill en vurdering",
     free: "Gratis, uten reklame og uten konto.",
   },
   games: {

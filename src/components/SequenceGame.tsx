@@ -12,6 +12,7 @@ import { track } from "@/utils/track";
 import type { Question } from "@/types";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { JOKER_KEY, jokerAt } from "@/lib/joker";
+import { noteGameCompleted } from "@/lib/review";
 
 export interface SequenceStep {
   depth: Question["depth"];
@@ -96,7 +97,10 @@ export function SequenceGame({
     setIsTransitioning(true);
     setTimeout(() => setIsTransitioning(false), 450);
     if (index === 0 && round === 0) track("Spil startet", { tilstand: mode });
-    if (index + 1 >= allSteps.length) track("Spil gennemført", { tilstand: mode });
+    if (index + 1 >= allSteps.length) {
+      track("Spil gennemført", { tilstand: mode });
+      noteGameCompleted();
+    }
     setIsFlipped(false);
     setIndex((i) => i + 1);
   };

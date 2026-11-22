@@ -108,6 +108,17 @@ export function NativeBoot() {
         else window.location.assign(target.load);
       });
       cleanups.push(() => tap.remove());
+
+      // Counts the first open and the days of use for the rating request (src/lib/review.ts):
+      // records only, never asks here
+      try {
+        const { noteAppOpen } = await import("@/lib/review");
+        noteAppOpen();
+        const resumed = await App.addListener("resume", () => noteAppOpen());
+        cleanups.push(() => resumed.remove());
+      } catch {
+        // a rating request is a nicety
+      }
     })();
 
     return () => cleanups.forEach((fn) => fn());
