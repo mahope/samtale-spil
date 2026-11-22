@@ -64,7 +64,7 @@ const nextConfig: NextConfig = {
   output: 'export',
   ...(basePath && { basePath }),
   // Read by src/lib/appLang.ts, which needs the base path outside the router (window.location)
-  env: { APP_BASE_PATH: basePath },
+  env: { APP_BASE_PATH: basePath, APP_VARIANT: variant },
   ...(isIntl && !isAppBuild && { pageExtensions: ['intl.tsx', 'intl.ts'] }),
   ...(isIntlApp && { pageExtensions: ['intlapp.tsx', 'intlapp.ts'] }),
   ...(variant === 'voksen' && { pageExtensions: ['voksen.tsx', 'voksen.ts'] }),

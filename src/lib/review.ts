@@ -71,7 +71,7 @@ export function noteError(now: number = Date.now()): void {
  * has played. Call only at a real finish, never mid-game.
  */
 export function noteGameCompleted(now: number = Date.now()): void {
-  if (!isNative()) return;
+  if (!isNative() || process.env.APP_VARIANT === "voksen") return; // the 18+ app never asks
   try {
     const state = recordGame(recordOpen(load(), now));
     save(state);

@@ -28,6 +28,7 @@ beforeEach(() => {
   vi.useFakeTimers();
   vi.setSystemTime(NOW);
   localStorage.clear();
+  noteError(0); // lastErrorAt is module state: reset it so tests do not depend on order
   requestReview.mockReset();
   requestReview.mockResolvedValue(undefined);
   native.on = true;
@@ -76,7 +77,15 @@ describe("review integration", () => {
     noteGameCompleted();
     await settle();
     expect(requestReview).not.toHaveBeenCalled();
-    noteError(NOW - 60 * 60 * 1000);
+  });
+
+  it("never asks in the 18+ app", async () => {
+    vi.stubEnv("APP_VARIANT", "voksen");
+    qualifying();
+    noteGameCompleted();
+    await settle();
+    vi.unstubAllEnvs();
+    expect(requestReview).not.toHaveBeenCalled();
   });
 
   it("swallows a failing plugin", async () => {

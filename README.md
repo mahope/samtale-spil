@@ -89,7 +89,7 @@ Goal: the first ratings in the App Store and Play (anb:051). The app asks with t
 
 **Plugin choice.** The package is the community plugin, peer `@capacitor/core >=8.0.0`, so it matches Capacitor 8. 8.0.0 was published 26 December 2025 and is the latest on npm. It has no dependencies and no install scripts, and is pinned to an exact version (installed with `--ignore-scripts`). It is not an official Ionic plugin, but it has been on npm since April 2024 with releases for Capacitor 4, 6, 7 and 8. `cap sync` added it to `ios/App/CapApp-SPM/Package.swift`, `android/capacitor.settings.gradle` and `android/app/capacitor.build.gradle`; nothing else in `ios/` or `android/` changed.
 
-**When it asks.** Only in the native apps (`Capacitor.isNativePlatform()`); on the web nothing is stored and nothing shows. Only at a finished game: a category played through (`CategoryPlayClient`), a sequence game or Year in review played to the end, or an English-site deck played through (`PlayDeck`). The request comes 2.5 seconds after, when the celebration has played, never on a screen the player is in the middle of a game on. And only when all of this holds (`src/lib/reviewPrompt.ts`, pure and tested):
+**When it asks.** Only in the native apps (`Capacitor.isNativePlatform()`); on the web nothing is stored and nothing shows. Only at a finished game: a category played through (`CategoryPlayClient`), a sequence game or Year in review played to the end, or an English-site deck played through (`PlayDeck`). The request comes 2.5 seconds after the finish. The English-site deck (`PlayDeck`) has no celebration or end screen: finishing means the deck reshuffles into a new round, so the dialog can land on the first card of the next round. The error cooldown is only wired to the Danish error screens; the other languages have no error route, so it has no effect there. And only when all of this holds (`src/lib/reviewPrompt.ts`, pure and tested):
 
 - at least 3 different days of use or 5 finished games
 - at least 7 days since the first launch (so never on the first open)
@@ -111,7 +111,7 @@ Apple and Google decide whether the dialog actually shows (Apple at most three t
 - TestFlight builds do not show it reliably: Apple suppresses the dialog there, and the TestFlight review flow is a separate, different one. A missing dialog in TestFlight does not mean a bug.
 - In production the system decides (see above), so the dialog may not show even when all rules pass.
 - To force a request on a device, clear `samtale-spil-review` in the web view (Safari Web Inspector on iOS, `chrome://inspect` on Android), open the app, then finish a game; or set `firstOpenAt` back 8 days and `days` to three dates in that key, and finish a game.
-- The 18+ app (`dk.snakkespil.voksen`) does not ask: it has no finished-game moment of its own.
+- The 18+ app (`dk.snakkespil.voksen`) never asks: `noteGameCompleted` returns early when `APP_VARIANT=voksen`, and it has no "Rate the app" row.
 
 ## Licence
 
