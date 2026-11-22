@@ -1,0 +1,13 @@
+# Secret scanning config, read by gitleaks and by scripts/secret-scan.py (which CI runs).
+# Every allowlist names one exact file and the rules it silences. Never add broad globs or
+# path-less allowlists: anything not listed here fails CI.
+
+title = "samtale-spil"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Cloudflare Turnstile site key: public by design (it is rendered into the report form's HTML); the matching secret lives only in the worker's environment"
+paths = ['''^src/config/api\.ts$''']
+targetRules = ["generic-api-key"]
