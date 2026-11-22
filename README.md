@@ -83,6 +83,36 @@ After deploy, check the live site directly: `/`, `/spil/`, `/spil/parforhold/`, 
 - `ios/`: Swift Package Manager project; `.forgejo/workflows/ios.yml` compiles it unsigned on the Mac runner. Signing and TestFlight need the Apple team's certificates.
 - After changing web code for the apps: `bun run cap:sync` (runs `scripts/build-app.sh` with `APP_BUILD=1`, which leaves out the 18+ deck so the app can carry a 13+ rating). Icons and splash screens: `bun run cap:assets`.
 
+### Ratings (system dialog)
+
+Goal: the first ratings in the App Store and Play (anb:051). The app asks with the system's own dialog (StoreKit on iOS, Play In-App Review on Android), via `@capacitor-community/in-app-review` 8.0.0.
+
+**Plugin choice.** The package is the community plugin, peer `@capacitor/core >=8.0.0`, so it matches Capacitor 8. 8.0.0 was published 26 December 2025 and is the latest on npm. It has no dependencies and no install scripts, and is pinned to an exact version (installed with `--ignore-scripts`). It is not an official Ionic plugin, but it has been on npm since April 2024 with releases for Capacitor 4, 6, 7 and 8. `cap sync` added it to `ios/App/CapApp-SPM/Package.swift`, `android/capacitor.settings.gradle` and `android/app/capacitor.build.gradle`; nothing else in `ios/` or `android/` changed.
+
+**When it asks.** Only in the native apps (`Capacitor.isNativePlatform()`); on the web nothing is stored and nothing shows. Only at a finished game: a category played through (`CategoryPlayClient`), a sequence game or Year in review played to the end, or an English-site deck played through (`PlayDeck`). The request comes 2.5 seconds after, when the celebration has played, never on a screen the player is in the middle of a game on. And only when all of this holds (`src/lib/reviewPrompt.ts`, pure and tested):
+
+- at least 3 different days of use or 5 finished games
+- at least 7 days since the first launch (so never on the first open)
+- at least 90 days since the last request
+- at most once per app version (the marketing version, `App.getInfo().version`)
+- no error screen in the last 10 minutes
+
+There is no "do you like the app?" question first and nobody is sorted into happy and unhappy players (App Store Review Guideline 5.6.1). The state (first launch, up to 10 day stamps, a game count capped at 5, time and version of the last request) lives in `localStorage` under `samtale-spil-review`: no personal data, no server. Every call to the plugin is wrapped, so a failure shows the player nothing. The request is recorded before the call, so a failing call is not retried on the same version.
+
+Apple and Google decide whether the dialog actually shows (Apple at most three times per 365 days per user, and never if the user has switched it off or already rated this version) and tell the app nothing. So "we asked" is not "it appeared".
+
+**"Rate the app" row** on Mere / More (`AppRateRow`, text `screens.more.rate`; Danish "Bedøm appen") opens the store's write-a-review page. It is hidden in a browser, on iOS while `APPLE_APP_ID` is empty, and on Android until `STORES_LIVE.android` is `true` (`src/config/site.ts`).
+
+**Mads fills in:** `APPLE_APP_ID` in `src/config/review.ts`, the digits after `id` in the App Store URL of Snakkespil. It ships empty on purpose and nothing guesses it. (`src/locales/da/site.ts` has an App Store link with an id; confirm in App Store Connect that it is this app's before copying it.)
+
+**Testing.** Unit tests: `bun x vitest run src/__tests__/reviewPrompt.test.ts src/__tests__/review.test.ts` (boundaries: 6 vs 7 days, 89 vs 90 days, same version twice, first open; the integration with a mocked plugin). On a device the dialog is hard to see:
+
+- A development build (Xcode, run from the IDE) shows the dialog every time it is asked, but the dialog's stars do nothing and no review is sent. This is the way to see the dialog.
+- TestFlight builds do not show it reliably: Apple suppresses the dialog there, and the TestFlight review flow is a separate, different one. A missing dialog in TestFlight does not mean a bug.
+- In production the system decides (see above), so the dialog may not show even when all rules pass.
+- To force a request on a device, clear `samtale-spil-review` in the web view (Safari Web Inspector on iOS, `chrome://inspect` on Android), open the app, then finish a game; or set `firstOpenAt` back 8 days and `days` to three dates in that key, and finish a game.
+- The 18+ app (`dk.snakkespil.voksen`) does not ask: it has no finished-game moment of its own.
+
 ## Licence
 
 Code and questions © Mahope. Bricolage Grotesque is used under the SIL Open Font License (`assets/fonts/OFL-bricolage.txt`).
