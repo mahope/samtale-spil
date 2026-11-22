@@ -43,3 +43,6 @@ worker/src/cards.json
 worker/.wrangler/
 worker/node_modules/
 /.ci-out/
+
+# python
+__pycache__/
